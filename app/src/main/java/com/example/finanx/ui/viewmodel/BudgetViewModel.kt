@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
-import com.example.finanx.data.model.BudgetResponse
 import com.example.finanx.data.repository.BudgetRepository
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.BudgetResponse
 
 sealed class BudgetState {
     object Loading : BudgetState()
@@ -17,7 +17,7 @@ sealed class BudgetState {
 }
 
 class BudgetViewModel : ViewModel() {
-    private val repository = BudgetRepository(RetrofitClient.api)
+    private val repository = BudgetRepository(RetrofitClient.budgetApi)
 
     var budgetState by mutableStateOf<BudgetState>(BudgetState.Loading)
         private set

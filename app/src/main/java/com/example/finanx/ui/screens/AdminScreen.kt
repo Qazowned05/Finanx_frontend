@@ -1,24 +1,30 @@
 package com.example.finanx.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.LightBackground
+import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminScreen() {
+fun AdminScreen(authViewModel: AuthViewModel) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -27,7 +33,10 @@ fun AdminScreen() {
                     IconButton(onClick = {}) { Icon(Icons.Default.ArrowBack, contentDescription = null) }
                 },
                 actions = {
-                    IconButton(onClick = {}) { Icon(Icons.Default.Person, contentDescription = null) }
+                    ProfileMenuAction(
+                        onMyProfile = { /* TODO: navegar a perfil */ },
+                        onLogout = { authViewModel.logout(activity) }
+                    )
                 }
             )
         },

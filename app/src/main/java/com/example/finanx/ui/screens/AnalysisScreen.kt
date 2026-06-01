@@ -1,5 +1,6 @@
 package com.example.finanx.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,16 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BluePrimary
-import com.example.finanx.ui.theme.BlueSecondary
 import com.example.finanx.ui.theme.LightBackground
+import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnalysisScreen() {
+fun AnalysisScreen(authViewModel: AuthViewModel) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -30,7 +35,10 @@ fun AnalysisScreen() {
                     IconButton(onClick = {}) { Icon(Icons.Default.ArrowBack, contentDescription = null) }
                 },
                 actions = {
-                    IconButton(onClick = {}) { Icon(Icons.Default.Person, contentDescription = null) }
+                    ProfileMenuAction(
+                        onMyProfile = { /* TODO: navegar a perfil */ },
+                        onLogout = { authViewModel.logout(activity) }
+                    )
                 }
             )
         },

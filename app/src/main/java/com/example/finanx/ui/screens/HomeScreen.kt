@@ -1,14 +1,15 @@
 package com.example.finanx.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,10 +20,15 @@ import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.BlueSecondary
 import com.example.finanx.ui.theme.LightBackground
 import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(authViewModel: AuthViewModel) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -31,9 +37,10 @@ fun HomeScreen() {
                     IconButton(onClick = {}) {
                         Icon(Icons.Default.Notifications, contentDescription = null)
                     }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Person, contentDescription = null)
-                    }
+                    ProfileMenuAction(
+                        onMyProfile = { /* TODO: navegar a perfil */ },
+                        onLogout = { authViewModel.logout(activity) }
+                    )
                 }
             )
         },

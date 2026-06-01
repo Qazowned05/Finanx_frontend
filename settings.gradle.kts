@@ -23,4 +23,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Finanx"
-include(":app")
+include(":app", ":kotlin-client")

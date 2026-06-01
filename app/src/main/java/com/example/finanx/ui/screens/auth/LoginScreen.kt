@@ -1,16 +1,17 @@
 package com.example.finanx.ui.screens.auth
 
-import androidx.compose.foundation.Image
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,8 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
     var password by remember { mutableStateOf("") }
 
     val state = viewModel.authState
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -92,7 +95,24 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                 ) {
                     Text("Iniciar Sesión", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
-                
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        // Flujo recomendado: hoja inferior de Credential Manager.
+                        if (activity != null) viewModel.loginWithGoogle(activity)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Default.AccountCircle, contentDescription = null)
+                    Spacer(Modifier.width(12.dp))
+                    Text("Continuar con Google", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                }
+
                 TextButton(onClick = onNavigateToRegister) {
                     Text("¿No tienes cuenta? Regístrate aquí")
                 }

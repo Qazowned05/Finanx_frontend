@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -40,7 +39,13 @@ fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
     var showRegister by remember { mutableStateOf(false) }
 
     if (authState is AuthState.Success) {
-        AppNavigation(authState.user.id)
+        val userId = authState.user.id
+        if (userId != null) {
+            AppNavigation(userId, authViewModel)
+        } else {
+            // Si el backend no devolvió id, forzamos cerrar sesión y volvemos a login.
+            LaunchedEffect(Unit) { authViewModel.logout() }
+        }
     } else {
         if (showRegister) {
             RegisterScreen(
@@ -57,7 +62,7 @@ fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
 }
 
 @Composable
-fun AppNavigation(userId: Long) {
+fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val budgetViewModel: BudgetViewModel = viewModel()
     val screens = listOf(
@@ -101,11 +106,11 @@ fun AppNavigation(userId: Long) {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
-            composable(Screen.Transactions.route) { TransactionsScreen() }
-            composable(Screen.Calendar.route) { BudgetListScreen(userId, budgetViewModel) }
-            composable(Screen.Analysis.route) { AnalysisScreen() }
-            composable(Screen.More.route) { AdminScreen() }
+            composable(Screen.Home.route) { HomeScreen(authViewModel) }
+            composable(Screen.Transactions.route) { TransactionsScreen(authViewModel) }
+            composable(Screen.Calendar.route) { BudgetListScreen(userId, budgetViewModel, authViewModel) }
+            composable(Screen.Analysis.route) { AnalysisScreen(authViewModel) }
+            composable(Screen.More.route) { AdminScreen(authViewModel) }
         }
     }
 }

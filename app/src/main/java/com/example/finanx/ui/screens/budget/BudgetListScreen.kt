@@ -1,34 +1,47 @@
 package com.example.finanx.ui.screens.budget
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.data.model.BudgetResponse
+import com.example.finanx.ui.components.ProfileMenuAction
 import com.example.finanx.ui.theme.BluePrimary
+import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.BudgetState
 import com.example.finanx.ui.viewmodel.BudgetViewModel
+import org.openapitools.client.models.BudgetResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BudgetListScreen(userId: Long, viewModel: BudgetViewModel) {
+fun BudgetListScreen(userId: Long, viewModel: BudgetViewModel, authViewModel: AuthViewModel) {
     LaunchedEffect(userId) {
         viewModel.fetchBudgets(userId)
     }
 
     val state = viewModel.budgetState
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Mis Presupuestos", fontWeight = FontWeight.Bold) })
+            TopAppBar(
+                title = { Text("Mis Presupuestos", fontWeight = FontWeight.Bold) },
+                actions = {
+                    ProfileMenuAction(
+                        onMyProfile = { /* TODO: navegar a perfil */ },
+                        onLogout = { authViewModel.logout(activity) }
+                    )
+                }
+            )
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
@@ -44,8 +57,8 @@ fun BudgetListScreen(userId: Long, viewModel: BudgetViewModel) {
                             modifier = Modifier.fillMaxSize().padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(state.budgets) { budget ->
-                                BudgetCard(budget)
+                            items(count = state.budgets.size) { index ->
+                                BudgetCard(state.budgets[index])
                             }
                         }
                     }
@@ -70,15 +83,16 @@ fun BudgetCard(budget: BudgetResponse) {
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(budget.description, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = BluePrimary)
+            Text(budget.description.orEmpty(), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = BluePrimary)
             Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Límite:", color = Color.Gray)
-                Text("PEN ${budget.limitAmount}", fontWeight = FontWeight.SemiBold)
+                Text("PEN ${budget.limitAmount ?: 0}", fontWeight = FontWeight.SemiBold)
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Estado:", color = Color.Gray)
-                Text(budget.state, color = if (budget.state == "ACTIVE") Color(0xFF2F855A) else Color.Gray)
+                val state = budget.state?.value
+                Text(state.orEmpty(), color = if (state == "ACTIVE") Color(0xFF2F855A) else Color.Gray)
             }
         }
     }

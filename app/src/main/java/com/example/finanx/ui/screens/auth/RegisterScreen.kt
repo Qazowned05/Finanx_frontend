@@ -1,8 +1,10 @@
 package com.example.finanx.ui.screens.auth
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -10,7 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,8 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
     var password by remember { mutableStateOf("") }
 
     val state = viewModel.authState
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -91,6 +95,22 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
                 ) {
                     Text("Registrarse", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        // Para registro, el backend normalmente crea/actualiza usuario
+                        // a partir del idToken.
+                        if (activity != null) viewModel.loginWithGoogle(activity)
+                    },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Default.AccountCircle, contentDescription = null)
+                    Spacer(Modifier.width(12.dp))
+                    Text("Registrarse con Google", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 }
 
                 TextButton(onClick = onBackToLogin) {
