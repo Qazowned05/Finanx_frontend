@@ -37,9 +37,17 @@ import java.io.Serializable
  * @param accumulated 
  * @param deadline 
  * @param createdAt 
+ * @param disabledAt 
+ * @param state 
  * @param active 
  * @param userId 
  * @param progressPercentage 
+ * @param transactionsCount 
+ * @param outstanding 
+ * @param daysRemaining 
+ * @param averageContribution 
+ * @param completed 
+ * @param estimatedCompletionDate 
  */
 
 
@@ -63,6 +71,12 @@ data class SavingGoalResponse (
     @Json(name = "createdAt")
     val createdAt: java.time.OffsetDateTime? = null,
 
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "state")
+    val state: SavingGoalResponse.State? = null,
+
     @Json(name = "active")
     val active: kotlin.Boolean? = null,
 
@@ -70,13 +84,42 @@ data class SavingGoalResponse (
     val userId: kotlin.Long? = null,
 
     @Json(name = "progressPercentage")
-    val progressPercentage: kotlin.Double? = null
+    val progressPercentage: kotlin.Double? = null,
+
+    @Json(name = "transactionsCount")
+    val transactionsCount: kotlin.Int? = null,
+
+    @Json(name = "outstanding")
+    val outstanding: java.math.BigDecimal? = null,
+
+    @Json(name = "daysRemaining")
+    val daysRemaining: kotlin.Long? = null,
+
+    @Json(name = "averageContribution")
+    val averageContribution: java.math.BigDecimal? = null,
+
+    @Json(name = "completed")
+    val completed: kotlin.Boolean? = null,
+
+    @Json(name = "estimatedCompletionDate")
+    val estimatedCompletionDate: java.time.OffsetDateTime? = null
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
+    /**
+     * 
+     *
+     * Values: RUNNING,COMPLETED,CANCELLED
+     */
+    @JsonClass(generateAdapter = false)
+    enum class State(val value: kotlin.String) {
+        @Json(name = "RUNNING") RUNNING("RUNNING"),
+        @Json(name = "COMPLETED") COMPLETED("COMPLETED"),
+        @Json(name = "CANCELLED") CANCELLED("CANCELLED");
+    }
 
 }
 

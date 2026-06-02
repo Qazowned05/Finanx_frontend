@@ -11,18 +11,21 @@
 | **message** | **kotlin.String** |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **scheduledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **sentAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
-| **transactionId** | **kotlin.Long** |  |  [optional] |
+| **scheduleId** | **kotlin.Long** |  |  [optional] |
+| **budgetId** | **kotlin.Long** |  |  [optional] |
 | **budgetDescription** | **kotlin.Long** |  |  [optional] |
 | **budgetState** | [**inline**](#BudgetState) |  |  [optional] |
-| **categoryName** | **kotlin.Long** |  |  [optional] |
+| **savingGoalId** | **kotlin.Long** |  |  [optional] |
+| **savingGoalDescription** | **kotlin.String** |  |  [optional] |
 
 
 <a id="Type"></a>
 ## Enum: type
 | Name | Value |
 | ---- | ----- |
-| type | BUDGET_ALERT, EXPIRATION, REMINDER |
+| type | WARNING, SUCCESS, ERROR, INFO |
 
 
 <a id="State"></a>

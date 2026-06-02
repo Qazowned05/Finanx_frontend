@@ -38,11 +38,14 @@ import java.io.Serializable
  * @param message 
  * @param createdAt 
  * @param scheduledAt 
+ * @param sentAt 
  * @param state 
- * @param transactionId 
+ * @param scheduleId 
+ * @param budgetId 
  * @param budgetDescription 
  * @param budgetState 
- * @param categoryName 
+ * @param savingGoalId 
+ * @param savingGoalDescription 
  */
 
 
@@ -69,11 +72,17 @@ data class NotificationDTO (
     @Json(name = "scheduledAt")
     val scheduledAt: java.time.OffsetDateTime? = null,
 
+    @Json(name = "sentAt")
+    val sentAt: java.time.OffsetDateTime? = null,
+
     @Json(name = "state")
     val state: NotificationDTO.State? = null,
 
-    @Json(name = "transactionId")
-    val transactionId: kotlin.Long? = null,
+    @Json(name = "scheduleId")
+    val scheduleId: kotlin.Long? = null,
+
+    @Json(name = "budgetId")
+    val budgetId: kotlin.Long? = null,
 
     @Json(name = "budgetDescription")
     val budgetDescription: kotlin.Long? = null,
@@ -81,8 +90,11 @@ data class NotificationDTO (
     @Json(name = "budgetState")
     val budgetState: NotificationDTO.BudgetState? = null,
 
-    @Json(name = "categoryName")
-    val categoryName: kotlin.Long? = null
+    @Json(name = "savingGoalId")
+    val savingGoalId: kotlin.Long? = null,
+
+    @Json(name = "savingGoalDescription")
+    val savingGoalDescription: kotlin.String? = null
 
 ) : Serializable {
     companion object {
@@ -92,13 +104,14 @@ data class NotificationDTO (
     /**
      * 
      *
-     * Values: BUDGET_ALERT,EXPIRATION,REMINDER
+     * Values: WARNING,SUCCESS,ERROR,INFO
      */
     @JsonClass(generateAdapter = false)
     enum class Type(val value: kotlin.String) {
-        @Json(name = "BUDGET_ALERT") BUDGET_ALERT("BUDGET_ALERT"),
-        @Json(name = "EXPIRATION") EXPIRATION("EXPIRATION"),
-        @Json(name = "REMINDER") REMINDER("REMINDER");
+        @Json(name = "WARNING") WARNING("WARNING"),
+        @Json(name = "SUCCESS") SUCCESS("SUCCESS"),
+        @Json(name = "ERROR") ERROR("ERROR"),
+        @Json(name = "INFO") INFO("INFO");
     }
     /**
      * 
