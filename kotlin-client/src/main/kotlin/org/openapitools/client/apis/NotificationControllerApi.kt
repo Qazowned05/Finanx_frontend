@@ -39,7 +39,7 @@ interface NotificationControllerApi {
     /**
     * enum for parameter state
     */
-    enum class StateFindAllByUserAndState(val value: kotlin.String) {
+    enum class StateFindAllByUserAndState3(val value: kotlin.String) {
         @Json(name = "SCHEDULED") SCHEDULED("SCHEDULED"),
         @Json(name = "SENT") SENT("SENT"),
         @Json(name = "READ") READ("READ"),
@@ -58,7 +58,7 @@ interface NotificationControllerApi {
      * @return [kotlin.collections.List<NotificationDTO>]
      */
     @GET("notifications/{idUser}/{state}")
-    suspend fun findAllByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<NotificationDTO>>
+    suspend fun findAllByUserAndState3(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<NotificationDTO>>
 
     /**
      * GET notifications/{id}
@@ -71,6 +71,6 @@ interface NotificationControllerApi {
      * @return [NotificationDTO]
      */
     @GET("notifications/{id}")
-    suspend fun findById7(@Path("id") id: kotlin.Long): Response<NotificationDTO>
+    suspend fun findById6(@Path("id") id: kotlin.Long): Response<NotificationDTO>
 
 }

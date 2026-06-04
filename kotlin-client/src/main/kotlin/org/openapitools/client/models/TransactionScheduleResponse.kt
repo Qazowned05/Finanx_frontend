@@ -41,6 +41,7 @@ import java.io.Serializable
  * @param nextRunAt 
  * @param createdAt 
  * @param lastRunAt 
+ * @param disabledAt 
  * @param active 
  * @param state 
  * @param recurrenceRule 
@@ -77,6 +78,9 @@ data class TransactionScheduleResponse (
 
     @Json(name = "lastRunAt")
     override val lastRunAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "disabledAt")
+    override val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "active")
     override val active: kotlin.Boolean? = null,

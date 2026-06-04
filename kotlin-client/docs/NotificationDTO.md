@@ -10,6 +10,7 @@
 | **type** | [**inline**](#Type) |  |  [optional] |
 | **message** | **kotlin.String** |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **scheduledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **sentAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |

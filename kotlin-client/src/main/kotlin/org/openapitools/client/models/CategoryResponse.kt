@@ -35,6 +35,7 @@ import java.io.Serializable
  * @param name 
  * @param description 
  * @param active 
+ * @param createdAt 
  * @param disabledAt 
  */
 
@@ -52,6 +53,9 @@ data class CategoryResponse (
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null,
+
+    @Json(name = "createdAt")
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
     val disabledAt: java.time.OffsetDateTime? = null

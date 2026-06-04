@@ -7,7 +7,7 @@ All URIs are relative to *http://localhost:8080*
 | [**create2**](SavingGoalControllerApi.md#create2) | **POST** savings |  |
 | [**disable1**](SavingGoalControllerApi.md#disable1) | **POST** savings/{id} |  |
 | [**findAllActiveByUser1**](SavingGoalControllerApi.md#findAllActiveByUser1) | **GET** savings/{idUser} |  |
-| [**findById3**](SavingGoalControllerApi.md#findById3) | **GET** savings/{id} |  |
+| [**findById2**](SavingGoalControllerApi.md#findById2) | **GET** savings/{id} |  |
 | [**update3**](SavingGoalControllerApi.md#update3) | **PUT** savings/{id} |  |
 
 
@@ -137,7 +137,7 @@ val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : SavingGoalResponse = webService.findById3(id)
+    val result : SavingGoalResponse = webService.findById2(id)
 }
 ```
 

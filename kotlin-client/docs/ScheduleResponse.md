@@ -12,6 +12,7 @@
 | **nextRunAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **lastRunAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **recurrenceRule** | [**RecurrenceRuleResponse**](RecurrenceRuleResponse.md) |  |  [optional] |

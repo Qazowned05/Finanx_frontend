@@ -40,6 +40,7 @@ import java.io.Serializable
  * @param nextRunAt 
  * @param createdAt 
  * @param lastRunAt 
+ * @param disabledAt 
  * @param active 
  * @param state 
  * @param recurrenceRule 
@@ -67,6 +68,8 @@ interface ScheduleResponse : Serializable {
     val createdAt: java.time.OffsetDateTime?
     @Json(name = "lastRunAt")
     val lastRunAt: java.time.OffsetDateTime?
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime?
     @Json(name = "active")
     val active: kotlin.Boolean?
     @Json(name = "state")

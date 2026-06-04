@@ -39,6 +39,8 @@ import java.io.Serializable
  * @param paymentMethod 
  * @param type 
  * @param createdAt 
+ * @param disabledAt 
+ * @param active 
  */
 
 
@@ -66,7 +68,13 @@ data class TransactionResponse (
     val type: TransactionResponse.Type? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null
+    val createdAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "active")
+    val active: kotlin.Boolean? = null
 
 ) : Serializable {
     companion object {

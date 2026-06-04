@@ -60,7 +60,7 @@ interface ReasonControllerApi {
      * @return [ReasonResponse]
      */
     @GET("reasons/{id}")
-    suspend fun findById4(@Path("id") id: kotlin.Long): Response<ReasonResponse>
+    suspend fun findById3(@Path("id") id: kotlin.Long): Response<ReasonResponse>
 
     /**
      * PUT reasons/{id}

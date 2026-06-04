@@ -7,7 +7,7 @@ All URIs are relative to *http://localhost:8080*
 | [**create3**](ReasonControllerApi.md#create3) | **POST** reasons |  |
 | [**disable2**](ReasonControllerApi.md#disable2) | **POST** reasons/{id} |  |
 | [**findAll1**](ReasonControllerApi.md#findAll1) | **GET** reasons/{idUser} |  |
-| [**findById4**](ReasonControllerApi.md#findById4) | **GET** reasons/{id} |  |
+| [**findById3**](ReasonControllerApi.md#findById3) | **GET** reasons/{id} |  |
 | [**update4**](ReasonControllerApi.md#update4) | **PUT** reasons/{id} |  |
 
 
@@ -137,7 +137,7 @@ val webService = apiClient.createWebservice(ReasonControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : ReasonResponse = webService.findById4(id)
+    val result : ReasonResponse = webService.findById3(id)
 }
 ```
 

@@ -87,7 +87,7 @@ interface CategoryControllerApi {
      * @return [CategoryResponse]
      */
     @GET("categories/{id}")
-    suspend fun findById5(@Path("id") id: kotlin.Long): Response<CategoryResponse>
+    suspend fun findById4(@Path("id") id: kotlin.Long): Response<CategoryResponse>
 
     /**
      * PUT categories/{id}

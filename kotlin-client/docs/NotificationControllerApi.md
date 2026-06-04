@@ -6,8 +6,8 @@ All URIs are relative to *http://localhost:8080*
 | ------------- | ------------- | ------------- |
 | [**discard**](NotificationControllerApi.md#discard) | **POST** notifications/discard |  |
 | [**findAllByUser1**](NotificationControllerApi.md#findAllByUser1) | **GET** notifications/{idUser} |  |
-| [**findAllByUserAndState**](NotificationControllerApi.md#findAllByUserAndState) | **GET** notifications/{idUser}/{state} |  |
-| [**findById7**](NotificationControllerApi.md#findById7) | **GET** notifications/{id} |  |
+| [**findAllByUserAndState3**](NotificationControllerApi.md#findAllByUserAndState3) | **GET** notifications/{idUser}/{state} |  |
+| [**findById6**](NotificationControllerApi.md#findById6) | **GET** notifications/{id} |  |
 
 
 
@@ -100,7 +100,7 @@ val idUser : kotlin.Long = 789 // kotlin.Long |
 val state : kotlin.String = state_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<NotificationDTO> = webService.findAllByUserAndState(idUser, state)
+    val result : kotlin.collections.List<NotificationDTO> = webService.findAllByUserAndState3(idUser, state)
 }
 ```
 
@@ -138,7 +138,7 @@ val webService = apiClient.createWebservice(NotificationControllerApi::class.jav
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : NotificationDTO = webService.findById7(id)
+    val result : NotificationDTO = webService.findById6(id)
 }
 ```
 

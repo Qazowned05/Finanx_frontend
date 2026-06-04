@@ -40,6 +40,7 @@ import java.io.Serializable
  * @param state 
  * @param moneyBalance 
  * @param createdAt 
+ * @param disabledAt 
  * @param fullName 
  * @param timeZone 
  */
@@ -73,6 +74,9 @@ data class UserResponse (
 
     @Json(name = "createdAt")
     val createdAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "fullName")
     val fullName: kotlin.String? = null,

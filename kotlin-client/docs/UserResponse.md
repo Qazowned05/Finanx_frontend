@@ -13,6 +13,7 @@
 | **state** | [**inline**](#State) |  |  [optional] |
 | **moneyBalance** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **fullName** | **kotlin.String** |  |  [optional] |
 | **timeZone** | [**inline**](#TimeZone) |  |  [optional] |
 

@@ -37,6 +37,7 @@ import java.io.Serializable
  * @param type 
  * @param message 
  * @param createdAt 
+ * @param disabledAt 
  * @param scheduledAt 
  * @param sentAt 
  * @param state 
@@ -68,6 +69,9 @@ data class NotificationDTO (
 
     @Json(name = "createdAt")
     val createdAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "scheduledAt")
     val scheduledAt: java.time.OffsetDateTime? = null,

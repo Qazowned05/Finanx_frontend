@@ -40,6 +40,8 @@ import java.io.Serializable
  * @param userId 
  * @param categoryId 
  * @param categoryName 
+ * @param createdAt 
+ * @param disabledAt 
  */
 
 
@@ -70,7 +72,13 @@ data class BudgetResponse (
     val categoryId: kotlin.Long? = null,
 
     @Json(name = "categoryName")
-    val categoryName: kotlin.Long? = null
+    val categoryName: kotlin.Long? = null,
+
+    @Json(name = "createdAt")
+    val createdAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "disabledAt")
+    val disabledAt: java.time.OffsetDateTime? = null
 
 ) : Serializable {
     companion object {

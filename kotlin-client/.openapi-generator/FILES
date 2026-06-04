@@ -11,6 +11,7 @@ docs/BudgetControllerApi.md
 docs/BudgetExecution.md
 docs/BudgetRequest.md
 docs/BudgetResponse.md
+docs/BudgetScheduleControllerApi.md
 docs/BudgetScheduleRequest.md
 docs/BudgetScheduleResponse.md
 docs/CategoryAggregate.md
@@ -20,7 +21,6 @@ docs/CategoryDTO.md
 docs/CategoryRequest.md
 docs/CategoryResponse.md
 docs/CategorySummary.md
-docs/FindById2200Response.md
 docs/GoogleLoginRequest.md
 docs/Insight.md
 docs/LoginRequest.md
@@ -53,8 +53,10 @@ docs/TransactionControllerApi.md
 docs/TransactionRequest.md
 docs/TransactionResponse.md
 docs/TransactionScheduleAnalytics.md
+docs/TransactionScheduleControllerApi.md
 docs/TransactionScheduleRequest.md
 docs/TransactionScheduleResponse.md
+docs/Update2200Response.md
 docs/Update2Request.md
 docs/UserControllerApi.md
 docs/UserRequest.md
@@ -67,6 +69,7 @@ settings.gradle
 src/main/kotlin/org/openapitools/client/apis/AnalyticsControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/AuthControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/BudgetControllerApi.kt
+src/main/kotlin/org/openapitools/client/apis/BudgetScheduleControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/CategoryControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/NotificationControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/ReasonControllerApi.kt
@@ -74,6 +77,7 @@ src/main/kotlin/org/openapitools/client/apis/ReportControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/SavingGoalControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/ScheduleControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/TransactionControllerApi.kt
+src/main/kotlin/org/openapitools/client/apis/TransactionScheduleControllerApi.kt
 src/main/kotlin/org/openapitools/client/apis/UserControllerApi.kt
 src/main/kotlin/org/openapitools/client/infrastructure/ApiClient.kt
 src/main/kotlin/org/openapitools/client/infrastructure/BigDecimalAdapter.kt
@@ -103,7 +107,6 @@ src/main/kotlin/org/openapitools/client/models/CategoryDTO.kt
 src/main/kotlin/org/openapitools/client/models/CategoryRequest.kt
 src/main/kotlin/org/openapitools/client/models/CategoryResponse.kt
 src/main/kotlin/org/openapitools/client/models/CategorySummary.kt
-src/main/kotlin/org/openapitools/client/models/FindById2200Response.kt
 src/main/kotlin/org/openapitools/client/models/GoogleLoginRequest.kt
 src/main/kotlin/org/openapitools/client/models/Insight.kt
 src/main/kotlin/org/openapitools/client/models/LoginRequest.kt
@@ -132,6 +135,10 @@ src/main/kotlin/org/openapitools/client/models/TransactionResponse.kt
 src/main/kotlin/org/openapitools/client/models/TransactionScheduleAnalytics.kt
 src/main/kotlin/org/openapitools/client/models/TransactionScheduleRequest.kt
 src/main/kotlin/org/openapitools/client/models/TransactionScheduleResponse.kt
+src/main/kotlin/org/openapitools/client/models/Update2200Response.kt
 src/main/kotlin/org/openapitools/client/models/Update2Request.kt
 src/main/kotlin/org/openapitools/client/models/UserRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserResponse.kt
+src/test/kotlin/org/openapitools/client/apis/BudgetScheduleControllerApiTest.kt
+src/test/kotlin/org/openapitools/client/apis/TransactionScheduleControllerApiTest.kt
+src/test/kotlin/org/openapitools/client/models/Update2200ResponseTest.kt

@@ -4,12 +4,12 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancel**](BudgetControllerApi.md#cancel) | **POST** bugdets/{id}/cancel |  |
+| [**cancel1**](BudgetControllerApi.md#cancel1) | **POST** bugdets/{id}/cancel |  |
 | [**create5**](BudgetControllerApi.md#create5) | **POST** bugdets |  |
 | [**disable5**](BudgetControllerApi.md#disable5) | **POST** bugdets/{id}/disable |  |
 | [**findAllByUser3**](BudgetControllerApi.md#findAllByUser3) | **GET** bugdets/{idUser} |  |
-| [**findAllByUserAndState1**](BudgetControllerApi.md#findAllByUserAndState1) | **GET** bugdets/{idUser}/{state} |  |
-| [**findById6**](BudgetControllerApi.md#findById6) | **GET** bugdets/{id} |  |
+| [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** bugdets/{idUser}/{state} |  |
+| [**findById5**](BudgetControllerApi.md#findById5) | **GET** bugdets/{id} |  |
 | [**update6**](BudgetControllerApi.md#update6) | **PUT** bugdets/{id} |  |
 
 
@@ -28,7 +28,7 @@ val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.cancel(id)
+    webService.cancel1(id)
 }
 ```
 
@@ -177,7 +177,7 @@ val idUser : kotlin.Long = 789 // kotlin.Long |
 val state : kotlin.String = state_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetResponse> = webService.findAllByUserAndState1(idUser, state)
+    val result : kotlin.collections.List<BudgetResponse> = webService.findAllByUserAndState4(idUser, state)
 }
 ```
 
@@ -215,7 +215,7 @@ val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : BudgetResponse = webService.findById6(id)
+    val result : BudgetResponse = webService.findById5(id)
 }
 ```
 

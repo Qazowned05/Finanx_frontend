@@ -9,7 +9,7 @@ All URIs are relative to *http://localhost:8080*
 | [**disable4**](CategoryControllerApi.md#disable4) | **POST** categories/{id}/disable |  |
 | [**findAllByUser2**](CategoryControllerApi.md#findAllByUser2) | **GET** categories/{idUser} |  |
 | [**findAllByUserAndActive**](CategoryControllerApi.md#findAllByUserAndActive) | **GET** categories/{idUser}/{active} |  |
-| [**findById5**](CategoryControllerApi.md#findById5) | **GET** categories/{id} |  |
+| [**findById4**](CategoryControllerApi.md#findById4) | **GET** categories/{id} |  |
 | [**update5**](CategoryControllerApi.md#update5) | **PUT** categories/{id} |  |
 
 
@@ -215,7 +215,7 @@ val webService = apiClient.createWebservice(CategoryControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : CategoryResponse = webService.findById5(id)
+    val result : CategoryResponse = webService.findById4(id)
 }
 ```
 

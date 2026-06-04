@@ -12,6 +12,8 @@
 | **paymentMethod** | [**inline**](#PaymentMethod) |  |  [optional] |
 | **type** | [**inline**](#Type) |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **active** | **kotlin.Boolean** |  |  [optional] |
 
 
 <a id="PaymentMethod"></a>
