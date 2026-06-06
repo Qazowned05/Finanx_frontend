@@ -10,6 +10,7 @@
 | **accumulated** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **deadline** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **completedAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
