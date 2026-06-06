@@ -1,12 +1,6 @@
 package com.example.finanx.ui.screens.movement
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,10 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.elias.finanx.dto.category.CategoryResponse
 import com.example.finanx.ui.components.SegmentedButton
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.MovementViewModel
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.TransactionRequest
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,11 +27,10 @@ fun CreateMovementScreen(
 ) {
     var description by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("EXPENSE") }
+    var type by remember { mutableStateOf(TransactionRequest.Type.SPENT.value) }
     var expanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<CategoryResponse?>(null) }
 
-    // Cargar categorías al entrar en la pantalla
     LaunchedEffect(key1 = userId) {
         viewModel.fetchCategories(userId)
     }
@@ -77,11 +71,9 @@ fun CreateMovementScreen(
 
             Text("Tipo", style = MaterialTheme.typography.bodyLarge)
             SegmentedButton(items = listOf("Gasto", "Ingreso")) { index ->
-                type = if (index == 0) "EXPENSE" else "INCOME"
-                selectedCategory = null // Resetear categoría al cambiar
+                type = if (index == 0) TransactionRequest.Type.SPENT.value else TransactionRequest.Type.INCOME.value
             }
 
-            // Selector de Categoría
             when (val state = viewModel.categoryState) {
                 is CategoryState.Loading -> {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -89,7 +81,7 @@ fun CreateMovementScreen(
                     }
                 }
                 is CategoryState.Success -> {
-                    val filteredCategories = state.categories.filter { it.type == type }
+                    val categories = state.categories
                     ExposedDropdownMenuBox(
                         expanded = expanded,
                         onExpandedChange = { expanded = !expanded },
@@ -107,7 +99,7 @@ fun CreateMovementScreen(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }
                         ) {
-                            filteredCategories.forEach { category ->
+                            categories.forEach { category ->
                                 DropdownMenuItem(
                                     text = { Text(category.name ?: "") },
                                     onClick = {
@@ -136,7 +128,7 @@ fun CreateMovementScreen(
                             amount = amountDecimal,
                             type = type,
                             categoryId = it,
-                            paymentMethod = "CASH"
+                            paymentMethod = TransactionRequest.PaymentMethod.CASH.value
                         )
                         navController.popBackStack()
                     }

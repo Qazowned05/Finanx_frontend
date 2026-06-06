@@ -44,7 +44,8 @@ fun MovementsScreen(
                         }
                     } else {
                         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items(allMovements.sortedByDescending { it.issueDate }) { movement ->
+                            // Corregido: Usar 'createdAt' para ordenar
+                            items(allMovements.sortedByDescending { it.createdAt }) { movement ->
                                 MovementItem(movement)
                             }
                         }

@@ -1,8 +1,6 @@
 package com.example.finanx.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.elias.finanx.dto.transaction.TransactionResponse
+import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
 @Composable
 fun MovementItem(movement: TransactionResponse) {
-    val color = if (movement.type == "INCOME") Color(0xFF4CAF50) else Color(0xFFF44336)
+    val color = if (movement.type == TransactionResponse.Type.INCOME) Color(0xFF4CAF50) else Color(0xFFF44336)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -39,12 +37,12 @@ fun MovementItem(movement: TransactionResponse) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = movement.description ?: "Sin descripción",
+                    text = "Movimiento #${movement.id}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = movement.category?.name ?: "Sin categoría",
+                    text = "Categoría ID: ${movement.categoryId}", // Mostramos el ID de la categoría
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
