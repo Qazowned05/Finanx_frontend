@@ -2,12 +2,14 @@ package com.example.finanx.ui.screens.saving
 
 import android.app.Activity
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -27,7 +29,10 @@ import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +51,8 @@ fun SavingGoalScreen(
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
+    var goalToDelete by remember { mutableStateOf<SavingGoalResponse?>(null) }
+    var goalSelected by remember { mutableStateOf<SavingGoalResponse?>(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val actionSuccess = viewModel.actionSuccess
@@ -100,10 +107,12 @@ fun SavingGoalScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(count = state.goals.size) { index ->
-                                SwipeableSavingGoalCard(
-                                    goal = state.goals[index],
-                                    onEdit = { goalToEdit = state.goals[index] },
-                                    onDelete = { viewModel.deleteSavingGoal(userId, state.goals[index].id!!) }
+                                val goal = state.goals[index]
+                                SavingGoalCard(
+                                    goal = goal,
+                                    isSelected = goalSelected?.id == goal.id,
+                                    onLongPress = { goalSelected = goal },
+                                    onDismiss = { goalSelected = null }
                                 )
                             }
                         }
@@ -118,6 +127,83 @@ fun SavingGoalScreen(
                 }
             }
         }
+    }
+
+    // Menu de opciones al mantener presionado
+    goalSelected?.let { goal ->
+        AlertDialog(
+            onDismissRequest = { goalSelected = null },
+            title = { Text(goal.description.orEmpty(), fontWeight = FontWeight.Bold) },
+            text = { Text("¿Qué deseas hacer con esta meta?") },
+            confirmButton = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            goalToDelete = goal
+                            goalSelected = null
+                        },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                    ) {
+                        Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Eliminar")
+                    }
+                    Button(
+                        onClick = {
+                            goalToEdit = goal
+                            goalSelected = null
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                    ) {
+                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Editar")
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { goalSelected = null }) { Text("Cancelar") }
+            }
+        )
+    }
+
+    // Dialogo de confirmacion de eliminacion
+    goalToDelete?.let { goal ->
+        AlertDialog(
+            onDismissRequest = { goalToDelete = null },
+            containerColor = Color.White,
+            title = {
+                Text(
+                    "¿Eliminar esta meta?",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red
+                )
+            },
+            text = {
+                Text(
+                    "Estás a punto de eliminar \"${goal.description.orEmpty()}\". " +
+                            "Esta acción no se puede deshacer y se perderán todos los registros " +
+                            "de progreso y transacciones asociadas a esta meta.",
+                    color = Color(0xFF4A5568)
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.deleteSavingGoal(userId, goal.id!!)
+                        goalToDelete = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Sí, eliminar", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { goalToDelete = null }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 
     if (showCreateDialog) {
@@ -146,74 +232,36 @@ fun SavingGoalScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipeableSavingGoalCard(
+fun SavingGoalCard(
     goal: SavingGoalResponse,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+    isSelected: Boolean,
+    onLongPress: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            when (value) {
-                SwipeToDismissBoxValue.EndToStart -> { onDelete(); false }
-                SwipeToDismissBoxValue.StartToEnd -> { onEdit(); false }
-                else -> false
-            }
-        }
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) Color(0xFFFFEBEB) else Color.White,
+        label = ""
     )
 
-    SwipeToDismissBox(
-        state = dismissState,
-        backgroundContent = {
-            val direction = dismissState.dismissDirection
-            val color by animateColorAsState(
-                when (dismissState.targetValue) {
-                    SwipeToDismissBoxValue.StartToEnd -> Color(0xFF3B82F6)
-                    SwipeToDismissBoxValue.EndToStart -> Color(0xFFEF4444)
-                    else -> Color.Transparent
-                }, label = ""
-            )
-            val alignment = when (direction) {
-                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
-                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
-                else -> Alignment.Center
-            }
-            val icon = when (direction) {
-                SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Edit
-                SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
-                else -> Icons.Default.Edit
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(color)
-                    .padding(horizontal = 20.dp),
-                contentAlignment = alignment
-            ) {
-                Icon(icon, contentDescription = null, tint = Color.White)
-            }
-        }
-    ) {
-        SavingGoalCard(goal)
-    }
-}
-
-@Composable
-fun SavingGoalCard(goal: SavingGoalResponse) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { if (isSelected) onDismiss() },
+                onLongClick = onLongPress
+            ),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(1.dp)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        elevation = CardDefaults.cardElevation(if (isSelected) 4.dp else 1.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 goal.description.orEmpty(),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,
-                color = Color(0xFF1A202C)
+                color = if (isSelected) Color.Red else Color(0xFF1A202C)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text("Meta: PEN ${goal.targetAmount ?: 0}", color = Color.Gray, fontSize = 13.sp)
@@ -226,7 +274,7 @@ fun SavingGoalCard(goal: SavingGoalResponse) {
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth(),
-                color = BluePrimary,
+                color = if (isSelected) Color.Red else BluePrimary,
                 trackColor = Color(0xFFE2E8F0)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -234,7 +282,7 @@ fun SavingGoalCard(goal: SavingGoalResponse) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("${goal.progressPercentage?.toInt() ?: 0}%", fontSize = 12.sp, color = BluePrimary)
+                Text("${goal.progressPercentage?.toInt() ?: 0}%", fontSize = 12.sp, color = if (isSelected) Color.Red else BluePrimary)
                 val state = goal.state?.value
                 Text(
                     state.orEmpty(),
@@ -250,6 +298,7 @@ fun SavingGoalCard(goal: SavingGoalResponse) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavingGoalFormDialog(
     title: String,
@@ -261,9 +310,35 @@ fun SavingGoalFormDialog(
 ) {
     var description by remember { mutableStateOf(initialDescription) }
     var amount by remember { mutableStateOf(initialAmount) }
-    var deadline by remember { mutableStateOf(initialDeadline) }
     var amountError by remember { mutableStateOf(false) }
-    var deadlineError by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDate by remember {
+        mutableStateOf<LocalDate?>(
+            if (initialDeadline.isNotBlank()) LocalDate.parse(initialDeadline) else null
+        )
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        selectedDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneOffset.UTC)
+                            .toLocalDate()
+                    }
+                    showDatePicker = false
+                }) { Text("Aceptar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancelar") }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -286,12 +361,16 @@ fun SavingGoalFormDialog(
                     supportingText = { if (amountError) Text("Ingresa un monto válido") }
                 )
                 OutlinedTextField(
-                    value = deadline,
-                    onValueChange = { deadline = it; deadlineError = false },
-                    label = { Text("Fecha límite (YYYY-MM-DD)") },
+                    value = selectedDate?.toString() ?: "",
+                    onValueChange = {},
+                    label = { Text("Fecha límite") },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = deadlineError,
-                    supportingText = { if (deadlineError) Text("Formato: 2025-12-31") }
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { showDatePicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = "Seleccionar fecha")
+                        }
+                    }
                 )
             }
         },
@@ -299,17 +378,9 @@ fun SavingGoalFormDialog(
             Button(
                 onClick = {
                     val parsedAmount = amount.toBigDecimalOrNull()
-                    val parsedDeadline = try {
-                        if (deadline.isBlank()) null
-                        else java.time.LocalDate.parse(deadline)
-                            .atStartOfDay()
-                            .atOffset(java.time.ZoneOffset.UTC)
-                    } catch (e: Exception) {
-                        deadlineError = true
-                        null
-                    }
-                    if (description.isNotBlank() && parsedAmount != null && !deadlineError) {
-                        onConfirm(description, parsedAmount, parsedDeadline)
+                    if (description.isNotBlank() && parsedAmount != null) {
+                        val deadline = selectedDate?.atStartOfDay()?.atOffset(ZoneOffset.UTC)
+                        onConfirm(description, parsedAmount, deadline)
                     } else {
                         amountError = parsedAmount == null
                     }
@@ -324,3 +395,4 @@ fun SavingGoalFormDialog(
         }
     )
 }
+
