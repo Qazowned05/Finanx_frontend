@@ -59,7 +59,7 @@ interface CategoryControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<CategoryResponse>]
      */
-    @GET("categories/{idUser}")
+    @GET("categories/user/{idUser}")
     suspend fun findAllByUser2(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<CategoryResponse>>
 
     /**

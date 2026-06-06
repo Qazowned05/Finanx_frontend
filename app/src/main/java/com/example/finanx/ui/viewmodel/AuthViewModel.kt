@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
+import com.example.finanx.data.api.TokenStore
 import com.example.finanx.data.auth.GoogleAuthError
 import com.example.finanx.data.auth.GoogleAuthManager
 import com.example.finanx.data.auth.GoogleAuthOutcome
@@ -38,6 +39,7 @@ class AuthViewModel : ViewModel() {
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
+                    TokenStore.token = response.body()?.token.toString()
                     AuthState.Success(user)
                 } else {
                     AuthState.Error("Login fallido: ${response.code()}")
