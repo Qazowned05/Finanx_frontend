@@ -5,64 +5,72 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.models.Transaction
+import com.elias.finanx.dto.transaction.TransactionRequest
+import com.elias.finanx.dto.transaction.TransactionResponse
 import com.example.finanx.data.repositories.TransactionRepository
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
-sealed class TransactionState {
-    object Loading : TransactionState()
-    data class Success(val income: List<Transaction>, val expenses: List<Transaction>) : TransactionState()
-    data class Error(val message: String) : TransactionState()
+// Cambiando el nombre para reflejar "Movimientos"
+sealed class MovementState {
+    object Loading : MovementState()
+    data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : MovementState()
+    data class Error(val message: String) : MovementState()
 }
 
-class TransactionViewModel : ViewModel() {
-    var transactionState by mutableStateOf<TransactionState>(TransactionState.Loading)
+// Cambiando el nombre a MovementViewModel
+class MovementViewModel : ViewModel() {
+    private val repository = TransactionRepository()
+
+    var movementState by mutableStateOf<MovementState>(MovementState.Loading)
         private set
 
-    fun fetchTransactions(userId: Long) {
+    fun fetchMovements(userId: Long) {
         viewModelScope.launch {
-            transactionState = TransactionState.Loading
+            movementState = MovementState.Loading
             try {
-                val transactions = TransactionRepository.getTransactions(userId)
-                val income = transactions.filter { it.type == "INCOME" }
-                val expenses = transactions.filter { it.type == "EXPENSE" }
-                transactionState = TransactionState.Success(income, expenses)
+                val response = repository.getTransactions(userId)
+                if (response.isSuccessful && response.body() != null) {
+                    val movements = response.body()!!
+                    val income = movements.filter { it.type == "INCOME" }
+                    val expenses = movements.filter { it.type == "EXPENSE" }
+                    movementState = MovementState.Success(income, expenses)
+                } else {
+                    movementState = MovementState.Error("Error: ${response.code()} - ${response.message()}")
+                }
             } catch (e: Exception) {
-                transactionState = TransactionState.Error("Error al cargar las transacciones")
+                movementState = MovementState.Error("Error al cargar los movimientos: ${e.message}")
             }
         }
     }
 
-    fun createTransaction(
+    fun createMovement(
         userId: Long,
         description: String,
-        amount: Double,
+        amount: BigDecimal,
         type: String,
-        categoryId: Long? // Optional categoryId
+        categoryId: Long,
+        paymentMethod: String
     ) {
         viewModelScope.launch {
             try {
-                val newTransaction = Transaction(
-                    id = 0,
+                val newMovementRequest = TransactionRequest(
                     userId = userId,
                     description = description,
-                    amount = BigDecimal.valueOf(amount),
+                    amount = amount,
                     type = type,
-                    categoryId = categoryId ?: 1,
-                    reasonId = null,
-                    transactionScheduleId = null,
-                    budgetId = null,
-                    savingGoalId = null,
-                    paymentMethod = "CASH",
-                    createdAt = OffsetDateTime.now(),
-                    active = true,
-                    disabledAt = null
+                    categoryId = categoryId,
+                    paymentMethod = paymentMethod,
+                    issueDate = OffsetDateTime.now()
                 )
-                TransactionRepository.createTransaction(newTransaction)
-                fetchTransactions(userId)
+                val response = repository.createTransaction(newMovementRequest)
+                if (response.isSuccessful) {
+                    fetchMovements(userId)
+
+                }
             } catch (e: Exception) {
+
             }
         }
     }

@@ -1,17 +1,18 @@
-package com.example.finanx.data.repository
+package com.example.finanx.data.repositories
 
-import com.example.finanx.data.models.Transaction
+import com.elias.finanx.dto.transaction.TransactionRequest
+import com.elias.finanx.dto.transaction.TransactionResponse
 import org.openapitools.client.apis.TransactionControllerApi
 import retrofit2.Response
 
-class TransactionRepository(private val api: TransactionControllerApi) {
+class TransactionRepository {
+    private val api: TransactionControllerApi = TransactionControllerApi()
 
-    suspend fun getTransactions(userId: Long): Response<List<Transaction>> {
-        return Response.success(emptyList())
+    suspend fun getTransactions(userId: Long): Response<List<TransactionResponse>> {
+        return api.findAllActiveByUser(userId = userId)
     }
 
-
-    suspend fun deleteTransaction(transactionId: Long): Response<Unit> {
-        return Response.success(Unit) 
+    suspend fun createTransaction(transaction: TransactionRequest): Response<TransactionResponse> {
+        return api.create(request = transaction)
     }
 }
