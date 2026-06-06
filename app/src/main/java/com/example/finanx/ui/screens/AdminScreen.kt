@@ -21,7 +21,7 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminScreen(authViewModel: AuthViewModel) {
+fun AdminScreen(authViewModel: AuthViewModel, onNavigateToCategories: () -> Unit = {}, onNavigateToSavingGoals: () -> Unit = {}) {
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -61,7 +61,8 @@ fun AdminScreen(authViewModel: AuthViewModel) {
             item {
                 AdminSection("Mantenimiento") {
                     AdminButton("Notificaciones", true)
-                    AdminButton("Categorías")
+                    AdminButton("Categorías", onClick = onNavigateToCategories)
+                    AdminButton("Metas de Ahorro", onClick = onNavigateToSavingGoals)
                     AdminButton("Reportes")
                 }
             }
@@ -89,9 +90,9 @@ fun AdminSection(title: String, content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun AdminButton(text: String, isPrimary: Boolean = false) {
+fun AdminButton(text: String, isPrimary: Boolean = false, onClick: () -> Unit = {}) {
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(

@@ -46,7 +46,7 @@ interface SavingGoalControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<SavingGoalResponse>]
      */
-    @GET("savings/{idUser}")
+    @GET("savings/user/{idUser}")
     suspend fun findAllActiveByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<SavingGoalResponse>>
 
     /**

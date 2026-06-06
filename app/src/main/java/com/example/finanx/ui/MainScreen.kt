@@ -16,9 +16,12 @@ import com.example.finanx.ui.screens.AnalysisScreen
 import com.example.finanx.ui.screens.HomeScreen
 import com.example.finanx.ui.screens.TransactionsScreen
 import com.example.finanx.ui.screens.budget.BudgetListScreen
+import com.example.finanx.ui.screens.category.CategoryListScreen
+import com.example.finanx.ui.screens.saving.SavingGoalScreen
 import com.example.finanx.ui.viewmodel.BudgetViewModel
+import com.example.finanx.ui.viewmodel.CategoryViewModel
+import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import com.example.finanx.ui.theme.BluePrimary
-
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanx.ui.screens.auth.LoginScreen
 import com.example.finanx.ui.screens.auth.RegisterScreen
@@ -31,6 +34,8 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Calendar : Screen("budgets", "Presupuestos", Icons.Default.AccountBalanceWallet)
     object Analysis : Screen("analysis", "Análisis", Icons.Default.Analytics)
     object More : Screen("more", "Más", Icons.Default.Menu)
+    object Categories : Screen("categories", "Categorías", Icons.Default.Category)
+    object SavingGoals : Screen("savinggoals", "Metas de Ahorro", Icons.Default.Savings)
 }
 
 @Composable
@@ -43,7 +48,6 @@ fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
         if (userId != null) {
             AppNavigation(userId, authViewModel)
         } else {
-            // Si el backend no devolvió id, forzamos cerrar sesión y volvemos a login.
             LaunchedEffect(Unit) { authViewModel.logout() }
         }
     } else {
@@ -65,6 +69,8 @@ fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
 fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val budgetViewModel: BudgetViewModel = viewModel()
+    val categoryViewModel: CategoryViewModel = viewModel()
+    val savingGoalViewModel: SavingGoalViewModel = viewModel()
     val screens = listOf(
         Screen.Home,
         Screen.Transactions,
@@ -110,7 +116,19 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
             composable(Screen.Transactions.route) { TransactionsScreen(authViewModel) }
             composable(Screen.Calendar.route) { BudgetListScreen(userId, budgetViewModel, authViewModel) }
             composable(Screen.Analysis.route) { AnalysisScreen(authViewModel) }
-            composable(Screen.More.route) { AdminScreen(authViewModel) }
+            composable(Screen.More.route) {
+                AdminScreen(
+                    authViewModel = authViewModel,
+                    onNavigateToCategories = { navController.navigate(Screen.Categories.route) },
+                    onNavigateToSavingGoals = { navController.navigate(Screen.SavingGoals.route) }
+                )
+            }
+            composable(Screen.Categories.route) {
+                CategoryListScreen(userId, categoryViewModel, authViewModel)
+            }
+            composable(Screen.SavingGoals.route) {
+                SavingGoalScreen(userId, savingGoalViewModel, authViewModel)
+            }
         }
     }
 }
