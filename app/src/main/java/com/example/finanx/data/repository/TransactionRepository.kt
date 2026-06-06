@@ -1,8 +1,8 @@
-package com.example.finanx.data.repositories
+package com.example.finanx.data.repository
 
-import com.elias.finanx.dto.transaction.TransactionRequest
-import com.elias.finanx.dto.transaction.TransactionResponse
 import org.openapitools.client.apis.TransactionControllerApi
+import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionResponse
 import retrofit2.Response
 
 class TransactionRepository {
@@ -13,6 +13,7 @@ class TransactionRepository {
     }
 
     suspend fun createTransaction(transaction: TransactionRequest): Response<TransactionResponse> {
-        return api.create(request = transaction)
+        // Corregido: el parámetro se llama 'transactionRequest'
+        return api.create(transactionRequest = transaction)
     }
 }

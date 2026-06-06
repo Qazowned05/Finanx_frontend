@@ -5,14 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.elias.finanx.dto.category.CategoryResponse
-import com.elias.finanx.dto.transaction.TransactionRequest
-import com.elias.finanx.dto.transaction.TransactionResponse
 import com.example.finanx.data.repository.CategoryRepository
 import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
+// Estados para la UI, ahora usando los modelos de OpenAPI
 sealed class MovementState {
     object Loading : MovementState()
     data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : MovementState()
@@ -42,11 +43,12 @@ class MovementViewModel : ViewModel() {
                 val response = transactionRepository.getTransactions(userId)
                 if (response.isSuccessful && response.body() != null) {
                     val transactions = response.body()!!
-                    val income = transactions.filter { it.type == "INCOME" }
-                    val expenses = transactions.filter { it.type == "EXPENSE" }
+                    // Usamos el enum del modelo para filtrar
+                    val income = transactions.filter { it.type == TransactionResponse.Type.INCOME }
+                    val expenses = transactions.filter { it.type == TransactionResponse.Type.SPENT }
                     movementState = MovementState.Success(income, expenses)
                 } else {
-                    movementState = MovementState.Error("Error al obtener los movimientos")
+                    movementState = MovementState.Error("Error al obtener los movimientos: ${response.message()}")
                 }
             } catch (e: Exception) {
                 movementState = MovementState.Error("Error de red: ${e.message}")
@@ -58,11 +60,11 @@ class MovementViewModel : ViewModel() {
         viewModelScope.launch {
             categoryState = CategoryState.Loading
             try {
-                val response = categoryRepository.getCategories(userId)
+                val response = categoryRepository.getActiveCategories(userId)
                 if (response.isSuccessful && response.body() != null) {
                     categoryState = CategoryState.Success(response.body()!!)
                 } else {
-                    categoryState = CategoryState.Error("Error al obtener las categorías")
+                    categoryState = CategoryState.Error("Error al obtener las categorías: ${response.message()}")
                 }
             } catch (e: Exception) {
                 categoryState = CategoryState.Error("Error de red: ${e.message}")
@@ -74,26 +76,32 @@ class MovementViewModel : ViewModel() {
         userId: Long,
         description: String,
         amount: BigDecimal,
-        type: String,
+        type: String, // "SPENT" o "INCOME"
         categoryId: Long,
-        paymentMethod: String
+        paymentMethod: String // "CASH", "CREDIT_CARD", etc.
     ) {
         viewModelScope.launch {
             try {
+                // Convertimos los strings a los enums correspondientes
+                val transactionType = TransactionRequest.Type.valueOf(type)
+                val transactionPaymentMethod = TransactionRequest.PaymentMethod.valueOf(paymentMethod)
+
                 val request = TransactionRequest(
                     description = description,
                     amount = amount,
-                    type = type,
+                    type = transactionType,
                     userId = userId,
                     categoryId = categoryId,
-                    paymentMethod = paymentMethod
+                    paymentMethod = transactionPaymentMethod
                 )
                 val response = transactionRepository.createTransaction(request)
                 if (response.isSuccessful) {
-                    fetchMovements(userId)
+                    fetchMovements(userId) // Recargar la lista de movimientos tras la creación
                 } else {
+                    // Aquí se podría actualizar un estado para notificar a la UI del error
                 }
             } catch (e: Exception) {
+                // Manejar error de red o de conversión de enums
             }
         }
     }

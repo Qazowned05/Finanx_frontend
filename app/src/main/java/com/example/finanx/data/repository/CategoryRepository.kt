@@ -5,31 +5,26 @@ import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
 import retrofit2.Response
 
-class CategoryRepository(private val api: CategoryControllerApi) {
+class CategoryRepository {
+    private val api: CategoryControllerApi = CategoryControllerApi()
 
-    suspend fun getCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findAllByUserAndActive(userId, true)
+    suspend fun getActiveCategories(userId: Long): Response<List<CategoryResponse>> {
+        return api.findAllByUserAndActive(idUser = userId, active = true)
     }
-
-    suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> {
-        return api.findAllByUserAndActive(userId, active)
-    }
-
-
 
     suspend fun createCategory(request: CategoryRequest): Response<CategoryResponse> {
-        return api.create4(request)
+        return api.create4(categoryRequest = request)
     }
 
     suspend fun updateCategory(id: Long, request: CategoryRequest): Response<CategoryResponse> {
-        return api.update5(id, request)
+        return api.update5(id = id, categoryRequest = request)
     }
 
     suspend fun disableCategory(id: Long): Response<Unit> {
-        return api.disable4(id)
+        return api.disable4(id = id)
     }
 
     suspend fun activateCategory(id: Long): Response<CategoryResponse> {
-        return api.activate(id)
+        return api.activate(id = id)
     }
 }
