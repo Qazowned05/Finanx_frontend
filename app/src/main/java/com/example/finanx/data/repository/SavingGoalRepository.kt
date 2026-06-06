@@ -20,6 +20,6 @@ class SavingGoalRepository(private val api: SavingGoalControllerApi) {
     }
 
     suspend fun deleteSavingGoal(id: Long): Response<Unit> {
-        return api.disable1(id)
+        return api.disable3(id)
     }
 }

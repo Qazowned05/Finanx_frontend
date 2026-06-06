@@ -47,7 +47,7 @@ data class SavingGoalRequest (
     val targetAmount: java.math.BigDecimal,
 
     @Json(name = "deadline")
-    val deadline: java.time.LocalDate,
+    val deadline: java.time.LocalDate?,
 
     @Json(name = "userId")
     val userId: kotlin.Long
