@@ -4,9 +4,9 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
+| **userId** | **kotlin.Long** |  |  |
+| **categoryId** | **kotlin.Long** |  |  |
 | **type** | **kotlin.String** |  |  |
-| **userId** | **kotlin.Long** |  |  [optional] |
-| **categoryId** | **kotlin.Long** |  |  [optional] |
 | **recurrenceRule** | [**RecurrenceRuleRequest**](RecurrenceRuleRequest.md) |  |  [optional] |
 
 

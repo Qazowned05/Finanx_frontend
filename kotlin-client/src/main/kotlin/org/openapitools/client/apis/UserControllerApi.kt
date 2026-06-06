@@ -38,7 +38,7 @@ interface UserControllerApi {
     suspend fun delete(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * POST users/{id}/deactivate
+     * POST users/{id}/disable
      * 
      * 
      * Responses:
@@ -47,8 +47,8 @@ interface UserControllerApi {
      * @param id 
      * @return [UserResponse]
      */
-    @POST("users/{id}/deactivate")
-    suspend fun disable3(@Path("id") id: kotlin.Long): Response<UserResponse>
+    @POST("users/{id}/disable")
+    suspend fun disable2(@Path("id") id: kotlin.Long): Response<UserResponse>
 
     /**
      * POST users/{id}/activate

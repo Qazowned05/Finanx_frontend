@@ -5,8 +5,8 @@ All URIs are relative to *http://localhost:8080*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**create3**](ReasonControllerApi.md#create3) | **POST** reasons |  |
-| [**disable2**](ReasonControllerApi.md#disable2) | **POST** reasons/{id} |  |
-| [**findAll1**](ReasonControllerApi.md#findAll1) | **GET** reasons/{idUser} |  |
+| [**disable1**](ReasonControllerApi.md#disable1) | **POST** reasons/{id} |  |
+| [**findAllByUser1**](ReasonControllerApi.md#findAllByUser1) | **GET** reasons/user/{idUser} |  |
 | [**findById3**](ReasonControllerApi.md#findById3) | **GET** reasons/{id} |  |
 | [**update4**](ReasonControllerApi.md#update4) | **PUT** reasons/{id} |  |
 
@@ -63,7 +63,7 @@ val webService = apiClient.createWebservice(ReasonControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.disable2(id)
+    webService.disable1(id)
 }
 ```
 
@@ -100,7 +100,7 @@ val webService = apiClient.createWebservice(ReasonControllerApi::class.java)
 val idUser : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<ReasonResponse> = webService.findAll1(idUser)
+    val result : kotlin.collections.List<ReasonResponse> = webService.findAllByUser1(idUser)
 }
 ```
 

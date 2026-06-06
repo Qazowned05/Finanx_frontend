@@ -33,18 +33,24 @@ import java.io.Serializable
 /**
  * 
  *
+ * @param userId 
+ * @param categoryId 
  * @param type 
  * @param alertable 
  * @param percentAlert 
  * @param limitAmount 
  * @param description 
- * @param userId 
- * @param categoryId 
  * @param recurrenceRule 
  */
 
 
 data class BudgetScheduleRequest (
+
+    @Json(name = "userId")
+    override val userId: kotlin.Long,
+
+    @Json(name = "categoryId")
+    override val categoryId: kotlin.Long,
 
     @Json(name = "type")
     override val type: kotlin.String,
@@ -60,12 +66,6 @@ data class BudgetScheduleRequest (
 
     @Json(name = "description")
     val description: kotlin.String,
-
-    @Json(name = "userId")
-    override val userId: kotlin.Long? = null,
-
-    @Json(name = "categoryId")
-    override val categoryId: kotlin.Long? = null,
 
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null

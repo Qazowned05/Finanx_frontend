@@ -40,6 +40,8 @@ import java.io.Serializable
  * @param userId 
  * @param categoryId 
  * @param categoryName 
+ * @param start 
+ * @param end 
  * @param createdAt 
  * @param disabledAt 
  */
@@ -74,11 +76,17 @@ data class BudgetResponse (
     @Json(name = "categoryName")
     val categoryName: kotlin.Long? = null,
 
+    @Json(name = "start")
+    val start: java.time.LocalDateTime? = null,
+
+    @Json(name = "end")
+    val end: java.time.LocalDateTime? = null,
+
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null
+    val disabledAt: java.time.LocalDateTime? = null
 
 ) : Serializable {
     companion object {
@@ -88,12 +96,13 @@ data class BudgetResponse (
     /**
      * 
      *
-     * Values: ACTIVE,CANCELLED,FINALIZED
+     * Values: ACTIVE,CANCELLED,DISABLED,FINALIZED
      */
     @JsonClass(generateAdapter = false)
     enum class State(val value: kotlin.String) {
         @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
+        @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED");
     }
 

@@ -63,7 +63,7 @@ interface ScheduleControllerApi {
     }
 
     /**
-     * GET schedule/{idUser}/{state}
+     * GET schedule/user/{idUser}/{state}
      * 
      * 
      * Responses:
@@ -73,7 +73,7 @@ interface ScheduleControllerApi {
      * @param state 
      * @return [kotlin.collections.List<Update2200Response>]
      */
-    @GET("schedule/{idUser}/{state}")
+    @GET("schedule/user/{idUser}/{state}")
     suspend fun findAllByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<Update2200Response>>
 
     /**

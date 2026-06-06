@@ -23,7 +23,7 @@ interface TransactionScheduleControllerApi {
     }
 
     /**
-     * GET schedule/transactions/{idUser}/{state}
+     * GET schedule/transactions/user/{idUser}/{state}
      * 
      * 
      * Responses:
@@ -33,7 +33,7 @@ interface TransactionScheduleControllerApi {
      * @param state 
      * @return [kotlin.collections.List<TransactionScheduleResponse>]
      */
-    @GET("schedule/transactions/{idUser}/{state}")
+    @GET("schedule/transactions/user/{idUser}/{state}")
     suspend fun findAllByUserAndState1(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<TransactionScheduleResponse>>
 
 }

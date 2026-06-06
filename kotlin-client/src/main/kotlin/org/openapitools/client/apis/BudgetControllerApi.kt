@@ -21,7 +21,7 @@ interface BudgetControllerApi {
      * @return [Unit]
      */
     @POST("bugdets/{id}/cancel")
-    suspend fun cancel1(@Path("id") id: kotlin.Long): Response<Unit>
+    suspend fun cancel2(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
      * POST bugdets
@@ -50,7 +50,7 @@ interface BudgetControllerApi {
     suspend fun disable5(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET bugdets/{idUser}
+     * GET bugdets/user/{idUser}
      * 
      * 
      * Responses:
@@ -59,8 +59,8 @@ interface BudgetControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<BudgetResponse>]
      */
-    @GET("bugdets/{idUser}")
-    suspend fun findAllByUser3(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
+    @GET("bugdets/user/{idUser}")
+    suspend fun findAllByUser4(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
 
 
     /**
@@ -69,11 +69,12 @@ interface BudgetControllerApi {
     enum class StateFindAllByUserAndState4(val value: kotlin.String) {
         @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
+        @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED")
     }
 
     /**
-     * GET bugdets/{idUser}/{state}
+     * GET bugdets/user/{idUser}/{state}
      * 
      * 
      * Responses:
@@ -83,7 +84,7 @@ interface BudgetControllerApi {
      * @param state 
      * @return [kotlin.collections.List<BudgetResponse>]
      */
-    @GET("bugdets/{idUser}/{state}")
+    @GET("bugdets/user/{idUser}/{state}")
     suspend fun findAllByUserAndState4(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<BudgetResponse>>
 
     /**

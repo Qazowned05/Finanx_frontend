@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**findAllByUserAndState2**](BudgetScheduleControllerApi.md#findAllByUserAndState2) | **GET** schedule/budgets/{idUser}/{state} |  |
+| [**findAllByUserAndState2**](BudgetScheduleControllerApi.md#findAllByUserAndState2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
 
 
 

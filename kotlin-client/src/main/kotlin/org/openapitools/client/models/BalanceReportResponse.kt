@@ -49,7 +49,7 @@ data class BalanceReportResponse (
     override val type: kotlin.String,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.OffsetDateTime? = null,
+    override val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "user")
     val user: UserResponse? = null,

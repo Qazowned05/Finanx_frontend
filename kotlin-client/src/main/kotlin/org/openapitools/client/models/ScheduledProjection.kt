@@ -67,10 +67,10 @@ data class ScheduledProjection (
     val recurrenceType: ScheduledProjection.RecurrenceType? = null,
 
     @Json(name = "nextRunAt")
-    val nextRunAt: java.time.OffsetDateTime? = null,
+    val nextRunAt: java.time.LocalDateTime? = null,
 
     @Json(name = "endAt")
-    val endAt: java.time.OffsetDateTime? = null,
+    val endAt: java.time.LocalDateTime? = null,
 
     @Json(name = "expectedOccurrenceCount")
     val expectedOccurrenceCount: kotlin.Int? = null,

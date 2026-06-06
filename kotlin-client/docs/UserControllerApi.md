@@ -6,7 +6,7 @@ All URIs are relative to *http://localhost:8080*
 | ------------- | ------------- | ------------- |
 | [**block**](UserControllerApi.md#block) | **POST** users/{id}/block |  |
 | [**delete**](UserControllerApi.md#delete) | **POST** users/{id} |  |
-| [**disable3**](UserControllerApi.md#disable3) | **POST** users/{id}/deactivate |  |
+| [**disable2**](UserControllerApi.md#disable2) | **POST** users/{id}/disable |  |
 | [**enable**](UserControllerApi.md#enable) | **POST** users/{id}/activate |  |
 | [**findAll**](UserControllerApi.md#findAll) | **GET** users |  |
 | [**findById**](UserControllerApi.md#findById) | **GET** users/{id} |  |
@@ -105,7 +105,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.disable3(id)
+    val result : UserResponse = webService.disable2(id)
 }
 ```
 

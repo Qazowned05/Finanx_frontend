@@ -2,11 +2,11 @@ package com.example.finanx.data.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import org.openapitools.client.apis.AuthControllerApi
 import org.openapitools.client.apis.BudgetControllerApi
 import org.openapitools.client.infrastructure.Serializer
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import org.openapitools.client.apis.CategoryControllerApi
 import org.openapitools.client.apis.SavingGoalControllerApi
 import okhttp3.Interceptor
