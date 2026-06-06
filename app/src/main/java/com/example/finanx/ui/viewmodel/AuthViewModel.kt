@@ -46,7 +46,11 @@ class AuthViewModel : ViewModel() {
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
+<<<<<<< HEAD
                     onAuthSuccess(user, body.token)
+=======
+                    TokenStore.token = response.body()?.token.toString()
+>>>>>>> 97c74ab (feat(login): Se agrego el interceptor de token para el login)
                     AuthState.Success(user)
                 } else {
                     val msg = response.errorBody()?.string()?.let { b ->
