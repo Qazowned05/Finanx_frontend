@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +34,33 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
+import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.HealthAndSafety
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.HealthAndSafety
+import androidx.compose.material.icons.filled.Star
+
+
+val goalColors = listOf(
+    Color(0xFF6C63FF), Color(0xFFFF6584), Color(0xFF43C6AC),
+    Color(0xFFF7971E), Color(0xFF4776E6), Color(0xFFFF5F6D),
+    Color(0xFF11998E), Color(0xFFFC5C7D), Color(0xFF6A82FB)
+)
+
+val goalIcons = listOf(
+    Icons.Default.DirectionsCar, Icons.Default.Home, Icons.Default.Flight,
+    Icons.Default.School, Icons.Default.HealthAndSafety, Icons.Default.ShoppingCart,
+    Icons.Default.Savings, Icons.Default.Star, Icons.Default.Category
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,9 +93,13 @@ fun SavingGoalScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color(0xFFEEF2FF),
         topBar = {
             TopAppBar(
-                title = { Text("Metas de Ahorro", fontWeight = FontWeight.Bold) },
+                title = { Text("Metas de Ahorro", fontWeight = FontWeight.Bold, color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF6B8FD6)
+                ),
                 actions = {
                     ProfileMenuAction(
                         onMyProfile = { },
@@ -97,6 +129,12 @@ fun SavingGoalScreen(
                             modifier = Modifier.align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Icon(
+                                Icons.Default.Savings,
+                                contentDescription = null,
+                                tint = Color(0xFFCBD5E0),
+                                modifier = Modifier.size(64.dp)
+                            )
                             Text("Sin metas de ahorro", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Toca + para agregar una", color = Color.Gray, fontSize = 13.sp)
@@ -110,6 +148,8 @@ fun SavingGoalScreen(
                                 val goal = state.goals[index]
                                 SavingGoalCard(
                                     goal = goal,
+                                    colorIndex = index % goalColors.size,
+                                    iconIndex = index % goalIcons.size,
                                     isSelected = goalSelected?.id == goal.id,
                                     onLongPress = { goalSelected = goal },
                                     onDismiss = { goalSelected = null }
@@ -236,10 +276,13 @@ fun SavingGoalScreen(
 @Composable
 fun SavingGoalCard(
     goal: SavingGoalResponse,
+    colorIndex: Int,
+    iconIndex: Int,
     isSelected: Boolean,
     onLongPress: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val accentColor = goalColors[colorIndex]
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelected) Color(0xFFFFEBEB) else Color.White,
         label = ""
@@ -252,48 +295,75 @@ fun SavingGoalCard(
                 onClick = { if (isSelected) onDismiss() },
                 onLongClick = onLongPress
             ),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(if (isSelected) 4.dp else 1.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) Color(0xFFFFCDD2) else Color.White
+        ),
+        elevation = CardDefaults.cardElevation(if (isSelected) 6.dp else 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                goal.description.orEmpty(),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp,
-                color = if (isSelected) Color.Red else Color(0xFF1A202C)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text("Meta: PEN ${goal.targetAmount ?: 0}", color = Color.Gray, fontSize = 13.sp)
-            Text("Acumulado: PEN ${goal.accumulated ?: 0}", color = Color.Gray, fontSize = 13.sp)
-            goal.deadline?.let {
-                Text("Fecha límite: ${it.toLocalDate()}", color = Color.Gray, fontSize = 13.sp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(accentColor.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = goalIcons[iconIndex],
+                        contentDescription = null,
+                        tint = accentColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        goal.description.orEmpty(),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp,
+                        color = if (isSelected) Color.Red else Color(0xFF1A202C)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text("Meta: PEN ${goal.targetAmount ?: 0}", color = Color.Gray, fontSize = 13.sp)
+                }
+                val stateValue = goal.state?.value
+                Text(
+                    stateValue.orEmpty(),
+                    fontSize = 11.sp,
+                    color = when (stateValue) {
+                        "RUNNING" -> Color(0xFF2F855A)
+                        "COMPLETED" -> BluePrimary
+                        else -> Color.Gray
+                    },
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Acumulado: PEN ${goal.accumulated ?: 0}", color = Color.Gray, fontSize = 12.sp)
+                goal.deadline?.let {
+                    Text("Hasta: ${it.toLocalDate()}", color = Color.Gray, fontSize = 12.sp)
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
             val progress = (goal.progressPercentage ?: 0.0).toFloat() / 100f
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth(),
-                color = if (isSelected) Color.Red else BluePrimary,
-                trackColor = Color(0xFFE2E8F0)
+                color = if (isSelected) Color.Red else accentColor,
+                trackColor = accentColor.copy(alpha = 0.15f)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("${goal.progressPercentage?.toInt() ?: 0}%", fontSize = 12.sp, color = if (isSelected) Color.Red else BluePrimary)
-                val state = goal.state?.value
-                Text(
-                    state.orEmpty(),
-                    fontSize = 12.sp,
-                    color = when (state) {
-                        "RUNNING" -> Color(0xFF2F855A)
-                        "COMPLETED" -> BluePrimary
-                        else -> Color.Gray
-                    }
-                )
-            }
+            Text(
+                "${goal.progressPercentage?.toInt() ?: 0}% completado",
+                fontSize = 12.sp,
+                color = if (isSelected) Color.Red else accentColor
+            )
         }
     }
 }
