@@ -60,10 +60,10 @@ data class BudgetRequest (
     val categoryId: kotlin.Long,
 
     @Json(name = "start")
-    val start: java.time.OffsetDateTime,
+    val start: java.time.LocalDateTime,
 
     @Json(name = "end")
-    val end: java.time.OffsetDateTime,
+    val end: java.time.LocalDateTime,
 
     @Json(name = "percentAlert")
     val percentAlert: kotlin.Int? = null

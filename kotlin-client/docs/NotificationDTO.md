@@ -9,10 +9,10 @@
 | **userEmail** | **kotlin.String** |  |  [optional] |
 | **type** | [**inline**](#Type) |  |  [optional] |
 | **message** | **kotlin.String** |  |  [optional] |
-| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **scheduledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **sentAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **scheduledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **sentAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **scheduleId** | **kotlin.Long** |  |  [optional] |
 | **budgetId** | **kotlin.Long** |  |  [optional] |

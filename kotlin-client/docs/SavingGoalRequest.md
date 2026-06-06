@@ -6,7 +6,7 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **description** | **kotlin.String** |  |  [optional] |
 | **targetAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **deadline** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **deadline** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 | **userId** | **kotlin.Long** |  |  [optional] |
 
 

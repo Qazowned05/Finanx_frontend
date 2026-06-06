@@ -45,8 +45,8 @@ All URIs are relative to *http://localhost:8080*
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
 val userId : kotlin.Long = 789 // kotlin.Long | 
-val start : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
-val end : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
+val start : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+val end : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
 
 launch(Dispatchers.IO) {
     val result : AnalyticsDashboard = webService.dashboard(userId, start, end)
@@ -55,10 +55,10 @@ launch(Dispatchers.IO) {
 
 ### Parameters
 | **userId** | **kotlin.Long**|  | |
-| **start** | **java.time.OffsetDateTime**|  | |
+| **start** | **java.time.LocalDateTime**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **end** | **java.time.OffsetDateTime**|  | |
+| **end** | **java.time.LocalDateTime**|  | |
 
 ### Return type
 
@@ -552,8 +552,8 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
 val userId : kotlin.Long = 789 // kotlin.Long | 
-val projectionStart : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
-val projectionEnd : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
+val projectionStart : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+val projectionEnd : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
 
 launch(Dispatchers.IO) {
     val result : kotlin.collections.List<Insight> = webService.getScheduledInsights(userId, projectionStart, projectionEnd)
@@ -562,10 +562,10 @@ launch(Dispatchers.IO) {
 
 ### Parameters
 | **userId** | **kotlin.Long**|  | |
-| **projectionStart** | **java.time.OffsetDateTime**|  | |
+| **projectionStart** | **java.time.LocalDateTime**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **projectionEnd** | **java.time.OffsetDateTime**|  | |
+| **projectionEnd** | **java.time.LocalDateTime**|  | |
 
 ### Return type
 
@@ -593,8 +593,8 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
 val userId : kotlin.Long = 789 // kotlin.Long | 
-val projectionStart : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
-val projectionEnd : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
+val projectionStart : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+val projectionEnd : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
 
 launch(Dispatchers.IO) {
     val result : TransactionScheduleAnalytics = webService.getScheduledOverview(userId, projectionStart, projectionEnd)
@@ -603,10 +603,10 @@ launch(Dispatchers.IO) {
 
 ### Parameters
 | **userId** | **kotlin.Long**|  | |
-| **projectionStart** | **java.time.OffsetDateTime**|  | |
+| **projectionStart** | **java.time.LocalDateTime**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **projectionEnd** | **java.time.OffsetDateTime**|  | |
+| **projectionEnd** | **java.time.LocalDateTime**|  | |
 
 ### Return type
 
@@ -634,8 +634,8 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
 val userId : kotlin.Long = 789 // kotlin.Long | 
-val projectionStart : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
-val projectionEnd : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
+val projectionStart : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+val projectionEnd : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
 
 launch(Dispatchers.IO) {
     val result : kotlin.collections.List<ScheduledProjection> = webService.getScheduledProjections(userId, projectionStart, projectionEnd)
@@ -644,10 +644,10 @@ launch(Dispatchers.IO) {
 
 ### Parameters
 | **userId** | **kotlin.Long**|  | |
-| **projectionStart** | **java.time.OffsetDateTime**|  | |
+| **projectionStart** | **java.time.LocalDateTime**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **projectionEnd** | **java.time.OffsetDateTime**|  | |
+| **projectionEnd** | **java.time.LocalDateTime**|  | |
 
 ### Return type
 
@@ -1036,8 +1036,8 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
 val userId : kotlin.Long = 789 // kotlin.Long | 
-val projectionStart : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
-val projectionEnd : java.time.OffsetDateTime = 2013-10-20T19:20:30+01:00 // java.time.OffsetDateTime | 
+val projectionStart : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+val projectionEnd : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
 val type : kotlin.String = type_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
@@ -1047,8 +1047,8 @@ launch(Dispatchers.IO) {
 
 ### Parameters
 | **userId** | **kotlin.Long**|  | |
-| **projectionStart** | **java.time.OffsetDateTime**|  | |
-| **projectionEnd** | **java.time.OffsetDateTime**|  | |
+| **projectionStart** | **java.time.LocalDateTime**|  | |
+| **projectionEnd** | **java.time.LocalDateTime**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **type** | **kotlin.String**|  | [enum: SPENT, INCOME] |

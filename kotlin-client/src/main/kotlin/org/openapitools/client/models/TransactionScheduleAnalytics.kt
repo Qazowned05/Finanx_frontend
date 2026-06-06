@@ -53,7 +53,7 @@ data class TransactionScheduleAnalytics (
     val userId: kotlin.Long? = null,
 
     @Json(name = "generatedAt")
-    val generatedAt: java.time.OffsetDateTime? = null,
+    val generatedAt: java.time.LocalDateTime? = null,
 
     @Json(name = "activeScheduledTransactionCount")
     val activeScheduledTransactionCount: kotlin.Long? = null,
@@ -62,10 +62,10 @@ data class TransactionScheduleAnalytics (
     val activeCountByRecurrenceType: kotlin.collections.Map<kotlin.String, kotlin.Long>? = null,
 
     @Json(name = "projectionStart")
-    val projectionStart: java.time.OffsetDateTime? = null,
+    val projectionStart: java.time.LocalDateTime? = null,
 
     @Json(name = "projectionEnd")
-    val projectionEnd: java.time.OffsetDateTime? = null,
+    val projectionEnd: java.time.LocalDateTime? = null,
 
     @Json(name = "projectedIncomeAmount")
     val projectedIncomeAmount: java.math.BigDecimal? = null,

@@ -39,10 +39,10 @@ import java.io.Serializable
 data class AnalyticsPeriod (
 
     @Json(name = "start")
-    val start: java.time.OffsetDateTime? = null,
+    val start: java.time.LocalDateTime? = null,
 
     @Json(name = "end")
-    val end: java.time.OffsetDateTime? = null
+    val end: java.time.LocalDateTime? = null
 
 ) : Serializable {
     companion object {

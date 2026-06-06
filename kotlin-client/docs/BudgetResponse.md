@@ -13,8 +13,8 @@
 | **userId** | **kotlin.Long** |  |  [optional] |
 | **categoryId** | **kotlin.Long** |  |  [optional] |
 | **categoryName** | **kotlin.Long** |  |  [optional] |
-| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 
 
 <a id="State"></a>

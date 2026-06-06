@@ -68,10 +68,10 @@ data class TransactionResponse (
     val type: TransactionResponse.Type? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null

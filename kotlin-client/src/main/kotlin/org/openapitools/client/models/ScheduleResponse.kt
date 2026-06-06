@@ -63,13 +63,13 @@ interface ScheduleResponse : Serializable {
     @Json(name = "categoryName")
     val categoryName: kotlin.String?
     @Json(name = "nextRunAt")
-    val nextRunAt: java.time.OffsetDateTime?
+    val nextRunAt: java.time.LocalDateTime?
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime?
+    val createdAt: java.time.LocalDateTime?
     @Json(name = "lastRunAt")
-    val lastRunAt: java.time.OffsetDateTime?
+    val lastRunAt: java.time.LocalDateTime?
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime?
+    val disabledAt: java.time.LocalDateTime?
     @Json(name = "active")
     val active: kotlin.Boolean?
     @Json(name = "state")

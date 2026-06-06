@@ -44,7 +44,7 @@ interface Report : Serializable {
     @Json(name = "type")
     val type: kotlin.String
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime?
+    val createdAt: java.time.LocalDateTime?
 
 }
 
