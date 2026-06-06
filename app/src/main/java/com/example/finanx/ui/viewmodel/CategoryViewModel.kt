@@ -100,6 +100,22 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
+    fun activateCategory(userId: Long, categoryId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = repository.activateCategory(categoryId)
+                if (response.isSuccessful) {
+                    actionSuccess = "Categoría activada"
+                    fetchCategories(userId)
+                } else {
+                    categoryState = CategoryState.Error("Error al activar: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                categoryState = CategoryState.Error("Error de red: ${e.message}")
+            }
+        }
+    }
+
     fun clearActionSuccess() {
         actionSuccess = null
     }

@@ -8,7 +8,7 @@ import retrofit2.Response
 class CategoryRepository(private val api: CategoryControllerApi) {
 
     suspend fun getCategories(userId: Long): Response<List<CategoryResponse>> {
-        return Response.success(emptyList())
+        return api.findAllByUserAndActive(userId, true)
     }
 
     suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> {

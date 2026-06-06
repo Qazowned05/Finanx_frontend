@@ -6,6 +6,6 @@ import retrofit2.Response
 
 class BudgetRepository(private val api: BudgetControllerApi) {
     suspend fun getBudgets(userId: Long): Response<List<BudgetResponse>> {
-        return Response.success(emptyList())
+        return api.findAllByUser4(userId)
     }
 }

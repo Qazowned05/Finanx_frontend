@@ -22,6 +22,6 @@ class SavingGoalRepository(private val api: SavingGoalControllerApi) {
     }
 
     suspend fun deleteSavingGoal(id: Long): Response<Unit> {
-        return Response.success(Unit)
+        return api.disable3(id)
     }
 }
