@@ -37,6 +37,7 @@ import java.io.Serializable
  * @param accumulated 
  * @param deadline 
  * @param createdAt 
+ * @param completedAt 
  * @param disabledAt 
  * @param state 
  * @param active 
@@ -70,6 +71,9 @@ data class SavingGoalResponse (
 
     @Json(name = "createdAt")
     val createdAt: java.time.OffsetDateTime? = null,
+
+    @Json(name = "completedAt")
+    val completedAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
     val disabledAt: java.time.OffsetDateTime? = null,

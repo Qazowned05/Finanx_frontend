@@ -139,6 +139,3 @@ src/main/kotlin/org/openapitools/client/models/Update2200Response.kt
 src/main/kotlin/org/openapitools/client/models/Update2Request.kt
 src/main/kotlin/org/openapitools/client/models/UserRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserResponse.kt
-src/test/kotlin/org/openapitools/client/apis/BudgetScheduleControllerApiTest.kt
-src/test/kotlin/org/openapitools/client/apis/TransactionScheduleControllerApiTest.kt
-src/test/kotlin/org/openapitools/client/models/Update2200ResponseTest.kt
