@@ -48,10 +48,10 @@ data class RecurrenceRuleRequest (
     val interval: kotlin.Int,
 
     @Json(name = "start")
-    val start: java.time.LocalDateTime,
+    val start: java.time.LocalDate,
 
     @Json(name = "end")
-    val end: java.time.LocalDateTime,
+    val end: java.time.LocalDate,
 
     @Json(name = "dayOfWeek")
     val dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null

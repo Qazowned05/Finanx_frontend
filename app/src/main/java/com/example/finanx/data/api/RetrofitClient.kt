@@ -9,6 +9,7 @@ import org.openapitools.client.apis.BudgetControllerApi
 import org.openapitools.client.infrastructure.Serializer
 import org.openapitools.client.apis.CategoryControllerApi
 import org.openapitools.client.apis.SavingGoalControllerApi
+import org.openapitools.client.apis.TransactionControllerApi
 import okhttp3.Interceptor
 import okhttp3.Response
 object TokenStore {
@@ -57,6 +58,15 @@ object RetrofitClient {
             .client(client)
             .build()
             .create(SavingGoalControllerApi::class.java)
+    }
+
+    val transactionApi: TransactionControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(TransactionControllerApi::class.java)
     }
 
     // Interceptor de autenticación
