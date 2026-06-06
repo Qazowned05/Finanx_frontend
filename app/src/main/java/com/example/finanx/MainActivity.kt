@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.finanx.ui.MainScreen
+import com.example.finanx.ui.screens.category.CategoryListScreen
 import com.example.finanx.ui.theme.FinanxTheme
 
 class MainActivity : ComponentActivity() {

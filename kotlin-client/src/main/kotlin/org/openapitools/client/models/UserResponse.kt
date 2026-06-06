@@ -73,10 +73,10 @@ data class UserResponse (
     val moneyBalance: java.math.BigDecimal? = null,
 
     @Json(name = "createdAt")
-    val createdAt: kotlin.String? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: kotlin.String? = null,
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "fullName")
     val fullName: kotlin.String? = null,

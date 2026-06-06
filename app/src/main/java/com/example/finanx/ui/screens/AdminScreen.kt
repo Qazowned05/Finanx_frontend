@@ -66,7 +66,8 @@ fun AdminScreen(
             item {
                 AdminSection("Mantenimiento") {
                     AdminButton("Notificaciones", true)
-                    AdminButton("Categorías")
+                    AdminButton("Categorías", onClick = onNavigateToCategories)
+                    AdminButton("Metas de Ahorro", onClick = onNavigateToSavingGoals)
                     AdminButton("Reportes")
                 }
             }
@@ -94,9 +95,9 @@ fun AdminSection(title: String, content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun AdminButton(text: String, isPrimary: Boolean = false) {
+fun AdminButton(text: String, isPrimary: Boolean = false, onClick: () -> Unit = {}) {
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
