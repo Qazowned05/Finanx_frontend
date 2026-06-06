@@ -305,7 +305,7 @@ fun SavingGoalFormDialog(
     initialDescription: String = "",
     initialAmount: String = "",
     initialDeadline: String = "",
-    onConfirm: (String, BigDecimal, OffsetDateTime?) -> Unit,
+    onConfirm: (String, BigDecimal, LocalDate?) -> Unit,
     onDismiss: () -> Unit
 ) {
     var description by remember { mutableStateOf(initialDescription) }
@@ -379,7 +379,7 @@ fun SavingGoalFormDialog(
                 onClick = {
                     val parsedAmount = amount.toBigDecimalOrNull()
                     if (description.isNotBlank() && parsedAmount != null) {
-                        val deadline = selectedDate?.atStartOfDay()?.atOffset(ZoneOffset.UTC)
+                        val deadline: LocalDate? = selectedDate
                         onConfirm(description, parsedAmount, deadline)
                     } else {
                         amountError = parsedAmount == null
