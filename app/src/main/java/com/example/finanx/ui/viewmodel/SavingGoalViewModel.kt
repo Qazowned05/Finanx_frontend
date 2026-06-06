@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.openapitools.client.models.SavingGoalRequest
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.OffsetDateTime
 
 sealed class SavingGoalState {
@@ -51,7 +52,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline
+                    deadline = deadline?.toLocalDate() ?: LocalDate.now()
                 )
                 val response = repository.createSavingGoal(request)
                 if (response.isSuccessful) {
@@ -73,7 +74,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline
+                    deadline = deadline?.toLocalDate() ?: LocalDate.now()
                 )
                 val response = repository.updateSavingGoal(goalId, request)
                 if (response.isSuccessful) {
