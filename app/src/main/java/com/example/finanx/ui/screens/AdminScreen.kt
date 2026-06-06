@@ -61,8 +61,6 @@ fun AdminScreen(authViewModel: AuthViewModel, onNavigateToCategories: () -> Unit
             item {
                 AdminSection("Mantenimiento") {
                     AdminButton("Notificaciones", true)
-                    AdminButton("Categorías", onClick = onNavigateToCategories)
-                    AdminButton("Metas de Ahorro", onClick = onNavigateToSavingGoals)
                     AdminButton("Reportes")
                 }
             }

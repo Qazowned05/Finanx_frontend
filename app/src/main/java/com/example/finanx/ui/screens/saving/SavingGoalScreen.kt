@@ -1,8 +1,11 @@
 package com.example.finanx.ui.screens.saving
 
 import android.app.Activity
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -11,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +27,7 @@ import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
+import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +60,7 @@ fun SavingGoalScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Mis Metas de Ahorro", fontWeight = FontWeight.Bold) },
+                title = { Text("Metas de Ahorro", fontWeight = FontWeight.Bold) },
                 actions = {
                     ProfileMenuAction(
                         onMyProfile = { },
@@ -67,7 +72,8 @@ fun SavingGoalScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = BluePrimary
+                containerColor = BluePrimary,
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nueva meta", tint = Color.White)
             }
@@ -80,17 +86,21 @@ fun SavingGoalScreen(
                 }
                 is SavingGoalState.Success -> {
                     if (state.goals.isEmpty()) {
-                        Text(
-                            "No tienes metas de ahorro",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("Sin metas de ahorro", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Toca + para agregar una", color = Color.Gray, fontSize = 13.sp)
+                        }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(count = state.goals.size) { index ->
-                                SavingGoalCard(
+                                SwipeableSavingGoalCard(
                                     goal = state.goals[index],
                                     onEdit = { goalToEdit = state.goals[index] },
                                     onDelete = { viewModel.deleteSavingGoal(userId, state.goals[index].id!!) }
@@ -113,8 +123,8 @@ fun SavingGoalScreen(
     if (showCreateDialog) {
         SavingGoalFormDialog(
             title = "Nueva Meta de Ahorro",
-            onConfirm = { description, amount ->
-                viewModel.createSavingGoal(userId, description, amount, null)
+            onConfirm = { description, amount, deadline ->
+                viewModel.createSavingGoal(userId, description, amount, deadline)
                 showCreateDialog = false
             },
             onDismiss = { showCreateDialog = false }
@@ -126,8 +136,9 @@ fun SavingGoalScreen(
             title = "Editar Meta",
             initialDescription = goal.description.orEmpty(),
             initialAmount = goal.targetAmount?.toPlainString().orEmpty(),
-            onConfirm = { description, amount ->
-                viewModel.updateSavingGoal(userId, goal.id!!, description, amount, null)
+            initialDeadline = goal.deadline?.toLocalDate()?.toString().orEmpty(),
+            onConfirm = { description, amount, deadline ->
+                viewModel.updateSavingGoal(userId, goal.id!!, description, amount, deadline)
                 goalToEdit = null
             },
             onDismiss = { goalToEdit = null }
@@ -135,52 +146,82 @@ fun SavingGoalScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SavingGoalCard(
+fun SwipeableSavingGoalCard(
     goal: SavingGoalResponse,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            when (value) {
+                SwipeToDismissBoxValue.EndToStart -> { onDelete(); false }
+                SwipeToDismissBoxValue.StartToEnd -> { onEdit(); false }
+                else -> false
+            }
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            val direction = dismissState.dismissDirection
+            val color by animateColorAsState(
+                when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.StartToEnd -> Color(0xFF3B82F6)
+                    SwipeToDismissBoxValue.EndToStart -> Color(0xFFEF4444)
+                    else -> Color.Transparent
+                }, label = ""
+            )
+            val alignment = when (direction) {
+                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
+                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+                else -> Alignment.Center
+            }
+            val icon = when (direction) {
+                SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Edit
+                SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
+                else -> Icons.Default.Edit
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(color)
+                    .padding(horizontal = 20.dp),
+                contentAlignment = alignment
+            ) {
+                Icon(icon, contentDescription = null, tint = Color.White)
+            }
+        }
+    ) {
+        SavingGoalCard(goal)
+    }
+}
+
+@Composable
+fun SavingGoalCard(goal: SavingGoalResponse) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
+        elevation = CardDefaults.cardElevation(1.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        goal.description.orEmpty(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = BluePrimary
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        "Meta: PEN ${goal.targetAmount ?: 0}",
-                        color = Color.Gray,
-                        fontSize = 13.sp
-                    )
-                    Text(
-                        "Acumulado: PEN ${goal.accumulated ?: 0}",
-                        color = Color.Gray,
-                        fontSize = 13.sp
-                    )
-                }
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = BluePrimary)
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
-                }
+            Text(
+                goal.description.orEmpty(),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
+                color = Color(0xFF1A202C)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("Meta: PEN ${goal.targetAmount ?: 0}", color = Color.Gray, fontSize = 13.sp)
+            Text("Acumulado: PEN ${goal.accumulated ?: 0}", color = Color.Gray, fontSize = 13.sp)
+            goal.deadline?.let {
+                Text("Fecha límite: ${it.toLocalDate()}", color = Color.Gray, fontSize = 13.sp)
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Barra de progreso
             val progress = (goal.progressPercentage ?: 0.0).toFloat() / 100f
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
@@ -214,12 +255,15 @@ fun SavingGoalFormDialog(
     title: String,
     initialDescription: String = "",
     initialAmount: String = "",
-    onConfirm: (String, BigDecimal) -> Unit,
+    initialDeadline: String = "",
+    onConfirm: (String, BigDecimal, OffsetDateTime?) -> Unit,
     onDismiss: () -> Unit
 ) {
     var description by remember { mutableStateOf(initialDescription) }
     var amount by remember { mutableStateOf(initialAmount) }
+    var deadline by remember { mutableStateOf(initialDeadline) }
     var amountError by remember { mutableStateOf(false) }
+    var deadlineError by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -230,18 +274,24 @@ fun SavingGoalFormDialog(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Descripción") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = {
-                        amount = it
-                        amountError = false
-                    },
+                    onValueChange = { amount = it; amountError = false },
                     label = { Text("Monto objetivo (PEN)") },
                     modifier = Modifier.fillMaxWidth(),
                     isError = amountError,
                     supportingText = { if (amountError) Text("Ingresa un monto válido") }
+                )
+                OutlinedTextField(
+                    value = deadline,
+                    onValueChange = { deadline = it; deadlineError = false },
+                    label = { Text("Fecha límite (YYYY-MM-DD)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = deadlineError,
+                    supportingText = { if (deadlineError) Text("Formato: 2025-12-31") }
                 )
             }
         },
@@ -249,8 +299,17 @@ fun SavingGoalFormDialog(
             Button(
                 onClick = {
                     val parsedAmount = amount.toBigDecimalOrNull()
-                    if (description.isNotBlank() && parsedAmount != null) {
-                        onConfirm(description, parsedAmount)
+                    val parsedDeadline = try {
+                        if (deadline.isBlank()) null
+                        else java.time.LocalDate.parse(deadline)
+                            .atStartOfDay()
+                            .atOffset(java.time.ZoneOffset.UTC)
+                    } catch (e: Exception) {
+                        deadlineError = true
+                        null
+                    }
+                    if (description.isNotBlank() && parsedAmount != null && !deadlineError) {
+                        onConfirm(description, parsedAmount, parsedDeadline)
                     } else {
                         amountError = parsedAmount == null
                     }
@@ -261,9 +320,7 @@ fun SavingGoalFormDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
 }

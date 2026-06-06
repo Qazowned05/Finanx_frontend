@@ -76,6 +76,8 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
         Screen.Transactions,
         Screen.Calendar,
         Screen.Analysis,
+        Screen.Categories,
+        Screen.SavingGoals,
         Screen.More
     )
 
