@@ -67,16 +67,16 @@ data class SavingGoalResponse (
     val accumulated: java.math.BigDecimal? = null,
 
     @Json(name = "deadline")
-    val deadline: java.time.OffsetDateTime? = null,
+    val deadline: java.time.LocalDateTime? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "completedAt")
-    val completedAt: java.time.OffsetDateTime? = null,
+    val completedAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "state")
     val state: SavingGoalResponse.State? = null,
@@ -106,7 +106,7 @@ data class SavingGoalResponse (
     val completed: kotlin.Boolean? = null,
 
     @Json(name = "estimatedCompletionDate")
-    val estimatedCompletionDate: java.time.OffsetDateTime? = null
+    val estimatedCompletionDate: java.time.LocalDateTime? = null
 
 ) : Serializable {
     companion object {

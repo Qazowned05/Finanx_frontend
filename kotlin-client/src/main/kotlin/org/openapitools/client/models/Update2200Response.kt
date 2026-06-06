@@ -77,16 +77,16 @@ data class Update2200Response (
     val categoryName: kotlin.String? = null,
 
     @Json(name = "nextRunAt")
-    val nextRunAt: java.time.OffsetDateTime? = null,
+    val nextRunAt: java.time.LocalDateTime? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "lastRunAt")
-    val lastRunAt: java.time.OffsetDateTime? = null,
+    val lastRunAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null,

@@ -68,16 +68,16 @@ data class NotificationDTO (
     val message: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "scheduledAt")
-    val scheduledAt: java.time.OffsetDateTime? = null,
+    val scheduledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "sentAt")
-    val sentAt: java.time.OffsetDateTime? = null,
+    val sentAt: java.time.LocalDateTime? = null,
 
     @Json(name = "state")
     val state: NotificationDTO.State? = null,

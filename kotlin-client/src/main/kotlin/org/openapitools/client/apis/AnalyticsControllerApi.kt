@@ -36,7 +36,7 @@ interface AnalyticsControllerApi {
      * @return [AnalyticsDashboard]
      */
     @GET("api/analytics/dashboard/{userId}")
-    suspend fun dashboard(@Path("userId") userId: kotlin.Long, @Query("start") start: java.time.OffsetDateTime, @Query("end") end: java.time.OffsetDateTime): Response<AnalyticsDashboard>
+    suspend fun dashboard(@Path("userId") userId: kotlin.Long, @Query("start") start: java.time.LocalDateTime, @Query("end") end: java.time.LocalDateTime): Response<AnalyticsDashboard>
 
     /**
      * GET api/analytics/scheduled/active-count-by-recurrence
@@ -218,7 +218,7 @@ interface AnalyticsControllerApi {
      * @return [kotlin.collections.List<Insight>]
      */
     @POST("api/analytics/scheduled/insights")
-    suspend fun getScheduledInsights(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.OffsetDateTime, @Query("projectionEnd") projectionEnd: java.time.OffsetDateTime): Response<kotlin.collections.List<Insight>>
+    suspend fun getScheduledInsights(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.LocalDateTime, @Query("projectionEnd") projectionEnd: java.time.LocalDateTime): Response<kotlin.collections.List<Insight>>
 
     /**
      * POST api/analytics/scheduled/overview
@@ -233,7 +233,7 @@ interface AnalyticsControllerApi {
      * @return [TransactionScheduleAnalytics]
      */
     @POST("api/analytics/scheduled/overview")
-    suspend fun getScheduledOverview(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.OffsetDateTime, @Query("projectionEnd") projectionEnd: java.time.OffsetDateTime): Response<TransactionScheduleAnalytics>
+    suspend fun getScheduledOverview(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.LocalDateTime, @Query("projectionEnd") projectionEnd: java.time.LocalDateTime): Response<TransactionScheduleAnalytics>
 
     /**
      * POST api/analytics/scheduled/projections
@@ -248,7 +248,7 @@ interface AnalyticsControllerApi {
      * @return [kotlin.collections.List<ScheduledProjection>]
      */
     @POST("api/analytics/scheduled/projections")
-    suspend fun getScheduledProjections(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.OffsetDateTime, @Query("projectionEnd") projectionEnd: java.time.OffsetDateTime): Response<kotlin.collections.List<ScheduledProjection>>
+    suspend fun getScheduledProjections(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.LocalDateTime, @Query("projectionEnd") projectionEnd: java.time.LocalDateTime): Response<kotlin.collections.List<ScheduledProjection>>
 
 
     /**
@@ -422,6 +422,6 @@ interface AnalyticsControllerApi {
      * @return [TransactionScheduleAnalytics]
      */
     @POST("api/analytics/scheduled/projection")
-    suspend fun makeProjection(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.OffsetDateTime, @Query("projectionEnd") projectionEnd: java.time.OffsetDateTime, @Query("type") type: TypeMakeProjection): Response<TransactionScheduleAnalytics>
+    suspend fun makeProjection(@Query("userId") userId: kotlin.Long, @Query("projectionStart") projectionStart: java.time.LocalDateTime, @Query("projectionEnd") projectionEnd: java.time.LocalDateTime, @Query("type") type: TypeMakeProjection): Response<TransactionScheduleAnalytics>
 
 }

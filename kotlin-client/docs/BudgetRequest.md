@@ -9,8 +9,8 @@
 | **description** | **kotlin.String** |  |  |
 | **userId** | **kotlin.Long** |  |  |
 | **categoryId** | **kotlin.Long** |  |  |
-| **start** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  |
-| **end** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  |
+| **start** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  |
+| **end** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  |
 | **percentAlert** | **kotlin.Int** |  |  [optional] |
 
 

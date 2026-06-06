@@ -75,10 +75,10 @@ data class BudgetResponse (
     val categoryName: kotlin.Long? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null
+    val disabledAt: java.time.LocalDateTime? = null
 
 ) : Serializable {
     companion object {
