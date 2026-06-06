@@ -40,6 +40,8 @@ import java.io.Serializable
  * @param userId 
  * @param categoryId 
  * @param categoryName 
+ * @param start 
+ * @param end 
  * @param createdAt 
  * @param disabledAt 
  */
@@ -73,6 +75,12 @@ data class BudgetResponse (
 
     @Json(name = "categoryName")
     val categoryName: kotlin.Long? = null,
+
+    @Json(name = "start")
+    val start: java.time.LocalDateTime? = null,
+
+    @Json(name = "end")
+    val end: java.time.LocalDateTime? = null,
 
     @Json(name = "createdAt")
     val createdAt: java.time.LocalDateTime? = null,
