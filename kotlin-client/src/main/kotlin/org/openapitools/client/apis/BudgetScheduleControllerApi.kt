@@ -23,7 +23,7 @@ interface BudgetScheduleControllerApi {
     }
 
     /**
-     * GET schedule/budgets/{idUser}/{state}
+     * GET schedule/budgets/user/{idUser}/{state}
      * 
      * 
      * Responses:
@@ -33,7 +33,7 @@ interface BudgetScheduleControllerApi {
      * @param state 
      * @return [kotlin.collections.List<BudgetScheduleResponse>]
      */
-    @GET("schedule/budgets/{idUser}/{state}")
+    @GET("schedule/budgets/user/{idUser}/{state}")
     suspend fun findAllByUserAndState2(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<BudgetScheduleResponse>>
 
 }

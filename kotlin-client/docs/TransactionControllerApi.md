@@ -6,7 +6,7 @@ All URIs are relative to *http://localhost:8080*
 | ------------- | ------------- | ------------- |
 | [**create**](TransactionControllerApi.md#create) | **POST** transactions |  |
 | [**disable**](TransactionControllerApi.md#disable) | **DELETE** transactions/{id} |  |
-| [**findAllActiveByUser**](TransactionControllerApi.md#findAllActiveByUser) | **GET** transactions/{userId}/active |  |
+| [**findAllActiveByUser**](TransactionControllerApi.md#findAllActiveByUser) | **GET** transactions/user/{userId}/active |  |
 | [**findAllByUser**](TransactionControllerApi.md#findAllByUser) | **GET** transactions/{userId} |  |
 | [**findAllByUserBetween**](TransactionControllerApi.md#findAllByUserBetween) | **GET** transactions/user/{userId}/between |  |
 | [**findById1**](TransactionControllerApi.md#findById1) | **GET** transactions/{id} |  |

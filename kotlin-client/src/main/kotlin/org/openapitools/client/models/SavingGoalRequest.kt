@@ -41,16 +41,16 @@ import java.io.Serializable
 data class SavingGoalRequest (
 
     @Json(name = "description")
-    val description: kotlin.String? = null,
+    val description: kotlin.String,
 
     @Json(name = "targetAmount")
-    val targetAmount: java.math.BigDecimal? = null,
+    val targetAmount: java.math.BigDecimal,
 
     @Json(name = "deadline")
-    val deadline: java.time.LocalDateTime? = null,
+    val deadline: java.time.LocalDateTime,
 
     @Json(name = "userId")
-    val userId: kotlin.Long? = null
+    val userId: kotlin.Long
 
 ) : Serializable {
     companion object {

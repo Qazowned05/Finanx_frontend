@@ -21,7 +21,7 @@
 ## Enum: state
 | Name | Value |
 | ---- | ----- |
-| state | ACTIVE, CANCELLED, FINALIZED |
+| state | ACTIVE, CANCELLED, DISABLED, FINALIZED |
 
 
 

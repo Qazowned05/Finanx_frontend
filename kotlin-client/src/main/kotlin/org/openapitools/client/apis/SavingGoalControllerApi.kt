@@ -11,6 +11,19 @@ import org.openapitools.client.models.SavingGoalResponse
 
 interface SavingGoalControllerApi {
     /**
+     * POST savings/{id}/cancel
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param id 
+     * @return [Unit]
+     */
+    @POST("savings/{id}/cancel")
+    suspend fun cancel1(@Path("id") id: kotlin.Long): Response<Unit>
+
+    /**
      * POST savings
      * 
      * 
@@ -24,7 +37,7 @@ interface SavingGoalControllerApi {
     suspend fun create2(@Body savingGoalRequest: SavingGoalRequest): Response<SavingGoalResponse>
 
     /**
-     * POST savings/{id}
+     * POST savings/{id}/disable
      * 
      * 
      * Responses:
@@ -33,11 +46,11 @@ interface SavingGoalControllerApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("savings/{id}")
-    suspend fun disable1(@Path("id") id: kotlin.Long): Response<Unit>
+    @POST("savings/{id}/disable")
+    suspend fun disable3(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET savings/{idUser}
+     * GET savings/user/{idUser}
      * 
      * 
      * Responses:

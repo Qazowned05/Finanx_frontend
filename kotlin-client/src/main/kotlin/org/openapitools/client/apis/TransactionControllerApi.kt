@@ -37,7 +37,7 @@ interface TransactionControllerApi {
     suspend fun disable(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET transactions/{userId}/active
+     * GET transactions/user/{userId}/active
      * 
      * 
      * Responses:
@@ -46,7 +46,7 @@ interface TransactionControllerApi {
      * @param userId 
      * @return [kotlin.collections.List<TransactionResponse>]
      */
-    @GET("transactions/{userId}/active")
+    @GET("transactions/user/{userId}/active")
     suspend fun findAllActiveByUser(@Path("userId") userId: kotlin.Long): Response<kotlin.collections.List<TransactionResponse>>
 
     /**

@@ -4,6 +4,8 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
+| **userId** | **kotlin.Long** |  |  |
+| **categoryId** | **kotlin.Long** |  |  |
 | **type** | **kotlin.String** |  |  |
 | **alertable** | **kotlin.Boolean** |  |  |
 | **percentAlert** | **kotlin.Int** |  |  |
@@ -12,8 +14,6 @@
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  |
 | **paymentMethod** | [**inline**](#PaymentMethod) |  |  |
 | **transactionType** | [**inline**](#TransactionType) |  |  |
-| **userId** | **kotlin.Long** |  |  [optional] |
-| **categoryId** | **kotlin.Long** |  |  [optional] |
 | **recurrenceRule** | [**RecurrenceRuleRequest**](RecurrenceRuleRequest.md) |  |  [optional] |
 | **reasonId** | **kotlin.Long** |  |  [optional] |
 

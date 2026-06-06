@@ -5,8 +5,8 @@ All URIs are relative to *http://localhost:8080*
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**discard**](NotificationControllerApi.md#discard) | **POST** notifications/discard |  |
-| [**findAllByUser1**](NotificationControllerApi.md#findAllByUser1) | **GET** notifications/{idUser} |  |
-| [**findAllByUserAndState3**](NotificationControllerApi.md#findAllByUserAndState3) | **GET** notifications/{idUser}/{state} |  |
+| [**findAllByUser2**](NotificationControllerApi.md#findAllByUser2) | **GET** notifications/user/{idUser} |  |
+| [**findAllByUserAndState3**](NotificationControllerApi.md#findAllByUserAndState3) | **GET** notifications/user/{idUser}/{state} |  |
 | [**findById6**](NotificationControllerApi.md#findById6) | **GET** notifications/{id} |  |
 
 
@@ -62,7 +62,7 @@ val webService = apiClient.createWebservice(NotificationControllerApi::class.jav
 val idUser : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<NotificationDTO> = webService.findAllByUser1(idUser)
+    val result : kotlin.collections.List<NotificationDTO> = webService.findAllByUser2(idUser)
 }
 ```
 
