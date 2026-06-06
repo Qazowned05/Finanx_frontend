@@ -50,7 +50,7 @@ interface CategoryControllerApi {
     suspend fun disable4(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET categories/{idUser}
+     * GET categories/user/{idUser}
      * 
      * 
      * Responses:
@@ -60,10 +60,10 @@ interface CategoryControllerApi {
      * @return [kotlin.collections.List<CategoryResponse>]
      */
     @GET("categories/user/{idUser}")
-    suspend fun findAllByUser2(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<CategoryResponse>>
+    suspend fun findAllByUser3(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<CategoryResponse>>
 
     /**
-     * GET categories/{idUser}/{active}
+     * GET categories/user/{idUser}/{active}
      * 
      * 
      * Responses:
@@ -73,7 +73,7 @@ interface CategoryControllerApi {
      * @param active 
      * @return [kotlin.collections.List<CategoryResponse>]
      */
-    @GET("categories/{idUser}/{active}")
+    @GET("categories/user/{idUser}/{active}")
     suspend fun findAllByUserAndActive(@Path("idUser") idUser: kotlin.Long, @Path("active") active: kotlin.Boolean): Response<kotlin.collections.List<CategoryResponse>>
 
     /**

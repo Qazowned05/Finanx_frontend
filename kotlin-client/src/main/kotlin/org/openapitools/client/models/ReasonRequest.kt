@@ -42,7 +42,7 @@ data class ReasonRequest (
     val description: kotlin.String,
 
     @Json(name = "userId")
-    val userId: kotlin.Long? = null
+    val userId: kotlin.Long
 
 ) : Serializable {
     companion object {

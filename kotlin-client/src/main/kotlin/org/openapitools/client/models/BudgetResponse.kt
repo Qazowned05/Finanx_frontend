@@ -88,12 +88,13 @@ data class BudgetResponse (
     /**
      * 
      *
-     * Values: ACTIVE,CANCELLED,FINALIZED
+     * Values: ACTIVE,CANCELLED,DISABLED,FINALIZED
      */
     @JsonClass(generateAdapter = false)
     enum class State(val value: kotlin.String) {
         @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
+        @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED");
     }
 

@@ -34,10 +34,10 @@ interface ReasonControllerApi {
      * @return [Unit]
      */
     @POST("reasons/{id}")
-    suspend fun disable2(@Path("id") id: kotlin.Long): Response<Unit>
+    suspend fun disable1(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET reasons/{idUser}
+     * GET reasons/user/{idUser}
      * 
      * 
      * Responses:
@@ -46,8 +46,8 @@ interface ReasonControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<ReasonResponse>]
      */
-    @GET("reasons/{idUser}")
-    suspend fun findAll1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<ReasonResponse>>
+    @GET("reasons/user/{idUser}")
+    suspend fun findAllByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<ReasonResponse>>
 
     /**
      * GET reasons/{id}

@@ -43,10 +43,10 @@ data class CategoryRequest (
     val name: kotlin.String,
 
     @Json(name = "description")
-    val description: kotlin.String? = null,
+    val description: kotlin.String,
 
     @Json(name = "userId")
-    val userId: kotlin.Long? = null
+    val userId: kotlin.Long
 
 ) : Serializable {
     companion object {
