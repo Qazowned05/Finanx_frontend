@@ -11,7 +11,7 @@ class LocalDateTimeAdapter {
     private val formatter = DateTimeFormatterBuilder()
         .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
         .optionalStart()
-        .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+        .appendFraction(ChronoField.MICRO_OF_SECOND, 0, 6, true)
         .optionalEnd()
         .toFormatter()
 

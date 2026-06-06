@@ -1,16 +1,21 @@
 package com.example.finanx.ui.screens.category
 
 import android.app.Activity
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +46,6 @@ fun CategoryListScreen(
     var showCreateDialog by remember { mutableStateOf(false) }
     var categoryToEdit by remember { mutableStateOf<CategoryResponse?>(null) }
 
-    // Snackbar para mensajes de éxito
     val snackbarHostState = remember { SnackbarHostState() }
     val actionSuccess = viewModel.actionSuccess
     LaunchedEffect(actionSuccess) {
@@ -55,7 +59,7 @@ fun CategoryListScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Mis Categorías", fontWeight = FontWeight.Bold) },
+                title = { Text("Categorías", fontWeight = FontWeight.Bold) },
                 actions = {
                     ProfileMenuAction(
                         onMyProfile = { },
@@ -67,9 +71,10 @@ fun CategoryListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = BluePrimary
+                containerColor = BluePrimary,
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Crear categoría", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
             }
         }
     ) { padding ->
@@ -80,20 +85,25 @@ fun CategoryListScreen(
                 }
                 is CategoryState.Success -> {
                     if (state.categories.isEmpty()) {
-                        Text(
-                            "No tienes categorías creadas",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Toca + para agregar una", color = Color.Gray, fontSize = 13.sp)
+                        }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(count = state.categories.size) { index ->
-                                CategoryCard(
+                                SwipeableCategoryCard(
                                     category = state.categories[index],
                                     onEdit = { categoryToEdit = state.categories[index] },
-                                    onDisable = { viewModel.disableCategory(userId, state.categories[index].id!!) }
+                                    onDisable = { viewModel.disableCategory(userId, state.categories[index].id!!) },
+                                    onActivate = { viewModel.activateCategory(userId, state.categories[index].id!!) }
                                 )
                             }
                         }
@@ -110,7 +120,6 @@ fun CategoryListScreen(
         }
     }
 
-    // Dialog para crear categoría
     if (showCreateDialog) {
         CategoryFormDialog(
             title = "Nueva Categoría",
@@ -122,7 +131,6 @@ fun CategoryListScreen(
         )
     }
 
-    // Dialog para editar categoría
     categoryToEdit?.let { category ->
         CategoryFormDialog(
             title = "Editar Categoría",
@@ -137,45 +145,100 @@ fun CategoryListScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryCard(
+fun SwipeableCategoryCard(
     category: CategoryResponse,
     onEdit: () -> Unit,
-    onDisable: () -> Unit
+    onDisable: () -> Unit,
+    onActivate: () -> Unit
 ) {
+    val active = category.active == true
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            when (value) {
+                SwipeToDismissBoxValue.StartToEnd -> { onEdit(); false }
+                SwipeToDismissBoxValue.EndToStart -> {
+                    if (active) onDisable() else onActivate()
+                    false
+                }
+                else -> false
+            }
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        backgroundContent = {
+            val direction = dismissState.dismissDirection
+            val color by animateColorAsState(
+                when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.StartToEnd -> Color(0xFF3B82F6)
+                    SwipeToDismissBoxValue.EndToStart -> if (active) Color(0xFFEF4444) else Color(0xFF2F855A)
+                    else -> Color.Transparent
+                }, label = ""
+            )
+            val alignment = when (direction) {
+                SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
+                SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+                else -> Alignment.Center
+            }
+            val icon = when (direction) {
+                SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Edit
+                SwipeToDismissBoxValue.EndToStart -> if (active) Icons.Default.Delete else Icons.Default.Check
+                else -> Icons.Default.Edit
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(color)
+                    .padding(horizontal = 20.dp),
+                contentAlignment = alignment
+            ) {
+                Icon(icon, contentDescription = null, tint = Color.White)
+            }
+        }
+    ) {
+        CategoryCard(category)
+    }
+}
+
+@Composable
+fun CategoryCard(category: CategoryResponse) {
+    val active = category.active == true
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
+        elevation = CardDefaults.cardElevation(1.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(10.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(if (active) Color(0xFF2F855A) else Color(0xFFCBD5E0))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     category.name.orEmpty(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = BluePrimary
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp,
+                    color = Color(0xFF1A202C)
                 )
                 if (!category.description.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(category.description!!, color = Color.Gray, fontSize = 13.sp)
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        category.description!!,
+                        color = Color(0xFF718096),
+                        fontSize = 13.sp
+                    )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
-                val active = category.active == true
-                Text(
-                    if (active) "Activa" else "Inactiva",
-                    color = if (active) Color(0xFF2F855A) else Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
-            IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit, contentDescription = "Editar", tint = BluePrimary)
-            }
-            IconButton(onClick = onDisable) {
-                Icon(Icons.Default.Delete, contentDescription = "Desactivar", tint = Color.Red)
             }
         }
     }
@@ -201,7 +264,8 @@ fun CategoryFormDialog(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
                 OutlinedTextField(
                     value = description,
@@ -220,9 +284,7 @@ fun CategoryFormDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
 }

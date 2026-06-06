@@ -11,7 +11,7 @@ class CategoryRepository(
 ) {
 
     suspend fun getCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findAllByUser2(userId)
+        return api.findAllByUserAndActive(userId, true)
     }
 
     suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> {
