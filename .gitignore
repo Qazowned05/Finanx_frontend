@@ -17,3 +17,4 @@ local.properties
 /kotlin-client/gradle
 /kotlin-client/gradlew
 /kotlin-client/gradlew.bat
+.devcontainer
