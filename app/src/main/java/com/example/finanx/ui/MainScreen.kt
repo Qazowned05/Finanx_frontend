@@ -29,6 +29,8 @@ import com.example.finanx.ui.viewmodel.BudgetViewModel
 import com.example.finanx.ui.viewmodel.CategoryViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import com.example.finanx.ui.viewmodel.TransactionViewModel
+import com.example.finanx.ui.screens.notification.NotificacionesScreen
+import com.example.finanx.ui.viewmodel.NotificationViewModel
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Home : Screen("home", "Inicio", Icons.Default.Home)
@@ -39,6 +41,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object Categories : Screen("categories", "Categorías", Icons.Default.Category)
     object SavingGoals : Screen("savinggoals", "Metas de Ahorro", Icons.Default.Savings)
     object CreateTransaction : Screen("create_transaction", "Nueva Transacción", Icons.Default.Add) // Added for navigation
+    object Notifications : Screen("notifications", "Notificaciones", Icons.Default.Notifications)// // Ruta agregada para acceder a la pantalla de notificaciones
 }
 
 @Composable
@@ -75,6 +78,7 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
     val categoryViewModel: CategoryViewModel = viewModel()
     val savingGoalViewModel: SavingGoalViewModel = viewModel()
     val transactionViewModel: TransactionViewModel = viewModel()
+    val notificationViewModel: NotificationViewModel = viewModel() // added for notification
 
     val screens = listOf(
         Screen.Home,
@@ -83,7 +87,8 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
         Screen.Analysis,
         Screen.Categories,
         Screen.SavingGoals,
-        Screen.More
+        Screen.More,
+        Screen.Notifications // added for notification
     )
 
     Scaffold(
@@ -121,6 +126,9 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) { HomeScreen(authViewModel) }
+            composable(Screen.Notifications.route) {
+                NotificacionesScreen(userId, notificationViewModel)
+            } // Navegación hacia la pantalla de notificaciones
             composable(Screen.Transactions.route) {
                 LaunchedEffect(userId) {
                     transactionViewModel.fetchTransactions(userId)

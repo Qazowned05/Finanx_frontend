@@ -1,6 +1,7 @@
 package com.example.finanx.data.api
 
 import okhttp3.OkHttpClient
+import org.openapitools.client.apis.NotificationControllerApi
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -68,6 +69,15 @@ object RetrofitClient {
             .build()
             .create(TransactionControllerApi::class.java)
     }
+//
+val notificationApi: NotificationControllerApi by lazy {
+    Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .client(client)
+        .build()
+        .create(NotificationControllerApi::class.java)
+} //// Componente visual para mostrar una notificación individual.
 
     // Interceptor de autenticación
     val authInterceptor = Interceptor { chain ->
