@@ -97,7 +97,4 @@ val notificationApi: NotificationControllerApi by lazy {
         .addInterceptor(logging)
         .addInterceptor(authInterceptor)
         .build()
-
-
-
 }

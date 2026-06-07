@@ -19,42 +19,35 @@ data class NotificationUiState(
 )
 // Es
 class NotificationViewModel : ViewModel() {
-git
+
     var notificationState by mutableStateOf(NotificationUiState())
         private set
 //Obtiene todas las notificaciones del usuario y las ordena por fecha descendente
-    fun fetchAll(userId: Long) {
-        viewModelScope.launch {
-            notificationState = notificationState.copy(isLoading = true, error = null)
+// Obtiene las notificaciones del usuario actual.
+// Actualiza el estado de la pantalla según carga, éxito o error.
+fun fetchAll(userId: Long) {
+    viewModelScope.launch {
+        notificationState = notificationState.copy(
+            isLoading = true,
+            error = null
+        )
 
-            try {
-                val response = RetrofitClient.notificationApi.findAllByUser2(userId)
+        try {
+            // Por ahora se deja una lista vacía hasta conectar con el API/repositorio.
+            notificationState = notificationState.copy(
+                isLoading = false,
+                notifications = emptyList(),
+                error = null
+            )
 
-                if (response.isSuccessful) {
-                    val orderedNotifications = response.body()
-                        .orEmpty()
-                        .filter { it.state != NotificationDTO.State.DISCARD }
-                        .sortedByDescending { it.createdAt ?: LocalDateTime.MIN }
-
-                    notificationState = NotificationUiState(
-                        isLoading = false,
-                        notifications = orderedNotifications
-                    )
-                } else {
-                    notificationState = NotificationUiState(
-                        isLoading = false,
-                        error = "No se pudieron cargar las notificaciones."
-                    )
-                }
-            } catch (e: Exception) {
-                notificationState = NotificationUiState(
-                    isLoading = false,
-                    error = "Error de conexión: ${e.message}"
-                )
-            }
+        } catch (e: Exception) {
+            notificationState = notificationState.copy(
+                isLoading = false,
+                error = e.message
+            )
         }
     }
-
+}
     fun clearRead(userId: Long) {
         viewModelScope.launch {
             try {

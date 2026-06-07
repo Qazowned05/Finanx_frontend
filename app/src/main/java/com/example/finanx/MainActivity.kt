@@ -19,6 +19,7 @@ import com.example.finanx.ui.screens.transaction.CreateTransactionScreen
 import com.example.finanx.ui.screens.transaction.TransactionsScreen
 import com.example.finanx.ui.theme.FinanxTheme
 import com.example.finanx.ui.viewmodel.TransactionViewModel
+import com.example.finanx.ui.navigation.notificationNavigation
 
 class MainActivity : ComponentActivity() {
     private val transactionViewModel: TransactionViewModel by viewModels()
@@ -53,6 +54,9 @@ fun FinanxApp(transactionViewModel: TransactionViewModel) {
         composable("home") {
             HomeScreen(navController)
         }
+        // Se agrega el destino de notificaciones al NavHost existente.
+        // No modifica las rutas actuales de Home, Transacciones ni Crear Transacción.
+        notificationNavigation(UserManager.userId)
         composable("transactions") {
             TransactionsScreen(
                 state = transactionViewModel.transactionState,

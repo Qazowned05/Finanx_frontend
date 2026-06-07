@@ -22,6 +22,7 @@ import com.example.finanx.ui.theme.BlueSecondary
 import com.example.finanx.ui.theme.LightBackground
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.navigation.NOTIFICATIONS_ROUTE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,9 @@ fun HomeScreen(navController: NavController) {
             TopAppBar(
                 title = { Text("Mi Finanzas", fontWeight = FontWeight.Bold) },
                 actions = {
-                    IconButton(onClick = {}) {
+                    //Navega a la pantalla notificaciones registrada en el Navhost
+                    //LaunchSingleTop evita abrir varias veces la misma pantalla si se toca repentinamente
+                    IconButton(onClick = {navController.navigate(NOTIFICATIONS_ROUTE){launchSingleTop=true} }) {
                         Icon(Icons.Default.Notifications, contentDescription = null)
                     }
                     ProfileMenuAction(
