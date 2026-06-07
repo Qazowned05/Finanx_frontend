@@ -120,7 +120,7 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
             startDestination = Screen.Transactions.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Screen.Home.route) { HomeScreen(authViewModel) }
+            composable(Screen.Home.route) { HomeScreen(navController) }
             composable(Screen.Transactions.route) {
                 LaunchedEffect(userId) {
                     transactionViewModel.fetchTransactions(userId)

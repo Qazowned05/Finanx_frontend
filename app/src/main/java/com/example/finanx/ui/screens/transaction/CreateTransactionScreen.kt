@@ -1,4 +1,4 @@
-package com.example.finanx.ui.screens.movement
+package com.example.finanx.ui.screens.transaction
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,16 +13,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanx.ui.components.SegmentedButton
 import com.example.finanx.ui.viewmodel.CategoryState
-import com.example.finanx.ui.viewmodel.MovementViewModel
+import com.example.finanx.ui.viewmodel.TransactionViewModel
 import org.openapitools.client.models.CategoryResponse
 import org.openapitools.client.models.TransactionRequest
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateMovementScreen(
+fun CreateTransactionScreen(
     navController: NavController,
-    viewModel: MovementViewModel,
+    viewModel: TransactionViewModel,
     userId: Long
 ) {
     var description by remember { mutableStateOf("") }
@@ -38,7 +38,7 @@ fun CreateMovementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo Movimiento") },
+                title = { Text("Nueva Transacción") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
@@ -122,7 +122,7 @@ fun CreateMovementScreen(
                 onClick = {
                     val amountDecimal = amount.toBigDecimalOrNull() ?: BigDecimal.ZERO
                     selectedCategory?.id?.let {
-                        viewModel.createMovement(
+                        viewModel.createTransaction(
                             userId = userId,
                             description = description,
                             amount = amountDecimal,
@@ -136,7 +136,7 @@ fun CreateMovementScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = description.isNotBlank() && amount.toBigDecimalOrNull() != null && selectedCategory != null
             ) {
-                Text("GUARDAR MOVIMIENTO")
+                Text("GUARDAR TRANSACCIÓN")
             }
         }
     }

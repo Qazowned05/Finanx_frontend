@@ -20,8 +20,8 @@ import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
 @Composable
-fun MovementItem(movement: TransactionResponse) {
-    val color = if (movement.type == TransactionResponse.Type.INCOME) Color(0xFF4CAF50) else Color(0xFFF44336)
+fun TransactionItem(transaction: TransactionResponse) {
+    val color = if (transaction.type == TransactionResponse.Type.INCOME) Color(0xFF4CAF50) else Color(0xFFF44336)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -37,18 +37,18 @@ fun MovementItem(movement: TransactionResponse) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Movimiento #${movement.id}",
+                    text = "Transacción #${transaction.id}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Categoría ID: ${movement.categoryId}", // Mostramos el ID de la categoría
+                    text = "Categoría ID: ${transaction.categoryId}", // Mostramos el ID de la categoría
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
             }
             Text(
-                text = "${movement.amount ?: BigDecimal.ZERO} €",
+                text = "${transaction.amount ?: BigDecimal.ZERO} €",
                 color = color,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
