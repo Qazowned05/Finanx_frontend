@@ -292,5 +292,51 @@ fun BudgetScreen() {
 
 @Composable
 fun CreateBudgetDialog(onDismiss: () -> Unit) {
-    TODO("Not yet implemented")
+    var description by remember { mutableStateOf("") }
+    var limitAmount by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("Nuevo Presupuesto")
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Descripción") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = limitAmount,
+                    onValueChange = { limitAmount = it },
+                    label = { Text("Monto Límite") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    // Aquí iría la lógica para crear el presupuesto
+                    onDismiss()
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+            ) {
+                Text("Crear")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+            ) {
+                Text("Cancelar")
+            }
+        }
+    )
 }
