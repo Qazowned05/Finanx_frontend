@@ -147,7 +147,14 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
                     onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
                 )
             }
-            composable(Screen.Calendar.route) { BudgetListScreen(userId, budgetViewModel, authViewModel) }
+            composable(Screen.Calendar.route) {
+                BudgetListScreen(
+                    userId = userId,
+                    viewModel = budgetViewModel,
+                    authViewModel = authViewModel,
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) } // ¡Conexión agregada!
+                )
+            }
             composable(Screen.Analysis.route) { AnalysisScreen(authViewModel) }
             composable(Screen.More.route) {
                 AdminScreen(
