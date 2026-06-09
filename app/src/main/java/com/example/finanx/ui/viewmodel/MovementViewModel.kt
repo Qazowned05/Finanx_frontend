@@ -14,44 +14,37 @@ import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
 // Estados para la UI, ahora usando los modelos de OpenAPI
-sealed class MovementState {
-    object Loading : MovementState()
-    data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : MovementState()
-    data class Error(val message: String) : MovementState()
+sealed class TransactionState {
+    object Loading : TransactionState()
+    data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : TransactionState()
+    data class Error(val message: String) : TransactionState()
 }
 
-sealed class CategoryState {
-    object Loading : CategoryState()
-    data class Success(val categories: List<CategoryResponse>) : CategoryState()
-    data class Error(val message: String) : CategoryState()
-}
-
-class MovementViewModel : ViewModel() {
+class TransactionViewModel : ViewModel() {
     private val transactionRepository = TransactionRepository()
     private val categoryRepository = CategoryRepository()
 
-    var movementState by mutableStateOf<MovementState>(MovementState.Loading)
+    var transactionState by mutableStateOf<TransactionState>(TransactionState.Loading)
         private set
 
     var categoryState by mutableStateOf<CategoryState>(CategoryState.Loading)
         private set
 
-    fun fetchMovements(userId: Long) {
+    fun fetchTransactions(userId: Long) {
         viewModelScope.launch {
-            movementState = MovementState.Loading
+            transactionState = TransactionState.Loading
             try {
                 val response = transactionRepository.getTransactions(userId)
                 if (response.isSuccessful && response.body() != null) {
                     val transactions = response.body()!!
-                    // Usamos el enum del modelo para filtrar
                     val income = transactions.filter { it.type == TransactionResponse.Type.INCOME }
                     val expenses = transactions.filter { it.type == TransactionResponse.Type.SPENT }
-                    movementState = MovementState.Success(income, expenses)
+                    transactionState = TransactionState.Success(income, expenses)
                 } else {
-                    movementState = MovementState.Error("Error al obtener los movimientos: ${response.message()}")
+                    transactionState = TransactionState.Error("Error al obtener las transacciones: ${response.message()}")
                 }
             } catch (e: Exception) {
-                movementState = MovementState.Error("Error de red: ${e.message}")
+                transactionState = TransactionState.Error("Error de red: ${e.message}")
             }
         }
     }
@@ -72,7 +65,7 @@ class MovementViewModel : ViewModel() {
         }
     }
 
-    fun createMovement(
+    fun createTransaction(
         userId: Long,
         description: String,
         amount: BigDecimal,
@@ -82,7 +75,6 @@ class MovementViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                // Convertimos los strings a los enums correspondientes
                 val transactionType = TransactionRequest.Type.valueOf(type)
                 val transactionPaymentMethod = TransactionRequest.PaymentMethod.valueOf(paymentMethod)
 
@@ -96,12 +88,10 @@ class MovementViewModel : ViewModel() {
                 )
                 val response = transactionRepository.createTransaction(request)
                 if (response.isSuccessful) {
-                    fetchMovements(userId) // Recargar la lista de movimientos tras la creación
-                } else {
-                    // Aquí se podría actualizar un estado para notificar a la UI del error
+                    fetchTransactions(userId)
                 }
             } catch (e: Exception) {
-                // Manejar error de red o de conversión de enums
+                // Manejar error
             }
         }
     }
