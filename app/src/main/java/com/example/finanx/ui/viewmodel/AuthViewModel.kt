@@ -7,14 +7,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
-import com.example.finanx.data.api.TokenManager
+import com.example.finanx.data.api.TokenStore
 import com.example.finanx.data.auth.GoogleAuthError
 import com.example.finanx.data.auth.GoogleAuthManager
 import com.example.finanx.data.auth.GoogleAuthOutcome
+import com.example.finanx.data.auth.UserManager
 import com.example.finanx.data.auth.WEB_CLIENT_ID
 import com.example.finanx.data.repository.AuthRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.openapitools.client.apis.AuthControllerApi
 import org.openapitools.client.models.UserResponse
 
 sealed class AuthState {
@@ -30,6 +31,13 @@ class AuthViewModel : ViewModel() {
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set
 
+    private fun onAuthSuccess(user: UserResponse, token: String?) {
+        UserManager.userId = user.id ?: 0L
+        UserManager.currentUser = user
+        TokenStore.token = token ?: ""
+        authState = AuthState.Success(user)
+    }
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             authState = AuthState.Loading
@@ -38,11 +46,13 @@ class AuthViewModel : ViewModel() {
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
-                    body.token?.let { TokenManager.setToken(it) }
+                    onAuthSuccess(user, body.token)
                     AuthState.Success(user)
                 } else {
-                    val errorBody = response.errorBody()?.string() ?: "Sin detalles"
-                    AuthState.Error("Login fallido (${response.code()}): $errorBody")
+                    val msg = response.errorBody()?.string()?.let { b ->
+                        b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
+                    } ?: "Código ${response.code()}"
+                    AuthState.Error(msg)
                 }
             } catch (e: Exception) {
                 AuthState.Error("Error de red: ${e.message}")
@@ -50,19 +60,31 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun register(name: String, email: String, password: String) {
+    fun register(
+        name: String,
+        lastname: String,
+        email: String,
+        username: String,
+        password: String,
+        timeZone: org.openapitools.client.models.UserRequest.TimeZone
+    ) {
+        TokenStore.token = ""
         viewModelScope.launch {
             authState = AuthState.Loading
             authState = try {
-                val response = repository.register(name, email, password)
+                val response = repository.register(name, lastname, email, username, password, timeZone)
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
-                    body.token?.let { TokenManager.setToken(it) }
+                    onAuthSuccess(user, body.token)
                     AuthState.Success(user)
                 } else {
-                    val errorBody = response.errorBody()?.string() ?: "Sin detalles"
-                    AuthState.Error("Registro fallido (${response.code()}): $errorBody")
+                    val errorMsg = response.errorBody()?.string()?.let { body ->
+                        val msg = body.split("\"message\":\"")
+                            .getOrNull(1)?.split("\"")?.getOrNull(0)
+                        msg ?: "Código ${response.code()}"
+                    } ?: "Código ${response.code()}"
+                    AuthState.Error(errorMsg)
                 }
             } catch (e: Exception) {
                 AuthState.Error("Error de red: ${e.message}")
@@ -70,13 +92,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Acceder con Google (Credential Manager). Este método abre la UI de Google.
-     *
-     * - Usa la hoja inferior (bottom sheet) como flujo principal.
-     * - Si el usuario la canceló o no hay credenciales, puedes volver a intentar
-     *   usando [forceButtonFlow] = true desde un botón.
-     */
     fun loginWithGoogle(activity: Activity, forceButtonFlow: Boolean = false) {
         viewModelScope.launch {
             authState = AuthState.Loading
@@ -101,10 +116,13 @@ class AuthViewModel : ViewModel() {
                         val body = response.body()
                         val user = body?.user
                         if (response.isSuccessful && user != null) {
-                            body.token?.let { TokenManager.setToken(it) }
+                            onAuthSuccess(user, body.token)
                             authState = AuthState.Success(user)
                         } else {
-                            authState = AuthState.Error("Login con Google fallido: ${response.code()}")
+                            val msg = response.errorBody()?.string()?.let { b ->
+                                b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
+                            } ?: "Código ${response.code()}"
+                            authState = AuthState.Error(msg)
                         }
                     }
 
@@ -118,18 +136,21 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    /** Borra estado local + estado de credenciales para permitir elegir otra cuenta luego. */
     fun logout(activity: Activity? = null) {
+        // Limpiamos el estado local de forma síncrona para que la UI reaccione inmediatamente
+        UserManager.userId = 0L
+        UserManager.currentUser = null
+        TokenStore.token = ""
+        authState = AuthState.Idle
+
+        // Ejecutamos el cierre de sesión de Google de forma asíncrona
         viewModelScope.launch {
             try {
-                if (activity != null) {
-                    GoogleAuthManager.create(activity).signOut()
+                activity?.let {
+                    GoogleAuthManager.create(it.applicationContext).signOut()
                 }
-            } catch (_: Exception) {
-                // Ignorar: cerrar sesión debe ser best-effort.
-            } finally {
-                TokenManager.clear()
-                authState = AuthState.Idle
+            } catch (_: Throwable) {
+                // Errores al cerrar sesión en Google no deberían impedir el logout de la app
             }
         }
     }

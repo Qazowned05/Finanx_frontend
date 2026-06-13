@@ -1,6 +1,5 @@
 package com.example.finanx.ui.screens
 
-import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,9 +24,7 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(authViewModel: AuthViewModel, onNavigateToProfile: () -> Unit = {}) {
-    val context = LocalContext.current
-    val activity = context as? Activity
+fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
 
     Scaffold(
         topBar = {
@@ -38,8 +35,8 @@ fun HomeScreen(authViewModel: AuthViewModel, onNavigateToProfile: () -> Unit = {
                         Icon(Icons.Default.Notifications, contentDescription = null)
                     }
                     ProfileMenuAction(
-                        onMyProfile = onNavigateToProfile,
-                        onLogout = { authViewModel.logout(activity) }
+                        onMyProfile = { navController.navigate("profile") },
+                        onLogout = { authViewModel.logout() }
                     )
                 }
             )
