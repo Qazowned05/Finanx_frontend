@@ -21,7 +21,12 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminScreen(authViewModel: AuthViewModel, onNavigateToProfile: () -> Unit = {}) {
+fun AdminScreen(
+    authViewModel: AuthViewModel,
+    onNavigateToCategories: () -> Unit = {},
+    onNavigateToSavingGoals: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
+) {
     val context = LocalContext.current
     val activity = context as? Activity
 

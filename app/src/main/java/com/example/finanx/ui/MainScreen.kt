@@ -20,12 +20,10 @@ import com.example.finanx.ui.screens.auth.LoginScreen
 import com.example.finanx.ui.screens.auth.RegisterScreen
 import com.example.finanx.ui.screens.budget.BudgetListScreen
 import com.example.finanx.ui.screens.category.CategoryListScreen
-import com.example.finanx.ui.screens.profile.ChangePasswordScreen
-import com.example.finanx.ui.screens.profile.DangerZoneScreen
 import com.example.finanx.ui.screens.profile.ProfileScreen
 import com.example.finanx.ui.screens.saving.SavingGoalScreen
 import com.example.finanx.ui.screens.transaction.CreateTransactionScreen
-import com.example.finanx.ui.screens.transaction.TransactionsScreen
+import com.example.finanx.ui.screens.TransactionsScreen
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
@@ -45,8 +43,6 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object SavingGoals : Screen("savinggoals", "Metas de Ahorro", Icons.Default.Savings)
     object CreateTransaction : Screen("create_transaction", "Nueva Transacción", Icons.Default.Add)
     object Profile : Screen("profile", "Perfil", Icons.Default.Person)
-    object ChangePassword : Screen("change_password", "Cambiar Contraseña", Icons.Default.Lock)
-    object DangerZone : Screen("danger_zone", "Zona de Peligro", Icons.Default.Warning)
 }
 
 @Composable
@@ -102,7 +98,7 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
         Screen.More
     )
 
-    val profileRoutes = listOf(Screen.Profile.route, Screen.ChangePassword.route, Screen.DangerZone.route)
+    val profileRoutes = listOf(Screen.Profile.route)
     val hideBottomBarRoutes = profileRoutes + Screen.CreateTransaction.route
 
     Scaffold(
@@ -146,7 +142,9 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
                 }
                 TransactionsScreen(
                     state = transactionViewModel.transactionState,
-                    onNavigateToCreateTransaction = { navController.navigate(Screen.CreateTransaction.route) }
+                    authViewModel = authViewModel,
+                    onNavigateToCreateTransaction = { navController.navigate(Screen.CreateTransaction.route) },
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
                 )
             }
             composable(Screen.Calendar.route) { BudgetListScreen(userId, budgetViewModel, authViewModel) }
@@ -169,28 +167,16 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
                 CreateTransactionScreen(navController, transactionViewModel, userId)
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(
-                    userViewModel = userViewModel,
-                    onBack = { navController.popBackStack() },
-                    onChangePassword = { navController.navigate(Screen.ChangePassword.route) },
-                    onDangerZone = { navController.navigate(Screen.DangerZone.route) }
-                )
-            }
-            composable(Screen.ChangePassword.route) {
-                ChangePasswordScreen(
-                    userViewModel = userViewModel,
-                    onBack = { navController.popBackStack() }
-                )
-            }
-            composable(Screen.DangerZone.route) {
-                DangerZoneScreen(
-                    userViewModel = userViewModel,
-                    onBack = { navController.popBackStack() },
-                    onAccountDeleted = {
-                        navController.popBackStack(Screen.Home.route, inclusive = true)
-                        authViewModel.logout()
-                    }
-                )
+                val currentUser = (authViewModel.authState as? AuthState.Success)?.user
+
+                if (currentUser != null) {
+                    ProfileScreen(
+                        user = currentUser,
+                        userId = userId,
+                        viewModel = userViewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }

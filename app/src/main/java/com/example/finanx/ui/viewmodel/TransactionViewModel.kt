@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.repository.CategoryRepository
 import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
-import org.openapitools.client.models.CategoryResponse
 import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal

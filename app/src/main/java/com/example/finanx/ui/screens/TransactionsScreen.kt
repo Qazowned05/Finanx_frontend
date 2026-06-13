@@ -25,7 +25,12 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionsScreen(authViewModel: AuthViewModel, onNavigateToProfile: () -> Unit = {}) {
+fun TransactionsScreen(
+    state: Any?,
+    authViewModel: AuthViewModel,
+    onNavigateToCreateTransaction: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
+) {
     var selectedTab by remember { mutableStateOf(0) }
     val context = LocalContext.current
     val activity = context as? Activity
