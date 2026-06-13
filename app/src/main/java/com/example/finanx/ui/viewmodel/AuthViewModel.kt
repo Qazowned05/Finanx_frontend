@@ -12,6 +12,7 @@ import com.example.finanx.data.auth.GoogleAuthError
 import com.example.finanx.data.auth.GoogleAuthManager
 import com.example.finanx.data.auth.GoogleAuthOutcome
 import com.example.finanx.data.auth.UserManager
+import com.example.finanx.data.auth.LoginType
 import com.example.finanx.data.auth.WEB_CLIENT_ID
 import com.example.finanx.data.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
@@ -31,9 +32,10 @@ class AuthViewModel : ViewModel() {
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set
 
-    private fun onAuthSuccess(user: UserResponse, token: String?) {
+    private fun onAuthSuccess(user: UserResponse, token: String?, type: LoginType = LoginType.LOCAL) {
         UserManager.userId = user.id ?: 0L
         UserManager.currentUser = user
+        UserManager.loginType = type
         TokenStore.token = token ?: ""
         authState = AuthState.Success(user)
     }
@@ -46,11 +48,7 @@ class AuthViewModel : ViewModel() {
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
-<<<<<<< HEAD
-                    onAuthSuccess(user, body.token)
-=======
-                    TokenStore.token = response.body()?.token.toString()
->>>>>>> 97c74ab (feat(login): Se agrego el interceptor de token para el login)
+                    onAuthSuccess(user, body.token, LoginType.LOCAL)
                     AuthState.Success(user)
                 } else {
                     val msg = response.errorBody()?.string()?.let { b ->
@@ -65,10 +63,10 @@ class AuthViewModel : ViewModel() {
     }
 
     fun register(
+        username: String,
         name: String,
         lastname: String,
         email: String,
-        username: String,
         password: String,
         timeZone: org.openapitools.client.models.UserRequest.TimeZone
     ) {
@@ -76,17 +74,15 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             authState = AuthState.Loading
             authState = try {
-                val response = repository.register(name, lastname, email, username, password, timeZone)
+                val response = repository.register(username, name, lastname, email, password, timeZone)
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
                     onAuthSuccess(user, body.token)
                     AuthState.Success(user)
                 } else {
-                    val errorMsg = response.errorBody()?.string()?.let { body ->
-                        val msg = body.split("\"message\":\"")
-                            .getOrNull(1)?.split("\"")?.getOrNull(0)
-                        msg ?: "Código ${response.code()}"
+                    val errorMsg = response.errorBody()?.string()?.let { b ->
+                        b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
                     } ?: "Código ${response.code()}"
                     AuthState.Error(errorMsg)
                 }
@@ -120,7 +116,7 @@ class AuthViewModel : ViewModel() {
                         val body = response.body()
                         val user = body?.user
                         if (response.isSuccessful && user != null) {
-                            onAuthSuccess(user, body.token)
+                            onAuthSuccess(user, body.token, LoginType.GOOGLE)
                             authState = AuthState.Success(user)
                         } else {
                             val msg = response.errorBody()?.string()?.let { b ->
@@ -141,20 +137,17 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout(activity: Activity? = null) {
-        // Limpiamos el estado local de forma síncrona para que la UI reaccione inmediatamente
         UserManager.userId = 0L
         UserManager.currentUser = null
         TokenStore.token = ""
         authState = AuthState.Idle
 
-        // Ejecutamos el cierre de sesión de Google de forma asíncrona
         viewModelScope.launch {
             try {
                 activity?.let {
                     GoogleAuthManager.create(it.applicationContext).signOut()
                 }
             } catch (_: Throwable) {
-                // Errores al cerrar sesión en Google no deberían impedir el logout de la app
             }
         }
     }

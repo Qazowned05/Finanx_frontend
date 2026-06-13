@@ -20,7 +20,7 @@ interface BudgetControllerApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("bugdets/{id}/cancel")
+    @POST("budgets/{id}/cancel")
     suspend fun cancel1(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
@@ -33,7 +33,7 @@ interface BudgetControllerApi {
      * @param budgetRequest 
      * @return [BudgetResponse]
      */
-    @POST("bugdets")
+    @POST("budgets")
     suspend fun create5(@Body budgetRequest: BudgetRequest): Response<BudgetResponse>
 
     /**
@@ -46,7 +46,7 @@ interface BudgetControllerApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("bugdets/{id}/disable")
+    @POST("budgets/{id}/disable")
     suspend fun disable5(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
@@ -59,7 +59,7 @@ interface BudgetControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<BudgetResponse>]
      */
-    @GET("bugdets/{idUser}")
+    @GET("budgets/user/{idUser}")
     suspend fun findAllByUser3(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
 
 
@@ -73,7 +73,7 @@ interface BudgetControllerApi {
     }
 
     /**
-     * GET bugdets/{idUser}/{state}
+     * GET budgets/user/{idUser}/{state}
      * 
      * 
      * Responses:
@@ -83,11 +83,11 @@ interface BudgetControllerApi {
      * @param state 
      * @return [kotlin.collections.List<BudgetResponse>]
      */
-    @GET("bugdets/{idUser}/{state}")
+    @GET("budgets/user/{idUser}/{state}")
     suspend fun findAllByUserAndState4(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<BudgetResponse>>
 
     /**
-     * GET bugdets/{id}
+     * GET budgets/{id}
      * 
      * 
      * Responses:
@@ -96,11 +96,11 @@ interface BudgetControllerApi {
      * @param id 
      * @return [BudgetResponse]
      */
-    @GET("bugdets/{id}")
+    @GET("budgets/{id}")
     suspend fun findById5(@Path("id") id: kotlin.Long): Response<BudgetResponse>
 
     /**
-     * PUT bugdets/{id}
+     * PUT budgets/{id}
      * 
      * 
      * Responses:
@@ -110,7 +110,7 @@ interface BudgetControllerApi {
      * @param budgetRequest 
      * @return [BudgetResponse]
      */
-    @PUT("bugdets/{id}")
+    @PUT("budgets/{id}")
     suspend fun update6(@Path("id") id: kotlin.Long, @Body budgetRequest: BudgetRequest): Response<BudgetResponse>
 
 }

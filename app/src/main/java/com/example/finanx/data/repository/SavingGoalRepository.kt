@@ -11,8 +11,6 @@ class SavingGoalRepository(private val api: SavingGoalControllerApi) {
         return api.findAllActiveByUser1(userId)
     }
 
-
-
     suspend fun createSavingGoal(request: SavingGoalRequest): Response<SavingGoalResponse> {
         return api.create2(request)
     }
@@ -22,6 +20,6 @@ class SavingGoalRepository(private val api: SavingGoalControllerApi) {
     }
 
     suspend fun deleteSavingGoal(id: Long): Response<Unit> {
-        return api.disable3(id)
+        return api.disable1(id)
     }
 }

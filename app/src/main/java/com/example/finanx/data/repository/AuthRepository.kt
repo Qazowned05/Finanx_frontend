@@ -17,16 +17,24 @@ class AuthRepository(private val api: AuthControllerApi) {
         return api.google(GoogleLoginRequest(idToken = idToken))
     }
 
-    suspend fun register(name: String, email: String, password: String): Response<LoginResponse> {
+    suspend fun register(
+        username: String,
+        name: String,
+        lastname: String,
+        email: String,
+        password: String,
+        timeZone: UserRequest.TimeZone
+    ): Response<LoginResponse> {
         val user = UserRequest(
+            username = username,
             name = name,
-            lastname = "User",
+            lastname = lastname,
             email = email,
-            username = email.substringBefore("@"),
             password = password,
-            timeZone = UserRequest.TimeZone.AMERICA_LIMA
+            timeZone = timeZone
         )
-        println("registering user: $user")
+
+        println("Registrando usuario completo: $user")
 
         return api.register1(user)
     }

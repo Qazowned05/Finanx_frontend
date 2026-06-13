@@ -24,7 +24,9 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 
 @Composable
 fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
+    var username by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -52,9 +54,32 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Nombre de usuario") },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Nombre Completo") },
+                label = { Text("Nombres") },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                shape = RoundedCornerShape(12.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Nuevo campo: Apellidos
+            OutlinedTextField(
+                value = lastname,
+                onValueChange = { lastname = it },
+                label = { Text("Apellidos") },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 shape = RoundedCornerShape(12.dp)
@@ -89,7 +114,16 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                 CircularProgressIndicator(color = BluePrimary)
             } else {
                 Button(
-                    onClick = { viewModel.register(name, email, password) },
+                    onClick = {
+                        viewModel.register(
+                            username = username,
+                            name = name,
+                            lastname = lastname,
+                            email = email,
+                            password = password,
+                            timeZone = org.openapitools.client.models.UserRequest.TimeZone.AMERICA_LIMA
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
@@ -101,8 +135,6 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
 
                 OutlinedButton(
                     onClick = {
-                        // Para registro, el backend normalmente crea/actualiza usuario
-                        // a partir del idToken.
                         if (activity != null) viewModel.loginWithGoogle(activity)
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),

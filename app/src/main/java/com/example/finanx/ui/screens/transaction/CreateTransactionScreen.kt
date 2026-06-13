@@ -10,8 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.navigation.NavController
-import com.example.finanx.ui.components.SegmentedButton
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.TransactionViewModel
 import org.openapitools.client.models.CategoryResponse
@@ -70,8 +72,19 @@ fun CreateTransactionScreen(
             )
 
             Text("Tipo", style = MaterialTheme.typography.bodyLarge)
-            SegmentedButton(items = listOf("Gasto", "Ingreso")) { index ->
-                type = if (index == 0) TransactionRequest.Type.SPENT.value else TransactionRequest.Type.INCOME.value
+
+            val options = listOf("Gasto", "Ingreso")
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                options.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        selected = (type == if (index == 0) TransactionRequest.Type.SPENT.value else TransactionRequest.Type.INCOME.value),
+                        onClick = {
+                            type = if (index == 0) TransactionRequest.Type.SPENT.value else TransactionRequest.Type.INCOME.value
+                        },
+                        shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                        label = { Text(label) }
+                    )
+                }
             }
 
             when (val state = viewModel.categoryState) {

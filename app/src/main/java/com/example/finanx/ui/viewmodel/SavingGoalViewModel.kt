@@ -13,6 +13,7 @@ import org.openapitools.client.models.SavingGoalRequest
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.OffsetDateTime
 
 sealed class SavingGoalState {
     object Loading : SavingGoalState()
@@ -61,7 +62,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline
+                    deadline = deadline as OffsetDateTime?
                 )
 
                 val response = repository.createSavingGoal(request)
@@ -95,7 +96,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline
+                    deadline = deadline as OffsetDateTime?
                 )
 
                 val response = repository.updateSavingGoal(goalId, request)

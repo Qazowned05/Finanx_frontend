@@ -15,7 +15,6 @@ class TransactionRepository(
     }
 
     suspend fun createTransaction(transaction: TransactionRequest): Response<TransactionResponse> {
-        // Corregido: el parámetro se llama 'transactionRequest'
         return api.create(transactionRequest = transaction)
     }
 }
