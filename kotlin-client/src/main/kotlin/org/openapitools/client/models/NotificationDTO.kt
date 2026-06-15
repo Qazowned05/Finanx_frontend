@@ -89,7 +89,7 @@ data class NotificationDTO (
     val budgetId: kotlin.Long? = null,
 
     @Json(name = "budgetDescription")
-    val budgetDescription: kotlin.Long? = null,
+    val budgetDescription: kotlin.String? = null,
 
     @Json(name = "budgetState")
     val budgetState: NotificationDTO.BudgetState? = null,

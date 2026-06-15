@@ -31,8 +31,13 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
             TopAppBar(
                 title = { Text("Mi Finanzas", fontWeight = FontWeight.Bold) },
                 actions = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Notifications, contentDescription = null)
+                    IconButton(onClick = {
+                        navController.navigate("notifications")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notificaciones"
+                        )
                     }
                     ProfileMenuAction(
                         onMyProfile = { navController.navigate("profile") },

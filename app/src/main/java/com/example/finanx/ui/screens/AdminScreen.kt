@@ -25,7 +25,8 @@ fun AdminScreen(
     authViewModel: AuthViewModel,
     onNavigateToCategories: () -> Unit = {},
     onNavigateToSavingGoals: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToAnalyticsDashboard: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
@@ -65,6 +66,10 @@ fun AdminScreen(
 
             item {
                 AdminSection("Mantenimiento") {
+                    AdminButton(
+                        text = "Resumen financiero",
+                        onClick = onNavigateToAnalyticsDashboard
+                    )
                     AdminButton("Notificaciones", true)
                     AdminButton("Reportes")
                 }

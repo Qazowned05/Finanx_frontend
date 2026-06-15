@@ -12,6 +12,8 @@ import org.openapitools.client.apis.UserControllerApi
 import org.openapitools.client.infrastructure.Serializer
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import org.openapitools.client.apis.NotificationControllerApi
+import org.openapitools.client.apis.AnalyticsControllerApi
 
 object TokenStore {
     var token: String = ""
@@ -97,5 +99,24 @@ object RetrofitClient {
             .client(client)
             .build()
             .create(TransactionControllerApi::class.java)
+    }
+    // API de notificaciones generada por kotlin-client.
+    // Se usa para no crear endpoints duplicados manualmente.
+    val notificationApi: NotificationControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(NotificationControllerApi::class.java)
+    }
+
+    val analyticsApi: AnalyticsControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(AnalyticsControllerApi::class.java)
     }
 }
