@@ -32,7 +32,7 @@ interface NotificationControllerApi {
      * @param idUser 
      * @return [kotlin.collections.List<NotificationDTO>]
      */
-    @GET("notifications/{idUser}")
+    @GET("notifications/user/{idUser}")
     suspend fun findAllByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<NotificationDTO>>
 
 
@@ -57,7 +57,7 @@ interface NotificationControllerApi {
      * @param state 
      * @return [kotlin.collections.List<NotificationDTO>]
      */
-    @GET("notifications/{idUser}/{state}")
+    @GET("notifications/user/{idUser}/{state}")
     suspend fun findAllByUserAndState3(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<NotificationDTO>>
 
     /**

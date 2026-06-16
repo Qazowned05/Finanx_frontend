@@ -32,7 +32,9 @@ import com.example.finanx.ui.viewmodel.CategoryViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import com.example.finanx.ui.viewmodel.TransactionViewModel
 import com.example.finanx.ui.viewmodel.UserViewModel
-
+import com.example.finanx.ui.screens.notification.NotificacionesScreen
+import com.example.finanx.ui.screens.analytics.AnalyticsScreen
+import com.example.finanx.ui.screens.analytics.AnalyticsScreen
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Home : Screen("home", "Inicio", Icons.Default.Home)
     object Transactions : Screen("transactions", "Movimientos", Icons.Default.List)
@@ -161,7 +163,11 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
                     authViewModel = authViewModel,
                     onNavigateToCategories = { navController.navigate(Screen.Categories.route) },
                     onNavigateToSavingGoals = { navController.navigate(Screen.SavingGoals.route) },
-                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                    onNavigateToAnalyticsDashboard = {
+                        navController.navigate("analytics_dashboard")
+                    }
+
                 )
             }
             composable(Screen.Categories.route) {
@@ -185,6 +191,13 @@ fun AppNavigation(userId: Long, authViewModel: AuthViewModel) {
                     )
                 }
             }
+            composable("notifications") {
+                NotificacionesScreen(userId = userId)
+            }
+            composable("analytics_dashboard") {
+                AnalyticsScreen(userId = userId)
+            }
         }
+
     }
 }
