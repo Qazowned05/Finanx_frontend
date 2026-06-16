@@ -23,14 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.Update2Request
-import org.openapitools.client.models.BudgetScheduleRequest
-import org.openapitools.client.models.RecurrenceRuleRequest
-import org.openapitools.client.models.ScheduleRequest
-import org.openapitools.client.models.TransactionScheduleRequest
 
 class Update2RequestTest : ShouldSpec() {
     init {

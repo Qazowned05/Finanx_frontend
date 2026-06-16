@@ -23,12 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.RecurrenceRuleResponse
-import org.openapitools.client.models.ScheduleResponse
 
 class TransactionScheduleResponseTest : ShouldSpec() {
     init {

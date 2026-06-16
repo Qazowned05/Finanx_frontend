@@ -23,18 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.SavingGoalsDashboard
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.AggregateBySavingGoalState
-import org.openapitools.client.models.DashboardResponse
-import org.openapitools.client.models.InsightSummary
-import org.openapitools.client.models.PeriodResponse
-import org.openapitools.client.models.RankingSavingGoalResponse
-import org.openapitools.client.models.TimeLineLocalDate
-import org.openapitools.client.models.TimeLineSavingGoalResponse
 
 class SavingGoalsDashboardTest : ShouldSpec() {
     init {

@@ -23,18 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.BudgetsDashboard
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.AggregateByBudgetExecutionResponse
-import org.openapitools.client.models.AggregateByBudgetHealth
-import org.openapitools.client.models.DashboardResponse
-import org.openapitools.client.models.InsightSummary
-import org.openapitools.client.models.PeriodResponse
-import org.openapitools.client.models.RankingCategoryResponse
-import org.openapitools.client.models.TimeLineBudgetExecutionResponse
 
 class BudgetsDashboardTest : ShouldSpec() {
     init {

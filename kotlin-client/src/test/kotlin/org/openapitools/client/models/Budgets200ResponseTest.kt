@@ -23,32 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.Budgets200Response
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.AggregateByBudgetExecutionResponse
-import org.openapitools.client.models.AggregateByBudgetHealth
-import org.openapitools.client.models.AggregateBySavingGoalState
-import org.openapitools.client.models.BudgetsDashboard
-import org.openapitools.client.models.Insight
-import org.openapitools.client.models.InsightSummary
-import org.openapitools.client.models.PeriodResponse
-import org.openapitools.client.models.RankingCategoryResponse
-import org.openapitools.client.models.RankingCategorySummary
-import org.openapitools.client.models.RankingPaymentMethod
-import org.openapitools.client.models.RankingReasonSummary
-import org.openapitools.client.models.RankingSavingGoalResponse
-import org.openapitools.client.models.RankingTransactionType
-import org.openapitools.client.models.SavingGoalsDashboard
-import org.openapitools.client.models.ScheduledProjection
-import org.openapitools.client.models.TSchedulesDashboard
-import org.openapitools.client.models.TimeLineBudgetExecutionResponse
-import org.openapitools.client.models.TimeLineLocalDate
-import org.openapitools.client.models.TimeLineSavingGoalResponse
-import org.openapitools.client.models.TimeLineTransactionResponse
-import org.openapitools.client.models.TransactionsDashboard
 
 class Budgets200ResponseTest : ShouldSpec() {
     init {

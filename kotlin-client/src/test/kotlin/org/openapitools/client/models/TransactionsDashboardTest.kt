@@ -23,19 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.TransactionsDashboard
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.DashboardResponse
-import org.openapitools.client.models.InsightSummary
-import org.openapitools.client.models.PeriodResponse
-import org.openapitools.client.models.RankingCategorySummary
-import org.openapitools.client.models.RankingPaymentMethod
-import org.openapitools.client.models.RankingReasonSummary
-import org.openapitools.client.models.RankingTransactionType
-import org.openapitools.client.models.TimeLineTransactionResponse
 
 class TransactionsDashboardTest : ShouldSpec() {
     init {
