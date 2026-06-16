@@ -32,9 +32,9 @@ import java.io.Serializable
 /**
  * 
  *
- * @param type 
  * @param userId 
  * @param categoryId 
+ * @param type 
  * @param recurrenceRule 
  */
 
@@ -44,12 +44,12 @@ interface ScheduleRequest : Serializable {
         private const val serialVersionUID: Long = 123
     }
 
+    @Json(name = "userId")
+    val userId: kotlin.Long
+    @Json(name = "categoryId")
+    val categoryId: kotlin.Long
     @Json(name = "type")
     val type: kotlin.String
-    @Json(name = "userId")
-    val userId: kotlin.Long?
-    @Json(name = "categoryId")
-    val categoryId: kotlin.Long?
     @Json(name = "recurrenceRule")
     val recurrenceRule: RecurrenceRuleRequest?
 

@@ -4,11 +4,9 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
+| **aggregate** | [**AggregateByCategorySummary**](AggregateByCategorySummary.md) |  |  [optional] |
 | **rank** | **kotlin.Int** |  |  [optional] |
-| **item** | [**CategorySummary**](CategorySummary.md) |  |  [optional] |
 | **metricValue** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **occurrenceCount** | **kotlin.Long** |  |  [optional] |
-| **sharePercentage** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 
 
 

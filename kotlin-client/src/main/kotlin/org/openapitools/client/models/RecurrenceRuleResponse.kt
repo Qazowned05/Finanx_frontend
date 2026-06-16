@@ -56,10 +56,10 @@ data class RecurrenceRuleResponse (
     val dayOfWeek: RecurrenceRuleResponse.DayOfWeek? = null,
 
     @Json(name = "start")
-    val start: java.time.OffsetDateTime? = null,
+    val start: java.time.LocalDateTime? = null,
 
     @Json(name = "end")
-    val end: java.time.OffsetDateTime? = null,
+    val end: java.time.LocalDateTime? = null,
 
     @Json(name = "durationDays")
     val durationDays: kotlin.Long? = null

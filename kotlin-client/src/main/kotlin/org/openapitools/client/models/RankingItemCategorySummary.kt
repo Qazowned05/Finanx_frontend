@@ -23,7 +23,7 @@
 
 package org.openapitools.client.models
 
-import org.openapitools.client.models.CategorySummary
+import org.openapitools.client.models.AggregateByCategorySummary
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -32,30 +32,22 @@ import java.io.Serializable
 /**
  * 
  *
+ * @param aggregate 
  * @param rank 
- * @param item 
  * @param metricValue 
- * @param occurrenceCount 
- * @param sharePercentage 
  */
 
 
 data class RankingItemCategorySummary (
 
+    @Json(name = "aggregate")
+    val aggregate: AggregateByCategorySummary? = null,
+
     @Json(name = "rank")
     val rank: kotlin.Int? = null,
 
-    @Json(name = "item")
-    val item: CategorySummary? = null,
-
     @Json(name = "metricValue")
-    val metricValue: java.math.BigDecimal? = null,
-
-    @Json(name = "occurrenceCount")
-    val occurrenceCount: kotlin.Long? = null,
-
-    @Json(name = "sharePercentage")
-    val sharePercentage: java.math.BigDecimal? = null
+    val metricValue: java.math.BigDecimal? = null
 
 ) : Serializable {
     companion object {

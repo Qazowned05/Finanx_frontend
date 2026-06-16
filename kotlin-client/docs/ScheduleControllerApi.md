@@ -7,7 +7,7 @@ All URIs are relative to *http://localhost:8080*
 | [**cancel**](ScheduleControllerApi.md#cancel) | **POST** schedule/{id}/cancel |  |
 | [**create1**](ScheduleControllerApi.md#create1) | **POST** schedule |  |
 | [**disable6**](ScheduleControllerApi.md#disable6) | **DELETE** schedule/{id}/disable |  |
-| [**findAllByUserAndState**](ScheduleControllerApi.md#findAllByUserAndState) | **GET** schedule/{idUser}/{state} |  |
+| [**findAllByUserAndState**](ScheduleControllerApi.md#findAllByUserAndState) | **GET** schedule/user/{idUser}/{state} |  |
 | [**pause**](ScheduleControllerApi.md#pause) | **POST** schedule/{id}/pause |  |
 | [**resume**](ScheduleControllerApi.md#resume) | **POST** schedule/{id}/resume |  |
 | [**update2**](ScheduleControllerApi.md#update2) | **PUT** schedule/{id} |  |

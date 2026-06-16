@@ -71,22 +71,22 @@ data class TransactionScheduleResponse (
     override val categoryName: kotlin.String? = null,
 
     @Json(name = "nextRunAt")
-    override val nextRunAt: java.time.OffsetDateTime? = null,
+    override val nextRunAt: java.time.LocalDateTime? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.OffsetDateTime? = null,
+    override val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "lastRunAt")
-    override val lastRunAt: java.time.OffsetDateTime? = null,
+    override val lastRunAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    override val disabledAt: java.time.OffsetDateTime? = null,
+    override val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "active")
     override val active: kotlin.Boolean? = null,
 
     @Json(name = "state")
-    override val state: ScheduleResponse.State? = null,
+    override val state: TransactionScheduleResponse.State? = null,
 
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleResponse? = null,

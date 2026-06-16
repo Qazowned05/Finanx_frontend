@@ -7,11 +7,11 @@
 | **scheduledTransactionId** | **kotlin.Long** |  |  [optional] |
 | **transactionType** | [**inline**](#TransactionType) |  |  [optional] |
 | **transactionAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **category** | [**CategorySummary**](CategorySummary.md) |  |  [optional] |
-| **reason** | [**ReasonSummary**](ReasonSummary.md) |  |  [optional] |
+| **category** | [**CategoryResponse**](CategoryResponse.md) |  |  [optional] |
+| **reason** | [**ReasonResponse**](ReasonResponse.md) |  |  [optional] |
 | **recurrenceType** | [**inline**](#RecurrenceType) |  |  [optional] |
-| **nextRunAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **endAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **nextRunAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **endAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 | **expectedOccurrenceCount** | **kotlin.Int** |  |  [optional] |
 | **expectedTotalAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 

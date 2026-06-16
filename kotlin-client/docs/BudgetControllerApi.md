@@ -4,13 +4,14 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancel1**](BudgetControllerApi.md#cancel1) | **POST** bugdets/{id}/cancel |  |
-| [**create5**](BudgetControllerApi.md#create5) | **POST** bugdets |  |
-| [**disable5**](BudgetControllerApi.md#disable5) | **POST** bugdets/{id}/disable |  |
-| [**findAllByUser3**](BudgetControllerApi.md#findAllByUser3) | **GET** bugdets/{idUser} |  |
-| [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** bugdets/{idUser}/{state} |  |
-| [**findById5**](BudgetControllerApi.md#findById5) | **GET** bugdets/{id} |  |
-| [**update6**](BudgetControllerApi.md#update6) | **PUT** bugdets/{id} |  |
+| [**cancel2**](BudgetControllerApi.md#cancel2) | **POST** budgets/{id}/cancel |  |
+| [**create5**](BudgetControllerApi.md#create5) | **POST** budgets |  |
+| [**disable5**](BudgetControllerApi.md#disable5) | **POST** budgets/{id}/disable |  |
+| [**findAllByUser4**](BudgetControllerApi.md#findAllByUser4) | **GET** budgets/user/{idUser} |  |
+| [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** budgets/user/{idUser}/{state} |  |
+| [**findById5**](BudgetControllerApi.md#findById5) | **GET** budgets/{id} |  |
+| [**getBudgetsByHealth**](BudgetControllerApi.md#getBudgetsByHealth) | **GET** budgets/{health} |  |
+| [**update6**](BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 
 
 
@@ -28,7 +29,7 @@ val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.cancel1(id)
+    webService.cancel2(id)
 }
 ```
 
@@ -139,7 +140,7 @@ val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
 val idUser : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetResponse> = webService.findAllByUser3(idUser)
+    val result : kotlin.collections.List<BudgetResponse> = webService.findAllByUser4(idUser)
 }
 ```
 
@@ -185,7 +186,7 @@ launch(Dispatchers.IO) {
 | **idUser** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**|  | [enum: ACTIVE, CANCELLED, FINALIZED] |
+| **state** | **kotlin.String**|  | [enum: ACTIVE, CANCELLED, DISABLED, FINALIZED] |
 
 ### Return type
 
@@ -227,6 +228,45 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**BudgetResponse**](BudgetResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
+val health : kotlin.String = health_example // kotlin.String | 
+val request : PeriodRequest =  // PeriodRequest | 
+
+launch(Dispatchers.IO) {
+    val result : TimeBoundListBudgetResponse = webService.getBudgetsByHealth(health, request)
+}
+```
+
+### Parameters
+| **health** | **kotlin.String**|  | [enum: OK, NEAR_LIMIT, EXCEEDED, INACTIVE] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **request** | [**PeriodRequest**](.md)|  | |
+
+### Return type
+
+[**TimeBoundListBudgetResponse**](TimeBoundListBudgetResponse.md)
 
 ### Authorization
 

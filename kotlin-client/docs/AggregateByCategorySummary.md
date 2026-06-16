@@ -1,0 +1,13 @@
+
+# AggregateByCategorySummary
+
+## Properties
+| Name | Type | Description | Notes |
+| ------------ | ------------- | ------------- | ------------- |
+| **aggregate** | [**Aggregate**](Aggregate.md) |  |  [optional] |
+| **factor** | [**CategorySummary**](CategorySummary.md) |  |  [optional] |
+| **factorName** | **kotlin.String** |  |  [optional] |
+| **sharePercentage** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
+
+
+

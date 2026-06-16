@@ -7,8 +7,8 @@ All URIs are relative to *http://localhost:8080*
 | [**activate**](CategoryControllerApi.md#activate) | **POST** categories/{id}/activate |  |
 | [**create4**](CategoryControllerApi.md#create4) | **POST** categories |  |
 | [**disable4**](CategoryControllerApi.md#disable4) | **POST** categories/{id}/disable |  |
-| [**findAllByUser2**](CategoryControllerApi.md#findAllByUser2) | **GET** categories/{idUser} |  |
-| [**findAllByUserAndActive**](CategoryControllerApi.md#findAllByUserAndActive) | **GET** categories/{idUser}/{active} |  |
+| [**findAllByUser3**](CategoryControllerApi.md#findAllByUser3) | **GET** categories/user/{idUser} |  |
+| [**findAllByUserAndActive**](CategoryControllerApi.md#findAllByUserAndActive) | **GET** categories/user/{idUser}/{active} |  |
 | [**findById4**](CategoryControllerApi.md#findById4) | **GET** categories/{id} |  |
 | [**update5**](CategoryControllerApi.md#update5) | **PUT** categories/{id} |  |
 
@@ -139,7 +139,7 @@ val webService = apiClient.createWebservice(CategoryControllerApi::class.java)
 val idUser : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<CategoryResponse> = webService.findAllByUser2(idUser)
+    val result : kotlin.collections.List<CategoryResponse> = webService.findAllByUser3(idUser)
 }
 ```
 

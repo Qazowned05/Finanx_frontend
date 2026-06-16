@@ -33,12 +33,12 @@ import java.io.Serializable
 /**
  * 
  *
+ * @param userId 
+ * @param categoryId 
  * @param type 
  * @param amount 
  * @param paymentMethod 
  * @param transactionType 
- * @param userId 
- * @param categoryId 
  * @param recurrenceRule 
  * @param reasonId 
  * @param description 
@@ -46,6 +46,12 @@ import java.io.Serializable
 
 
 data class TransactionScheduleRequest (
+
+    @Json(name = "userId")
+    override val userId: kotlin.Long,
+
+    @Json(name = "categoryId")
+    override val categoryId: kotlin.Long,
 
     @Json(name = "type")
     override val type: kotlin.String,
@@ -58,12 +64,6 @@ data class TransactionScheduleRequest (
 
     @Json(name = "transactionType")
     val transactionType: TransactionScheduleRequest.TransactionType,
-
-    @Json(name = "userId")
-    override val userId: kotlin.Long? = null,
-
-    @Json(name = "categoryId")
-    override val categoryId: kotlin.Long? = null,
 
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null,

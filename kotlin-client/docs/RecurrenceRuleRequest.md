@@ -6,8 +6,8 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **recurrenceType** | [**inline**](#RecurrenceType) |  |  |
 | **interval** | **kotlin.Int** |  |  |
-| **start** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  |
-| **end** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  |
+| **start** | [**java.time.LocalDate**](java.time.LocalDate.md) |  |  |
+| **end** | [**java.time.LocalDate**](java.time.LocalDate.md) |  |  |
 | **dayOfWeek** | [**inline**](#DayOfWeek) |  |  [optional] |
 
 

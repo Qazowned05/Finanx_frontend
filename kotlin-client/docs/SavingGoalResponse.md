@@ -8,9 +8,10 @@
 | **description** | **kotlin.String** |  |  [optional] |
 | **targetAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **accumulated** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **deadline** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **deadline** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **completedAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
 | **userId** | **kotlin.Long** |  |  [optional] |
@@ -20,7 +21,7 @@
 | **daysRemaining** | **kotlin.Long** |  |  [optional] |
 | **averageContribution** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **completed** | **kotlin.Boolean** |  |  [optional] |
-| **estimatedCompletionDate** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **estimatedCompletionDate** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 
 
 <a id="State"></a>

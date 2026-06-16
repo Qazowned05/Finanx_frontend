@@ -68,16 +68,16 @@ data class NotificationDTO (
     val message: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "scheduledAt")
-    val scheduledAt: java.time.OffsetDateTime? = null,
+    val scheduledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "sentAt")
-    val sentAt: java.time.OffsetDateTime? = null,
+    val sentAt: java.time.LocalDateTime? = null,
 
     @Json(name = "state")
     val state: NotificationDTO.State? = null,
@@ -89,7 +89,7 @@ data class NotificationDTO (
     val budgetId: kotlin.Long? = null,
 
     @Json(name = "budgetDescription")
-    val budgetDescription: kotlin.Long? = null,
+    val budgetDescription: kotlin.String? = null,
 
     @Json(name = "budgetState")
     val budgetState: NotificationDTO.BudgetState? = null,
@@ -132,12 +132,13 @@ data class NotificationDTO (
     /**
      * 
      *
-     * Values: ACTIVE,CANCELLED,FINALIZED
+     * Values: ACTIVE,CANCELLED,DISABLED,FINALIZED
      */
     @JsonClass(generateAdapter = false)
     enum class BudgetState(val value: kotlin.String) {
         @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
+        @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED");
     }
 

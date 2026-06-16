@@ -35,6 +35,8 @@ import java.io.Serializable
 /**
  * 
  *
+ * @param userId 
+ * @param categoryId 
  * @param type 
  * @param alertable 
  * @param percentAlert 
@@ -43,14 +45,18 @@ import java.io.Serializable
  * @param amount 
  * @param paymentMethod 
  * @param transactionType 
- * @param userId 
- * @param categoryId 
  * @param recurrenceRule 
  * @param reasonId 
  */
 
 
 data class Update2Request (
+
+    @Json(name = "userId")
+    val userId: kotlin.Long,
+
+    @Json(name = "categoryId")
+    val categoryId: kotlin.Long,
 
     @Json(name = "type")
     val type: kotlin.String,
@@ -75,12 +81,6 @@ data class Update2Request (
 
     @Json(name = "transactionType")
     val transactionType: Update2Request.TransactionType,
-
-    @Json(name = "userId")
-    val userId: kotlin.Long? = null,
-
-    @Json(name = "categoryId")
-    val categoryId: kotlin.Long? = null,
 
     @Json(name = "recurrenceRule")
     val recurrenceRule: RecurrenceRuleRequest? = null,

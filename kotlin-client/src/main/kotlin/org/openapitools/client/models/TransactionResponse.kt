@@ -34,7 +34,11 @@ import java.io.Serializable
  * @param id 
  * @param userId 
  * @param categoryId 
+ * @param categoryName 
  * @param reasonId 
+ * @param reasonDescription 
+ * @param savingGoalId 
+ * @param scheduleId 
  * @param amount 
  * @param paymentMethod 
  * @param type 
@@ -55,8 +59,20 @@ data class TransactionResponse (
     @Json(name = "categoryId")
     val categoryId: kotlin.Long? = null,
 
+    @Json(name = "categoryName")
+    val categoryName: kotlin.Long? = null,
+
     @Json(name = "reasonId")
     val reasonId: kotlin.Long? = null,
+
+    @Json(name = "reasonDescription")
+    val reasonDescription: kotlin.Long? = null,
+
+    @Json(name = "savingGoalId")
+    val savingGoalId: kotlin.Long? = null,
+
+    @Json(name = "scheduleId")
+    val scheduleId: kotlin.Long? = null,
 
     @Json(name = "amount")
     val amount: java.math.BigDecimal? = null,
@@ -68,10 +84,10 @@ data class TransactionResponse (
     val type: TransactionResponse.Type? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null

@@ -11,6 +11,7 @@
 | **type** | [**inline**](#Type) |  |  |
 | **reasonId** | **kotlin.Long** |  |  [optional] |
 | **description** | **kotlin.String** |  |  [optional] |
+| **savingGoalId** | **kotlin.Long** |  |  [optional] |
 
 
 <a id="PaymentMethod"></a>
