@@ -82,6 +82,12 @@ class ScheduleResponseTest : ShouldSpec() {
             //modelInstance.lastRunAt shouldBe ("TODO")
         }
 
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
         // to test the property `active`
         should("test active") {
             // uncomment below to test the property

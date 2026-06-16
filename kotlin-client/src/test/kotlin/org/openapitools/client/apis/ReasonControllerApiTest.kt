@@ -43,26 +43,26 @@ class ReasonControllerApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test disable2
-        should("test disable2") {
-            // uncomment below to test disable2
+        // to test disable1
+        should("test disable1") {
+            // uncomment below to test disable1
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //apiInstance.disable2(id)
+            //apiInstance.disable1(id)
         }
 
-        // to test findAll1
-        should("test findAll1") {
-            // uncomment below to test findAll1
+        // to test findAllByUser1
+        should("test findAllByUser1") {
+            // uncomment below to test findAllByUser1
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<ReasonResponse> = apiInstance.findAll1(idUser)
+            //val result : kotlin.collections.List<ReasonResponse> = apiInstance.findAllByUser1(idUser)
             //result shouldBe ("TODO")
         }
 
-        // to test findById4
-        should("test findById4") {
-            // uncomment below to test findById4
+        // to test findById3
+        should("test findById3") {
+            // uncomment below to test findById3
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : ReasonResponse = apiInstance.findById4(id)
+            //val result : ReasonResponse = apiInstance.findById3(id)
             //result shouldBe ("TODO")
         }
 

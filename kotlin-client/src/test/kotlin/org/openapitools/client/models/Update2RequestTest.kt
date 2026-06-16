@@ -37,6 +37,18 @@ class Update2RequestTest : ShouldSpec() {
         // uncomment below to create an instance of Update2Request
         //val modelInstance = Update2Request()
 
+        // to test the property `userId`
+        should("test userId") {
+            // uncomment below to test the property
+            //modelInstance.userId shouldBe ("TODO")
+        }
+
+        // to test the property `categoryId`
+        should("test categoryId") {
+            // uncomment below to test the property
+            //modelInstance.categoryId shouldBe ("TODO")
+        }
+
         // to test the property `type`
         should("test type") {
             // uncomment below to test the property
@@ -83,18 +95,6 @@ class Update2RequestTest : ShouldSpec() {
         should("test transactionType") {
             // uncomment below to test the property
             //modelInstance.transactionType shouldBe ("TODO")
-        }
-
-        // to test the property `userId`
-        should("test userId") {
-            // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
-        }
-
-        // to test the property `categoryId`
-        should("test categoryId") {
-            // uncomment below to test the property
-            //modelInstance.categoryId shouldBe ("TODO")
         }
 
         // to test the property `recurrenceRule`

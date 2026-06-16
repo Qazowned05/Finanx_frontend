@@ -87,6 +87,12 @@ class UserResponseTest : ShouldSpec() {
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
         // to test the property `fullName`
         should("test fullName") {
             // uncomment below to test the property

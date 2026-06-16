@@ -29,17 +29,19 @@ import io.kotlintest.specs.ShouldSpec
 import org.openapitools.client.apis.BudgetControllerApi
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
+import org.openapitools.client.models.PeriodRequest
+import org.openapitools.client.models.TimeBoundListBudgetResponse
 
 class BudgetControllerApiTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of BudgetControllerApi
         //val apiInstance = BudgetControllerApi()
 
-        // to test cancel
-        should("test cancel") {
-            // uncomment below to test cancel
+        // to test cancel2
+        should("test cancel2") {
+            // uncomment below to test cancel2
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //apiInstance.cancel(id)
+            //apiInstance.cancel2(id)
         }
 
         // to test create5
@@ -57,28 +59,37 @@ class BudgetControllerApiTest : ShouldSpec() {
             //apiInstance.disable5(id)
         }
 
-        // to test findAllByUser3
-        should("test findAllByUser3") {
-            // uncomment below to test findAllByUser3
+        // to test findAllByUser4
+        should("test findAllByUser4") {
+            // uncomment below to test findAllByUser4
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllByUser3(idUser)
+            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllByUser4(idUser)
             //result shouldBe ("TODO")
         }
 
-        // to test findAllByUserAndState1
-        should("test findAllByUserAndState1") {
-            // uncomment below to test findAllByUserAndState1
+        // to test findAllByUserAndState4
+        should("test findAllByUserAndState4") {
+            // uncomment below to test findAllByUserAndState4
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
             //val state : kotlin.String = state_example // kotlin.String | 
-            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllByUserAndState1(idUser, state)
+            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllByUserAndState4(idUser, state)
             //result shouldBe ("TODO")
         }
 
-        // to test findById6
-        should("test findById6") {
-            // uncomment below to test findById6
+        // to test findById5
+        should("test findById5") {
+            // uncomment below to test findById5
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : BudgetResponse = apiInstance.findById6(id)
+            //val result : BudgetResponse = apiInstance.findById5(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test getBudgetsByHealth
+        should("test getBudgetsByHealth") {
+            // uncomment below to test getBudgetsByHealth
+            //val health : kotlin.String = health_example // kotlin.String | 
+            //val request : PeriodRequest =  // PeriodRequest | 
+            //val result : TimeBoundListBudgetResponse = apiInstance.getBudgetsByHealth(health, request)
             //result shouldBe ("TODO")
         }
 

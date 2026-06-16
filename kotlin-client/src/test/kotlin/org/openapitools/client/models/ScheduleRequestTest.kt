@@ -34,12 +34,6 @@ class ScheduleRequestTest : ShouldSpec() {
         // uncomment below to create an instance of ScheduleRequest
         //val modelInstance = ScheduleRequest()
 
-        // to test the property `type`
-        should("test type") {
-            // uncomment below to test the property
-            //modelInstance.type shouldBe ("TODO")
-        }
-
         // to test the property `userId`
         should("test userId") {
             // uncomment below to test the property
@@ -50,6 +44,12 @@ class ScheduleRequestTest : ShouldSpec() {
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
+        }
+
+        // to test the property `type`
+        should("test type") {
+            // uncomment below to test the property
+            //modelInstance.type shouldBe ("TODO")
         }
 
         // to test the property `recurrenceRule`

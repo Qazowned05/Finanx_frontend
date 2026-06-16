@@ -100,8 +100,7 @@ object RetrofitClient {
             .build()
             .create(TransactionControllerApi::class.java)
     }
-    // API de notificaciones generada por kotlin-client.
-    // Se usa para no crear endpoints duplicados manualmente.
+
     val notificationApi: NotificationControllerApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)

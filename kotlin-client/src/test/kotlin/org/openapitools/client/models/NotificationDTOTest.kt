@@ -69,10 +69,22 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
         // to test the property `scheduledAt`
         should("test scheduledAt") {
             // uncomment below to test the property
             //modelInstance.scheduledAt shouldBe ("TODO")
+        }
+
+        // to test the property `sentAt`
+        should("test sentAt") {
+            // uncomment below to test the property
+            //modelInstance.sentAt shouldBe ("TODO")
         }
 
         // to test the property `state`
@@ -81,10 +93,16 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.state shouldBe ("TODO")
         }
 
-        // to test the property `transactionId`
-        should("test transactionId") {
+        // to test the property `scheduleId`
+        should("test scheduleId") {
             // uncomment below to test the property
-            //modelInstance.transactionId shouldBe ("TODO")
+            //modelInstance.scheduleId shouldBe ("TODO")
+        }
+
+        // to test the property `budgetId`
+        should("test budgetId") {
+            // uncomment below to test the property
+            //modelInstance.budgetId shouldBe ("TODO")
         }
 
         // to test the property `budgetDescription`
@@ -99,10 +117,16 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.budgetState shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
-        should("test categoryName") {
+        // to test the property `savingGoalId`
+        should("test savingGoalId") {
             // uncomment below to test the property
-            //modelInstance.categoryName shouldBe ("TODO")
+            //modelInstance.savingGoalId shouldBe ("TODO")
+        }
+
+        // to test the property `savingGoalDescription`
+        should("test savingGoalDescription") {
+            // uncomment below to test the property
+            //modelInstance.savingGoalDescription shouldBe ("TODO")
         }
 
     }

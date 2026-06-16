@@ -27,8 +27,8 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.ScheduledProjection
-import org.openapitools.client.models.CategorySummary
-import org.openapitools.client.models.ReasonSummary
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.ReasonResponse
 
 class ScheduledProjectionTest : ShouldSpec() {
     init {

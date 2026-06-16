@@ -27,12 +27,18 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.RankingItemCategorySummary
-import org.openapitools.client.models.CategorySummary
+import org.openapitools.client.models.AggregateByCategorySummary
 
 class RankingItemCategorySummaryTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of RankingItemCategorySummary
         //val modelInstance = RankingItemCategorySummary()
+
+        // to test the property `aggregate`
+        should("test aggregate") {
+            // uncomment below to test the property
+            //modelInstance.aggregate shouldBe ("TODO")
+        }
 
         // to test the property `rank`
         should("test rank") {
@@ -40,28 +46,10 @@ class RankingItemCategorySummaryTest : ShouldSpec() {
             //modelInstance.rank shouldBe ("TODO")
         }
 
-        // to test the property `item`
-        should("test item") {
-            // uncomment below to test the property
-            //modelInstance.item shouldBe ("TODO")
-        }
-
         // to test the property `metricValue`
         should("test metricValue") {
             // uncomment below to test the property
             //modelInstance.metricValue shouldBe ("TODO")
-        }
-
-        // to test the property `occurrenceCount`
-        should("test occurrenceCount") {
-            // uncomment below to test the property
-            //modelInstance.occurrenceCount shouldBe ("TODO")
-        }
-
-        // to test the property `sharePercentage`
-        should("test sharePercentage") {
-            // uncomment below to test the property
-            //modelInstance.sharePercentage shouldBe ("TODO")
         }
 
     }

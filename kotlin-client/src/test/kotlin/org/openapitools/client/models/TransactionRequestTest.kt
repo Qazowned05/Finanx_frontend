@@ -75,5 +75,11 @@ class TransactionRequestTest : ShouldSpec() {
             //modelInstance.description shouldBe ("TODO")
         }
 
+        // to test the property `savingGoalId`
+        should("test savingGoalId") {
+            // uncomment below to test the property
+            //modelInstance.savingGoalId shouldBe ("TODO")
+        }
+
     }
 }

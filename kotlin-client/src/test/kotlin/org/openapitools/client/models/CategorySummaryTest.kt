@@ -33,16 +33,16 @@ class CategorySummaryTest : ShouldSpec() {
         // uncomment below to create an instance of CategorySummary
         //val modelInstance = CategorySummary()
 
-        // to test the property `categoryId`
-        should("test categoryId") {
+        // to test the property `id`
+        should("test id") {
             // uncomment below to test the property
-            //modelInstance.categoryId shouldBe ("TODO")
+            //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
-        should("test categoryName") {
+        // to test the property `name`
+        should("test name") {
             // uncomment below to test the property
-            //modelInstance.categoryName shouldBe ("TODO")
+            //modelInstance.name shouldBe ("TODO")
         }
 
     }
