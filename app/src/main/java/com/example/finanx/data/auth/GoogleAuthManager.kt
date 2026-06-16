@@ -107,15 +107,12 @@ class GoogleAuthManager private constructor(
         }
     }
 
-    /** Borra el estado de credenciales para permitir elegir otra cuenta en el siguiente login. */
     suspend fun signOut() {
         credentialManager.clearCredentialState(ClearCredentialStateRequest())
     }
 
     private fun handleSignInResponse(response: GetCredentialResponse): GoogleAuthOutcome {
-        val credential = response.credential
-
-        return when (credential) {
+        return when (val credential = response.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {

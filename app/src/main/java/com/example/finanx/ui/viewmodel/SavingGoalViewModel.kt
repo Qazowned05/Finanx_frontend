@@ -62,7 +62,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline as OffsetDateTime?
+                    deadline = deadline as LocalDate
                 )
 
                 val response = repository.createSavingGoal(request)
@@ -96,7 +96,7 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline as OffsetDateTime?
+                    deadline = deadline as LocalDate
                 )
 
                 val response = repository.updateSavingGoal(goalId, request)

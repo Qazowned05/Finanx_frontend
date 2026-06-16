@@ -15,6 +15,6 @@ class UserRepository(private val api: UserControllerApi) {
     }
 
     suspend fun deactivate(id: Long): Response<UserResponse> {
-        return api.disable3(id)
+        return api.disable2(id)
     }
 }
