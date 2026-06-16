@@ -100,7 +100,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
 
                 OutlinedButton(
                     onClick = {
-                        // Flujo recomendado: hoja inferior de Credential Manager.
+
                         if (activity != null) viewModel.loginWithGoogle(activity)
                     },
                     modifier = Modifier

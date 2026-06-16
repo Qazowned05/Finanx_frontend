@@ -26,9 +26,6 @@ package com.example.api.apis
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
-import com.example.api.apis.ReasonControllerApi
-import com.example.api.models.ReasonRequest
-import com.example.api.models.ReasonResponse
 
 class ReasonControllerApiTest : ShouldSpec() {
     init {

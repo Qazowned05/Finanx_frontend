@@ -322,7 +322,6 @@ fun CreateBudgetDialog(onDismiss: () -> Unit) {
         confirmButton = {
             Button(
                 onClick = {
-                    // Aquí iría la lógica para crear el presupuesto
                     onDismiss()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)

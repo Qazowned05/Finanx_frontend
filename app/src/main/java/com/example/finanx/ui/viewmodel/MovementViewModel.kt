@@ -13,7 +13,6 @@ import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
-// Estados para la UI, ahora usando los modelos de OpenAPI
 sealed class TransactionState {
     object Loading : TransactionState()
     data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : TransactionState()
@@ -69,9 +68,9 @@ class TransactionViewModel : ViewModel() {
         userId: Long,
         description: String,
         amount: BigDecimal,
-        type: String, // "SPENT" o "INCOME"
+        type: String,
         categoryId: Long,
-        paymentMethod: String // "CASH", "CREDIT_CARD", etc.
+        paymentMethod: String
     ) {
         viewModelScope.launch {
             try {
@@ -91,7 +90,7 @@ class TransactionViewModel : ViewModel() {
                     fetchTransactions(userId)
                 }
             } catch (e: Exception) {
-                // Manejar error
+
             }
         }
     }

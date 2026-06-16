@@ -54,7 +54,6 @@ class GoogleAuthManager private constructor(
             )
             handleSignInResponse(response)
         } catch (e: NoCredentialException) {
-            // Fallback: no hay cuentas autorizadas para esta app, mostrar todas.
             val allAccountsOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(serverClientId)
