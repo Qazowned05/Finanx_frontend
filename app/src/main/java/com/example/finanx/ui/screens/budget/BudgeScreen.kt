@@ -21,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -33,10 +34,22 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
 import org.openapitools.client.models.BudgetResponse
+import org.openapitools.client.models.BudgetRequest
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.math.BigDecimal
+import android.app.DatePickerDialog
+import java.util.Calendar
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.LightBackground
 
@@ -50,37 +63,35 @@ fun BudgetScreen() {
 
     var showDialog by remember { mutableStateOf(false) }
 
-    val budgets = listOf(
-
-        BudgetResponse(
-            id = 1,
-            description = "Comida",
-            limitAmount = java.math.BigDecimal(800),
-            state = BudgetResponse.State.ACTIVE
-        ),
-
-        BudgetResponse(
-            id = 2,
-            description = "Servicios",
-            limitAmount = java.math.BigDecimal(600),
-            state = BudgetResponse.State.ACTIVE
-        ),
-
-        BudgetResponse(
-            id = 3,
-            description = "Ahorros",
-            limitAmount = java.math.BigDecimal(1000),
-            state = BudgetResponse.State.ACTIVE
-        ),
-
-        BudgetResponse(
-            id = 4,
-            description = "Salidas",
-            limitAmount = java.math.BigDecimal(350),
-            state = BudgetResponse.State.DISABLED
+    // Mantener la lista de ejemplo estable entre recomposiciones para evitar problemas de renderizado
+    val budgets = remember {
+        listOf(
+            BudgetResponse(
+                id = 1,
+                description = "Comida",
+                limitAmount = BigDecimal(800),
+                state = BudgetResponse.State.ACTIVE
+            ),
+            BudgetResponse(
+                id = 2,
+                description = "Servicios",
+                limitAmount = BigDecimal(600),
+                state = BudgetResponse.State.ACTIVE
+            ),
+            BudgetResponse(
+                id = 3,
+                description = "Ahorros",
+                limitAmount = BigDecimal(1000),
+                state = BudgetResponse.State.ACTIVE
+            ),
+            BudgetResponse(
+                id = 4,
+                description = "Salidas",
+                limitAmount = BigDecimal(350),
+                state = BudgetResponse.State.DISABLED
+            )
         )
-
-    )
+    }
 
     Scaffold(
 
@@ -104,26 +115,18 @@ fun BudgetScreen() {
         },
 
         floatingActionButton = {
-
-            FloatingActionButton(
-
-                onClick = {
-
-                    showDialog = true
-
-                },
-
-                containerColor = BluePrimary
-
-            ) {
-
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = null
-                )
-
+            // Mostrar FAB solo en pestañas "Todos" (0) o "ACTIVE" (1)
+            if (selectedTab == 0 || selectedTab == 1) {
+                FloatingActionButton(
+                    onClick = { showDialog = true },
+                    containerColor = BluePrimary
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null
+                    )
+                }
             }
-
         }
 
     ) { padding ->
@@ -219,13 +222,11 @@ fun BudgetScreen() {
 
             ) {
 
-                items(filteredBudgets) { budget ->
-
-                    BudgetCard(
-                        budget = budget
-                    )
-
-                }
+                        items(items = filteredBudgets, key = { it.id ?: 0L }) { budget ->
+                            BudgetCard(
+                                budget = budget
+                            )
+                        }
 
                 item {
 
@@ -233,35 +234,29 @@ fun BudgetScreen() {
                         modifier = Modifier.height(24.dp)
                     )
 
-                    Button(
+                    // Mostrar botón "Nuevo Presupuesto" sólo en pestañas "Todos" o "ACTIVE"
+                    if (selectedTab == 0 || selectedTab == 1) {
+                        Button(
+                            onClick = { showDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BluePrimary
+                            )
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null
+                            )
 
-                        onClick = {
+                            Spacer(
+                                modifier = Modifier.padding(4.dp)
+                            )
 
-                            showDialog = true
+                            Text(
+                                "Nuevo Presupuesto"
+                            )
 
-                        },
-
-                        modifier = Modifier.fillMaxWidth(),
-
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = BluePrimary
-                        )
-
-                    ) {
-
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null
-                        )
-
-                        Spacer(
-                            modifier = Modifier.padding(4.dp)
-                        )
-
-                        Text(
-                            "Nuevo Presupuesto"
-                        )
-
+                        }
                     }
 
                     Spacer(
@@ -282,6 +277,12 @@ fun BudgetScreen() {
 
                     showDialog = false
 
+                },
+
+                onCreate = { budgetRequest ->
+                    // TODO: llamar al ViewModel para crear el presupuesto
+                    println("Crear presupuesto: $budgetRequest")
+                    showDialog = false
                 }
 
             )
@@ -291,18 +292,50 @@ fun BudgetScreen() {
     }
 
 @Composable
-fun CreateBudgetDialog(onDismiss: () -> Unit) {
+fun CreateBudgetDialog(onDismiss: () -> Unit, onCreate: (BudgetRequest) -> Unit) {
     var description by remember { mutableStateOf("") }
     var limitAmount by remember { mutableStateOf("") }
+    val categories = listOf(1L to "Comida", 2L to "Transporte", 3L to "Servicios", 4L to "Entretenimiento", 5L to "Otros")
+    var selectedCategoryIndex by remember { mutableStateOf(0) }
+    var alertable by remember { mutableStateOf(true) }
+    var percentAlertStr by remember { mutableStateOf("80") }
+
+    // Date picker state
+    val context = LocalContext.current
+    val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+    var startDate by remember { mutableStateOf<LocalDate?>(null) }
+    var endDate by remember { mutableStateOf<LocalDate?>(null) }
+    var showStartPicker by remember { mutableStateOf(false) }
+    var showEndPicker by remember { mutableStateOf(false) }
+
+    fun parseBigDecimal(value: String): BigDecimal? {
+        return try {
+            BigDecimal(value)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    // no-op: dates are selected with DatePickerDialog and stored in startDate/endDate
+
+    val parsedLimit = parseBigDecimal(limitAmount)
+    val parsedStart = startDate
+    val parsedEnd = endDate
+    val parsedPercent = percentAlertStr.toIntOrNull()
+
+    val canCreate = description.isNotBlank() && parsedLimit != null && parsedStart != null && parsedEnd != null && !(parsedEnd!!.isBefore(parsedStart))
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = {
-            Text("Nuevo Presupuesto")
-        },
+        title = { Text("Nuevo Presupuesto") },
         text = {
+            // Allow the dialog content to scroll and limit its max height so it fits on small screens
+            val scrollState = rememberScrollState()
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 420.dp)
+                    .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedTextField(
@@ -311,10 +344,113 @@ fun CreateBudgetDialog(onDismiss: () -> Unit) {
                     label = { Text("Descripción") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 OutlinedTextField(
                     value = limitAmount,
-                    onValueChange = { limitAmount = it },
-                    label = { Text("Monto Límite") },
+                    onValueChange = { value ->
+                        // allow digits, dot and comma — normalize comma to dot
+                        val normalized = value.replace(',', '.')
+                        limitAmount = normalized
+                    },
+                    label = { Text("Monto Límite (ej. 100.00)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Text(text = "Categoría", fontWeight = FontWeight.Bold)
+                // Mostrar categorías en filas con hasta 2 elementos por fila para evitar overflow
+                val indexedCategories = categories.mapIndexed { idx, pair -> idx to pair }
+                val rows = indexedCategories.chunked(2)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    rows.forEach { rowItems ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                            rowItems.forEach { (index, pair) ->
+                                Row(modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 4.dp)) {
+                                    RadioButton(
+                                        selected = selectedCategoryIndex == index,
+                                        onClick = { selectedCategoryIndex = index }
+                                    )
+                                    Spacer(modifier = Modifier.padding(start = 4.dp))
+                                    Text(
+                                        text = pair.second,
+                                        modifier = Modifier.padding(start = 4.dp)
+                                    )
+                                }
+                            }
+                            // Si la fila tiene un solo elemento, ocupa el espacio restante
+                            if (rowItems.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
+                    }
+                }
+
+                // Fecha inicio (DatePicker)
+                OutlinedTextField(
+                    value = startDate?.format(formatter) ?: "",
+                    onValueChange = {},
+                    label = { Text("Fecha inicio (YYYY-MM-DD)") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showStartPicker = true },
+                    readOnly = true
+                )
+
+                // Fecha fin (DatePicker)
+                OutlinedTextField(
+                    value = endDate?.format(formatter) ?: "",
+                    onValueChange = {},
+                    label = { Text("Fecha fin (YYYY-MM-DD)") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showEndPicker = true },
+                    readOnly = true
+                )
+
+                // DatePickerDialogs
+                if (showStartPicker) {
+                    val now = startDate ?: LocalDate.now()
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, dayOfMonth ->
+                            startDate = LocalDate.of(year, month + 1, dayOfMonth)
+                            showStartPicker = false
+                        },
+                        now.year,
+                        now.monthValue - 1,
+                        now.dayOfMonth
+                    ).show()
+                }
+
+                if (showEndPicker) {
+                    val now = endDate ?: LocalDate.now()
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, dayOfMonth ->
+                            endDate = LocalDate.of(year, month + 1, dayOfMonth)
+                            showEndPicker = false
+                        },
+                        now.year,
+                        now.monthValue - 1,
+                        now.dayOfMonth
+                    ).show()
+                }
+
+                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Text("Alertas")
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Switch(checked = alertable, onCheckedChange = { alertable = it })
+                }
+
+                OutlinedTextField(
+                    value = percentAlertStr,
+                    onValueChange = { newVal ->
+                        // allow only numbers and limit to 3 chars
+                        val filtered = newVal.filter { it.isDigit() }.take(3)
+                        percentAlertStr = if (filtered.isEmpty()) "0" else filtered
+                    },
+                    label = { Text("Porcentaje alerta (opcional)") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -322,9 +458,20 @@ fun CreateBudgetDialog(onDismiss: () -> Unit) {
         confirmButton = {
             Button(
                 onClick = {
-                    // Aquí iría la lógica para crear el presupuesto
-                    onDismiss()
+                    // Construir BudgetRequest y llamar al callback
+                    val budgetRequest = BudgetRequest(
+                        alertable = alertable,
+                        limitAmount = parsedLimit ?: BigDecimal.ZERO,
+                        description = description,
+                        userId = 1L, // TODO: reemplazar por usuario real
+                        categoryId = categories[selectedCategoryIndex].first,
+                        start = parsedStart ?: LocalDate.now(),
+                        end = parsedEnd ?: LocalDate.now(),
+                        percentAlert = parsedPercent
+                    )
+                    onCreate(budgetRequest)
                 },
+                enabled = canCreate,
                 colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
             ) {
                 Text("Crear")
