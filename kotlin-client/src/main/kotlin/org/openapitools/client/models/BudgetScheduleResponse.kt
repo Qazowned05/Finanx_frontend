@@ -85,7 +85,7 @@ data class BudgetScheduleResponse (
     override val active: kotlin.Boolean? = null,
 
     @Json(name = "state")
-    override val state: ScheduleResponse.State? = null,
+    override val state: BudgetScheduleResponse.State? = null,
 
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleResponse? = null,
