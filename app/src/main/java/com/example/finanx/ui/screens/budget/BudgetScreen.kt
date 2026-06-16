@@ -17,13 +17,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -42,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.width
 import org.openapitools.client.models.BudgetResponse
 import org.openapitools.client.models.BudgetRequest
 import java.time.LocalDate
@@ -50,7 +46,6 @@ import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.math.BigDecimal
 import android.app.DatePickerDialog
-import java.util.Calendar
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.LightBackground
 
@@ -304,8 +299,8 @@ fun CreateBudgetDialog(onDismiss: () -> Unit, onCreate: (BudgetRequest) -> Unit)
     // Date picker state
     val context = LocalContext.current
     val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-    var startDate by remember { mutableStateOf<LocalDate?>(null) }
-    var endDate by remember { mutableStateOf<LocalDate?>(null) }
+    var startDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
+    var endDate by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     var showStartPicker by remember { mutableStateOf(false) }
     var showEndPicker by remember { mutableStateOf(false) }
 
@@ -460,20 +455,16 @@ fun CreateBudgetDialog(onDismiss: () -> Unit, onCreate: (BudgetRequest) -> Unit)
         confirmButton = {
             Button(
                 onClick = {
-                    // Construir BudgetRequest y llamar al callback
-                    // Convertir LocalDate a OffsetDateTime requerido por el modelo
                     val zone = ZoneId.systemDefault()
-                    val startOffset = (parsedStart ?: LocalDate.now()).atStartOfDay(zone).toOffsetDateTime()
-                    val endOffset = (parsedEnd ?: LocalDate.now()).atStartOfDay(zone).toOffsetDateTime()
 
                     val budgetRequest = BudgetRequest(
                         alertable = alertable,
                         limitAmount = parsedLimit ?: BigDecimal.ZERO,
                         description = description,
-                        userId = 1L, // TODO: reemplazar por usuario real
+                        userId = 1L,
                         categoryId = categories[selectedCategoryIndex].first,
-                        start = startOffset,
-                        end = endOffset,
+                        start = parsedStart,
+                        end = parsedEnd,
                         percentAlert = parsedPercent
                     )
                     onCreate(budgetRequest)
