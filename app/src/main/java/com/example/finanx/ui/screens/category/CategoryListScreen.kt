@@ -152,7 +152,7 @@ fun CategoryListScreen(
 
     }
 
-    // Menu de opciones al mantener presionado
+
     categorySelected?.let { category ->
         val active = category.active == true
         AlertDialog(
@@ -191,7 +191,6 @@ fun CategoryListScreen(
         )
     }
 
-    // Dialogo de confirmacion de desactivar
     categoryToDisable?.let { category ->
         AlertDialog(
             onDismissRequest = { categoryToDisable = null },

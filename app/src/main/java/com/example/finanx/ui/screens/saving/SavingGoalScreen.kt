@@ -169,7 +169,7 @@ fun SavingGoalScreen(
         }
     }
 
-    // Menu de opciones al mantener presionado
+
     goalSelected?.let { goal ->
         AlertDialog(
             onDismissRequest = { goalSelected = null },
@@ -207,7 +207,7 @@ fun SavingGoalScreen(
         )
     }
 
-    // Dialogo de confirmacion de eliminacion
+
     goalToDelete?.let { goal ->
         AlertDialog(
             onDismissRequest = { goalToDelete = null },

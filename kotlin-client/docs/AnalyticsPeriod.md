@@ -4,8 +4,8 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **start** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **end** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **start** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **end** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 
 
 

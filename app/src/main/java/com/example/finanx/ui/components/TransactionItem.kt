@@ -42,7 +42,7 @@ fun TransactionItem(transaction: TransactionResponse) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Categoría ID: ${transaction.categoryId}", // Mostramos el ID de la categoría
+                    text = "Categoría ID: ${transaction.categoryId}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )

@@ -23,7 +23,7 @@
 ## Enum: budgetState
 | Name | Value |
 | ---- | ----- |
-| budgetState | ACTIVE, CANCELLED, FINALIZED |
+| budgetState | ACTIVE, CANCELLED, DISABLED, FINALIZED |
 
 
 <a id="BudgetHealth"></a>

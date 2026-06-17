@@ -114,7 +114,6 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Proyección Financiera", fontWeight = FontWeight.SemiBold)
                         Spacer(modifier = Modifier.height(16.dp))
-                        // Placeholder for big chart
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -49,7 +49,6 @@ class SavingGoalViewModel : ViewModel() {
         }
     }
 
-    // ✅ CREATE
     fun createSavingGoal(
         userId: Long,
         description: String,
@@ -82,7 +81,7 @@ class SavingGoalViewModel : ViewModel() {
         }
     }
 
-    // ✅ UPDATE
+
     fun updateSavingGoal(
         userId: Long,
         goalId: Long,
@@ -116,7 +115,7 @@ class SavingGoalViewModel : ViewModel() {
         }
     }
 
-    // ✅ DELETE
+
     fun deleteSavingGoal(userId: Long, goalId: Long) {
         viewModelScope.launch {
             try {
