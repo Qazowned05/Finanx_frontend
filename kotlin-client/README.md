@@ -45,42 +45,20 @@ All URIs are relative to *http://localhost:8080*
 
 | Class | Method | HTTP request | Description |
 | ------------ | ------------- | ------------- | ------------- |
-| *AnalyticsControllerApi* | [**dashboard**](docs/AnalyticsControllerApi.md#dashboard) | **GET** api/analytics/dashboard/{userId} |  |
-| *AnalyticsControllerApi* | [**getActiveScheduledCountByRecurrenceType**](docs/AnalyticsControllerApi.md#getactivescheduledcountbyrecurrencetype) | **GET** api/analytics/scheduled/active-count-by-recurrence |  |
-| *AnalyticsControllerApi* | [**getActiveScheduledTransactionCount**](docs/AnalyticsControllerApi.md#getactivescheduledtransactioncount) | **GET** api/analytics/scheduled/active-count |  |
-| *AnalyticsControllerApi* | [**getBudgetExecutions**](docs/AnalyticsControllerApi.md#getbudgetexecutions) | **POST** api/analytics/budgets/executions |  |
-| *AnalyticsControllerApi* | [**getBudgetInsights**](docs/AnalyticsControllerApi.md#getbudgetinsights) | **POST** api/analytics/budgets/insights |  |
-| *AnalyticsControllerApi* | [**getBudgetOverview**](docs/AnalyticsControllerApi.md#getbudgetoverview) | **POST** api/analytics/budgets/overview |  |
-| *AnalyticsControllerApi* | [**getCategoryAggregates**](docs/AnalyticsControllerApi.md#getcategoryaggregates) | **POST** api/analytics/categories/aggregates |  |
-| *AnalyticsControllerApi* | [**getCategoryOverview**](docs/AnalyticsControllerApi.md#getcategoryoverview) | **POST** api/analytics/categories/overview |  |
-| *AnalyticsControllerApi* | [**getDailyNetSeries**](docs/AnalyticsControllerApi.md#getdailynetseries) | **POST** api/analytics/transactions/daily-net-series |  |
-| *AnalyticsControllerApi* | [**getExceededBudgets**](docs/AnalyticsControllerApi.md#getexceededbudgets) | **POST** api/analytics/budgets/exceeded |  |
-| *AnalyticsControllerApi* | [**getMostUsedPaymentMethod**](docs/AnalyticsControllerApi.md#getmostusedpaymentmethod) | **POST** api/analytics/transactions/most-used-payment-method |  |
-| *AnalyticsControllerApi* | [**getNearLimitBudgets**](docs/AnalyticsControllerApi.md#getnearlimitbudgets) | **POST** api/analytics/budgets/near-limit |  |
-| *AnalyticsControllerApi* | [**getReasonOverview**](docs/AnalyticsControllerApi.md#getreasonoverview) | **POST** api/analytics/reasons/overview |  |
-| *AnalyticsControllerApi* | [**getScheduledInsights**](docs/AnalyticsControllerApi.md#getscheduledinsights) | **POST** api/analytics/scheduled/insights |  |
-| *AnalyticsControllerApi* | [**getScheduledOverview**](docs/AnalyticsControllerApi.md#getscheduledoverview) | **POST** api/analytics/scheduled/overview |  |
-| *AnalyticsControllerApi* | [**getScheduledProjections**](docs/AnalyticsControllerApi.md#getscheduledprojections) | **POST** api/analytics/scheduled/projections |  |
-| *AnalyticsControllerApi* | [**getTopCategories**](docs/AnalyticsControllerApi.md#gettopcategories) | **POST** api/analytics/categories/top |  |
-| *AnalyticsControllerApi* | [**getTopPaymentMethods**](docs/AnalyticsControllerApi.md#gettoppaymentmethods) | **POST** api/analytics/transactions/top-payment-methods |  |
-| *AnalyticsControllerApi* | [**getTopReasons**](docs/AnalyticsControllerApi.md#gettopreasons) | **POST** api/analytics/reasons/top |  |
-| *AnalyticsControllerApi* | [**getTotalAmountByTransactionType**](docs/AnalyticsControllerApi.md#gettotalamountbytransactiontype) | **POST** api/analytics/categories/total-amount-by-type |  |
-| *AnalyticsControllerApi* | [**getTransactionAggregatesByPaymentMethod**](docs/AnalyticsControllerApi.md#gettransactionaggregatesbypaymentmethod) | **POST** api/analytics/transactions/aggregates/payment-method |  |
-| *AnalyticsControllerApi* | [**getTransactionAggregatesByType**](docs/AnalyticsControllerApi.md#gettransactionaggregatesbytype) | **POST** api/analytics/transactions/aggregates/type |  |
-| *AnalyticsControllerApi* | [**getTransactionInsights**](docs/AnalyticsControllerApi.md#gettransactioninsights) | **POST** api/analytics/transactions/insights |  |
-| *AnalyticsControllerApi* | [**getTransactionOverview**](docs/AnalyticsControllerApi.md#gettransactionoverview) | **POST** api/analytics/transactions/overview |  |
-| *AnalyticsControllerApi* | [**getUserInsights**](docs/AnalyticsControllerApi.md#getuserinsights) | **POST** api/analytics/user/insights |  |
-| *AnalyticsControllerApi* | [**makeProjection**](docs/AnalyticsControllerApi.md#makeprojection) | **POST** api/analytics/scheduled/projection |  |
+| *AnalyticsControllerApi* | [**balance**](docs/AnalyticsControllerApi.md#balance) | **GET** analytics/dashboard/balance |  |
+| *AnalyticsControllerApi* | [**budgets**](docs/AnalyticsControllerApi.md#budgets) | **GET** analytics/dashboard/budgets |  |
+| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **GET** analytics/{id}/execution |  |
 | *AuthControllerApi* | [**google**](docs/AuthControllerApi.md#google) | **POST** auth/google |  |
 | *AuthControllerApi* | [**login**](docs/AuthControllerApi.md#login) | **POST** auth/login |  |
 | *AuthControllerApi* | [**register1**](docs/AuthControllerApi.md#register1) | **POST** auth/register |  |
-| *BudgetControllerApi* | [**cancel2**](docs/BudgetControllerApi.md#cancel2) | **POST** bugdets/{id}/cancel |  |
-| *BudgetControllerApi* | [**create5**](docs/BudgetControllerApi.md#create5) | **POST** bugdets |  |
-| *BudgetControllerApi* | [**disable5**](docs/BudgetControllerApi.md#disable5) | **POST** bugdets/{id}/disable |  |
-| *BudgetControllerApi* | [**findAllByUser4**](docs/BudgetControllerApi.md#findallbyuser4) | **GET** bugdets/user/{idUser} |  |
-| *BudgetControllerApi* | [**findAllByUserAndState4**](docs/BudgetControllerApi.md#findallbyuserandstate4) | **GET** bugdets/user/{idUser}/{state} |  |
-| *BudgetControllerApi* | [**findById5**](docs/BudgetControllerApi.md#findbyid5) | **GET** bugdets/{id} |  |
-| *BudgetControllerApi* | [**update6**](docs/BudgetControllerApi.md#update6) | **PUT** bugdets/{id} |  |
+| *BudgetControllerApi* | [**cancel2**](docs/BudgetControllerApi.md#cancel2) | **POST** budgets/{id}/cancel |  |
+| *BudgetControllerApi* | [**create5**](docs/BudgetControllerApi.md#create5) | **POST** budgets |  |
+| *BudgetControllerApi* | [**disable5**](docs/BudgetControllerApi.md#disable5) | **POST** budgets/{id}/disable |  |
+| *BudgetControllerApi* | [**findAllByUser4**](docs/BudgetControllerApi.md#findallbyuser4) | **GET** budgets/user/{idUser} |  |
+| *BudgetControllerApi* | [**findAllByUserAndState4**](docs/BudgetControllerApi.md#findallbyuserandstate4) | **GET** budgets/user/{idUser}/{state} |  |
+| *BudgetControllerApi* | [**findById5**](docs/BudgetControllerApi.md#findbyid5) | **GET** budgets/{id} |  |
+| *BudgetControllerApi* | [**getBudgetsByHealth**](docs/BudgetControllerApi.md#getbudgetsbyhealth) | **GET** budgets/{health} |  |
+| *BudgetControllerApi* | [**update6**](docs/BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 | *BudgetScheduleControllerApi* | [**findAllByUserAndState2**](docs/BudgetScheduleControllerApi.md#findallbyuserandstate2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
 | *CategoryControllerApi* | [**activate**](docs/CategoryControllerApi.md#activate) | **POST** categories/{id}/activate |  |
 | *CategoryControllerApi* | [**create4**](docs/CategoryControllerApi.md#create4) | **POST** categories |  |
@@ -98,8 +76,6 @@ All URIs are relative to *http://localhost:8080*
 | *ReasonControllerApi* | [**findAllByUser1**](docs/ReasonControllerApi.md#findallbyuser1) | **GET** reasons/user/{idUser} |  |
 | *ReasonControllerApi* | [**findById3**](docs/ReasonControllerApi.md#findbyid3) | **GET** reasons/{id} |  |
 | *ReasonControllerApi* | [**update4**](docs/ReasonControllerApi.md#update4) | **PUT** reasons/{id} |  |
-| *ReportControllerApi* | [**balance**](docs/ReportControllerApi.md#balance) | **POST** reports/balance |  |
-| *ReportControllerApi* | [**exportBalance**](docs/ReportControllerApi.md#exportbalance) | **POST** reports/balance/export |  |
 | *SavingGoalControllerApi* | [**cancel1**](docs/SavingGoalControllerApi.md#cancel1) | **POST** savings/{id}/cancel |  |
 | *SavingGoalControllerApi* | [**create2**](docs/SavingGoalControllerApi.md#create2) | **POST** savings |  |
 | *SavingGoalControllerApi* | [**disable3**](docs/SavingGoalControllerApi.md#disable3) | **POST** savings/{id}/disable |  |
@@ -136,50 +112,73 @@ All URIs are relative to *http://localhost:8080*
 <a id="documentation-for-models"></a>
 ## Documentation for Models
 
- - [org.openapitools.client.models.AnalyticsDashboard](docs/AnalyticsDashboard.md)
- - [org.openapitools.client.models.AnalyticsPeriod](docs/AnalyticsPeriod.md)
- - [org.openapitools.client.models.BalanceReportRequest](docs/BalanceReportRequest.md)
- - [org.openapitools.client.models.BalanceReportResponse](docs/BalanceReportResponse.md)
- - [org.openapitools.client.models.BudgetAnalytics](docs/BudgetAnalytics.md)
- - [org.openapitools.client.models.BudgetExecution](docs/BudgetExecution.md)
+ - [org.openapitools.client.models.Aggregate](docs/Aggregate.md)
+ - [org.openapitools.client.models.AggregateByBudgetExecutionResponse](docs/AggregateByBudgetExecutionResponse.md)
+ - [org.openapitools.client.models.AggregateByBudgetHealth](docs/AggregateByBudgetHealth.md)
+ - [org.openapitools.client.models.AggregateByCategoryResponse](docs/AggregateByCategoryResponse.md)
+ - [org.openapitools.client.models.AggregateByCategorySummary](docs/AggregateByCategorySummary.md)
+ - [org.openapitools.client.models.AggregateByPaymentMethod](docs/AggregateByPaymentMethod.md)
+ - [org.openapitools.client.models.AggregateByReasonSummary](docs/AggregateByReasonSummary.md)
+ - [org.openapitools.client.models.AggregateBySavingGoalResponse](docs/AggregateBySavingGoalResponse.md)
+ - [org.openapitools.client.models.AggregateBySavingGoalState](docs/AggregateBySavingGoalState.md)
+ - [org.openapitools.client.models.AggregateByTransactionType](docs/AggregateByTransactionType.md)
+ - [org.openapitools.client.models.BudgetExecutionResponse](docs/BudgetExecutionResponse.md)
  - [org.openapitools.client.models.BudgetRequest](docs/BudgetRequest.md)
  - [org.openapitools.client.models.BudgetResponse](docs/BudgetResponse.md)
  - [org.openapitools.client.models.BudgetScheduleRequest](docs/BudgetScheduleRequest.md)
  - [org.openapitools.client.models.BudgetScheduleResponse](docs/BudgetScheduleResponse.md)
- - [org.openapitools.client.models.CategoryAggregate](docs/CategoryAggregate.md)
- - [org.openapitools.client.models.CategoryAnalytics](docs/CategoryAnalytics.md)
- - [org.openapitools.client.models.CategoryDTO](docs/CategoryDTO.md)
+ - [org.openapitools.client.models.Budgets200Response](docs/Budgets200Response.md)
+ - [org.openapitools.client.models.BudgetsDashboard](docs/BudgetsDashboard.md)
  - [org.openapitools.client.models.CategoryRequest](docs/CategoryRequest.md)
  - [org.openapitools.client.models.CategoryResponse](docs/CategoryResponse.md)
  - [org.openapitools.client.models.CategorySummary](docs/CategorySummary.md)
+ - [org.openapitools.client.models.DashboardResponse](docs/DashboardResponse.md)
  - [org.openapitools.client.models.GoogleLoginRequest](docs/GoogleLoginRequest.md)
  - [org.openapitools.client.models.Insight](docs/Insight.md)
+ - [org.openapitools.client.models.InsightSummary](docs/InsightSummary.md)
  - [org.openapitools.client.models.LoginRequest](docs/LoginRequest.md)
  - [org.openapitools.client.models.LoginResponse](docs/LoginResponse.md)
  - [org.openapitools.client.models.NotificationDTO](docs/NotificationDTO.md)
+ - [org.openapitools.client.models.PeriodRequest](docs/PeriodRequest.md)
+ - [org.openapitools.client.models.PeriodResponse](docs/PeriodResponse.md)
+ - [org.openapitools.client.models.RankingCategoryResponse](docs/RankingCategoryResponse.md)
+ - [org.openapitools.client.models.RankingCategorySummary](docs/RankingCategorySummary.md)
+ - [org.openapitools.client.models.RankingItemCategoryResponse](docs/RankingItemCategoryResponse.md)
  - [org.openapitools.client.models.RankingItemCategorySummary](docs/RankingItemCategorySummary.md)
  - [org.openapitools.client.models.RankingItemPaymentMethod](docs/RankingItemPaymentMethod.md)
  - [org.openapitools.client.models.RankingItemReasonSummary](docs/RankingItemReasonSummary.md)
- - [org.openapitools.client.models.ReasonAnalytics](docs/ReasonAnalytics.md)
+ - [org.openapitools.client.models.RankingItemSavingGoalResponse](docs/RankingItemSavingGoalResponse.md)
+ - [org.openapitools.client.models.RankingItemTransactionType](docs/RankingItemTransactionType.md)
+ - [org.openapitools.client.models.RankingPaymentMethod](docs/RankingPaymentMethod.md)
+ - [org.openapitools.client.models.RankingReasonSummary](docs/RankingReasonSummary.md)
+ - [org.openapitools.client.models.RankingSavingGoalResponse](docs/RankingSavingGoalResponse.md)
+ - [org.openapitools.client.models.RankingTransactionType](docs/RankingTransactionType.md)
  - [org.openapitools.client.models.ReasonRequest](docs/ReasonRequest.md)
  - [org.openapitools.client.models.ReasonResponse](docs/ReasonResponse.md)
  - [org.openapitools.client.models.ReasonSummary](docs/ReasonSummary.md)
  - [org.openapitools.client.models.RecurrenceRuleRequest](docs/RecurrenceRuleRequest.md)
  - [org.openapitools.client.models.RecurrenceRuleResponse](docs/RecurrenceRuleResponse.md)
- - [org.openapitools.client.models.Report](docs/Report.md)
  - [org.openapitools.client.models.SavingGoalRequest](docs/SavingGoalRequest.md)
  - [org.openapitools.client.models.SavingGoalResponse](docs/SavingGoalResponse.md)
+ - [org.openapitools.client.models.SavingGoalsDashboard](docs/SavingGoalsDashboard.md)
  - [org.openapitools.client.models.ScheduleRequest](docs/ScheduleRequest.md)
  - [org.openapitools.client.models.ScheduleResponse](docs/ScheduleResponse.md)
  - [org.openapitools.client.models.ScheduledProjection](docs/ScheduledProjection.md)
- - [org.openapitools.client.models.TimeSeriesPoint](docs/TimeSeriesPoint.md)
- - [org.openapitools.client.models.TransactionAggregate](docs/TransactionAggregate.md)
- - [org.openapitools.client.models.TransactionAnalytics](docs/TransactionAnalytics.md)
+ - [org.openapitools.client.models.TSchedulesDashboard](docs/TSchedulesDashboard.md)
+ - [org.openapitools.client.models.TimeBoundListBudgetResponse](docs/TimeBoundListBudgetResponse.md)
+ - [org.openapitools.client.models.TimeLineBudgetExecutionResponse](docs/TimeLineBudgetExecutionResponse.md)
+ - [org.openapitools.client.models.TimeLineLocalDate](docs/TimeLineLocalDate.md)
+ - [org.openapitools.client.models.TimeLineSavingGoalResponse](docs/TimeLineSavingGoalResponse.md)
+ - [org.openapitools.client.models.TimeLineTransactionResponse](docs/TimeLineTransactionResponse.md)
+ - [org.openapitools.client.models.TimeSeriesPointBudgetExecutionResponse](docs/TimeSeriesPointBudgetExecutionResponse.md)
+ - [org.openapitools.client.models.TimeSeriesPointLocalDate](docs/TimeSeriesPointLocalDate.md)
+ - [org.openapitools.client.models.TimeSeriesPointSavingGoalResponse](docs/TimeSeriesPointSavingGoalResponse.md)
+ - [org.openapitools.client.models.TimeSeriesPointTransactionResponse](docs/TimeSeriesPointTransactionResponse.md)
  - [org.openapitools.client.models.TransactionRequest](docs/TransactionRequest.md)
  - [org.openapitools.client.models.TransactionResponse](docs/TransactionResponse.md)
- - [org.openapitools.client.models.TransactionScheduleAnalytics](docs/TransactionScheduleAnalytics.md)
  - [org.openapitools.client.models.TransactionScheduleRequest](docs/TransactionScheduleRequest.md)
  - [org.openapitools.client.models.TransactionScheduleResponse](docs/TransactionScheduleResponse.md)
+ - [org.openapitools.client.models.TransactionsDashboard](docs/TransactionsDashboard.md)
  - [org.openapitools.client.models.Update2200Response](docs/Update2200Response.md)
  - [org.openapitools.client.models.Update2Request](docs/Update2Request.md)
  - [org.openapitools.client.models.UserRequest](docs/UserRequest.md)

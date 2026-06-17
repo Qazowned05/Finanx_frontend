@@ -51,10 +51,34 @@ class TransactionResponseTest : ShouldSpec() {
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
+        // to test the property `categoryName`
+        should("test categoryName") {
+            // uncomment below to test the property
+            //modelInstance.categoryName shouldBe ("TODO")
+        }
+
         // to test the property `reasonId`
         should("test reasonId") {
             // uncomment below to test the property
             //modelInstance.reasonId shouldBe ("TODO")
+        }
+
+        // to test the property `reasonDescription`
+        should("test reasonDescription") {
+            // uncomment below to test the property
+            //modelInstance.reasonDescription shouldBe ("TODO")
+        }
+
+        // to test the property `savingGoalId`
+        should("test savingGoalId") {
+            // uncomment below to test the property
+            //modelInstance.savingGoalId shouldBe ("TODO")
+        }
+
+        // to test the property `scheduleId`
+        should("test scheduleId") {
+            // uncomment below to test the property
+            //modelInstance.scheduleId shouldBe ("TODO")
         }
 
         // to test the property `amount`
@@ -79,6 +103,18 @@ class TransactionResponseTest : ShouldSpec() {
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
+        }
+
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
+        // to test the property `active`
+        should("test active") {
+            // uncomment below to test the property
+            //modelInstance.active shouldBe ("TODO")
         }
 
     }

@@ -90,7 +90,7 @@ class TransactionViewModel : ViewModel() {
                     fetchTransactions(userId)
                 }
             } catch (e: Exception) {
-                // Manejar error
+
             }
         }
     }

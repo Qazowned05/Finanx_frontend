@@ -32,14 +32,16 @@ import java.io.Serializable
  * 
  *
  * @param id 
+ * @param userId 
+ * @param categoryId 
+ * @param categoryName 
+ * @param scheduleId 
  * @param alertable 
  * @param percentAlert 
  * @param limitAmount 
  * @param description 
  * @param state 
- * @param userId 
- * @param categoryId 
- * @param categoryName 
+ * @param health 
  * @param start 
  * @param end 
  * @param createdAt 
@@ -51,6 +53,18 @@ data class BudgetResponse (
 
     @Json(name = "id")
     val id: kotlin.Long? = null,
+
+    @Json(name = "userId")
+    val userId: kotlin.Long? = null,
+
+    @Json(name = "categoryId")
+    val categoryId: kotlin.Long? = null,
+
+    @Json(name = "categoryName")
+    val categoryName: kotlin.Long? = null,
+
+    @Json(name = "scheduleId")
+    val scheduleId: kotlin.Long? = null,
 
     @Json(name = "alertable")
     val alertable: kotlin.Boolean? = null,
@@ -67,14 +81,8 @@ data class BudgetResponse (
     @Json(name = "state")
     val state: BudgetResponse.State? = null,
 
-    @Json(name = "userId")
-    val userId: kotlin.Long? = null,
-
-    @Json(name = "categoryId")
-    val categoryId: kotlin.Long? = null,
-
-    @Json(name = "categoryName")
-    val categoryName: kotlin.Long? = null,
+    @Json(name = "health")
+    val health: BudgetResponse.Health? = null,
 
     @Json(name = "start")
     val start: java.time.LocalDateTime? = null,
@@ -104,6 +112,18 @@ data class BudgetResponse (
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
         @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED");
+    }
+    /**
+     * 
+     *
+     * Values: OK,NEAR_LIMIT,EXCEEDED,INACTIVE
+     */
+    @JsonClass(generateAdapter = false)
+    enum class Health(val value: kotlin.String) {
+        @Json(name = "OK") OK("OK"),
+        @Json(name = "NEAR_LIMIT") NEAR_LIMIT("NEAR_LIMIT"),
+        @Json(name = "EXCEEDED") EXCEEDED("EXCEEDED"),
+        @Json(name = "INACTIVE") INACTIVE("INACTIVE");
     }
 
 }

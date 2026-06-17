@@ -23,8 +23,8 @@
 
 package org.openapitools.client.models
 
-import org.openapitools.client.models.CategorySummary
-import org.openapitools.client.models.ReasonSummary
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.ReasonResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -58,10 +58,10 @@ data class ScheduledProjection (
     val transactionAmount: java.math.BigDecimal? = null,
 
     @Json(name = "category")
-    val category: CategorySummary? = null,
+    val category: CategoryResponse? = null,
 
     @Json(name = "reason")
-    val reason: ReasonSummary? = null,
+    val reason: ReasonResponse? = null,
 
     @Json(name = "recurrenceType")
     val recurrenceType: ScheduledProjection.RecurrenceType? = null,

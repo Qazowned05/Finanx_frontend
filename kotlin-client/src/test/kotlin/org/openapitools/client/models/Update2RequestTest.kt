@@ -23,19 +23,24 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.Update2Request
-import org.openapitools.client.models.BudgetScheduleRequest
-import org.openapitools.client.models.RecurrenceRuleRequest
-import org.openapitools.client.models.ScheduleRequest
-import org.openapitools.client.models.TransactionScheduleRequest
 
 class Update2RequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of Update2Request
         //val modelInstance = Update2Request()
+
+        // to test the property `userId`
+        should("test userId") {
+            // uncomment below to test the property
+            //modelInstance.userId shouldBe ("TODO")
+        }
+
+        // to test the property `categoryId`
+        should("test categoryId") {
+            // uncomment below to test the property
+            //modelInstance.categoryId shouldBe ("TODO")
+        }
 
         // to test the property `type`
         should("test type") {
@@ -83,18 +88,6 @@ class Update2RequestTest : ShouldSpec() {
         should("test transactionType") {
             // uncomment below to test the property
             //modelInstance.transactionType shouldBe ("TODO")
-        }
-
-        // to test the property `userId`
-        should("test userId") {
-            // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
-        }
-
-        // to test the property `categoryId`
-        should("test categoryId") {
-            // uncomment below to test the property
-            //modelInstance.categoryId shouldBe ("TODO")
         }
 
         // to test the property `recurrenceRule`

@@ -13,19 +13,7 @@ class OffsetDateTimeAdapter {
 
     @FromJson
     fun fromJson(value: String): OffsetDateTime {
-        return try {
-            OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        } catch (e: Exception) {
-            try {
-                val truncated = value.substring(0, 19)
-                java.time.LocalDateTime.parse(
-                    truncated,
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-                ).atOffset(java.time.ZoneOffset.UTC)
-            } catch (e2: Exception) {
-                OffsetDateTime.now()
-            }
-        }
+        return OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
     }
 
 }

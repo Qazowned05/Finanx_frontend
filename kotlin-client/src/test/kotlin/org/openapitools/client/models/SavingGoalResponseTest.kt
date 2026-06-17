@@ -69,6 +69,24 @@ class SavingGoalResponseTest : ShouldSpec() {
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
+        // to test the property `completedAt`
+        should("test completedAt") {
+            // uncomment below to test the property
+            //modelInstance.completedAt shouldBe ("TODO")
+        }
+
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
+        // to test the property `state`
+        should("test state") {
+            // uncomment below to test the property
+            //modelInstance.state shouldBe ("TODO")
+        }
+
         // to test the property `active`
         should("test active") {
             // uncomment below to test the property
@@ -85,6 +103,42 @@ class SavingGoalResponseTest : ShouldSpec() {
         should("test progressPercentage") {
             // uncomment below to test the property
             //modelInstance.progressPercentage shouldBe ("TODO")
+        }
+
+        // to test the property `transactionsCount`
+        should("test transactionsCount") {
+            // uncomment below to test the property
+            //modelInstance.transactionsCount shouldBe ("TODO")
+        }
+
+        // to test the property `outstanding`
+        should("test outstanding") {
+            // uncomment below to test the property
+            //modelInstance.outstanding shouldBe ("TODO")
+        }
+
+        // to test the property `daysRemaining`
+        should("test daysRemaining") {
+            // uncomment below to test the property
+            //modelInstance.daysRemaining shouldBe ("TODO")
+        }
+
+        // to test the property `averageContribution`
+        should("test averageContribution") {
+            // uncomment below to test the property
+            //modelInstance.averageContribution shouldBe ("TODO")
+        }
+
+        // to test the property `completed`
+        should("test completed") {
+            // uncomment below to test the property
+            //modelInstance.completed shouldBe ("TODO")
+        }
+
+        // to test the property `estimatedCompletionDate`
+        should("test estimatedCompletionDate") {
+            // uncomment below to test the property
+            //modelInstance.estimatedCompletionDate shouldBe ("TODO")
         }
 
     }

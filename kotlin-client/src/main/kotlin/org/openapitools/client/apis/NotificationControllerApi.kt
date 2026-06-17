@@ -23,7 +23,7 @@ interface NotificationControllerApi {
     suspend fun discard(@Body body: kotlin.Long): Response<Unit>
 
     /**
-     * GET notifications/{idUser}
+     * GET notifications/user/{idUser}
      * 
      * 
      * Responses:
@@ -33,7 +33,7 @@ interface NotificationControllerApi {
      * @return [kotlin.collections.List<NotificationDTO>]
      */
     @GET("notifications/user/{idUser}")
-    suspend fun findAllByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<NotificationDTO>>
+    suspend fun findAllByUser2(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<NotificationDTO>>
 
 
     /**
@@ -47,7 +47,7 @@ interface NotificationControllerApi {
     }
 
     /**
-     * GET notifications/{idUser}/{state}
+     * GET notifications/user/{idUser}/{state}
      * 
      * 
      * Responses:

@@ -38,6 +38,7 @@ import java.io.Serializable
  * @param type 
  * @param reasonId 
  * @param description 
+ * @param savingGoalId 
  */
 
 
@@ -62,7 +63,10 @@ data class TransactionRequest (
     val reasonId: kotlin.Long? = null,
 
     @Json(name = "description")
-    val description: kotlin.String? = null
+    val description: kotlin.String? = null,
+
+    @Json(name = "savingGoalId")
+    val savingGoalId: kotlin.Long? = null
 
 ) : Serializable {
     companion object {

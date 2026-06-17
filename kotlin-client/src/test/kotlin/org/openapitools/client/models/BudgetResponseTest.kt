@@ -39,6 +39,30 @@ class BudgetResponseTest : ShouldSpec() {
             //modelInstance.id shouldBe ("TODO")
         }
 
+        // to test the property `userId`
+        should("test userId") {
+            // uncomment below to test the property
+            //modelInstance.userId shouldBe ("TODO")
+        }
+
+        // to test the property `categoryId`
+        should("test categoryId") {
+            // uncomment below to test the property
+            //modelInstance.categoryId shouldBe ("TODO")
+        }
+
+        // to test the property `categoryName`
+        should("test categoryName") {
+            // uncomment below to test the property
+            //modelInstance.categoryName shouldBe ("TODO")
+        }
+
+        // to test the property `scheduleId`
+        should("test scheduleId") {
+            // uncomment below to test the property
+            //modelInstance.scheduleId shouldBe ("TODO")
+        }
+
         // to test the property `alertable`
         should("test alertable") {
             // uncomment below to test the property
@@ -69,22 +93,34 @@ class BudgetResponseTest : ShouldSpec() {
             //modelInstance.state shouldBe ("TODO")
         }
 
-        // to test the property `userId`
-        should("test userId") {
+        // to test the property `health`
+        should("test health") {
             // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
+            //modelInstance.health shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
-        should("test categoryId") {
+        // to test the property `start`
+        should("test start") {
             // uncomment below to test the property
-            //modelInstance.categoryId shouldBe ("TODO")
+            //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
-        should("test categoryName") {
+        // to test the property `end`
+        should("test end") {
             // uncomment below to test the property
-            //modelInstance.categoryName shouldBe ("TODO")
+            //modelInstance.end shouldBe ("TODO")
+        }
+
+        // to test the property `createdAt`
+        should("test createdAt") {
+            // uncomment below to test the property
+            //modelInstance.createdAt shouldBe ("TODO")
+        }
+
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
         }
 
     }

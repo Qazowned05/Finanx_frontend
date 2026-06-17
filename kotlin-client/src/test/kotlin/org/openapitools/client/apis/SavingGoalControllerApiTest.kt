@@ -35,6 +35,13 @@ class SavingGoalControllerApiTest : ShouldSpec() {
         // uncomment below to create an instance of SavingGoalControllerApi
         //val apiInstance = SavingGoalControllerApi()
 
+        // to test cancel1
+        should("test cancel1") {
+            // uncomment below to test cancel1
+            //val id : kotlin.Long = 789 // kotlin.Long | 
+            //apiInstance.cancel1(id)
+        }
+
         // to test create2
         should("test create2") {
             // uncomment below to test create2
@@ -43,11 +50,11 @@ class SavingGoalControllerApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test disable1
-        should("test disable1") {
-            // uncomment below to test disable1
+        // to test disable3
+        should("test disable3") {
+            // uncomment below to test disable3
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //apiInstance.disable1(id)
+            //apiInstance.disable3(id)
         }
 
         // to test findAllActiveByUser1
@@ -58,11 +65,11 @@ class SavingGoalControllerApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test findById3
-        should("test findById3") {
-            // uncomment below to test findById3
+        // to test findById2
+        should("test findById2") {
+            // uncomment below to test findById2
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : SavingGoalResponse = apiInstance.findById3(id)
+            //val result : SavingGoalResponse = apiInstance.findById2(id)
             //result shouldBe ("TODO")
         }
 

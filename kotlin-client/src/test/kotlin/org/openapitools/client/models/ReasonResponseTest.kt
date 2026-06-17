@@ -51,5 +51,23 @@ class ReasonResponseTest : ShouldSpec() {
             //modelInstance.userId shouldBe ("TODO")
         }
 
+        // to test the property `createdAt`
+        should("test createdAt") {
+            // uncomment below to test the property
+            //modelInstance.createdAt shouldBe ("TODO")
+        }
+
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
+        }
+
+        // to test the property `active`
+        should("test active") {
+            // uncomment below to test the property
+            //modelInstance.active shouldBe ("TODO")
+        }
+
     }
 }

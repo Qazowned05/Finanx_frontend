@@ -33,16 +33,16 @@ class ReasonSummaryTest : ShouldSpec() {
         // uncomment below to create an instance of ReasonSummary
         //val modelInstance = ReasonSummary()
 
-        // to test the property `reasonId`
-        should("test reasonId") {
+        // to test the property `id`
+        should("test id") {
             // uncomment below to test the property
-            //modelInstance.reasonId shouldBe ("TODO")
+            //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `reasonDescription`
-        should("test reasonDescription") {
+        // to test the property `description`
+        should("test description") {
             // uncomment below to test the property
-            //modelInstance.reasonDescription shouldBe ("TODO")
+            //modelInstance.description shouldBe ("TODO")
         }
 
     }

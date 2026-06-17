@@ -1,7 +1,15 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
+
+
+val googleClientId: String = gradleLocalProperties(
+    rootDir,
+    providers).getProperty("GOOGLE_WEB_CLIENT_ID")
 
 android {
     namespace = "com.example.finanx"
@@ -23,11 +31,17 @@ android {
 
     buildTypes {
         release {
+            buildConfigField(
+                "String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\""
+            )
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
         }
     }
     compileOptions {
@@ -36,15 +50,16 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.retrofit)
-    implementation(libs.converter.moshi.v290)
     implementation(project(":kotlin-client"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -57,7 +72,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)

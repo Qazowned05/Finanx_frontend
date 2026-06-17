@@ -58,11 +58,11 @@ class CategoryControllerApiTest : ShouldSpec() {
             //apiInstance.disable4(id)
         }
 
-        // to test findAllByUser2
-        should("test findAllByUser2") {
-            // uncomment below to test findAllByUser2
+        // to test findAllByUser3
+        should("test findAllByUser3") {
+            // uncomment below to test findAllByUser3
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<CategoryResponse> = apiInstance.findAllByUser2(idUser)
+            //val result : kotlin.collections.List<CategoryResponse> = apiInstance.findAllByUser3(idUser)
             //result shouldBe ("TODO")
         }
 
@@ -75,11 +75,11 @@ class CategoryControllerApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test findById5
-        should("test findById5") {
-            // uncomment below to test findById5
+        // to test findById4
+        should("test findById4") {
+            // uncomment below to test findById4
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : CategoryResponse = apiInstance.findById5(id)
+            //val result : CategoryResponse = apiInstance.findById4(id)
             //result shouldBe ("TODO")
         }
 

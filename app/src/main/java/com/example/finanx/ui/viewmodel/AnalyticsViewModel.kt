@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.AnalyticsRepository
 import kotlinx.coroutines.launch
-import org.openapitools.client.models.AnalyticsDashboard
-import java.time.OffsetDateTime
+import org.openapitools.client.models.DashboardResponse
+import org.openapitools.client.models.PeriodRequest
+import java.time.LocalDate
 
 data class AnalyticsUiState(
     val isLoading: Boolean = false,
-    val dashboard: AnalyticsDashboard? = null,
+    val dashboard: DashboardResponse? = null,
     val error: String? = null
 )
 
@@ -28,16 +29,16 @@ class AnalyticsViewModel : ViewModel() {
         viewModelScope.launch {
             analyticsState = analyticsState.copy(isLoading = true, error = null)
 
-            val end = OffsetDateTime.now()
+            val end = LocalDate.now()
             val start = end.minusDays(30)
 
             try {
-                val response = repository.getDashboard(userId, start, end)
+                val response = repository.getDashboard(PeriodRequest(start = start, end = end, userId = userId))
 
                 analyticsState = if (response.isSuccessful) {
                     analyticsState.copy(
                         isLoading = false,
-                        dashboard = response.body(),
+                        dashboard = response.body() as DashboardResponse?,
                         error = null
                     )
                 } else {

@@ -8,10 +8,14 @@ import com.squareup.moshi.Json
 
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
+import org.openapitools.client.models.PeriodRequest
+import org.openapitools.client.models.TimeBoundListBudgetResponse
+
+import org.openapitools.client.models.*
 
 interface BudgetControllerApi {
     /**
-     * POST bugdets/{id}/cancel
+     * POST budgets/{id}/cancel
      * 
      * 
      * Responses:
@@ -21,10 +25,10 @@ interface BudgetControllerApi {
      * @return [Unit]
      */
     @POST("budgets/{id}/cancel")
-    suspend fun cancel1(@Path("id") id: kotlin.Long): Response<Unit>
+    suspend fun cancel2(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * POST bugdets
+     * POST budgets
      * 
      * 
      * Responses:
@@ -37,7 +41,7 @@ interface BudgetControllerApi {
     suspend fun create5(@Body budgetRequest: BudgetRequest): Response<BudgetResponse>
 
     /**
-     * POST bugdets/{id}/disable
+     * POST budgets/{id}/disable
      * 
      * 
      * Responses:
@@ -50,7 +54,7 @@ interface BudgetControllerApi {
     suspend fun disable5(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET bugdets/{idUser}
+     * GET budgets/user/{idUser}
      * 
      * 
      * Responses:
@@ -60,7 +64,7 @@ interface BudgetControllerApi {
      * @return [kotlin.collections.List<BudgetResponse>]
      */
     @GET("budgets/user/{idUser}")
-    suspend fun findAllByUser3(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
+    suspend fun findAllByUser4(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
 
 
     /**
@@ -69,6 +73,7 @@ interface BudgetControllerApi {
     enum class StateFindAllByUserAndState4(val value: kotlin.String) {
         @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
         @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
+        @Json(name = "DISABLED") DISABLED("DISABLED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED")
     }
 
@@ -98,6 +103,33 @@ interface BudgetControllerApi {
      */
     @GET("budgets/{id}")
     suspend fun findById5(@Path("id") id: kotlin.Long): Response<BudgetResponse>
+
+
+    /**
+    * enum for parameter health
+    */
+    enum class HealthGetBudgetsByHealth(val value: kotlin.String) {
+        @Json(name = "OK") OK("OK"),
+        @Json(name = "NEAR_LIMIT") NEAR_LIMIT("NEAR_LIMIT"),
+        @Json(name = "EXCEEDED") EXCEEDED("EXCEEDED"),
+        @Json(name = "INACTIVE") INACTIVE("INACTIVE")
+    }
+
+    /**
+     * GET budgets/{health}
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param health 
+     * @param start 
+     * @param end 
+     * @param userId 
+     * @return [TimeBoundListBudgetResponse]
+     */
+    @GET("budgets/{health}")
+    suspend fun getBudgetsByHealth(@Path("health") health: kotlin.String, @Query("start") start: java.time.LocalDate, @Query("end") end: java.time.LocalDate, @Query("userId") userId: kotlin.Long): Response<TimeBoundListBudgetResponse>
 
     /**
      * PUT budgets/{id}

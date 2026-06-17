@@ -7,7 +7,11 @@
 | **id** | **kotlin.Long** |  |  [optional] |
 | **userId** | **kotlin.Long** |  |  [optional] |
 | **categoryId** | **kotlin.Long** |  |  [optional] |
+| **categoryName** | **kotlin.Long** |  |  [optional] |
 | **reasonId** | **kotlin.Long** |  |  [optional] |
+| **reasonDescription** | **kotlin.Long** |  |  [optional] |
+| **savingGoalId** | **kotlin.Long** |  |  [optional] |
+| **scheduleId** | **kotlin.Long** |  |  [optional] |
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **paymentMethod** | [**inline**](#PaymentMethod) |  |  [optional] |
 | **type** | [**inline**](#Type) |  |  [optional] |

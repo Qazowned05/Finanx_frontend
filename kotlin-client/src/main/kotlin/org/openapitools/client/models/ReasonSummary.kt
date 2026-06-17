@@ -31,18 +31,18 @@ import java.io.Serializable
 /**
  * 
  *
- * @param reasonId 
- * @param reasonDescription 
+ * @param id 
+ * @param description 
  */
 
 
 data class ReasonSummary (
 
-    @Json(name = "reasonId")
-    val reasonId: kotlin.Long? = null,
+    @Json(name = "id")
+    val id: kotlin.Long? = null,
 
-    @Json(name = "reasonDescription")
-    val reasonDescription: kotlin.String? = null
+    @Json(name = "description")
+    val description: kotlin.String? = null
 
 ) : Serializable {
     companion object {

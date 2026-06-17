@@ -16,7 +16,7 @@
 | **state** | [**inline**](#State) |  |  [optional] |
 | **scheduleId** | **kotlin.Long** |  |  [optional] |
 | **budgetId** | **kotlin.Long** |  |  [optional] |
-| **budgetDescription** | **kotlin.Long** |  |  [optional] |
+| **budgetDescription** | **kotlin.String** |  |  [optional] |
 | **budgetState** | [**inline**](#BudgetState) |  |  [optional] |
 | **savingGoalId** | **kotlin.Long** |  |  [optional] |
 | **savingGoalDescription** | **kotlin.String** |  |  [optional] |

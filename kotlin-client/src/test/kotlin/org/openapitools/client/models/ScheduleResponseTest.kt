@@ -23,11 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.ScheduleResponse
-import org.openapitools.client.models.RecurrenceRuleResponse
 
 class ScheduleResponseTest : ShouldSpec() {
     init {
@@ -80,6 +76,12 @@ class ScheduleResponseTest : ShouldSpec() {
         should("test lastRunAt") {
             // uncomment below to test the property
             //modelInstance.lastRunAt shouldBe ("TODO")
+        }
+
+        // to test the property `disabledAt`
+        should("test disabledAt") {
+            // uncomment below to test the property
+            //modelInstance.disabledAt shouldBe ("TODO")
         }
 
         // to test the property `active`

@@ -57,6 +57,12 @@ class CategoryResponseTest : ShouldSpec() {
             //modelInstance.active shouldBe ("TODO")
         }
 
+        // to test the property `createdAt`
+        should("test createdAt") {
+            // uncomment below to test the property
+            //modelInstance.createdAt shouldBe ("TODO")
+        }
+
         // to test the property `disabledAt`
         should("test disabledAt") {
             // uncomment below to test the property

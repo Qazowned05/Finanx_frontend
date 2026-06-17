@@ -41,7 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanx.ui.viewmodel.AnalyticsViewModel
-import org.openapitools.client.models.BudgetExecution
+import org.openapitools.client.models.BudgetExecutionResponse
+import org.openapitools.client.models.BudgetResponse
 import org.openapitools.client.models.Insight
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -51,7 +52,7 @@ import java.util.Locale
 fun AnalyticsScreen(
     userId: Long,
     viewModel: AnalyticsViewModel = viewModel()
-) {
+) {/*
     val state = viewModel.analyticsState
 
     LaunchedEffect(userId) {
@@ -222,7 +223,7 @@ fun AnalyticsScreen(
                 }
             }
         }
-    }
+    }*/
 }
 
 @Composable
@@ -249,13 +250,13 @@ private fun MetricCard(
 }
 
 @Composable
-private fun BudgetExecutionItem(budget: BudgetExecution) {
+private fun BudgetExecutionItem(budget: BudgetExecutionResponse) {
     val percentage = budget.executionPercentage?.toFloat() ?: 0f
     val progress = (percentage / 100f).coerceIn(0f, 1f)
-    val color = when (budget.budgetHealth) {
-        BudgetExecution.BudgetHealth.EXCEEDED -> Color(0xFFDC2626)
-        BudgetExecution.BudgetHealth.NEAR_LIMIT -> Color(0xFFD97706)
-        BudgetExecution.BudgetHealth.OK -> Color(0xFF16A34A)
+    val color = when (budget.health) {
+        BudgetExecutionResponse.Health.EXCEEDED -> Color(0xFFDC2626)
+        BudgetExecutionResponse.Health.NEAR_LIMIT -> Color(0xFFD97706)
+        BudgetExecutionResponse.Health.OK -> Color(0xFF16A34A)
         else -> Color(0xFF6B7280)
     }
 
@@ -267,12 +268,12 @@ private fun BudgetExecutionItem(budget: BudgetExecution) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = budget.budgetDescription ?: "Presupuesto",
+                        text = budget.description ?: "Presupuesto",
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF20232D)
                     )
                     Text(
-                        text = "${money(budget.spentAmount)} de ${money(budget.budgetLimitAmount)}",
+                        text = "${money(budget.spentAmount)} de ${money(budget.limitAmount)}",
                         color = Color(0xFF6B7280),
                         style = MaterialTheme.typography.bodySmall
                     )

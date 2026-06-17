@@ -1,0 +1,2693 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /users/{id}:
+    get:
+      tags:
+        - user-controller
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+    put:
+      tags:
+        - user-controller
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+    post:
+      tags:
+        - user-controller
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /transactions/{id}:
+    get:
+      tags:
+        - transaction-controller
+      operationId: findById_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+    put:
+      tags:
+        - transaction-controller
+      operationId: update_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+    delete:
+      tags:
+        - transaction-controller
+      operationId: disable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /schedule/{id}:
+    put:
+      tags:
+        - schedule-controller
+      operationId: update_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/ScheduleRequest"
+                - $ref: "#/components/schemas/BudgetScheduleRequest"
+                - $ref: "#/components/schemas/TransactionScheduleRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ScheduleResponse"
+                  - $ref: "#/components/schemas/BudgetScheduleResponse"
+                  - $ref: "#/components/schemas/TransactionScheduleResponse"
+  /savings/{id}:
+    get:
+      tags:
+        - saving-goal-controller
+      operationId: findById_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+    put:
+      tags:
+        - saving-goal-controller
+      operationId: update_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingGoalRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+  /reasons/{id}:
+    get:
+      tags:
+        - reason-controller
+      operationId: findById_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+    put:
+      tags:
+        - reason-controller
+      operationId: update_4
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReasonRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+    post:
+      tags:
+        - reason-controller
+      operationId: disable_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /categories/{id}:
+    get:
+      tags:
+        - category-controller
+      operationId: findById_4
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+    put:
+      tags:
+        - category-controller
+      operationId: update_5
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /budgets/{id}:
+    get:
+      tags:
+        - budget-controller
+      operationId: findById_5
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+    put:
+      tags:
+        - budget-controller
+      operationId: update_6
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+  /users/{id}/disable:
+    post:
+      tags:
+        - user-controller
+      operationId: disable_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /users/{id}/block:
+    post:
+      tags:
+        - user-controller
+      operationId: block
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /users/{id}/activate:
+    post:
+      tags:
+        - user-controller
+      operationId: enable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /users/register:
+    post:
+      tags:
+        - user-controller
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /transactions:
+    post:
+      tags:
+        - transaction-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+  /schedule:
+    post:
+      tags:
+        - schedule-controller
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/ScheduleRequest"
+                - $ref: "#/components/schemas/BudgetScheduleRequest"
+                - $ref: "#/components/schemas/TransactionScheduleRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ScheduleResponse"
+                  - $ref: "#/components/schemas/BudgetScheduleResponse"
+                  - $ref: "#/components/schemas/TransactionScheduleResponse"
+  /schedule/{id}/resume:
+    post:
+      tags:
+        - schedule-controller
+      operationId: resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /schedule/{id}/pause:
+    post:
+      tags:
+        - schedule-controller
+      operationId: pause
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /schedule/{id}/cancel:
+    post:
+      tags:
+        - schedule-controller
+      operationId: cancel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /savings:
+    post:
+      tags:
+        - saving-goal-controller
+      operationId: create_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingGoalRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+  /savings/{id}/disable:
+    post:
+      tags:
+        - saving-goal-controller
+      operationId: disable_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /savings/{id}/cancel:
+    post:
+      tags:
+        - saving-goal-controller
+      operationId: cancel_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /reasons:
+    post:
+      tags:
+        - reason-controller
+      operationId: create_3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReasonRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+  /notifications/discard:
+    post:
+      tags:
+        - notification-controller
+      operationId: discard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+  /categories:
+    post:
+      tags:
+        - category-controller
+      operationId: create_4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /categories/{id}/disable:
+    post:
+      tags:
+        - category-controller
+      operationId: disable_4
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /categories/{id}/activate:
+    post:
+      tags:
+        - category-controller
+      operationId: activate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /budgets:
+    post:
+      tags:
+        - budget-controller
+      operationId: create_5
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+  /budgets/{id}/disable:
+    post:
+      tags:
+        - budget-controller
+      operationId: disable_5
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /budgets/{id}/cancel:
+    post:
+      tags:
+        - budget-controller
+      operationId: cancel_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+  /auth/register:
+    post:
+      tags:
+        - auth-controller
+      operationId: register_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /auth/login:
+    post:
+      tags:
+        - auth-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /auth/google:
+    post:
+      tags:
+        - auth-controller
+      operationId: google
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleLoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /users:
+    get:
+      tags:
+        - user-controller
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+  /users/timezones:
+    get:
+      tags:
+        - user-controller
+      operationId: listTimeZones
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                    - AMERICA_LIMA
+                    - AMERICA_BOGOTA
+                    - AMERICA_MEXICO_CITY
+                    - AMERICA_SANTIAGO
+                    - AMERICA_BUENOS_AIRES
+                    - AMERICA_NEW_YORK
+                    - AMERICA_LOS_ANGELES
+  /users/search:
+    get:
+      tags:
+        - user-controller
+      operationId: searchByName
+      parameters:
+        - name: string
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+  /transactions/{userId}:
+    get:
+      tags:
+        - transaction-controller
+      operationId: findAllByUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionResponse"
+  /transactions/user/{userId}/between:
+    get:
+      tags:
+        - transaction-controller
+      operationId: findAllByUserBetween
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionResponse"
+  /transactions/user/{userId}/active:
+    get:
+      tags:
+        - transaction-controller
+      operationId: findAllActiveByUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionResponse"
+  /schedule/user/{idUser}/{state}:
+    get:
+      tags:
+        - schedule-controller
+      operationId: findAllByUserAndState
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: state
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - RUNNING
+              - PAUSED
+              - FINALIZED
+              - CANCELLED
+              - CREATED
+              - ERROR
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/ScheduleResponse"
+                    - $ref: "#/components/schemas/BudgetScheduleResponse"
+                    - $ref: "#/components/schemas/TransactionScheduleResponse"
+  /schedule/transactions/user/{idUser}/{state}:
+    get:
+      tags:
+        - transaction-schedule-controller
+      operationId: findAllByUserAndState_1
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: state
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - RUNNING
+              - PAUSED
+              - FINALIZED
+              - CANCELLED
+              - CREATED
+              - ERROR
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransactionScheduleResponse"
+  /schedule/budgets/user/{idUser}/{state}:
+    get:
+      tags:
+        - budget-schedule-controller
+      operationId: findAllByUserAndState_2
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: state
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - RUNNING
+              - PAUSED
+              - FINALIZED
+              - CANCELLED
+              - CREATED
+              - ERROR
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetScheduleResponse"
+  /savings/user/{idUser}:
+    get:
+      tags:
+        - saving-goal-controller
+      operationId: findAllActiveByUser_1
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavingGoalResponse"
+  /reasons/user/{idUser}:
+    get:
+      tags:
+        - reason-controller
+      operationId: findAllByUser_1
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReasonResponse"
+  /notifications/{id}:
+    get:
+      tags:
+        - notification-controller
+      operationId: findById_6
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NotificationDTO"
+  /notifications/user/{idUser}:
+    get:
+      tags:
+        - notification-controller
+      operationId: findAllByUser_2
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotificationDTO"
+  /notifications/user/{idUser}/{state}:
+    get:
+      tags:
+        - notification-controller
+      operationId: findAllByUserAndState_3
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: state
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - SCHEDULED
+              - SENT
+              - READ
+              - DISCARD
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotificationDTO"
+  /categories/user/{idUser}:
+    get:
+      tags:
+        - category-controller
+      operationId: findAllByUser_3
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryResponse"
+  /categories/user/{idUser}/{active}:
+    get:
+      tags:
+        - category-controller
+      operationId: findAllByUserAndActive
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: active
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryResponse"
+  /budgets/{health}:
+    get:
+      tags:
+        - budget-controller
+      operationId: getBudgetsByHealth
+      parameters:
+        - name: health
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - OK
+              - NEAR_LIMIT
+              - EXCEEDED
+              - INACTIVE
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/PeriodRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TimeBoundListBudgetResponse"
+  /budgets/user/{idUser}:
+    get:
+      tags:
+        - budget-controller
+      operationId: findAllByUser_4
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetResponse"
+  /budgets/user/{idUser}/{state}:
+    get:
+      tags:
+        - budget-controller
+      operationId: findAllByUserAndState_4
+      parameters:
+        - name: idUser
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: state
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - CANCELLED
+              - DISABLED
+              - FINALIZED
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetResponse"
+  /analytics/{id}/execution:
+    get:
+      tags:
+        - analytics-controller
+      operationId: getExecution
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetExecutionResponse"
+  /analytics/dashboard/budgets:
+    get:
+      tags:
+        - analytics-controller
+      operationId: budgets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/BudgetsDashboard"
+                  - $ref: "#/components/schemas/SavingGoalsDashboard"
+                  - $ref: "#/components/schemas/TSchedulesDashboard"
+                  - $ref: "#/components/schemas/TransactionsDashboard"
+  /analytics/dashboard/balance:
+    get:
+      tags:
+        - analytics-controller
+      operationId: balance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/BudgetsDashboard"
+                  - $ref: "#/components/schemas/SavingGoalsDashboard"
+                  - $ref: "#/components/schemas/TSchedulesDashboard"
+                  - $ref: "#/components/schemas/TransactionsDashboard"
+  /schedule/{id}/disable:
+    delete:
+      tags:
+        - schedule-controller
+      operationId: disable_6
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        lastname:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        timeZone:
+          type: string
+          enum:
+            - AMERICA_LIMA
+            - AMERICA_BOGOTA
+            - AMERICA_MEXICO_CITY
+            - AMERICA_SANTIAGO
+            - AMERICA_BUENOS_AIRES
+            - AMERICA_NEW_YORK
+            - AMERICA_LOS_ANGELES
+      required:
+        - email
+        - lastname
+        - name
+        - password
+        - timeZone
+        - username
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+          enum:
+            - USER
+            - SYSTEM
+        state:
+          type: string
+          enum:
+            - ENABLED
+            - BLOCKED
+            - DISABLED
+        moneyBalance:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        fullName:
+          type: string
+        timeZone:
+          type: string
+          enum:
+            - AMERICA_LIMA
+            - AMERICA_BOGOTA
+            - AMERICA_MEXICO_CITY
+            - AMERICA_SANTIAGO
+            - AMERICA_BUENOS_AIRES
+            - AMERICA_NEW_YORK
+            - AMERICA_LOS_ANGELES
+    TransactionRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        reasonId:
+          type: integer
+          format: int64
+        description:
+          type: string
+        savingGoalId:
+          type: integer
+          format: int64
+        amount:
+          type: number
+          minimum: 0.00
+        paymentMethod:
+          type: string
+          enum:
+            - CASH
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - BANK_TRANSFER
+            - YAPE
+            - PLIN
+            - OTHER
+        type:
+          type: string
+          enum:
+            - SPENT
+            - INCOME
+      required:
+        - amount
+        - categoryId
+        - paymentMethod
+        - type
+        - userId
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: integer
+          format: int64
+        reasonId:
+          type: integer
+          format: int64
+        reasonDescription:
+          type: integer
+          format: int64
+        savingGoalId:
+          type: integer
+          format: int64
+        scheduleId:
+          type: integer
+          format: int64
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+          enum:
+            - CASH
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - BANK_TRANSFER
+            - YAPE
+            - PLIN
+            - OTHER
+        type:
+          type: string
+          enum:
+            - SPENT
+            - INCOME
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+    BudgetScheduleRequest:
+      allOf:
+        - $ref: "#/components/schemas/ScheduleRequest"
+        - type: object
+          properties:
+            alertable:
+              type: boolean
+            percentAlert:
+              type: integer
+              format: int32
+            limitAmount:
+              type: number
+            description:
+              type: string
+              minLength: 1
+      required:
+        - alertable
+        - categoryId
+        - description
+        - limitAmount
+        - percentAlert
+        - userId
+    RecurrenceRuleRequest:
+      type: object
+      properties:
+        recurrenceType:
+          type: string
+          enum:
+            - NONE
+            - DAILY
+            - WEEKLY
+            - MONTHLY
+            - YEARLY
+        interval:
+          type: integer
+          format: int32
+        dayOfWeek:
+          type: string
+          enum:
+            - MONDAY
+            - TUESDAY
+            - WEDNESDAY
+            - THURSDAY
+            - FRIDAY
+            - SATURDAY
+            - SUNDAY
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+      required:
+        - end
+        - interval
+        - recurrenceType
+        - start
+    ScheduleRequest:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleRequest"
+        type:
+          type: string
+      required:
+        - categoryId
+        - type
+        - userId
+    TransactionScheduleRequest:
+      allOf:
+        - $ref: "#/components/schemas/ScheduleRequest"
+        - type: object
+          properties:
+            reasonId:
+              type: integer
+              format: int64
+            description:
+              type: string
+            amount:
+              type: number
+              minimum: 0.00
+            paymentMethod:
+              type: string
+              enum:
+                - CASH
+                - CREDIT_CARD
+                - DEBIT_CARD
+                - BANK_TRANSFER
+                - YAPE
+                - PLIN
+                - OTHER
+            transactionType:
+              type: string
+              enum:
+                - SPENT
+                - INCOME
+      required:
+        - amount
+        - categoryId
+        - paymentMethod
+        - transactionType
+        - userId
+    BudgetScheduleResponse:
+      allOf:
+        - $ref: "#/components/schemas/ScheduleResponse"
+        - type: object
+          properties:
+            alertable:
+              type: boolean
+            percentAlert:
+              type: integer
+              format: int32
+            limitAmount:
+              type: number
+            description:
+              type: string
+    RecurrenceRuleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        recurrenceType:
+          type: string
+          enum:
+            - NONE
+            - DAILY
+            - WEEKLY
+            - MONTHLY
+            - YEARLY
+        interval:
+          type: integer
+          format: int32
+        dayOfWeek:
+          type: string
+          enum:
+            - MONDAY
+            - TUESDAY
+            - WEDNESDAY
+            - THURSDAY
+            - FRIDAY
+            - SATURDAY
+            - SUNDAY
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        durationDays:
+          type: integer
+          format: int64
+    ScheduleResponse:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: string
+        nextRunAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        lastRunAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        state:
+          type: string
+          enum:
+            - RUNNING
+            - PAUSED
+            - FINALIZED
+            - CANCELLED
+            - CREATED
+            - ERROR
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleResponse"
+        type:
+          type: string
+      required:
+        - type
+    TransactionScheduleResponse:
+      allOf:
+        - $ref: "#/components/schemas/ScheduleResponse"
+        - type: object
+          properties:
+            reasonId:
+              type: integer
+              format: int64
+            reasonDesc:
+              type: string
+            amount:
+              type: number
+            paymentMethod:
+              type: string
+              enum:
+                - CASH
+                - CREDIT_CARD
+                - DEBIT_CARD
+                - BANK_TRANSFER
+                - YAPE
+                - PLIN
+                - OTHER
+            transactionType:
+              type: string
+              enum:
+                - SPENT
+                - INCOME
+    SavingGoalRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+        targetAmount:
+          type: number
+        deadline:
+          type: string
+          format: date
+        userId:
+          type: integer
+          format: int64
+      required:
+        - deadline
+        - description
+        - targetAmount
+        - userId
+    SavingGoalResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        targetAmount:
+          type: number
+        accumulated:
+          type: number
+        deadline:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - RUNNING
+            - COMPLETED
+            - CANCELLED
+        active:
+          type: boolean
+        userId:
+          type: integer
+          format: int64
+        progressPercentage:
+          type: number
+          format: double
+        transactionsCount:
+          type: integer
+          format: int32
+        outstanding:
+          type: number
+        daysRemaining:
+          type: integer
+          format: int64
+        averageContribution:
+          type: number
+        completed:
+          type: boolean
+        estimatedCompletionDate:
+          type: string
+          format: date-time
+    ReasonRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          minLength: 1
+        userId:
+          type: integer
+          format: int64
+      required:
+        - description
+        - userId
+    ReasonResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+    CategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        userId:
+          type: integer
+          format: int64
+      required:
+        - description
+        - name
+        - userId
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+    BudgetRequest:
+      type: object
+      properties:
+        alertable:
+          type: boolean
+        percentAlert:
+          type: integer
+          format: int32
+          maximum: 100
+          minimum: 0
+        limitAmount:
+          type: number
+          minimum: 0.00
+        description:
+          type: string
+          minLength: 1
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+      required:
+        - alertable
+        - categoryId
+        - description
+        - end
+        - limitAmount
+        - start
+        - userId
+    BudgetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: integer
+          format: int64
+        scheduleId:
+          type: integer
+          format: int64
+        alertable:
+          type: boolean
+        percentAlert:
+          type: integer
+          format: int32
+        limitAmount:
+          type: number
+        description:
+          type: string
+        state:
+          type: string
+          enum:
+            - ACTIVE
+            - CANCELLED
+            - DISABLED
+            - FINALIZED
+        health:
+          type: string
+          enum:
+            - OK
+            - NEAR_LIMIT
+            - EXCEEDED
+            - INACTIVE
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        token:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - password
+    GoogleLoginRequest:
+      type: object
+      properties:
+        idToken:
+          type: string
+          minLength: 1
+      required:
+        - idToken
+    NotificationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        userEmail:
+          type: string
+        type:
+          type: string
+          enum:
+            - WARNING
+            - SUCCESS
+            - ERROR
+            - INFO
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        scheduledAt:
+          type: string
+          format: date-time
+        sentAt:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - SCHEDULED
+            - SENT
+            - READ
+            - DISCARD
+        scheduleId:
+          type: integer
+          format: int64
+        budgetId:
+          type: integer
+          format: int64
+        budgetDescription:
+          type: string
+        budgetState:
+          type: string
+          enum:
+            - ACTIVE
+            - CANCELLED
+            - DISABLED
+            - FINALIZED
+        savingGoalId:
+          type: integer
+          format: int64
+        savingGoalDescription:
+          type: string
+    PeriodRequest:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        userId:
+          type: integer
+          format: int64
+      required:
+        - end
+        - start
+        - userId
+    PeriodResponse:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        userId:
+          type: integer
+          format: int64
+        readableString:
+          type: string
+    TimeBoundListBudgetResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetResponse"
+        count:
+          type: integer
+          format: int64
+    BudgetExecutionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        categoryId:
+          type: integer
+          format: int64
+        categoryName:
+          type: integer
+          format: int64
+        scheduleId:
+          type: integer
+          format: int64
+        alertable:
+          type: boolean
+        percentAlert:
+          type: integer
+          format: int32
+        limitAmount:
+          type: number
+        description:
+          type: string
+        state:
+          type: string
+          enum:
+            - ACTIVE
+            - CANCELLED
+            - DISABLED
+            - FINALIZED
+        health:
+          type: string
+          enum:
+            - OK
+            - NEAR_LIMIT
+            - EXCEEDED
+            - INACTIVE
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        spentAmount:
+          type: number
+        remainingAmount:
+          type: number
+        executionPercentage:
+          type: number
+    Aggregate:
+      type: object
+      properties:
+        title:
+          type: string
+        totalAmount:
+          type: number
+        averageAmount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        max:
+          type: number
+        min:
+          type: number
+    AggregateByBudgetExecutionResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/BudgetExecutionResponse"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByBudgetHealth:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          type: string
+          enum:
+            - OK
+            - NEAR_LIMIT
+            - EXCEEDED
+            - INACTIVE
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByCategoryResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/CategoryResponse"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByCategorySummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/CategorySummary"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByPaymentMethod:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          type: string
+          enum:
+            - CASH
+            - CREDIT_CARD
+            - DEBIT_CARD
+            - BANK_TRANSFER
+            - YAPE
+            - PLIN
+            - OTHER
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByReasonSummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/ReasonSummary"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateBySavingGoalResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/SavingGoalResponse"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateBySavingGoalState:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          type: string
+          enum:
+            - RUNNING
+            - COMPLETED
+            - CANCELLED
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByTransactionType:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          type: string
+          enum:
+            - SPENT
+            - INCOME
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    BudgetsDashboard:
+      allOf:
+        - $ref: "#/components/schemas/DashboardResponse"
+        - type: object
+          properties:
+            byHealth:
+              type: array
+              items:
+                $ref: "#/components/schemas/AggregateByBudgetHealth"
+            byCategory:
+              type: array
+              items:
+                $ref: "#/components/schemas/AggregateByBudgetExecutionResponse"
+            executionEvolution:
+              $ref: "#/components/schemas/TimeLineBudgetExecutionResponse"
+            mostExecuted:
+              $ref: "#/components/schemas/RankingCategoryResponse"
+            mostRemaining:
+              $ref: "#/components/schemas/RankingCategoryResponse"
+            totalBudgetLimitAmount:
+              type: number
+            totalBudgetSpentAmount:
+              type: number
+            totalBudgetRemainingAmount:
+              type: number
+    CategorySummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    DashboardResponse:
+      type: object
+      discriminator:
+        propertyName: type
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        insightSummary:
+          $ref: "#/components/schemas/InsightSummary"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        type:
+          type: string
+      required:
+        - type
+    Insight:
+      type: object
+      properties:
+        severity:
+          type: string
+          enum:
+            - INFO
+            - WARNING
+            - CRITICAL
+        title:
+          type: string
+        description:
+          type: string
+        action:
+          type: string
+    InsightSummary:
+      type: object
+      properties:
+        insights:
+          type: array
+          items:
+            $ref: "#/components/schemas/Insight"
+        insightsCount:
+          type: integer
+          format: int32
+    RankingCategoryResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemCategoryResponse"
+    RankingCategorySummary:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemCategorySummary"
+    RankingItemCategoryResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByCategoryResponse"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemCategorySummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByCategorySummary"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemPaymentMethod:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByPaymentMethod"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemReasonSummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByReasonSummary"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemSavingGoalResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateBySavingGoalResponse"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemTransactionType:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByTransactionType"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingPaymentMethod:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemPaymentMethod"
+    RankingReasonSummary:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemReasonSummary"
+    RankingSavingGoalResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemSavingGoalResponse"
+    RankingTransactionType:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemTransactionType"
+    ReasonSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+    SavingGoalsDashboard:
+      allOf:
+        - $ref: "#/components/schemas/DashboardResponse"
+        - type: object
+          properties:
+            byState:
+              type: array
+              items:
+                $ref: "#/components/schemas/AggregateBySavingGoalState"
+            contributionEvolution:
+              $ref: "#/components/schemas/TimeLineSavingGoalResponse"
+            dailyContributions:
+              $ref: "#/components/schemas/TimeLineLocalDate"
+            closestToGoal:
+              $ref: "#/components/schemas/RankingSavingGoalResponse"
+            mostContributed:
+              $ref: "#/components/schemas/RankingSavingGoalResponse"
+    ScheduledProjection:
+      type: object
+      properties:
+        scheduledTransactionId:
+          type: integer
+          format: int64
+        transactionType:
+          type: string
+          enum:
+            - SPENT
+            - INCOME
+        transactionAmount:
+          type: number
+        category:
+          $ref: "#/components/schemas/CategoryResponse"
+        reason:
+          $ref: "#/components/schemas/ReasonResponse"
+        recurrenceType:
+          type: string
+          enum:
+            - NONE
+            - DAILY
+            - WEEKLY
+            - MONTHLY
+            - YEARLY
+        nextRunAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        expectedOccurrenceCount:
+          type: integer
+          format: int32
+        expectedTotalAmount:
+          type: number
+    TSchedulesDashboard:
+      allOf:
+        - $ref: "#/components/schemas/DashboardResponse"
+        - type: object
+          properties:
+            activeScheduledTransactionCount:
+              type: integer
+              format: int64
+            activeCountByRecurrenceType:
+              type: object
+              additionalProperties:
+                type: integer
+                format: int64
+            projectionStart:
+              type: string
+              format: date
+            projectionEnd:
+              type: string
+              format: date
+            projectedIncomeAmount:
+              type: number
+            projectedSpentAmount:
+              type: number
+            projectedNetAmount:
+              type: number
+            scheduledProjections:
+              type: array
+              items:
+                $ref: "#/components/schemas/ScheduledProjection"
+            insights:
+              type: array
+              items:
+                $ref: "#/components/schemas/Insight"
+    TimeLineBudgetExecutionResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointBudgetExecutionResponse"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+    TimeLineLocalDate:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointLocalDate"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+    TimeLineSavingGoalResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointSavingGoalResponse"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+    TimeLineTransactionResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointTransactionResponse"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+    TimeSeriesPointBudgetExecutionResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetExecutionResponse"
+    TimeSeriesPointLocalDate:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            type: string
+            format: date
+    TimeSeriesPointSavingGoalResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            $ref: "#/components/schemas/SavingGoalResponse"
+    TimeSeriesPointTransactionResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionResponse"
+    TransactionsDashboard:
+      allOf:
+        - $ref: "#/components/schemas/DashboardResponse"
+        - type: object
+          properties:
+            summaryByCategory:
+              $ref: "#/components/schemas/RankingCategorySummary"
+            summaryByPaymentMethod:
+              $ref: "#/components/schemas/RankingPaymentMethod"
+            summaryByType:
+              $ref: "#/components/schemas/RankingTransactionType"
+            dailyExpenses:
+              $ref: "#/components/schemas/TimeLineTransactionResponse"
+            dailyIncome:
+              $ref: "#/components/schemas/TimeLineTransactionResponse"
+            topCategories:
+              $ref: "#/components/schemas/RankingCategorySummary"
+            topSpentReasons:
+              $ref: "#/components/schemas/RankingReasonSummary"
+            topIncomeReasons:
+              $ref: "#/components/schemas/RankingReasonSummary"

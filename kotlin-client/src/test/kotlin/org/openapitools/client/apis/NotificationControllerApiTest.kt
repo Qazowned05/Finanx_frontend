@@ -41,28 +41,28 @@ class NotificationControllerApiTest : ShouldSpec() {
             //apiInstance.discard(body)
         }
 
-        // to test findAllByUser1
-        should("test findAllByUser1") {
-            // uncomment below to test findAllByUser1
+        // to test findAllByUser2
+        should("test findAllByUser2") {
+            // uncomment below to test findAllByUser2
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllByUser1(idUser)
+            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllByUser2(idUser)
             //result shouldBe ("TODO")
         }
 
-        // to test findAllByUserAndState
-        should("test findAllByUserAndState") {
-            // uncomment below to test findAllByUserAndState
+        // to test findAllByUserAndState3
+        should("test findAllByUserAndState3") {
+            // uncomment below to test findAllByUserAndState3
             //val idUser : kotlin.Long = 789 // kotlin.Long | 
             //val state : kotlin.String = state_example // kotlin.String | 
-            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllByUserAndState(idUser, state)
+            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllByUserAndState3(idUser, state)
             //result shouldBe ("TODO")
         }
 
-        // to test findById7
-        should("test findById7") {
-            // uncomment below to test findById7
+        // to test findById6
+        should("test findById6") {
+            // uncomment below to test findById6
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : NotificationDTO = apiInstance.findById7(id)
+            //val result : NotificationDTO = apiInstance.findById6(id)
             //result shouldBe ("TODO")
         }
 

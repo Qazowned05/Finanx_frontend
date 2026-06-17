@@ -51,11 +51,11 @@ class UserControllerApiTest : ShouldSpec() {
             //apiInstance.delete(id)
         }
 
-        // to test disable3
-        should("test disable3") {
-            // uncomment below to test disable3
+        // to test disable2
+        should("test disable2") {
+            // uncomment below to test disable2
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : UserResponse = apiInstance.disable3(id)
+            //val result : UserResponse = apiInstance.disable2(id)
             //result shouldBe ("TODO")
         }
 

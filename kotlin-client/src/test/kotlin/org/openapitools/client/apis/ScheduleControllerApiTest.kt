@@ -27,7 +27,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.ScheduleControllerApi
-import org.openapitools.client.models.FindById2200Response
+import org.openapitools.client.models.Update2200Response
 import org.openapitools.client.models.Update2Request
 
 class ScheduleControllerApiTest : ShouldSpec() {
@@ -35,20 +35,49 @@ class ScheduleControllerApiTest : ShouldSpec() {
         // uncomment below to create an instance of ScheduleControllerApi
         //val apiInstance = ScheduleControllerApi()
 
+        // to test cancel
+        should("test cancel") {
+            // uncomment below to test cancel
+            //val id : kotlin.Long = 789 // kotlin.Long | 
+            //apiInstance.cancel(id)
+        }
+
         // to test create1
         should("test create1") {
             // uncomment below to test create1
             //val update2Request : Update2Request =  // Update2Request | 
-            //val result : FindById2200Response = apiInstance.create1(update2Request)
+            //val result : Update2200Response = apiInstance.create1(update2Request)
             //result shouldBe ("TODO")
         }
 
-        // to test findById2
-        should("test findById2") {
-            // uncomment below to test findById2
+        // to test disable6
+        should("test disable6") {
+            // uncomment below to test disable6
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : FindById2200Response = apiInstance.findById2(id)
+            //apiInstance.disable6(id)
+        }
+
+        // to test findAllByUserAndState
+        should("test findAllByUserAndState") {
+            // uncomment below to test findAllByUserAndState
+            //val idUser : kotlin.Long = 789 // kotlin.Long | 
+            //val state : kotlin.String = state_example // kotlin.String | 
+            //val result : kotlin.collections.List<Update2200Response> = apiInstance.findAllByUserAndState(idUser, state)
             //result shouldBe ("TODO")
+        }
+
+        // to test pause
+        should("test pause") {
+            // uncomment below to test pause
+            //val id : kotlin.Long = 789 // kotlin.Long | 
+            //apiInstance.pause(id)
+        }
+
+        // to test resume
+        should("test resume") {
+            // uncomment below to test resume
+            //val id : kotlin.Long = 789 // kotlin.Long | 
+            //apiInstance.resume(id)
         }
 
         // to test update2
@@ -56,7 +85,7 @@ class ScheduleControllerApiTest : ShouldSpec() {
             // uncomment below to test update2
             //val id : kotlin.Long = 789 // kotlin.Long | 
             //val update2Request : Update2Request =  // Update2Request | 
-            //val result : FindById2200Response = apiInstance.update2(id, update2Request)
+            //val result : Update2200Response = apiInstance.update2(id, update2Request)
             //result shouldBe ("TODO")
         }
 

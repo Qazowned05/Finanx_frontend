@@ -4,13 +4,14 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancel2**](BudgetControllerApi.md#cancel2) | **POST** bugdets/{id}/cancel |  |
-| [**create5**](BudgetControllerApi.md#create5) | **POST** bugdets |  |
-| [**disable5**](BudgetControllerApi.md#disable5) | **POST** bugdets/{id}/disable |  |
-| [**findAllByUser4**](BudgetControllerApi.md#findAllByUser4) | **GET** bugdets/user/{idUser} |  |
-| [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** bugdets/user/{idUser}/{state} |  |
-| [**findById5**](BudgetControllerApi.md#findById5) | **GET** bugdets/{id} |  |
-| [**update6**](BudgetControllerApi.md#update6) | **PUT** bugdets/{id} |  |
+| [**cancel2**](BudgetControllerApi.md#cancel2) | **POST** budgets/{id}/cancel |  |
+| [**create5**](BudgetControllerApi.md#create5) | **POST** budgets |  |
+| [**disable5**](BudgetControllerApi.md#disable5) | **POST** budgets/{id}/disable |  |
+| [**findAllByUser4**](BudgetControllerApi.md#findAllByUser4) | **GET** budgets/user/{idUser} |  |
+| [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** budgets/user/{idUser}/{state} |  |
+| [**findById5**](BudgetControllerApi.md#findById5) | **GET** budgets/{id} |  |
+| [**getBudgetsByHealth**](BudgetControllerApi.md#getBudgetsByHealth) | **GET** budgets/{health} |  |
+| [**update6**](BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 
 
 
@@ -227,6 +228,45 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**BudgetResponse**](BudgetResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
+val health : kotlin.String = health_example // kotlin.String | 
+val request : PeriodRequest =  // PeriodRequest | 
+
+launch(Dispatchers.IO) {
+    val result : TimeBoundListBudgetResponse = webService.getBudgetsByHealth(health, request)
+}
+```
+
+### Parameters
+| **health** | **kotlin.String**|  | [enum: OK, NEAR_LIMIT, EXCEEDED, INACTIVE] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **request** | [**PeriodRequest**](.md)|  | |
+
+### Return type
+
+[**TimeBoundListBudgetResponse**](TimeBoundListBudgetResponse.md)
 
 ### Authorization
 

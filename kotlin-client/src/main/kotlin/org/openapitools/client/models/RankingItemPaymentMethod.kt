@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.AggregateByPaymentMethod
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -31,51 +32,28 @@ import java.io.Serializable
 /**
  * 
  *
+ * @param aggregate 
  * @param rank 
- * @param item 
  * @param metricValue 
- * @param occurrenceCount 
- * @param sharePercentage 
  */
 
 
 data class RankingItemPaymentMethod (
 
+    @Json(name = "aggregate")
+    val aggregate: AggregateByPaymentMethod? = null,
+
     @Json(name = "rank")
     val rank: kotlin.Int? = null,
 
-    @Json(name = "item")
-    val item: RankingItemPaymentMethod.Item? = null,
-
     @Json(name = "metricValue")
-    val metricValue: java.math.BigDecimal? = null,
-
-    @Json(name = "occurrenceCount")
-    val occurrenceCount: kotlin.Long? = null,
-
-    @Json(name = "sharePercentage")
-    val sharePercentage: java.math.BigDecimal? = null
+    val metricValue: java.math.BigDecimal? = null
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * 
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Item(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
 
 }
 
