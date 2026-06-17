@@ -19,8 +19,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FinanxTheme {
-                val authViewModel:AuthViewModel= viewModel()
-                BudgetScreen()
+                MainScreen()
 
 
             }
