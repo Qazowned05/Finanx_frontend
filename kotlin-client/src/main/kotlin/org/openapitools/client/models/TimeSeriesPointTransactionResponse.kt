@@ -27,7 +27,6 @@ import org.openapitools.client.models.TransactionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -53,10 +52,7 @@ data class TimeSeriesPointTransactionResponse (
     @Json(name = "context")
     val context: kotlin.collections.List<TransactionResponse>? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

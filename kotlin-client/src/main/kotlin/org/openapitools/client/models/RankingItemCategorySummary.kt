@@ -27,7 +27,6 @@ import org.openapitools.client.models.AggregateByCategorySummary
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -49,10 +48,7 @@ data class RankingItemCategorySummary (
     @Json(name = "metricValue")
     val metricValue: java.math.BigDecimal? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

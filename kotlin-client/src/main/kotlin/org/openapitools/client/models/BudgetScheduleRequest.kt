@@ -28,7 +28,6 @@ import org.openapitools.client.models.ScheduleRequest
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -70,10 +69,7 @@ data class BudgetScheduleRequest (
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null
 
-) : ScheduleRequest, Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) : ScheduleRequest {
 
 
 }

@@ -5,20 +5,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BluePrimary
-import com.example.finanx.ui.theme.LightBackground
+import com.example.finanx.ui.components.PasswordField
+import com.example.finanx.ui.theme.BrownPrimary
+import com.example.finanx.ui.theme.BrownSecondary
+import com.example.finanx.ui.theme.WarmBackground
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 
@@ -29,129 +29,155 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
     var lastname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var localError by remember { mutableStateOf<String?>(null) }
 
     val state = viewModel.authState
     val context = LocalContext.current
     val activity = context as? Activity
 
+    fun attemptRegister() {
+        localError = when {
+            username.isBlank() || name.isBlank() || lastname.isBlank() || email.isBlank() || password.isBlank() ->
+                "Completa todos los campos"
+            !email.contains("@") -> "Ingresa un correo válido"
+            password.length < 6 -> "La contraseña debe tener al menos 6 caracteres"
+            else -> null
+        }
+        if (localError == null) {
+            viewModel.register(
+                username = username.trim(),
+                name = name.trim(),
+                lastname = lastname.trim(),
+                email = email.trim(),
+                password = password,
+                timeZone = org.openapitools.client.models.UserRequest.TimeZone.AMERICA_LIMA
+            )
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = LightBackground
+        color = WarmBackground
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(horizontal = 24.dp)
+                .padding(top = 8.dp, bottom = 24.dp)
         ) {
+            IconButton(onClick = onBackToLogin) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = BrownPrimary)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = "Crear Cuenta",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = BluePrimary
+                text = "Crear cuenta",
+                style = MaterialTheme.typography.headlineMedium,
+                color = BrownPrimary
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Empieza a organizar tus finanzas",
+                style = MaterialTheme.typography.bodyMedium,
+                color = BrownSecondary,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
 
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { username = it; localError = null },
                 label = { Text("Nombre de usuario") },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Nombres") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp)
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it; localError = null },
+                    label = { Text("Nombres") },
+                    modifier = Modifier.weight(1f),
+                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = lastname,
+                    onValueChange = { lastname = it; localError = null },
+                    label = { Text("Apellidos") },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
+                )
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Nuevo campo: Apellidos
-            OutlinedTextField(
-                value = lastname,
-                onValueChange = { lastname = it },
-                label = { Text("Apellidos") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it; localError = null },
                 label = { Text("Correo electrónico") },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                 shape = RoundedCornerShape(12.dp),
-                visualTransformation = PasswordVisualTransformation()
+                singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(14.dp))
+
+            PasswordField(
+                value = password,
+                onValueChange = { password = it; localError = null },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             if (state is AuthState.Loading) {
-                CircularProgressIndicator(color = BluePrimary)
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = BrownPrimary)
+                }
             } else {
                 Button(
-                    onClick = {
-                        viewModel.register(
-                            username = username,
-                            name = name,
-                            lastname = lastname,
-                            email = email,
-                            password = password,
-                            timeZone = org.openapitools.client.models.UserRequest.TimeZone.AMERICA_LIMA
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    onClick = { attemptRegister() },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BrownPrimary,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text("Registrarse", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("Registrarse", style = MaterialTheme.typography.labelLarge)
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedButton(
-                    onClick = {
-                        if (activity != null) viewModel.loginWithGoogle(activity)
-                    },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    onClick = { if (activity != null) viewModel.loginWithGoogle(activity) },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BrownSecondary.copy(alpha = 0.4f))
                 ) {
-                    Icon(Icons.Default.AccountCircle, contentDescription = null)
-                    Spacer(Modifier.width(12.dp))
-                    Text("Registrarse con Google", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Registrarse con Google", style = MaterialTheme.typography.labelLarge, color = BrownPrimary)
                 }
 
-                TextButton(onClick = onBackToLogin) {
-                    Text("¿Ya tienes cuenta? Inicia sesión")
+                TextButton(onClick = onBackToLogin, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Text("¿Ya tienes cuenta? Inicia sesión", color = BrownSecondary)
                 }
             }
 
-            if (state is AuthState.Error) {
-                Text(text = state.message, color = MaterialTheme.colorScheme.error)
+            val errorToShow = localError ?: (state as? AuthState.Error)?.message
+            if (errorToShow != null) {
+                Text(
+                    text = errorToShow,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             }
         }
     }

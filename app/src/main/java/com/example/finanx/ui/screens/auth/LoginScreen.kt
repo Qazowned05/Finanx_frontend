@@ -1,24 +1,25 @@
 package com.example.finanx.ui.screens.auth
 
 import android.app.Activity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BluePrimary
-import com.example.finanx.ui.theme.LightBackground
-import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.components.PasswordField
+import com.example.finanx.ui.theme.BrownPrimary
+import com.example.finanx.ui.theme.BrownSecondary
+import com.example.finanx.ui.theme.GoldAccent
+import com.example.finanx.ui.theme.WarmBackground
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 
@@ -26,14 +27,24 @@ import com.example.finanx.ui.viewmodel.AuthViewModel
 fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var localError by remember { mutableStateOf<String?>(null) }
 
     val state = viewModel.authState
     val context = LocalContext.current
     val activity = context as? Activity
 
+    fun attemptLogin() {
+        localError = when {
+            email.isBlank() || password.isBlank() -> "Completa tu correo y contraseña"
+            !email.contains("@") -> "Ingresa un correo válido"
+            else -> null
+        }
+        if (localError == null) viewModel.login(email.trim(), password)
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = LightBackground
+        color = WarmBackground
     ) {
         Column(
             modifier = Modifier
@@ -42,24 +53,37 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .background(BrownPrimary, RoundedCornerShape(20.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.AccountBalanceWallet,
+                    contentDescription = null,
+                    tint = GoldAccent,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Text(
                 text = "Finanx",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Black,
-                color = BluePrimary,
-                letterSpacing = (-1).sp
+                style = MaterialTheme.typography.displaySmall,
+                color = BrownPrimary
             )
             Text(
-                text = "Tu control financiero inteligente",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = TextGray,
-                modifier = Modifier.padding(bottom = 48.dp)
+                text = "Mis Monedas · Tu control financiero",
+                style = MaterialTheme.typography.bodyMedium,
+                color = BrownSecondary,
+                modifier = Modifier.padding(bottom = 40.dp)
             )
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it; localError = null },
                 label = { Text("Correo electrónico") },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
@@ -69,61 +93,74 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            PasswordField(
                 value = password,
-                onValueChange = { password = it },
-                label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
+                onValueChange = { password = it; localError = null },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             if (state is AuthState.Loading) {
-                CircularProgressIndicator(color = BluePrimary)
+                CircularProgressIndicator(color = BrownPrimary)
             } else {
                 Button(
-                    onClick = { viewModel.login(email, password) },
+                    onClick = { attemptLogin() },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BrownPrimary,
+                        contentColor = Color.White
+                    )
                 ) {
-                    Text("Iniciar Sesión", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        "  o  ",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = BrownSecondary
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedButton(
-                    onClick = {
-
-                        if (activity != null) viewModel.loginWithGoogle(activity)
-                    },
+                    onClick = { if (activity != null) viewModel.loginWithGoogle(activity) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, BrownSecondary.copy(alpha = 0.4f))
                 ) {
-                    Icon(Icons.Default.AccountCircle, contentDescription = null)
-                    Spacer(Modifier.width(12.dp))
-                    Text("Continuar con Google", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Continuar con Google", style = MaterialTheme.typography.labelLarge, color = BrownPrimary)
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 TextButton(onClick = onNavigateToRegister) {
-                    Text("¿No tienes cuenta? Regístrate aquí")
+                    Text(
+                        "¿No tienes cuenta? Regístrate aquí",
+                        color = BrownSecondary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
 
-            if (state is AuthState.Error) {
+            val errorToShow = localError ?: (state as? AuthState.Error)?.message
+            if (errorToShow != null) {
                 Text(
-                    text = state.message,
+                    text = errorToShow,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 16.dp),
-                    fontSize = 14.sp
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 16.dp)
                 )
             }
         }

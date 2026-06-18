@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -84,18 +83,15 @@ data class TransactionResponse (
     val type: TransactionResponse.Type? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.LocalDateTime? = null,
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 

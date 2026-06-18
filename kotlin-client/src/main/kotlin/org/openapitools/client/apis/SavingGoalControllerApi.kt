@@ -21,7 +21,7 @@ interface SavingGoalControllerApi {
      * @return [Unit]
      */
     @POST("savings/{id}/cancel")
-    suspend fun cancel1(@Path("id") id: kotlin.Long): Response<Unit>
+    suspend fun cancelSavingGoal(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
      * POST savings
@@ -34,7 +34,7 @@ interface SavingGoalControllerApi {
      * @return [SavingGoalResponse]
      */
     @POST("savings")
-    suspend fun create2(@Body savingGoalRequest: SavingGoalRequest): Response<SavingGoalResponse>
+    suspend fun createSavingGoal(@Body savingGoalRequest: SavingGoalRequest): Response<SavingGoalResponse>
 
     /**
      * POST savings/{id}/disable
@@ -47,20 +47,7 @@ interface SavingGoalControllerApi {
      * @return [Unit]
      */
     @POST("savings/{id}/disable")
-    suspend fun disable3(@Path("id") id: kotlin.Long): Response<Unit>
-
-    /**
-     * GET savings/user/{idUser}
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param idUser 
-     * @return [kotlin.collections.List<SavingGoalResponse>]
-     */
-    @GET("savings/user/{idUser}")
-    suspend fun findAllActiveByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<SavingGoalResponse>>
+    suspend fun disableSavingGoal(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
      * GET savings/{id}
@@ -73,7 +60,20 @@ interface SavingGoalControllerApi {
      * @return [SavingGoalResponse]
      */
     @GET("savings/{id}")
-    suspend fun findById2(@Path("id") id: kotlin.Long): Response<SavingGoalResponse>
+    suspend fun findSavingGoalById(@Path("id") id: kotlin.Long): Response<SavingGoalResponse>
+
+    /**
+     * GET savings/user/{idUser}
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param idUser 
+     * @return [kotlin.collections.List<SavingGoalResponse>]
+     */
+    @GET("savings/user/{idUser}")
+    suspend fun findSavingGoalsByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<SavingGoalResponse>>
 
     /**
      * PUT savings/{id}
@@ -87,6 +87,6 @@ interface SavingGoalControllerApi {
      * @return [SavingGoalResponse]
      */
     @PUT("savings/{id}")
-    suspend fun update3(@Path("id") id: kotlin.Long, @Body savingGoalRequest: SavingGoalRequest): Response<SavingGoalResponse>
+    suspend fun updateSavingGoal(@Path("id") id: kotlin.Long, @Body savingGoalRequest: SavingGoalRequest): Response<SavingGoalResponse>
 
 }

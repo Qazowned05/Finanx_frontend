@@ -28,7 +28,6 @@ import org.openapitools.client.models.ScheduleResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -71,16 +70,16 @@ data class TransactionScheduleResponse (
     override val categoryName: kotlin.String? = null,
 
     @Json(name = "nextRunAt")
-    override val nextRunAt: java.time.LocalDateTime? = null,
+    override val nextRunAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.LocalDateTime? = null,
+    override val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "lastRunAt")
-    override val lastRunAt: java.time.LocalDateTime? = null,
+    override val lastRunAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    override val disabledAt: java.time.LocalDateTime? = null,
+    override val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "active")
     override val active: kotlin.Boolean? = null,
@@ -106,10 +105,7 @@ data class TransactionScheduleResponse (
     @Json(name = "transactionType")
     val transactionType: TransactionScheduleResponse.TransactionType? = null
 
-) : ScheduleResponse, Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) : ScheduleResponse {
 
     /**
      * 

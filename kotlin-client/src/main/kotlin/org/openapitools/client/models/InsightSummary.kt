@@ -27,7 +27,6 @@ import org.openapitools.client.models.Insight
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -45,10 +44,7 @@ data class InsightSummary (
     @Json(name = "insightsCount")
     val insightsCount: kotlin.Int? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

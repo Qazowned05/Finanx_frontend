@@ -27,7 +27,6 @@ import org.openapitools.client.models.RecurrenceRuleResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -47,10 +46,7 @@ import java.io.Serializable
  */
 
 
-interface ScheduleResponse : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+interface ScheduleResponse {
 
     @Json(name = "type")
     val type: kotlin.String
@@ -63,13 +59,13 @@ interface ScheduleResponse : Serializable {
     @Json(name = "categoryName")
     val categoryName: kotlin.String?
     @Json(name = "nextRunAt")
-    val nextRunAt: java.time.LocalDateTime?
+    val nextRunAt: java.time.OffsetDateTime?
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime?
+    val createdAt: java.time.OffsetDateTime?
     @Json(name = "lastRunAt")
-    val lastRunAt: java.time.LocalDateTime?
+    val lastRunAt: java.time.OffsetDateTime?
     @Json(name = "disabledAt")
-    val disabledAt: java.time.LocalDateTime?
+    val disabledAt: java.time.OffsetDateTime?
     @Json(name = "active")
     val active: kotlin.Boolean?
     @Json(name = "state")

@@ -1,20 +1,22 @@
 package com.example.finanx.data.repository
 
+import com.example.finanx.data.api.RetrofitClient
 import org.openapitools.client.apis.AuthControllerApi
 import org.openapitools.client.models.GoogleLoginRequest
 import org.openapitools.client.models.LoginRequest
 import org.openapitools.client.models.LoginResponse
 import org.openapitools.client.models.UserRequest
 import retrofit2.Response
-import kotlin.math.log
 
-class AuthRepository(private val api: AuthControllerApi) {
+class AuthRepository(
+    private val api: AuthControllerApi = RetrofitClient.authApi
+) {
     suspend fun login(email: String, password: String): Response<LoginResponse> {
         return api.login(LoginRequest(email, password))
     }
 
     suspend fun loginWithGoogle(idToken: String): Response<LoginResponse> {
-        return api.google(GoogleLoginRequest(idToken = idToken))
+        return api.loginWithGoogle(GoogleLoginRequest(idToken = idToken))
     }
 
     suspend fun register(
@@ -34,8 +36,6 @@ class AuthRepository(private val api: AuthControllerApi) {
             timeZone = timeZone
         )
 
-        println("Registrando usuario completo: $user")
-
-        return api.register1(user)
+        return api.registerUser(user)
     }
 }

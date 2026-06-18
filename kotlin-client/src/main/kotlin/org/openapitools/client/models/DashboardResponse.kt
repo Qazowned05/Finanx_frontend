@@ -29,7 +29,6 @@ import org.openapitools.client.models.PeriodResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -43,10 +42,7 @@ import java.io.Serializable
  */
 
 
-interface DashboardResponse : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+interface DashboardResponse {
 
     @Json(name = "type")
     val type: kotlin.String
@@ -55,7 +51,7 @@ interface DashboardResponse : Serializable {
     @Json(name = "title")
     val title: kotlin.String?
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime?
+    val createdAt: java.time.OffsetDateTime?
     @Json(name = "insightSummary")
     val insightSummary: InsightSummary?
     @Json(name = "aggregate")

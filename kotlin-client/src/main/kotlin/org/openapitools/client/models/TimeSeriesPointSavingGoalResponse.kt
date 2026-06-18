@@ -27,7 +27,6 @@ import org.openapitools.client.models.SavingGoalResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -53,10 +52,7 @@ data class TimeSeriesPointSavingGoalResponse (
     @Json(name = "context")
     val context: kotlin.collections.List<SavingGoalResponse>? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

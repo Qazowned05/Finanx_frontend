@@ -119,7 +119,7 @@ class SavingGoalViewModel : ViewModel() {
     fun deleteSavingGoal(userId: Long, goalId: Long) {
         viewModelScope.launch {
             try {
-                val response = repository.deleteSavingGoal(goalId)
+                val response = repository.disableSavingGoal(goalId)
 
                 if (response.isSuccessful) {
                     actionSuccess = "Meta eliminada"

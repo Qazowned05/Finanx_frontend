@@ -12,6 +12,19 @@ import org.openapitools.client.models.UserResponse
 
 interface UserControllerApi {
     /**
+     * POST users/{id}/activate
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param id 
+     * @return [UserResponse]
+     */
+    @POST("users/{id}/activate")
+    suspend fun activateUser(@Path("id") id: kotlin.Long): Response<UserResponse>
+
+    /**
      * POST users/{id}/block
      * 
      * 
@@ -22,20 +35,7 @@ interface UserControllerApi {
      * @return [UserResponse]
      */
     @POST("users/{id}/block")
-    suspend fun block(@Path("id") id: kotlin.Long): Response<UserResponse>
-
-    /**
-     * POST users/{id}
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param id 
-     * @return [Unit]
-     */
-    @POST("users/{id}")
-    suspend fun delete(@Path("id") id: kotlin.Long): Response<Unit>
+    suspend fun blockUser(@Path("id") id: kotlin.Long): Response<UserResponse>
 
     /**
      * POST users/{id}/disable
@@ -48,20 +48,7 @@ interface UserControllerApi {
      * @return [UserResponse]
      */
     @POST("users/{id}/disable")
-    suspend fun disable2(@Path("id") id: kotlin.Long): Response<UserResponse>
-
-    /**
-     * POST users/{id}/activate
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param id 
-     * @return [UserResponse]
-     */
-    @POST("users/{id}/activate")
-    suspend fun enable(@Path("id") id: kotlin.Long): Response<UserResponse>
+    suspend fun disableUser(@Path("id") id: kotlin.Long): Response<UserResponse>
 
     /**
      * GET users
@@ -73,7 +60,7 @@ interface UserControllerApi {
      * @return [kotlin.collections.List<UserResponse>]
      */
     @GET("users")
-    suspend fun findAll(): Response<kotlin.collections.List<UserResponse>>
+    suspend fun findAllUsers(): Response<kotlin.collections.List<UserResponse>>
 
     /**
      * GET users/{id}
@@ -86,7 +73,7 @@ interface UserControllerApi {
      * @return [UserResponse]
      */
     @GET("users/{id}")
-    suspend fun findById(@Path("id") id: kotlin.Long): Response<UserResponse>
+    suspend fun findUserById(@Path("id") id: kotlin.Long): Response<UserResponse>
 
     /**
      * GET users/timezones
@@ -111,7 +98,7 @@ interface UserControllerApi {
      * @return [LoginResponse]
      */
     @POST("users/register")
-    suspend fun register(@Body userRequest: UserRequest): Response<LoginResponse>
+    suspend fun registerUserAccount(@Body userRequest: UserRequest): Response<LoginResponse>
 
     /**
      * GET users/search
@@ -124,7 +111,7 @@ interface UserControllerApi {
      * @return [kotlin.collections.List<UserResponse>]
      */
     @GET("users/search")
-    suspend fun searchByName(@Query("string") string: kotlin.String): Response<kotlin.collections.List<UserResponse>>
+    suspend fun searchUsersByName(@Query("string") string: kotlin.String): Response<kotlin.collections.List<UserResponse>>
 
     /**
      * PUT users/{id}
@@ -138,6 +125,6 @@ interface UserControllerApi {
      * @return [UserResponse]
      */
     @PUT("users/{id}")
-    suspend fun update(@Path("id") id: kotlin.Long, @Body userRequest: UserRequest): Response<UserResponse>
+    suspend fun updateUser(@Path("id") id: kotlin.Long, @Body userRequest: UserRequest): Response<UserResponse>
 
 }

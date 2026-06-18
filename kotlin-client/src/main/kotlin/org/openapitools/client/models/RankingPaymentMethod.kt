@@ -27,7 +27,6 @@ import org.openapitools.client.models.RankingItemPaymentMethod
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -49,10 +48,7 @@ data class RankingPaymentMethod (
     @Json(name = "items")
     val items: kotlin.collections.List<RankingItemPaymentMethod>? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

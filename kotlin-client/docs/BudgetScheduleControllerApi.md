@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**findAllByUserAndState2**](BudgetScheduleControllerApi.md#findAllByUserAndState2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
+| [**findBudgetSchedulesByUserAndState**](BudgetScheduleControllerApi.md#findBudgetSchedulesByUserAndState) | **GET** schedule/budgets/user/{idUser}/{state} |  |
 
 
 
@@ -23,7 +23,7 @@ val idUser : kotlin.Long = 789 // kotlin.Long |
 val state : kotlin.String = state_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetScheduleResponse> = webService.findAllByUserAndState2(idUser, state)
+    val result : kotlin.collections.List<BudgetScheduleResponse> = webService.findBudgetSchedulesByUserAndState(idUser, state)
 }
 ```
 

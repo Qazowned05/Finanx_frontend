@@ -32,7 +32,6 @@ import org.openapitools.client.models.ScheduledProjection
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -67,7 +66,7 @@ data class TSchedulesDashboard (
     override val title: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.LocalDateTime? = null,
+    override val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
@@ -102,10 +101,7 @@ data class TSchedulesDashboard (
     @Json(name = "insights")
     val insights: kotlin.collections.List<Insight>? = null
 
-) : DashboardResponse, Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) : DashboardResponse {
 
 
 }

@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -40,10 +39,7 @@ data class GoogleLoginRequest (
     @Json(name = "idToken")
     val idToken: kotlin.String
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

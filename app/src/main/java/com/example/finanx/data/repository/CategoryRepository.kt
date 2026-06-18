@@ -11,30 +11,30 @@ class CategoryRepository(
 ) {
 
     suspend fun getCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findAllByUserAndActive(userId, true)
+        return api.findCategoriesByUserAndActive(userId, true)
     }
 
     suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> {
-        return api.findAllByUserAndActive(userId, active)
+        return api.findCategoriesByUserAndActive(userId, active)
     }
 
     suspend fun getActiveCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findAllByUserAndActive(idUser = userId, active = true)
+        return api.findCategoriesByUserAndActive(idUser = userId, active = true)
     }
 
     suspend fun createCategory(request: CategoryRequest): Response<CategoryResponse> {
-        return api.create4(request)
+        return api.createCategory(request)
     }
 
     suspend fun updateCategory(id: Long, request: CategoryRequest): Response<CategoryResponse> {
-        return api.update5(id, request)
+        return api.updateCategory(id, request)
     }
 
     suspend fun disableCategory(id: Long): Response<Unit> {
-        return api.disable4(id)
+        return api.disableCategory(id)
     }
 
     suspend fun activateCategory(id: Long): Response<CategoryResponse> {
-        return api.activate(id)
+        return api.activateCategory(id)
     }
 }

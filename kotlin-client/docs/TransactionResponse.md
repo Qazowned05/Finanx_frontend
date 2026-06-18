@@ -15,8 +15,8 @@
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **paymentMethod** | [**inline**](#PaymentMethod) |  |  [optional] |
 | **type** | [**inline**](#Type) |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
 
 

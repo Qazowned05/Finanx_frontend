@@ -34,7 +34,6 @@ import org.openapitools.client.models.TimeLineSavingGoalResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -65,7 +64,7 @@ data class SavingGoalsDashboard (
     override val title: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.LocalDateTime? = null,
+    override val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
@@ -88,10 +87,7 @@ data class SavingGoalsDashboard (
     @Json(name = "mostContributed")
     val mostContributed: RankingSavingGoalResponse? = null
 
-) : DashboardResponse, Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) : DashboardResponse {
 
 
 }

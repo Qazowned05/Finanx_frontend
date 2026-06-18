@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancel**](ScheduleControllerApi.md#cancel) | **POST** schedule/{id}/cancel |  |
-| [**create1**](ScheduleControllerApi.md#create1) | **POST** schedule |  |
-| [**disable6**](ScheduleControllerApi.md#disable6) | **DELETE** schedule/{id}/disable |  |
-| [**findAllByUserAndState**](ScheduleControllerApi.md#findAllByUserAndState) | **GET** schedule/user/{idUser}/{state} |  |
-| [**pause**](ScheduleControllerApi.md#pause) | **POST** schedule/{id}/pause |  |
-| [**resume**](ScheduleControllerApi.md#resume) | **POST** schedule/{id}/resume |  |
-| [**update2**](ScheduleControllerApi.md#update2) | **PUT** schedule/{id} |  |
+| [**cancelSchedule**](ScheduleControllerApi.md#cancelSchedule) | **POST** schedule/{id}/cancel |  |
+| [**createSchedule**](ScheduleControllerApi.md#createSchedule) | **POST** schedule |  |
+| [**disableSchedule**](ScheduleControllerApi.md#disableSchedule) | **POST** schedule/{id}/disable |  |
+| [**findSchedulesByUserAndState**](ScheduleControllerApi.md#findSchedulesByUserAndState) | **GET** schedule/user/{idUser}/{state} |  |
+| [**pauseSchedule**](ScheduleControllerApi.md#pauseSchedule) | **POST** schedule/{id}/pause |  |
+| [**resumeSchedule**](ScheduleControllerApi.md#resumeSchedule) | **POST** schedule/{id}/resume |  |
+| [**updateSchedule**](ScheduleControllerApi.md#updateSchedule) | **PUT** schedule/{id} |  |
 
 
 
@@ -28,7 +28,7 @@ val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.cancel(id)
+    webService.cancelSchedule(id)
 }
 ```
 
@@ -62,21 +62,21 @@ No authorization required
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
-val update2Request : Update2Request =  // Update2Request | 
+val updateScheduleRequest : UpdateScheduleRequest =  // UpdateScheduleRequest | 
 
 launch(Dispatchers.IO) {
-    val result : Update2200Response = webService.create1(update2Request)
+    val result : UpdateSchedule200Response = webService.createSchedule(updateScheduleRequest)
 }
 ```
 
 ### Parameters
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **update2Request** | [**Update2Request**](Update2Request.md)|  | |
+| **updateScheduleRequest** | [**UpdateScheduleRequest**](UpdateScheduleRequest.md)|  | |
 
 ### Return type
 
-[**Update2200Response**](Update2200Response.md)
+[**UpdateSchedule200Response**](UpdateSchedule200Response.md)
 
 ### Authorization
 
@@ -102,7 +102,7 @@ val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.disable6(id)
+    webService.disableSchedule(id)
 }
 ```
 
@@ -140,7 +140,7 @@ val idUser : kotlin.Long = 789 // kotlin.Long |
 val state : kotlin.String = state_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<Update2200Response> = webService.findAllByUserAndState(idUser, state)
+    val result : kotlin.collections.List<UpdateSchedule200Response> = webService.findSchedulesByUserAndState(idUser, state)
 }
 ```
 
@@ -152,7 +152,7 @@ launch(Dispatchers.IO) {
 
 ### Return type
 
-[**kotlin.collections.List&lt;Update2200Response&gt;**](Update2200Response.md)
+[**kotlin.collections.List&lt;UpdateSchedule200Response&gt;**](UpdateSchedule200Response.md)
 
 ### Authorization
 
@@ -178,7 +178,7 @@ val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.pause(id)
+    webService.pauseSchedule(id)
 }
 ```
 
@@ -215,7 +215,7 @@ val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.resume(id)
+    webService.resumeSchedule(id)
 }
 ```
 
@@ -250,10 +250,10 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
-val update2Request : Update2Request =  // Update2Request | 
+val updateScheduleRequest : UpdateScheduleRequest =  // UpdateScheduleRequest | 
 
 launch(Dispatchers.IO) {
-    val result : Update2200Response = webService.update2(id, update2Request)
+    val result : UpdateSchedule200Response = webService.updateSchedule(id, updateScheduleRequest)
 }
 ```
 
@@ -261,11 +261,11 @@ launch(Dispatchers.IO) {
 | **id** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **update2Request** | [**Update2Request**](Update2Request.md)|  | |
+| **updateScheduleRequest** | [**UpdateScheduleRequest**](UpdateScheduleRequest.md)|  | |
 
 ### Return type
 
-[**Update2200Response**](Update2200Response.md)
+[**UpdateSchedule200Response**](UpdateSchedule200Response.md)
 
 ### Authorization
 

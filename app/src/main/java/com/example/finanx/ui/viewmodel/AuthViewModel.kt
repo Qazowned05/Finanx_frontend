@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.api.TokenStore
+import com.example.finanx.data.api.parseErrorMessage
 import com.example.finanx.data.auth.GoogleAuthError
 import com.example.finanx.data.auth.GoogleAuthManager
 import com.example.finanx.data.auth.GoogleAuthOutcome
@@ -15,7 +16,6 @@ import com.example.finanx.data.auth.UserManager
 import com.example.finanx.data.auth.LoginType
 import com.example.finanx.data.auth.WEB_CLIENT_ID
 import com.example.finanx.data.repository.AuthRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.UserResponse
 
@@ -51,10 +51,7 @@ class AuthViewModel : ViewModel() {
                     onAuthSuccess(user, body.token, LoginType.LOCAL)
                     AuthState.Success(user)
                 } else {
-                    val msg = response.errorBody()?.string()?.let { b ->
-                        b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
-                    } ?: "Código ${response.code()}"
-                    AuthState.Error(msg)
+                    AuthState.Error(response.parseErrorMessage())
                 }
             } catch (e: Exception) {
                 AuthState.Error("Error de red: ${e.message}")
@@ -81,10 +78,7 @@ class AuthViewModel : ViewModel() {
                     onAuthSuccess(user, body.token)
                     AuthState.Success(user)
                 } else {
-                    val errorMsg = response.errorBody()?.string()?.let { b ->
-                        b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
-                    } ?: "Código ${response.code()}"
-                    AuthState.Error(errorMsg)
+                    AuthState.Error(response.parseErrorMessage())
                 }
             } catch (e: Exception) {
                 AuthState.Error("Error de red: ${e.message}")
@@ -95,7 +89,7 @@ class AuthViewModel : ViewModel() {
     fun loginWithGoogle(activity: Activity, forceButtonFlow: Boolean = false) {
         viewModelScope.launch {
             authState = AuthState.Loading
-            try {
+            authState = try {
                 val authManager = GoogleAuthManager.create(activity)
                 val outcome = if (forceButtonFlow) {
                     authManager.signInWithButton(
@@ -117,21 +111,18 @@ class AuthViewModel : ViewModel() {
                         val user = body?.user
                         if (response.isSuccessful && user != null) {
                             onAuthSuccess(user, body.token, LoginType.GOOGLE)
-                            authState = AuthState.Success(user)
+                            AuthState.Success(user)
                         } else {
-                            val msg = response.errorBody()?.string()?.let { b ->
-                                b.split("\"message\":\"").getOrNull(1)?.split("\"")?.getOrNull(0)
-                            } ?: "Código ${response.code()}"
-                            authState = AuthState.Error(msg)
+                            AuthState.Error(response.parseErrorMessage())
                         }
                     }
 
                     is GoogleAuthOutcome.Failure -> {
-                        authState = AuthState.Error(outcome.error.toUserMessage())
+                        AuthState.Error(outcome.error.toUserMessage())
                     }
                 }
             } catch (e: Exception) {
-                authState = AuthState.Error("Error en Google Sign-In: ${e.message}")
+                AuthState.Error("Error en Google Sign-In: ${e.message}")
             }
         }
     }

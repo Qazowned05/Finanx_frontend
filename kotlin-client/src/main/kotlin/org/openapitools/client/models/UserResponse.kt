@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -73,10 +72,10 @@ data class UserResponse (
     val moneyBalance: java.math.BigDecimal? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.LocalDateTime? = null,
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "fullName")
     val fullName: kotlin.String? = null,
@@ -84,10 +83,7 @@ data class UserResponse (
     @Json(name = "timeZone")
     val timeZone: UserResponse.TimeZone? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 

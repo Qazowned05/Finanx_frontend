@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -85,21 +84,18 @@ data class BudgetResponse (
     val health: BudgetResponse.Health? = null,
 
     @Json(name = "start")
-    val start: java.time.LocalDateTime? = null,
+    val start: java.time.OffsetDateTime? = null,
 
     @Json(name = "end")
-    val end: java.time.LocalDateTime? = null,
+    val end: java.time.OffsetDateTime? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.LocalDateTime? = null
+    val disabledAt: java.time.OffsetDateTime? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 

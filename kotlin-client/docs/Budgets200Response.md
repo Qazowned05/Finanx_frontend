@@ -7,7 +7,7 @@
 | **type** | **kotlin.String** |  |  |
 | **periodResponse** | [**PeriodResponse**](PeriodResponse.md) |  |  [optional] |
 | **title** | **kotlin.String** |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **insightSummary** | [**InsightSummary**](InsightSummary.md) |  |  [optional] |
 | **aggregate** | [**Aggregate**](Aggregate.md) |  |  [optional] |
 | **byHealth** | [**kotlin.collections.List&lt;AggregateByBudgetHealth&gt;**](AggregateByBudgetHealth.md) |  |  [optional] |

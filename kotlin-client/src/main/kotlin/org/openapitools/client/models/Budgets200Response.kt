@@ -48,7 +48,6 @@ import org.openapitools.client.models.TransactionsDashboard
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -104,7 +103,7 @@ data class Budgets200Response (
     val title: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "insightSummary")
     val insightSummary: InsightSummary? = null,
@@ -202,10 +201,7 @@ data class Budgets200Response (
     @Json(name = "topIncomeReasons")
     val topIncomeReasons: RankingReasonSummary? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

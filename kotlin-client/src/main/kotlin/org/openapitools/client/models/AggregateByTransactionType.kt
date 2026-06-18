@@ -27,7 +27,6 @@ import org.openapitools.client.models.Aggregate
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -53,10 +52,7 @@ data class AggregateByTransactionType (
     @Json(name = "sharePercentage")
     val sharePercentage: java.math.BigDecimal? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 

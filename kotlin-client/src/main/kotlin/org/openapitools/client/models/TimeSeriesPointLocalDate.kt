@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -52,10 +51,7 @@ data class TimeSeriesPointLocalDate (
     @Json(name = "context")
     val context: kotlin.collections.List<java.time.LocalDate>? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

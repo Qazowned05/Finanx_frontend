@@ -27,7 +27,6 @@ import org.openapitools.client.models.AggregateByPaymentMethod
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -49,10 +48,7 @@ data class RankingItemPaymentMethod (
     @Json(name = "metricValue")
     val metricValue: java.math.BigDecimal? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
 
 }

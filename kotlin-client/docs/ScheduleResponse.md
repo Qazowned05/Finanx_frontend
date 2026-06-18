@@ -9,10 +9,10 @@
 | **userId** | **kotlin.Long** |  |  [optional] |
 | **categoryId** | **kotlin.Long** |  |  [optional] |
 | **categoryName** | **kotlin.String** |  |  [optional] |
-| **nextRunAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **lastRunAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **nextRunAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **lastRunAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **recurrenceRule** | [**RecurrenceRuleResponse**](RecurrenceRuleResponse.md) |  |  [optional] |

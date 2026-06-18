@@ -26,7 +26,6 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -67,16 +66,16 @@ data class SavingGoalResponse (
     val accumulated: java.math.BigDecimal? = null,
 
     @Json(name = "deadline")
-    val deadline: java.time.LocalDateTime? = null,
+    val deadline: java.time.OffsetDateTime? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.LocalDateTime? = null,
+    val createdAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "completedAt")
-    val completedAt: java.time.LocalDateTime? = null,
+    val completedAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.LocalDateTime? = null,
+    val disabledAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "state")
     val state: SavingGoalResponse.State? = null,
@@ -106,12 +105,9 @@ data class SavingGoalResponse (
     val completed: kotlin.Boolean? = null,
 
     @Json(name = "estimatedCompletionDate")
-    val estimatedCompletionDate: java.time.LocalDateTime? = null
+    val estimatedCompletionDate: java.time.OffsetDateTime? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 

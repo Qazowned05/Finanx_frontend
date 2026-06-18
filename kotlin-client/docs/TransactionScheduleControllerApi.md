@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**findAllByUserAndState1**](TransactionScheduleControllerApi.md#findAllByUserAndState1) | **GET** schedule/transactions/user/{idUser}/{state} |  |
+| [**findTransactionSchedulesByUserAndState**](TransactionScheduleControllerApi.md#findTransactionSchedulesByUserAndState) | **GET** schedule/transactions/user/{idUser}/{state} |  |
 
 
 
@@ -23,7 +23,7 @@ val idUser : kotlin.Long = 789 // kotlin.Long |
 val state : kotlin.String = state_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionScheduleResponse> = webService.findAllByUserAndState1(idUser, state)
+    val result : kotlin.collections.List<TransactionScheduleResponse> = webService.findTransactionSchedulesByUserAndState(idUser, state)
 }
 ```
 

@@ -28,7 +28,6 @@ import org.openapitools.client.models.ReasonResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 /**
  * 
@@ -67,10 +66,10 @@ data class ScheduledProjection (
     val recurrenceType: ScheduledProjection.RecurrenceType? = null,
 
     @Json(name = "nextRunAt")
-    val nextRunAt: java.time.LocalDateTime? = null,
+    val nextRunAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "endAt")
-    val endAt: java.time.LocalDateTime? = null,
+    val endAt: java.time.OffsetDateTime? = null,
 
     @Json(name = "expectedOccurrenceCount")
     val expectedOccurrenceCount: kotlin.Int? = null,
@@ -78,10 +77,7 @@ data class ScheduledProjection (
     @Json(name = "expectedTotalAmount")
     val expectedTotalAmount: java.math.BigDecimal? = null
 
-) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 123
-    }
+) {
 
     /**
      * 
