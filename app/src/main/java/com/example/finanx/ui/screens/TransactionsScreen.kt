@@ -19,82 +19,236 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.finanx.data.model.ScheduledTransactionRecord
+import com.example.finanx.data.model.TransactionRecord
+import com.example.finanx.data.model.TransactionsTab
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.util.toPen
+import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.AuthViewModel
+import com.example.finanx.ui.viewmodel.TransactionUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionsScreen(
-    state: Any?,
-    authViewModel: AuthViewModel,
-    onNavigateToCreateTransaction: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    state: TransactionUiState,
+    onQueryChange: (String) -> Unit,
+    onTabChange: (TransactionsTab) -> Unit,
+    onRefresh: () -> Unit,
+    onNewTransaction: () -> Unit,
+    onPauseSchedule: (Long) -> Unit,
+    onResumeSchedule: (Long) -> Unit,
+    onCancelSchedule: (Long) -> Unit,
+    onProfile: () -> Unit,
+    onLogout: () -> Unit
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val context = LocalContext.current
-    val activity = context as? Activity
+    val normalizedQuery = state.query.trim().lowercase()
+
+    val visibleTransactions =
+        state.transactions.filter { transaction ->
+            normalizedQuery.isBlank() ||
+                    transaction.description
+                        .lowercase()
+                        .contains(normalizedQuery) ||
+                    transaction.categoryName
+                        .lowercase()
+                        .contains(normalizedQuery)
+        }
+
+    val visibleSchedules =
+        state.scheduledTransactions.filter { schedule ->
+            normalizedQuery.isBlank() ||
+                    schedule.description
+                        .lowercase()
+                        .contains(normalizedQuery) ||
+                    schedule.categoryName
+                        .lowercase()
+                        .contains(normalizedQuery)
+        }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Transacciones", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = {}) { Icon(Icons.Default.ArrowBack, contentDescription = null) }
+                title = {
+                    Text(
+                        "Movimientos",
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 actions = {
-                    IconButton(onClick = {}) { Icon(Icons.Default.Search, contentDescription = null) }
-                    IconButton(onClick = {}) { Icon(Icons.Default.History, contentDescription = null) }
                     ProfileMenuAction(
-                        onMyProfile = onNavigateToProfile,
-                        onLogout = { authViewModel.logout(activity) }
+                        onMyProfile = onProfile,
+                        onLogout = onLogout
                     )
                 }
             )
         },
-        containerColor = LightBackground
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onNewTransaction,
+                containerColor =
+                    MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Nuevo movimiento",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
     ) { padding ->
         Column(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(padding)
+                .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                placeholder = { Text("Buscar") },
+                value = state.query,
+                onValueChange = onQueryChange,
+                placeholder = {
+                    Text("Buscar por motivo o categoría")
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null
+                    )
+                },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 shape = RoundedCornerShape(12.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                TabButton("Todas", selectedTab == 0, Modifier.weight(1f)) { selectedTab = 0 }
-                TabButton("Programadas", selectedTab == 1, Modifier.weight(1f)) { selectedTab = 1 }
+                SegmentedButton(
+                    selected =
+                        state.selectedTab == TransactionsTab.ALL,
+                    onClick = {
+                        onTabChange(TransactionsTab.ALL)
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = 0,
+                        count = 2
+                    ),
+                    label = {
+                        Text("Todos")
+                    }
+                )
+
+                SegmentedButton(
+                    selected =
+                        state.selectedTab ==
+                                TransactionsTab.SCHEDULED,
+                    onClick = {
+                        onTabChange(TransactionsTab.SCHEDULED)
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = 1,
+                        count = 2
+                    ),
+                    label = {
+                        Text("Programados")
+                    }
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(dummyTransactions) { transaction ->
-                    TransactionItem(transaction)
-                }
-                
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("+ Nueva Categoría")
+                        CircularProgressIndicator()
+                    }
+                }
+
+                state.error != null -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement =
+                            Arrangement.Center,
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = state.error,
+                            color =
+                                MaterialTheme.colorScheme.error
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+
+                        Button(onClick = onRefresh) {
+                            Text("Reintentar")
+                        }
+                    }
+                }
+
+                state.selectedTab == TransactionsTab.ALL -> {
+                    LazyColumn(
+                        verticalArrangement =
+                            Arrangement.spacedBy(10.dp),
+                        contentPadding =
+                            PaddingValues(bottom = 88.dp)
+                    ) {
+                        if (visibleTransactions.isEmpty()) {
+                            item {
+                                EmptyTransactionsMessage(
+                                    "No se encontraron movimientos"
+                                )
+                            }
+                        } else {
+                            items(
+                                items = visibleTransactions,
+                                key = { it.id }
+                            ) {
+                                TransactionRecordItem(it)
+                            }
+                        }
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        verticalArrangement =
+                            Arrangement.spacedBy(10.dp),
+                        contentPadding =
+                            PaddingValues(bottom = 88.dp)
+                    ) {
+                        if (visibleSchedules.isEmpty()) {
+                            item {
+                                EmptyTransactionsMessage(
+                                    "No tienes movimientos programados"
+                                )
+                            }
+                        } else {
+                            items(
+                                items = visibleSchedules,
+                                key = { it.id }
+                            ) { schedule ->
+                                ScheduledTransactionItem(
+                                    item = schedule,
+                                    onPause = {
+                                        onPauseSchedule(schedule.id)
+                                    },
+                                    onResume = {
+                                        onResumeSchedule(schedule.id)
+                                    },
+                                    onCancel = {
+                                        onCancelSchedule(schedule.id)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -103,68 +257,129 @@ fun TransactionsScreen(
 }
 
 @Composable
-fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) BluePrimary else Color.White,
-            contentColor = if (isSelected) Color.White else BluePrimary
-        ),
-        shape = RoundedCornerShape(8.dp),
-        elevation = ButtonDefaults.buttonElevation(if (isSelected) 2.dp else 0.dp)
-    ) {
-        Text(text)
-    }
+fun TransactionRecordItem(x0: TransactionRecord) {
+    TODO("Not yet implemented")
 }
 
 @Composable
-fun TransactionItem(transaction: TransactionData) {
+private fun ScheduledTransactionItem(
+    item: ScheduledTransactionRecord,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+    onCancel: () -> Unit
+) {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(1.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(transaction.iconBg, CircleShape),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Icon(transaction.icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                Text(
+                    text = item.description,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = item.categoryName,
+                    color = TextGray,
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                Text(
+                    text = "Próximo: ${item.nextRunAt.toReadableDate()}",
+                    color = TextGray,
+                    style = MaterialTheme.typography.labelSmall
+                )
+
+                Text(
+                    text = item.state,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(transaction.title, fontWeight = FontWeight.Bold, color = TextDark)
-                if (transaction.isProgrammed) {
-                    Text("Programada", color = BlueSecondary, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+
+            Text(
+                text = item.amount.toPen(),
+                fontWeight = FontWeight.Bold
+            )
+
+            Box {
+                IconButton(
+                    onClick = {
+                        expanded = true
+                    }
+                ) {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = "Opciones"
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    if (item.state == "RUNNING") {
+                        DropdownMenuItem(
+                            text = { Text("Pausar") },
+                            onClick = {
+                                expanded = false
+                                onPause()
+                            }
+                        )
+                    }
+
+                    if (item.state == "PAUSED") {
+                        DropdownMenuItem(
+                            text = { Text("Reanudar") },
+                            onClick = {
+                                expanded = false
+                                onResume()
+                            }
+                        )
+                    }
+
+                    DropdownMenuItem(
+                        text = { Text("Cancelar") },
+                        onClick = {
+                            expanded = false
+                            onCancel()
+                        }
+                    )
                 }
             }
-            Text(
-                "${if (transaction.isIncome) "" else "- "}PEN ${transaction.amount}",
-                fontWeight = FontWeight.ExtraBold,
-                color = if (transaction.isIncome) IncomeGreen else TextDark
-            )
         }
     }
 }
 
-data class TransactionData(
-    val title: String,
-    val amount: String,
-    val isIncome: Boolean,
-    val isProgrammed: Boolean,
-    val icon: ImageVector,
-    val iconBg: Color
-)
-
-val dummyTransactions = listOf(
-    TransactionData("Supermercado", "250.00", false, false, Icons.Default.ShoppingCart, Color(0xFFF6AD55)),
-    TransactionData("Sueldo", "1,500.00", true, false, Icons.Default.Payments, Color(0xFF48BB78)),
-    TransactionData("Netflix", "45.00", false, false, Icons.Default.PlayArrow, Color(0xFFE53E3E)),
-    TransactionData("Seguro Vehicular", "250.00", false, true, Icons.Default.DirectionsCar, Color(0xFF3182CE))
-)
+@Composable
+private fun EmptyTransactionsMessage(
+    message: String
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 48.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            color = TextGray
+        )
+    }
+}

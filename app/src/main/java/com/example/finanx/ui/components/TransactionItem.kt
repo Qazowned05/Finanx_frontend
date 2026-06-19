@@ -1,57 +1,117 @@
 package com.example.finanx.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.openapitools.client.models.TransactionResponse
-import java.math.BigDecimal
+import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionRecord
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.IncomeGreen
+import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.util.toLabel
+import com.example.finanx.ui.util.toPen
+import com.example.finanx.ui.util.toReadableDate
 
 @Composable
-fun TransactionItem(transaction: TransactionResponse) {
-    val color = if (transaction.type == TransactionResponse.Type.INCOME) Color(0xFF4CAF50) else Color(0xFFF44336)
+fun TransactionRecordItem(
+    transaction: TransactionRecord,
+    modifier: Modifier = Modifier
+) {
+    val isIncome =
+        transaction.type == MovementType.INCOME
+
+    val movementColor =
+        if (isIncome) IncomeGreen else ExpenseRed
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement =
+                Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Transacción #${transaction.id}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Categoría ID: ${transaction.categoryId}", // Mostramos el ID de la categoría
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .background(
+                        color = movementColor.copy(alpha = 0.12f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (isIncome) {
+                        Icons.Default.ArrowDownward
+                    } else {
+                        Icons.Default.ArrowUpward
+                    },
+                    contentDescription = null,
+                    tint = movementColor
                 )
             }
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = transaction.description,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Text(
+                    text = transaction.categoryName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextGray
+                )
+
+                Text(
+                    text = buildString {
+                        append(transaction.paymentMethod.toLabel())
+                        append(" · ")
+                        append(transaction.createdAt.toReadableDate())
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextGray
+                )
+            }
+
             Text(
-                text = "${transaction.amount ?: BigDecimal.ZERO} €",
-                color = color,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
+                text = buildString {
+                    append(if (isIncome) "+ " else "- ")
+                    append(transaction.amount.toPen())
+                },
+                fontWeight = FontWeight.Bold,
+                color = movementColor
             )
         }
     }
