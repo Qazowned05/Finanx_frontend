@@ -183,6 +183,3 @@ src/main/kotlin/org/openapitools/client/models/UpdateSchedule200Response.kt
 src/main/kotlin/org/openapitools/client/models/UpdateScheduleRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserResponse.kt
-src/test/kotlin/org/openapitools/client/models/GetBudgetsDashboard200ResponseTest.kt
-src/test/kotlin/org/openapitools/client/models/UpdateSchedule200ResponseTest.kt
-src/test/kotlin/org/openapitools/client/models/UpdateScheduleRequestTest.kt
