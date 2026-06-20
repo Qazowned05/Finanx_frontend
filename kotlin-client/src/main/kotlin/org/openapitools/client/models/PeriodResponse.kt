@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param userId 
  * @param readableString 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class PeriodResponse (
 

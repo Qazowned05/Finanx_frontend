@@ -53,7 +53,7 @@ import com.squareup.moshi.JsonClass
  * @param totalBudgetSpentAmount 
  * @param totalBudgetRemainingAmount 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class BudgetsDashboard (
 

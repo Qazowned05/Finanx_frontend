@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
  *
  * @param idToken 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class GoogleLoginRequest (
 

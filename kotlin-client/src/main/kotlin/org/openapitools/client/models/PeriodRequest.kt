@@ -34,7 +34,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param userId 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class PeriodRequest (
 

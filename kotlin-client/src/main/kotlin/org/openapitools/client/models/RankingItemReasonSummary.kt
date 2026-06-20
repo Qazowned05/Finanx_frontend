@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param rank 
  * @param metricValue 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class RankingItemReasonSummary (
 

@@ -39,7 +39,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param percentAlert 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class BudgetRequest (
 

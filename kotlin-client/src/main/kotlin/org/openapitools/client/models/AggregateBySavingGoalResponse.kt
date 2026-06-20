@@ -37,7 +37,7 @@ import com.squareup.moshi.JsonClass
  * @param factorName 
  * @param sharePercentage 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class AggregateBySavingGoalResponse (
 

@@ -36,7 +36,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param dayOfWeek 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class RecurrenceRuleRequest (
 

@@ -47,7 +47,7 @@ import com.squareup.moshi.JsonClass
  * @param savingGoalId 
  * @param savingGoalDescription 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class NotificationDTO (
 

@@ -54,7 +54,7 @@ import com.squareup.moshi.JsonClass
  * @param topSpentReasons 
  * @param topIncomeReasons 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TransactionsDashboard (
 

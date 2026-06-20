@@ -33,7 +33,7 @@ import com.squareup.moshi.JsonClass
  * @param id 
  * @param name 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class CategorySummary (
 

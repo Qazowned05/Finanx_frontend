@@ -43,7 +43,7 @@ import com.squareup.moshi.JsonClass
  * @param fullName 
  * @param timeZone 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class UserResponse (
 

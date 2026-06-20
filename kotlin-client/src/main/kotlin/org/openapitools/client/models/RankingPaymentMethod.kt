@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param title 
  * @param items 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class RankingPaymentMethod (
 

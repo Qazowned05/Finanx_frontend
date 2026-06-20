@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param occurrenceCount 
  * @param context 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TimeSeriesPointLocalDate (
 

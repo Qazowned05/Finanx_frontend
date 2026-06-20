@@ -31,16 +31,20 @@ import com.squareup.moshi.JsonClass
  * 
  *
  * @param name 
+ * @param type 
  * @param description 
  * @param userId 
  * @param type 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class CategoryRequest (
 
     @Json(name = "name")
     val name: kotlin.String,
+
+    @Json(name = "type")
+    val type: CategoryRequest.Type,
 
     @Json(name = "description")
     val description: kotlin.String,

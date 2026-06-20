@@ -45,7 +45,7 @@ import com.squareup.moshi.JsonClass
  * @param disabledAt 
  * @param active 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TransactionResponse (
 

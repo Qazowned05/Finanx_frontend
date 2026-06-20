@@ -33,7 +33,7 @@ import com.squareup.moshi.JsonClass
  * @param description 
  * @param userId 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ReasonRequest (
 

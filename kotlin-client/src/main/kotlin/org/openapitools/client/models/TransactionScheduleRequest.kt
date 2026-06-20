@@ -42,7 +42,7 @@ import com.squareup.moshi.JsonClass
  * @param reasonId 
  * @param description 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TransactionScheduleRequest (
 

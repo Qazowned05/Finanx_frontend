@@ -36,7 +36,7 @@ import com.squareup.moshi.JsonClass
  * @param items 
  * @param count 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TimeBoundListBudgetResponse (
 

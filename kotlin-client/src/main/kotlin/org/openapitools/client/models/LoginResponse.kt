@@ -34,7 +34,7 @@ import com.squareup.moshi.JsonClass
  * @param user 
  * @param token 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class LoginResponse (
 

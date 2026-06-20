@@ -33,7 +33,7 @@ import com.squareup.moshi.JsonClass
  * @param email 
  * @param password 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class LoginRequest (
 

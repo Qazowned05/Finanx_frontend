@@ -1,4 +1,3 @@
-
 package com.example.finanx.ui.viewmodel
 
 import androidx.compose.runtime.getValue
@@ -13,7 +12,6 @@ import org.openapitools.client.models.SavingGoalRequest
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.OffsetDateTime
 
 sealed class SavingGoalState {
     object Loading : SavingGoalState()
@@ -31,6 +29,9 @@ class SavingGoalViewModel : ViewModel() {
     var actionSuccess by mutableStateOf<String?>(null)
         private set
 
+    var formError by mutableStateOf<String?>(null)
+        private set
+
     fun fetchSavingGoals(userId: Long) {
         viewModelScope.launch {
             savingGoalState = SavingGoalState.Loading
@@ -39,9 +40,7 @@ class SavingGoalViewModel : ViewModel() {
                 if (response.isSuccessful && response.body() != null) {
                     savingGoalState = SavingGoalState.Success(response.body()!!)
                 } else {
-                    savingGoalState = SavingGoalState.Error(
-                        "Error al cargar metas: ${response.code()}"
-                    )
+                    savingGoalState = SavingGoalState.Error("Error al cargar metas: ${response.code()}")
                 }
             } catch (e: Exception) {
                 savingGoalState = SavingGoalState.Error("Error de red: ${e.message}")
@@ -61,26 +60,21 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline as LocalDate
+                    deadline = deadline ?: LocalDate.now().plusMonths(6)
                 )
-
                 val response = repository.createSavingGoal(request)
-
                 if (response.isSuccessful) {
+                    formError = null
                     actionSuccess = "Meta creada"
                     fetchSavingGoals(userId)
                 } else {
-                    savingGoalState = SavingGoalState.Error(
-                        "Error al crear: ${response.code()}"
-                    )
+                    formError = "No se pudo crear la meta: ${response.code()}"
                 }
-
             } catch (e: Exception) {
-                savingGoalState = SavingGoalState.Error("Error de red: ${e.message}")
+                formError = "Error de red: ${e.message}"
             }
         }
     }
-
 
     fun updateSavingGoal(
         userId: Long,
@@ -95,41 +89,32 @@ class SavingGoalViewModel : ViewModel() {
                     userId = userId,
                     description = description,
                     targetAmount = targetAmount,
-                    deadline = deadline as LocalDate
+                    deadline = deadline ?: LocalDate.now().plusMonths(6)
                 )
-
                 val response = repository.updateSavingGoal(goalId, request)
-
                 if (response.isSuccessful) {
+                    formError = null
                     actionSuccess = "Meta actualizada"
                     fetchSavingGoals(userId)
                 } else {
-                    savingGoalState = SavingGoalState.Error(
-                        "Error al actualizar: ${response.code()}"
-                    )
+                    formError = "No se pudo actualizar: ${response.code()}"
                 }
-
             } catch (e: Exception) {
-                savingGoalState = SavingGoalState.Error("Error de red: ${e.message}")
+                formError = "Error de red: ${e.message}"
             }
         }
     }
-
 
     fun deleteSavingGoal(userId: Long, goalId: Long) {
         viewModelScope.launch {
             try {
                 val response = repository.disableSavingGoal(goalId)
-
                 if (response.isSuccessful) {
                     actionSuccess = "Meta eliminada"
                     fetchSavingGoals(userId)
                 } else {
-                    savingGoalState = SavingGoalState.Error(
-                        "Error al eliminar: ${response.code()}"
-                    )
+                    savingGoalState = SavingGoalState.Error("Error al eliminar: ${response.code()}")
                 }
-
             } catch (e: Exception) {
                 savingGoalState = SavingGoalState.Error("Error de red: ${e.message}")
             }
@@ -138,5 +123,9 @@ class SavingGoalViewModel : ViewModel() {
 
     fun clearActionSuccess() {
         actionSuccess = null
+    }
+
+    fun clearFormError() {
+        formError = null
     }
 }

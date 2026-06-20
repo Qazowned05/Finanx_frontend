@@ -43,7 +43,7 @@ import com.squareup.moshi.JsonClass
  * @param expectedOccurrenceCount 
  * @param expectedTotalAmount 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class ScheduledProjection (
 

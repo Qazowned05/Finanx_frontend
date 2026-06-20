@@ -38,7 +38,7 @@ import com.squareup.moshi.JsonClass
  * @param createdAt 
  * @param disabledAt 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class CategoryResponse (
 

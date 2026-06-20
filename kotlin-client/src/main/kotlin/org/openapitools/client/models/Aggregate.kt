@@ -37,7 +37,7 @@ import com.squareup.moshi.JsonClass
  * @param max 
  * @param min 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class Aggregate (
 

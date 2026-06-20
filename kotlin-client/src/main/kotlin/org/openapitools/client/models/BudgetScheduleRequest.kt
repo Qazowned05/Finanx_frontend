@@ -41,7 +41,7 @@ import com.squareup.moshi.JsonClass
  * @param description 
  * @param recurrenceRule 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class BudgetScheduleRequest (
 

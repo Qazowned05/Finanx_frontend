@@ -49,7 +49,7 @@ import com.squareup.moshi.JsonClass
  * @param completed 
  * @param estimatedCompletionDate 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class SavingGoalResponse (
 

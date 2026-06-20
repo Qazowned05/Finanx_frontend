@@ -49,7 +49,7 @@ import com.squareup.moshi.JsonClass
  * @param remainingAmount 
  * @param executionPercentage 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class BudgetExecutionResponse (
 

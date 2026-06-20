@@ -39,7 +39,7 @@ import com.squareup.moshi.JsonClass
  * @param description 
  * @param savingGoalId 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TransactionRequest (
 

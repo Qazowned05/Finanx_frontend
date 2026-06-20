@@ -37,7 +37,7 @@ import com.squareup.moshi.JsonClass
  * @param password 
  * @param timeZone 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class UserRequest (
 

@@ -52,7 +52,7 @@ import com.squareup.moshi.JsonClass
  * @param scheduledProjections 
  * @param insights 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TSchedulesDashboard (
 

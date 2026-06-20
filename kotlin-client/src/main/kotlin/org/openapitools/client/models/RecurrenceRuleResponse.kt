@@ -38,7 +38,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param durationDays 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class RecurrenceRuleResponse (
 

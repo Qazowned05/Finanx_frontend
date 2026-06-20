@@ -35,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param deadline 
  * @param userId 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class SavingGoalRequest (
 

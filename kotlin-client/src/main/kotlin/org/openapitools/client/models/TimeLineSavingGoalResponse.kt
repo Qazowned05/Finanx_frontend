@@ -39,7 +39,7 @@ import com.squareup.moshi.JsonClass
  * @param aggregate 
  * @param count 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class TimeLineSavingGoalResponse (
 

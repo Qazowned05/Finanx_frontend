@@ -34,7 +34,7 @@ import com.squareup.moshi.JsonClass
  * @param insights 
  * @param insightsCount 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class InsightSummary (
 

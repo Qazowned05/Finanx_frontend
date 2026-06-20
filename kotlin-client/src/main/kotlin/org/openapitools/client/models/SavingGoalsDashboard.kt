@@ -50,7 +50,7 @@ import com.squareup.moshi.JsonClass
  * @param closestToGoal 
  * @param mostContributed 
  */
-
+@JsonClass(generateAdapter = true)
 
 data class SavingGoalsDashboard (
 
