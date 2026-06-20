@@ -64,7 +64,7 @@ data class BudgetExecutionResponse (
     val categoryId: kotlin.Long? = null,
 
     @Json(name = "categoryName")
-    val categoryName: kotlin.Long? = null,
+    val categoryName: kotlin.String? = null,
 
     @Json(name = "scheduleId")
     val scheduleId: kotlin.Long? = null,

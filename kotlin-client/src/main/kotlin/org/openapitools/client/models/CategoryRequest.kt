@@ -34,6 +34,7 @@ import java.io.Serializable
  * @param name 
  * @param description 
  * @param userId 
+ * @param type 
  */
 
 
@@ -46,13 +47,26 @@ data class CategoryRequest (
     val description: kotlin.String,
 
     @Json(name = "userId")
-    val userId: kotlin.Long
+    val userId: kotlin.Long,
+
+    @Json(name = "type")
+    val type: CategoryRequest.Type
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
+    /**
+     * 
+     *
+     * Values: SPENT,INCOME
+     */
+    @JsonClass(generateAdapter = false)
+    enum class Type(val value: kotlin.String) {
+        @Json(name = "SPENT") SPENT("SPENT"),
+        @Json(name = "INCOME") INCOME("INCOME");
+    }
 
 }
 

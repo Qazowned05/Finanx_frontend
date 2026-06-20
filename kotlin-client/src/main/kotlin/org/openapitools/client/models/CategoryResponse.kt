@@ -34,6 +34,7 @@ import java.io.Serializable
  * @param id 
  * @param name 
  * @param description 
+ * @param type 
  * @param active 
  * @param createdAt 
  * @param disabledAt 
@@ -51,6 +52,9 @@ data class CategoryResponse (
     @Json(name = "description")
     val description: kotlin.String? = null,
 
+    @Json(name = "type")
+    val type: CategoryResponse.Type? = null,
+
     @Json(name = "active")
     val active: kotlin.Boolean? = null,
 
@@ -65,6 +69,16 @@ data class CategoryResponse (
         private const val serialVersionUID: Long = 123
     }
 
+    /**
+     * 
+     *
+     * Values: SPENT,INCOME
+     */
+    @JsonClass(generateAdapter = false)
+    enum class Type(val value: kotlin.String) {
+        @Json(name = "SPENT") SPENT("SPENT"),
+        @Json(name = "INCOME") INCOME("INCOME");
+    }
 
 }
 

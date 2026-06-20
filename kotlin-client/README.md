@@ -47,7 +47,8 @@ All URIs are relative to *http://localhost:8080*
 | ------------ | ------------- | ------------- | ------------- |
 | *AnalyticsControllerApi* | [**balance**](docs/AnalyticsControllerApi.md#balance) | **GET** analytics/dashboard/balance |  |
 | *AnalyticsControllerApi* | [**budgets**](docs/AnalyticsControllerApi.md#budgets) | **GET** analytics/dashboard/budgets |  |
-| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **GET** analytics/{id}/execution |  |
+| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **GET** analytics/budgets/{id}/execution |  |
+| *AnalyticsControllerApi* | [**getExecutionsByPeriod**](docs/AnalyticsControllerApi.md#getexecutionsbyperiod) | **GET** analytics/budgets/executions |  |
 | *AuthControllerApi* | [**google**](docs/AuthControllerApi.md#google) | **POST** auth/google |  |
 | *AuthControllerApi* | [**login**](docs/AuthControllerApi.md#login) | **POST** auth/login |  |
 | *AuthControllerApi* | [**register1**](docs/AuthControllerApi.md#register1) | **POST** auth/register |  |
