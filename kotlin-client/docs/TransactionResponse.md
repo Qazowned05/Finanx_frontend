@@ -7,9 +7,9 @@
 | **id** | **kotlin.Long** |  |  [optional] |
 | **userId** | **kotlin.Long** |  |  [optional] |
 | **categoryId** | **kotlin.Long** |  |  [optional] |
-| **categoryName** | **kotlin.Long** |  |  [optional] |
+| **categoryName** | **kotlin.String** |  |  [optional] |
 | **reasonId** | **kotlin.Long** |  |  [optional] |
-| **reasonDescription** | **kotlin.Long** |  |  [optional] |
+| **reasonDescription** | **kotlin.String** |  |  [optional] |
 | **savingGoalId** | **kotlin.Long** |  |  [optional] |
 | **scheduleId** | **kotlin.Long** |  |  [optional] |
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |

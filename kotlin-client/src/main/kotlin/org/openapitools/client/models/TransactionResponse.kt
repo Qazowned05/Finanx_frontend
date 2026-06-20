@@ -60,13 +60,13 @@ data class TransactionResponse (
     val categoryId: kotlin.Long? = null,
 
     @Json(name = "categoryName")
-    val categoryName: kotlin.Long? = null,
+    val categoryName: kotlin.String? = null,
 
     @Json(name = "reasonId")
     val reasonId: kotlin.Long? = null,
 
     @Json(name = "reasonDescription")
-    val reasonDescription: kotlin.Long? = null,
+    val reasonDescription: kotlin.String? = null,
 
     @Json(name = "savingGoalId")
     val savingGoalId: kotlin.Long? = null,

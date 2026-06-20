@@ -7,7 +7,7 @@
 | **id** | **kotlin.Long** |  |  [optional] |
 | **userId** | **kotlin.Long** |  |  [optional] |
 | **categoryId** | **kotlin.Long** |  |  [optional] |
-| **categoryName** | **kotlin.Long** |  |  [optional] |
+| **categoryName** | **kotlin.String** |  |  [optional] |
 | **scheduleId** | **kotlin.Long** |  |  [optional] |
 | **alertable** | **kotlin.Boolean** |  |  [optional] |
 | **percentAlert** | **kotlin.Int** |  |  [optional] |
