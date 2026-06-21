@@ -5,93 +5,208 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.repository.CategoryRepository
+import com.example.finanx.data.model.NewTransactionCommand
+import com.example.finanx.data.model.ScheduledTransactionRecord
+import com.example.finanx.data.model.TransactionFormOptions
+import com.example.finanx.data.model.TransactionRecord
+import com.example.finanx.data.model.TransactionsTab
 import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
-import org.openapitools.client.models.TransactionRequest
-import org.openapitools.client.models.TransactionResponse
-import java.math.BigDecimal
 
-// Estados para la UI, ahora usando los modelos de OpenAPI
-sealed class TransactionState {
-    object Loading : TransactionState()
-    data class Success(val income: List<TransactionResponse>, val expenses: List<TransactionResponse>) : TransactionState()
-    data class Error(val message: String) : TransactionState()
+sealed interface TransactionSaveState {
+    data object Idle : TransactionSaveState
+    data object Saving : TransactionSaveState
+    data object Success : TransactionSaveState
+    data class Error(val message: String) : TransactionSaveState
 }
 
-class TransactionViewModel : ViewModel() {
-    private val transactionRepository = TransactionRepository()
-    private val categoryRepository = CategoryRepository()
+data class TransactionUiState(
+    val isLoading: Boolean = false,
+    val transactions: List<TransactionRecord> = emptyList(),
+    val scheduledTransactions: List<ScheduledTransactionRecord> =
+        emptyList(),
+    val formOptions: TransactionFormOptions =
+        TransactionFormOptions(),
+    val selectedTab: TransactionsTab = TransactionsTab.ALL,
+    val query: String = "",
+    val error: String? = null,
+    val actionMessage: String? = null,
+    val saveState: TransactionSaveState =
+        TransactionSaveState.Idle
+)
 
-    var transactionState by mutableStateOf<TransactionState>(TransactionState.Loading)
+class TransactionViewModel(
+    private val repository: TransactionRepository =
+        TransactionRepository()
+) : ViewModel() {
+
+    var state by mutableStateOf(TransactionUiState())
         private set
 
-    var categoryState by mutableStateOf<CategoryState>(CategoryState.Loading)
-        private set
+    private var currentUserId: Long? = null
 
-    fun fetchTransactions(userId: Long) {
+    fun load(userId: Long) {
+        currentUserId = userId
+
         viewModelScope.launch {
-            transactionState = TransactionState.Loading
+            state = state.copy(
+                isLoading = true,
+                error = null
+            )
+
             try {
-                val response = transactionRepository.getTransactions(userId)
-                if (response.isSuccessful && response.body() != null) {
-                    val transactions = response.body()!!
-                    val income = transactions.filter { it.type == TransactionResponse.Type.INCOME }
-                    val expenses = transactions.filter { it.type == TransactionResponse.Type.SPENT }
-                    transactionState = TransactionState.Success(income, expenses)
-                } else {
-                    transactionState = TransactionState.Error("Error al obtener las transacciones: ${response.message()}")
+                val transactionData =
+                    repository.loadTransactionData(userId)
+
+                val scheduled = runCatching {
+                    repository.loadScheduledTransactions(userId)
+                }.getOrElse {
+                    emptyList()
                 }
-            } catch (e: Exception) {
-                transactionState = TransactionState.Error("Error de red: ${e.message}")
+
+                state = state.copy(
+                    isLoading = false,
+                    transactions = transactionData.transactions,
+                    scheduledTransactions = scheduled,
+                    formOptions = transactionData.formOptions,
+                    error = null
+                )
+            } catch (exception: Exception) {
+                state = state.copy(
+                    isLoading = false,
+                    error = exception.message
+                        ?: "No se pudieron cargar los movimientos"
+                )
             }
         }
     }
 
-    fun fetchCategories(userId: Long) {
+    fun refresh() {
+        currentUserId?.let(::load)
+    }
+
+    fun setQuery(query: String) {
+        state = state.copy(query = query)
+    }
+
+    fun setSelectedTab(tab: TransactionsTab) {
+        state = state.copy(selectedTab = tab)
+    }
+
+    fun createTransaction(command: NewTransactionCommand) {
+        if (state.saveState is TransactionSaveState.Saving) {
+            return
+        }
+
         viewModelScope.launch {
-            categoryState = CategoryState.Loading
+            state = state.copy(
+                saveState = TransactionSaveState.Saving
+            )
+
             try {
-                val response = categoryRepository.getActiveCategories(userId)
-                if (response.isSuccessful && response.body() != null) {
-                    categoryState = CategoryState.Success(response.body()!!)
-                } else {
-                    categoryState = CategoryState.Error("Error al obtener las categorías: ${response.message()}")
-                }
-            } catch (e: Exception) {
-                categoryState = CategoryState.Error("Error de red: ${e.message}")
+                validate(command)
+                repository.createTransaction(command)
+
+                state = state.copy(
+                    saveState = TransactionSaveState.Success,
+                    actionMessage = if (command.schedule != null) {
+                        "Programación registrada"
+                    } else {
+                        "Movimiento registrado"
+                    }
+                )
+
+                load(command.userId)
+            } catch (exception: Exception) {
+                state = state.copy(
+                    saveState = TransactionSaveState.Error(
+                        exception.message
+                            ?: "No se pudo registrar el movimiento"
+                    )
+                )
             }
         }
     }
 
-    fun createTransaction(
-        userId: Long,
-        description: String,
-        amount: BigDecimal,
-        type: String, // "SPENT" o "INCOME"
-        categoryId: Long,
-        paymentMethod: String // "CASH", "CREDIT_CARD", etc.
+    fun disableTransaction(transactionId: Long) {
+        viewModelScope.launch {
+            try {
+                repository.disableTransaction(transactionId)
+                state = state.copy(
+                    actionMessage = "Movimiento eliminado"
+                )
+                refresh()
+            } catch (exception: Exception) {
+                state = state.copy(
+                    error = exception.message
+                )
+            }
+        }
+    }
+
+    fun pauseSchedule(scheduleId: Long) {
+        executeScheduleAction(
+            successMessage = "Programación pausada"
+        ) {
+            repository.pauseSchedule(scheduleId)
+        }
+    }
+
+    fun resumeSchedule(scheduleId: Long) {
+        executeScheduleAction(
+            successMessage = "Programación reanudada"
+        ) {
+            repository.resumeSchedule(scheduleId)
+        }
+    }
+
+    fun cancelSchedule(scheduleId: Long) {
+        executeScheduleAction(
+            successMessage = "Programación cancelada"
+        ) {
+            repository.cancelSchedule(scheduleId)
+        }
+    }
+
+    fun consumeSaveState() {
+        state = state.copy(
+            saveState = TransactionSaveState.Idle
+        )
+    }
+
+    fun consumeMessage() {
+        state = state.copy(actionMessage = null)
+    }
+
+    private fun executeScheduleAction(
+        successMessage: String,
+        action: suspend () -> Unit
     ) {
         viewModelScope.launch {
             try {
-                val transactionType = TransactionRequest.Type.valueOf(type)
-                val transactionPaymentMethod = TransactionRequest.PaymentMethod.valueOf(paymentMethod)
-
-                val request = TransactionRequest(
-                    description = description,
-                    amount = amount,
-                    type = transactionType,
-                    userId = userId,
-                    categoryId = categoryId,
-                    paymentMethod = transactionPaymentMethod
+                action()
+                state = state.copy(
+                    actionMessage = successMessage
                 )
-                val response = transactionRepository.createTransaction(request)
-                if (response.isSuccessful) {
-                    fetchTransactions(userId)
-                }
-            } catch (e: Exception) {
-
+                refresh()
+            } catch (exception: Exception) {
+                state = state.copy(
+                    error = exception.message
+                )
             }
+        }
+    }
+
+    private fun validate(command: NewTransactionCommand) {
+        require(command.amount.signum() > 0) {
+            "El monto debe ser mayor que cero"
+        }
+
+        require(
+            command.reasonId != null ||
+                    !command.newReason.isNullOrBlank()
+        ) {
+            "Selecciona o escribe un motivo"
         }
     }
 }

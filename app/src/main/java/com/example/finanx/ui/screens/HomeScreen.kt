@@ -1,169 +1,458 @@
 package com.example.finanx.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.TimeLineChartCard
+import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.BlueSecondary
-import com.example.finanx.ui.theme.LightBackground
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.GrayBorder
+import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
-import com.example.finanx.ui.components.ProfileMenuAction
-import com.example.finanx.ui.viewmodel.AuthViewModel
+import com.example.finanx.ui.theme.TextLight
+import com.example.finanx.ui.util.toPen
+import com.example.finanx.ui.viewmodel.HomeUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
-
+fun HomeScreen(
+    state: HomeUiState,
+    onNewTransaction: () -> Unit,
+    onOpenTransactions: () -> Unit,
+    onNotifications: () -> Unit,
+    onProfile: () -> Unit,
+    onLogout: () -> Unit,
+    onRetry: () -> Unit
+) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Mi Finanzas", fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        text = "Mis finanzas",
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate("notifications")
-                    }) {
+                    IconButton(
+                        onClick = onNotifications
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "Notificaciones"
                         )
                     }
+
                     ProfileMenuAction(
-                        onMyProfile = { navController.navigate("profile") },
-                        onLogout = { authViewModel.logout() }
+                        onMyProfile = onProfile,
+                        onLogout = onLogout
                     )
                 }
             )
-        },
-        containerColor = LightBackground
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Text(
-                    text = "Hola, Juan",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = BluePrimary
+        }
+    ) { paddingValues ->
+        when {
+            state.isLoading -> {
+                LoadingContent(
+                    modifier = Modifier.padding(paddingValues)
                 )
             }
 
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(4.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Saldo Actual", color = TextGray)
-                        Text(
-                            "PEN 8,200.00",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = BluePrimary
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(60.dp)
-                                .background(Color(0xFFEDF2F7), RoundedCornerShape(8.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Gráfico de balance", color = TextGray, fontSize = 12.sp)
-                        }
-                    }
-                }
+            state.error != null -> {
+                ErrorContent(
+                    message = state.error.orEmpty(),
+                    onRetry = onRetry,
+                    modifier = Modifier.padding(paddingValues)
+                )
             }
 
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    SummaryCard("Ingresos", "PEN 5,700.00", Modifier.weight(1f))
-                    SummaryCard("Gastos", "PEN 3,200.00", Modifier.weight(1f))
-                }
-            }
-
-            item {
-                Text("Proyección", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(2.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Proyección Financiera", fontWeight = FontWeight.SemiBold)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                                .background(Color(0xFFF7FAFC), RoundedCornerShape(8.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Gráfico de Líneas (Ingresos vs Gastos)", color = Color.Gray)
-                        }
-                    }
-                }
-            }
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Button(
-                        onClick = {},
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
-                    ) {
-                        Text("+ Nueva Transacción")
-                    }
-                    OutlinedButton(
-                        onClick = {},
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = BluePrimary)
-                    ) {
-                        Text("Ver Reporte")
-                    }
-                }
+            else -> {
+                HomeContent(
+                    state = state,
+                    onNewTransaction = onNewTransaction,
+                    onOpenTransactions = onOpenTransactions,
+                    modifier = Modifier.padding(paddingValues)
+                )
             }
         }
     }
 }
 
 @Composable
-fun SummaryCard(title: String, amount: String, modifier: Modifier = Modifier) {
+private fun LoadingContent(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.error
+        )
+
+        Spacer(
+            modifier = Modifier.height(12.dp)
+        )
+
+        Button(
+            onClick = onRetry
+        ) {
+            Text("Reintentar")
+        }
+    }
+}
+
+@Composable
+private fun HomeContent(
+    state: HomeUiState,
+    onNewTransaction: () -> Unit,
+    onOpenTransactions: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            HomeSummaryHeader(
+                userName = state.userName,
+                balance = state.balance.toPen(),
+                monthlyIncome = state.monthlyIncome.toPen(),
+                monthlyExpenses = state.monthlyExpenses.toPen()
+            )
+        }
+        item {
+            TimeLineChartCard(
+                title = "Línea de tiempo de Ingresos",
+                points = state.dailyIncomePoints, // Asegúrate de que esto exista en tu HomeUiState
+                lineColor = IncomeGreen
+            )
+        }
+
+        item {
+            TimeLineChartCard(
+                title = "Línea de tiempo de Gastos",
+                points = state.dailyExpensePoints, // Asegúrate de que esto exista en tu HomeUiState
+                lineColor = ExpenseRed
+            )
+        }
+        item {
+            HomeActions(
+                onNewTransaction = onNewTransaction,
+                onOpenTransactions = onOpenTransactions
+            )
+        }
+
+        item {
+            Text(
+                text = "Movimientos recientes",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        if (state.recentTransactions.isEmpty()) {
+            item {
+                Text(
+                    text = "Todavía no tienes movimientos.",
+                    color = TextGray
+                )
+            }
+        } else {
+            items(
+                items = state.recentTransactions,
+                key = { transaction ->
+                    transaction.id
+                }
+            ) { transaction ->
+                TransactionRecordItem(
+                    transaction = transaction
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeSummaryHeader(
+    userName: String,
+    balance: String,
+    monthlyIncome: String,
+    monthlyExpenses: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        BlueSecondary,
+                        BluePrimary
+                    )
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Hola, $userName",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = TextLight
+        )
+
+        BalanceCard(
+            balance = balance
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            HomeSummaryCard(
+                title = "Ingresos del mes",
+                amount = monthlyIncome,
+                amountColor = IncomeGreen,
+                modifier = Modifier.weight(1f)
+            )
+
+            HomeSummaryCard(
+                title = "Gastos del mes",
+                amount = monthlyExpenses,
+                amountColor = ExpenseRed,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BalanceCard(
+    balance: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement =
+                Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Saldo actual",
+                    color = TextGray
+                )
+
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
+
+                Text(
+                    text = balance,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+
+                Text(
+                    text = "Calculado con tus movimientos activos",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextGray
+                )
+            }
+
+            MiniChartPlaceholder(
+                modifier = Modifier
+                    .width(92.dp)
+                    .height(62.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MiniChartPlaceholder(
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        val width = size.width
+        val height = size.height
+        val income = listOf(0.70f, 0.52f, 0.18f, 0.36f, 0.10f)
+        val expenses = listOf(0.82f, 0.44f, 0.58f, 0.28f, 0.48f)
+
+        fun pathFor(points: List<Float>): Path {
+            return Path().apply {
+                points.forEachIndexed { index, value ->
+                    val x = width * index / (points.lastIndex)
+                    val y = height * value
+                    if (index == 0) {
+                        moveTo(x, y)
+                    } else {
+                        lineTo(x, y)
+                    }
+                }
+            }
+        }
+
+        drawPath(
+            path = pathFor(income),
+            color = IncomeGreen,
+            style = Stroke(width = 3.dp.toPx())
+        )
+
+        drawPath(
+            path = pathFor(expenses),
+            color = ExpenseRed,
+            style = Stroke(width = 3.dp.toPx())
+        )
+    }
+}
+
+
+@Composable
+private fun HomeActions(
+    onNewTransaction: () -> Unit,
+    onOpenTransactions: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Button(
+            onClick = onNewTransaction,
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null
+            )
+
+            Spacer(
+                modifier = Modifier.width(6.dp)
+            )
+
+            Text("Nuevo")
+        }
+
+        OutlinedButton(
+            onClick = onOpenTransactions,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text("Ver movimientos")
+        }
+    }
+}
+
+@Composable
+private fun HomeSummaryCard(
+    title: String,
+    amount: String,
+    amountColor: Color,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, fontSize = 12.sp, color = TextGray)
-            Text(amount, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = BlueSecondary)
+        Column(
+            modifier = Modifier.padding(14.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodySmall,
+                color = TextGray
+            )
+
+            Spacer(
+                modifier = Modifier.height(6.dp)
+            )
+
+            Text(
+                text = amount,
+                fontWeight = FontWeight.Bold,
+                color = amountColor
+            )
         }
     }
 }

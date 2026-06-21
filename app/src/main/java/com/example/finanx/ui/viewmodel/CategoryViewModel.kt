@@ -42,13 +42,14 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    fun createCategory(userId: Long, name: String, description: String) {
+    fun createCategory(userId: Long, name: String, description: String, type: CategoryRequest.Type) {
         viewModelScope.launch {
             try {
                 val request = CategoryRequest(
                     userId = userId,
                     name = name,
-                    description = description
+                    description = description,
+                    type = type
                 )
                 val response = repository.createCategory(request)
                 if (response.isSuccessful) {
@@ -63,13 +64,14 @@ class CategoryViewModel : ViewModel() {
         }
     }
 
-    fun updateCategory(userId: Long, categoryId: Long, name: String, description: String) {
+    fun updateCategory(userId: Long, categoryId: Long, name: String, description: String, type: CategoryRequest.Type) {
         viewModelScope.launch {
             try {
                 val request = CategoryRequest(
                     userId = userId,
                     name = name,
-                    description = description
+                    description = description,
+                    type = type
                 )
                 val response = repository.updateCategory(categoryId, request)
                 if (response.isSuccessful) {

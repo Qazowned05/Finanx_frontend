@@ -230,8 +230,8 @@ fun CategoryListScreen(
     if (showCreateDialog) {
         CategoryFormDialog(
             title = "Nueva Categoría",
-            onConfirm = { name, description ->
-                viewModel.createCategory(userId, name, description)
+            onConfirm = { name, description, selectedType ->
+                viewModel.createCategory(userId, name, description, selectedType)
                 showCreateDialog = false
             },
             onDismiss = { showCreateDialog = false }
@@ -243,8 +243,15 @@ fun CategoryListScreen(
             title = "Editar Categoría",
             initialName = category.name.orEmpty(),
             initialDescription = category.description.orEmpty(),
-            onConfirm = { name, description ->
-                viewModel.updateCategory(userId, category.id!!, name, description)
+            initialType = category.type ?: org.openapitools.client.models.CategoryResponse.Type.SPENT,
+            onConfirm = { name, description, selectedType ->
+                // NOTA: Para el update, convertimos el enum de Response a Request
+                val requestType = if (selectedType.value == "INCOME")
+                    org.openapitools.client.models.CategoryRequest.Type.INCOME
+                else
+                    org.openapitools.client.models.CategoryRequest.Type.SPENT
+
+                viewModel.updateCategory(userId, category.id!!, name, description, requestType)
                 categoryToEdit = null
             },
             onDismiss = { categoryToEdit = null }
@@ -330,17 +337,52 @@ fun CategoryFormDialog(
     title: String,
     initialName: String = "",
     initialDescription: String = "",
-    onConfirm: (String, String) -> Unit,
+    // AÑADIDO: Recibir el tipo inicial para cuando estamos editando
+    initialType: org.openapitools.client.models.CategoryResponse.Type = org.openapitools.client.models.CategoryResponse.Type.SPENT,
+    // AÑADIDO: Ahora el onConfirm devuelve un 3er parámetro (el tipo)
+    onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
     onDismiss: () -> Unit
 ) {
     var name by remember { mutableStateOf(initialName) }
     var description by remember { mutableStateOf(initialDescription) }
+
+    // Convertimos el tipo de respuesta (Response) al tipo de petición (Request) para el estado local
+    val initialRequestType = if (initialType.value == "INCOME") {
+        org.openapitools.client.models.CategoryRequest.Type.INCOME
+    } else {
+        org.openapitools.client.models.CategoryRequest.Type.SPENT
+    }
+
+    var type by remember { mutableStateOf(initialRequestType) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title, fontWeight = FontWeight.Bold) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                // AÑADIDO: Selector de Tipo (Ingreso vs Gasto)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = type == org.openapitools.client.models.CategoryRequest.Type.SPENT,
+                            onClick = { type = org.openapitools.client.models.CategoryRequest.Type.SPENT }
+                        )
+                        Text("Gasto", fontSize = 14.sp)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = type == org.openapitools.client.models.CategoryRequest.Type.INCOME,
+                            onClick = { type = org.openapitools.client.models.CategoryRequest.Type.INCOME }
+                        )
+                        Text("Ingreso", fontSize = 14.sp)
+                    }
+                }
+
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -358,7 +400,8 @@ fun CategoryFormDialog(
         },
         confirmButton = {
             Button(
-                onClick = { if (name.isNotBlank()) onConfirm(name, description) },
+                // AÑADIDO: Mandamos el 'type' en el onConfirm
+                onClick = { if (name.isNotBlank()) onConfirm(name, description, type) },
                 colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
             ) {
                 Text("Guardar", color = Color.White)

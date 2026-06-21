@@ -3,6 +3,9 @@ package com.example.finanx.data.api
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.openapitools.client.apis.ReasonControllerApi
+import org.openapitools.client.apis.ScheduleControllerApi
+import org.openapitools.client.apis.TransactionScheduleControllerApi
 import org.openapitools.client.apis.AuthControllerApi
 import org.openapitools.client.apis.BudgetControllerApi
 import org.openapitools.client.apis.CategoryControllerApi
@@ -117,5 +120,32 @@ object RetrofitClient {
             .client(client)
             .build()
             .create(AnalyticsControllerApi::class.java)
+    }
+
+    val reasonApi: ReasonControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(ReasonControllerApi::class.java)
+    }
+
+    val transactionScheduleApi: TransactionScheduleControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(TransactionScheduleControllerApi::class.java)
+    }
+
+    val scheduleApi: ScheduleControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(ScheduleControllerApi::class.java)
     }
 }
