@@ -1,5 +1,18 @@
 package com.example.finanx.ui.screens.transaction.create
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,17 +30,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalFocusManager
 import com.example.finanx.data.model.MovementType
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecurrenceType
@@ -35,6 +53,7 @@ import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.viewmodel.TransactionSaveState
+import java.util.TimeZone
 
 @Composable
 fun TransactionDetailsStep(
@@ -538,6 +557,7 @@ private fun ScheduleSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScheduleDateField(
     label: String,
@@ -547,20 +567,79 @@ private fun ScheduleDateField(
     modifier: Modifier,
     onValueChange: (String) -> Unit
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        enabled = enabled,
-        label = {
-            Text(label)
-        },
-        placeholder = {
-            Text("YYYY-MM-DD")
-        },
-        singleLine = true,
-        isError = isError
-    )
+    var showDialog by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+    val focusManager = LocalFocusManager.current
+
+    Box(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {}, // Vacío porque la entrada viene del calendario
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            readOnly = true, // CRÍTICO: Evita que se abra el teclado de texto
+            label = {
+                Text(label)
+            },
+            placeholder = {
+                Text("YYYY-MM-DD")
+            },
+            singleLine = true,
+            isError = isError,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        showDialog = true
+                    },
+                    enabled = enabled
+                ) {
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Default.DateRange,
+                        contentDescription = "Seleccionar fecha"
+                    )
+                }
+            }
+        )
+
+        // Capa invisible encima del campo. Permite que al tocar
+        // en cualquier parte (no solo el ícono) se abra el calendario.
+        if (enabled) {
+            Surface(
+                modifier = Modifier.matchParentSize(),
+                color = androidx.compose.ui.graphics.Color.Transparent,
+                onClick = {
+                    focusManager.clearFocus()
+                    showDialog = true
+                }
+            ) {}
+        }
+    }
+
+    if (showDialog) {
+        DatePickerDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        sdf.timeZone = TimeZone.getTimeZone("UTC")
+                        onValueChange(sdf.format(Date(millis)))
+                    }
+                }) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 }
 
 private fun TransactionRecurrenceType.periodLabel():

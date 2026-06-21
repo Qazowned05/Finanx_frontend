@@ -87,13 +87,23 @@ class HomeViewModel(
                         total + item.amount
                     }
 
+                val incomePointsList = monthlyTransactions
+                    .filter { it.type == MovementType.INCOME }
+                    .map { it.amount.toFloat() }
+
+                val expensePointsList = monthlyTransactions
+                    .filter { it.type == MovementType.SPENT }
+                    .map { it.amount.toFloat() }
+
                 state = HomeUiState(
                     isLoading = false,
                     userName = userName,
                     balance = balance,
                     monthlyIncome = monthlyIncome,
                     monthlyExpenses = monthlyExpenses,
-                    recentTransactions = data.transactions.take(5)
+                    recentTransactions = data.transactions.take(5),
+                    dailyIncomePoints = incomePointsList,
+                    dailyExpensePoints = expensePointsList
                 )
             } catch (exception: Exception) {
                 state = state.copy(

@@ -31,6 +31,14 @@ fun LocalDateTime?.toReadableDate(): String {
     )
 }
 
+fun LocalDateTime?.toSearchDate(): String {
+    if (this == null) return ""
+
+    return format(
+        DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale("es", "PE"))
+    )
+}
+
 fun PaymentMethod.toLabel(): String =
     when (this) {
         PaymentMethod.CASH -> "Efectivo"

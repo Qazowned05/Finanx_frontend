@@ -180,7 +180,9 @@ private fun HomeContent(
                 userName = state.userName,
                 balance = state.balance.toPen(),
                 monthlyIncome = state.monthlyIncome.toPen(),
-                monthlyExpenses = state.monthlyExpenses.toPen()
+                monthlyExpenses = state.monthlyExpenses.toPen(),
+                incomePoints = state.dailyIncomePoints,
+                expensePoints = state.dailyExpensePoints
             )
         }
         item {
@@ -240,7 +242,9 @@ private fun HomeSummaryHeader(
     userName: String,
     balance: String,
     monthlyIncome: String,
-    monthlyExpenses: String
+    monthlyExpenses: String,
+    incomePoints: List<Float>,
+    expensePoints: List<Float>
 ) {
     Column(
         modifier = Modifier
@@ -265,7 +269,9 @@ private fun HomeSummaryHeader(
         )
 
         BalanceCard(
-            balance = balance
+            balance = balance,
+            incomePoints = incomePoints,
+            expensePoints = expensePoints
         )
 
         Row(
@@ -291,7 +297,9 @@ private fun HomeSummaryHeader(
 
 @Composable
 private fun BalanceCard(
-    balance: String
+    balance: String,
+    incomePoints: List<Float>,
+    expensePoints: List<Float>
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -338,6 +346,8 @@ private fun BalanceCard(
             }
 
             MiniChartPlaceholder(
+                incomePoints = incomePoints,
+                expensePoints = expensePoints,
                 modifier = Modifier
                     .width(92.dp)
                     .height(62.dp)
@@ -348,19 +358,21 @@ private fun BalanceCard(
 
 @Composable
 private fun MiniChartPlaceholder(
+    incomePoints: List<Float>,
+    expensePoints: List<Float>,
     modifier: Modifier = Modifier
 ) {
     Canvas(modifier = modifier) {
         val width = size.width
         val height = size.height
-        val income = listOf(0.70f, 0.52f, 0.18f, 0.36f, 0.10f)
-        val expenses = listOf(0.82f, 0.44f, 0.58f, 0.28f, 0.48f)
+        val safeIncome = incomePoints.ifEmpty { listOf(0f) }
+        val safeExpenses = expensePoints.ifEmpty { listOf(0f) }
 
         fun pathFor(points: List<Float>): Path {
             return Path().apply {
                 points.forEachIndexed { index, value ->
-                    val x = width * index / (points.lastIndex)
-                    val y = height * value
+                    val x = if (points.size > 1) width * index / (points.lastIndex) else width / 2f
+                    val y = height - (height * value)
                     if (index == 0) {
                         moveTo(x, y)
                     } else {
@@ -371,13 +383,13 @@ private fun MiniChartPlaceholder(
         }
 
         drawPath(
-            path = pathFor(income),
+            path = pathFor(safeIncome),
             color = IncomeGreen,
             style = Stroke(width = 3.dp.toPx())
         )
 
         drawPath(
-            path = pathFor(expenses),
+            path = pathFor(safeExpenses),
             color = ExpenseRed,
             style = Stroke(width = 3.dp.toPx())
         )

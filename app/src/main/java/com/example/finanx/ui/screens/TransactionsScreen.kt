@@ -1,5 +1,8 @@
 package com.example.finanx.ui.screens
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +27,7 @@ import com.example.finanx.data.model.ScheduledTransactionRecord
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.model.TransactionsTab
 import com.example.finanx.ui.theme.*
+import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.components.ProfileMenuAction
 import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.util.toPen
@@ -44,29 +49,30 @@ fun TransactionsScreen(
     onProfile: () -> Unit,
     onLogout: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     val normalizedQuery = state.query.trim().lowercase()
 
-    val visibleTransactions =
-        state.transactions.filter { transaction ->
-            normalizedQuery.isBlank() ||
-                    transaction.description
-                        .lowercase()
-                        .contains(normalizedQuery) ||
-                    transaction.categoryName
-                        .lowercase()
-                        .contains(normalizedQuery)
-        }
+    val visibleTransactions = state.transactions.filter { transaction ->
+        val dateString = transaction.createdAt.toSearchDate()
 
-    val visibleSchedules =
-        state.scheduledTransactions.filter { schedule ->
-            normalizedQuery.isBlank() ||
-                    schedule.description
-                        .lowercase()
-                        .contains(normalizedQuery) ||
-                    schedule.categoryName
-                        .lowercase()
-                        .contains(normalizedQuery)
-        }
+        normalizedQuery.isBlank() ||
+                transaction.description.lowercase().contains(normalizedQuery) ||
+                transaction.categoryName.lowercase().contains(normalizedQuery) ||
+                dateString.contains(normalizedQuery)
+    }
+
+    val visibleSchedules = state.scheduledTransactions.filter { schedule ->
+        val dateString = schedule.nextRunAt.toSearchDate()
+
+        normalizedQuery.isBlank() ||
+                schedule.description.lowercase().contains(normalizedQuery) ||
+                schedule.categoryName.lowercase().contains(normalizedQuery) ||
+                dateString.contains(normalizedQuery)
+    }
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -117,6 +123,19 @@ fun TransactionsScreen(
                         Icons.Default.Search,
                         contentDescription = null
                     )
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            focusManager.clearFocus()
+                            showDatePicker = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Seleccionar fecha"
+                        )
+                    }
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -255,6 +274,33 @@ fun TransactionsScreen(
             }
         }
     }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDatePicker = false
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                        val formattedDate = sdf.format(Date(millis))
+                        onQueryChange(formattedDate)
+                    }
+                }) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
 }
 
 @Composable
