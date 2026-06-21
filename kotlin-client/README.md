@@ -61,7 +61,6 @@ All URIs are relative to *http://localhost:8080*
 | *BudgetControllerApi* | [**getBudgetsByHealth**](docs/BudgetControllerApi.md#getbudgetsbyhealth) | **POST** budgets/{health} |  |
 | *BudgetControllerApi* | [**update6**](docs/BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 | *BudgetScheduleControllerApi* | [**findAllByUserAndState2**](docs/BudgetScheduleControllerApi.md#findallbyuserandstate2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
-| *CategoryControllerApi* | [**activate**](docs/CategoryControllerApi.md#activate) | **POST** categories/{id}/activate |  |
 | *CategoryControllerApi* | [**create4**](docs/CategoryControllerApi.md#create4) | **POST** categories |  |
 | *CategoryControllerApi* | [**disable4**](docs/CategoryControllerApi.md#disable4) | **POST** categories/{id}/disable |  |
 | *CategoryControllerApi* | [**findAllByUser3**](docs/CategoryControllerApi.md#findallbyuser3) | **GET** categories/user/{idUser} |  |
@@ -72,6 +71,8 @@ All URIs are relative to *http://localhost:8080*
 | *NotificationControllerApi* | [**findAllByUser2**](docs/NotificationControllerApi.md#findallbyuser2) | **GET** notifications/user/{idUser} |  |
 | *NotificationControllerApi* | [**findAllByUserAndState3**](docs/NotificationControllerApi.md#findallbyuserandstate3) | **GET** notifications/user/{idUser}/{state} |  |
 | *NotificationControllerApi* | [**findById6**](docs/NotificationControllerApi.md#findbyid6) | **GET** notifications/{id} |  |
+| *NotificationControllerApi* | [**markAsRead**](docs/NotificationControllerApi.md#markasread) | **POST** notifications/mark-as-read |  |
+| *NotificationControllerApi* | [**purge**](docs/NotificationControllerApi.md#purge) | **POST** notifications/user/{userId}/purge-older-than |  |
 | *ReasonControllerApi* | [**create3**](docs/ReasonControllerApi.md#create3) | **POST** reasons |  |
 | *ReasonControllerApi* | [**disable1**](docs/ReasonControllerApi.md#disable1) | **POST** reasons/{id} |  |
 | *ReasonControllerApi* | [**findAllByUser1**](docs/ReasonControllerApi.md#findallbyuser1) | **GET** reasons/user/{idUser} |  |
@@ -93,6 +94,7 @@ All URIs are relative to *http://localhost:8080*
 | *TransactionControllerApi* | [**create**](docs/TransactionControllerApi.md#create) | **POST** transactions |  |
 | *TransactionControllerApi* | [**disable**](docs/TransactionControllerApi.md#disable) | **DELETE** transactions/{id} |  |
 | *TransactionControllerApi* | [**findAllActiveByUser**](docs/TransactionControllerApi.md#findallactivebyuser) | **GET** transactions/user/{userId}/active |  |
+| *TransactionControllerApi* | [**findAllByCategoryAndDateBetween**](docs/TransactionControllerApi.md#findallbycategoryanddatebetween) | **GET** transactions/user/{userId}/category/{categoryId}/between |  |
 | *TransactionControllerApi* | [**findAllByUser**](docs/TransactionControllerApi.md#findallbyuser) | **GET** transactions/{userId} |  |
 | *TransactionControllerApi* | [**findAllByUserBetween**](docs/TransactionControllerApi.md#findallbyuserbetween) | **GET** transactions/user/{userId}/between |  |
 | *TransactionControllerApi* | [**findById1**](docs/TransactionControllerApi.md#findbyid1) | **GET** transactions/{id} |  |

@@ -11,19 +11,6 @@ import org.openapitools.client.models.CategoryResponse
 
 interface CategoryControllerApi {
     /**
-     * POST categories/{id}/activate
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param id 
-     * @return [CategoryResponse]
-     */
-    @POST("categories/{id}/activate")
-    suspend fun activate(@Path("id") id: kotlin.Long): Response<CategoryResponse>
-
-    /**
      * POST categories
      * 
      * 

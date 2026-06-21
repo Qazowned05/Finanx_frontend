@@ -4,7 +4,6 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**activate**](CategoryControllerApi.md#activate) | **POST** categories/{id}/activate |  |
 | [**create4**](CategoryControllerApi.md#create4) | **POST** categories |  |
 | [**disable4**](CategoryControllerApi.md#disable4) | **POST** categories/{id}/disable |  |
 | [**findAllByUser3**](CategoryControllerApi.md#findAllByUser3) | **GET** categories/user/{idUser} |  |
@@ -12,43 +11,6 @@ All URIs are relative to *http://localhost:8080*
 | [**findById4**](CategoryControllerApi.md#findById4) | **GET** categories/{id} |  |
 | [**update5**](CategoryControllerApi.md#update5) | **PUT** categories/{id} |  |
 
-
-
-
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(CategoryControllerApi::class.java)
-val id : kotlin.Long = 789 // kotlin.Long | 
-
-launch(Dispatchers.IO) {
-    val result : CategoryResponse = webService.activate(id)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long**|  | |
-
-### Return type
-
-[**CategoryResponse**](CategoryResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
 
 
 

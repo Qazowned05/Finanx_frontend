@@ -7,6 +7,7 @@ All URIs are relative to *http://localhost:8080*
 | [**create**](TransactionControllerApi.md#create) | **POST** transactions |  |
 | [**disable**](TransactionControllerApi.md#disable) | **DELETE** transactions/{id} |  |
 | [**findAllActiveByUser**](TransactionControllerApi.md#findAllActiveByUser) | **GET** transactions/user/{userId}/active |  |
+| [**findAllByCategoryAndDateBetween**](TransactionControllerApi.md#findAllByCategoryAndDateBetween) | **GET** transactions/user/{userId}/category/{categoryId}/between |  |
 | [**findAllByUser**](TransactionControllerApi.md#findAllByUser) | **GET** transactions/{userId} |  |
 | [**findAllByUserBetween**](TransactionControllerApi.md#findAllByUserBetween) | **GET** transactions/user/{userId}/between |  |
 | [**findById1**](TransactionControllerApi.md#findById1) | **GET** transactions/{id} |  |
@@ -110,6 +111,49 @@ launch(Dispatchers.IO) {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **kotlin.Long**|  | |
+
+### Return type
+
+[**kotlin.collections.List&lt;TransactionResponse&gt;**](TransactionResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(TransactionControllerApi::class.java)
+val userId : kotlin.Long = 789 // kotlin.Long | 
+val categoryId : kotlin.Long = 789 // kotlin.Long | 
+val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+
+launch(Dispatchers.IO) {
+    val result : kotlin.collections.List<TransactionResponse> = webService.findAllByCategoryAndDateBetween(userId, categoryId, from, to)
+}
+```
+
+### Parameters
+| **userId** | **kotlin.Long**|  | |
+| **categoryId** | **kotlin.Long**|  | |
+| **from** | **java.time.LocalDate**|  | |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **to** | **java.time.LocalDate**|  | |
 
 ### Return type
 

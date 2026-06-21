@@ -73,4 +73,31 @@ interface NotificationControllerApi {
     @GET("notifications/{id}")
     suspend fun findById6(@Path("id") id: kotlin.Long): Response<NotificationDTO>
 
+    /**
+     * POST notifications/mark-as-read
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param body 
+     * @return [Unit]
+     */
+    @POST("notifications/mark-as-read")
+    suspend fun markAsRead(@Body body: kotlin.Long): Response<Unit>
+
+    /**
+     * POST notifications/user/{userId}/purge-older-than
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param userId 
+     * @param dateTime 
+     * @return [Unit]
+     */
+    @POST("notifications/user/{userId}/purge-older-than")
+    suspend fun purge(@Path("userId") userId: kotlin.Long, @Query("dateTime") dateTime: java.time.LocalDateTime): Response<Unit>
+
 }

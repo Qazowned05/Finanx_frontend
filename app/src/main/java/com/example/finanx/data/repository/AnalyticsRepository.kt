@@ -9,7 +9,8 @@ class AnalyticsRepository(
     private val api: AnalyticsControllerApi
 ) {
     suspend fun getDashboard(
-        period: PeriodRequest
+        period: PeriodRequest,
+        prompt: String? = null
     ): Response<Budgets200Response> {
         return api.balance(period)
     }

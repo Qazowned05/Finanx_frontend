@@ -50,6 +50,22 @@ interface TransactionControllerApi {
     suspend fun findAllActiveByUser(@Path("userId") userId: kotlin.Long): Response<kotlin.collections.List<TransactionResponse>>
 
     /**
+     * GET transactions/user/{userId}/category/{categoryId}/between
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param userId 
+     * @param categoryId 
+     * @param from 
+     * @param to 
+     * @return [kotlin.collections.List<TransactionResponse>]
+     */
+    @GET("transactions/user/{userId}/category/{categoryId}/between")
+    suspend fun findAllByCategoryAndDateBetween(@Path("userId") userId: kotlin.Long, @Path("categoryId") categoryId: kotlin.Long, @Query("from") from: java.time.LocalDate, @Query("to") to: java.time.LocalDate): Response<kotlin.collections.List<TransactionResponse>>
+
+    /**
      * GET transactions/{userId}
      * 
      * 

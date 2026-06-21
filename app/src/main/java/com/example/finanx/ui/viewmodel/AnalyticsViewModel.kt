@@ -19,6 +19,7 @@ data class AnalyticsUiState(
 )
 
 class AnalyticsViewModel : ViewModel() {
+    var dashboardResponse by mutableStateOf<DashboardResponse?>(null)
 
     private val repository = AnalyticsRepository(RetrofitClient.analyticsApi)
 

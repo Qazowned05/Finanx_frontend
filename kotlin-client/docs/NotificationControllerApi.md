@@ -8,6 +8,8 @@ All URIs are relative to *http://localhost:8080*
 | [**findAllByUser2**](NotificationControllerApi.md#findAllByUser2) | **GET** notifications/user/{idUser} |  |
 | [**findAllByUserAndState3**](NotificationControllerApi.md#findAllByUserAndState3) | **GET** notifications/user/{idUser}/{state} |  |
 | [**findById6**](NotificationControllerApi.md#findById6) | **GET** notifications/{id} |  |
+| [**markAsRead**](NotificationControllerApi.md#markAsRead) | **POST** notifications/mark-as-read |  |
+| [**purge**](NotificationControllerApi.md#purge) | **POST** notifications/user/{userId}/purge-older-than |  |
 
 
 
@@ -159,4 +161,80 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: */*
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(NotificationControllerApi::class.java)
+val body : kotlin.Long = 789 // kotlin.Long | 
+
+launch(Dispatchers.IO) {
+    webService.markAsRead(body)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **body** | **kotlin.Long**|  | |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(NotificationControllerApi::class.java)
+val userId : kotlin.Long = 789 // kotlin.Long | 
+val dateTime : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | 
+
+launch(Dispatchers.IO) {
+    webService.purge(userId, dateTime)
+}
+```
+
+### Parameters
+| **userId** | **kotlin.Long**|  | |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **dateTime** | **java.time.LocalDateTime**|  | |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
 
