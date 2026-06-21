@@ -45,10 +45,10 @@ All URIs are relative to *http://localhost:8080*
 
 | Class | Method | HTTP request | Description |
 | ------------ | ------------- | ------------- | ------------- |
-| *AnalyticsControllerApi* | [**balance**](docs/AnalyticsControllerApi.md#balance) | **GET** analytics/dashboard/balance |  |
-| *AnalyticsControllerApi* | [**budgets**](docs/AnalyticsControllerApi.md#budgets) | **GET** analytics/dashboard/budgets |  |
-| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **GET** analytics/budgets/{id}/execution |  |
-| *AnalyticsControllerApi* | [**getExecutionsByPeriod**](docs/AnalyticsControllerApi.md#getexecutionsbyperiod) | **GET** analytics/budgets/executions |  |
+| *AnalyticsControllerApi* | [**balance**](docs/AnalyticsControllerApi.md#balance) | **POST** analytics/dashboard/balance |  |
+| *AnalyticsControllerApi* | [**budgets**](docs/AnalyticsControllerApi.md#budgets) | **POST** analytics/dashboard/budgets |  |
+| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **POST** analytics/budgets/{id}/execution |  |
+| *AnalyticsControllerApi* | [**getExecutionsByPeriod**](docs/AnalyticsControllerApi.md#getexecutionsbyperiod) | **POST** analytics/budgets/executions |  |
 | *AuthControllerApi* | [**google**](docs/AuthControllerApi.md#google) | **POST** auth/google |  |
 | *AuthControllerApi* | [**login**](docs/AuthControllerApi.md#login) | **POST** auth/login |  |
 | *AuthControllerApi* | [**register1**](docs/AuthControllerApi.md#register1) | **POST** auth/register |  |
@@ -58,7 +58,7 @@ All URIs are relative to *http://localhost:8080*
 | *BudgetControllerApi* | [**findAllByUser4**](docs/BudgetControllerApi.md#findallbyuser4) | **GET** budgets/user/{idUser} |  |
 | *BudgetControllerApi* | [**findAllByUserAndState4**](docs/BudgetControllerApi.md#findallbyuserandstate4) | **GET** budgets/user/{idUser}/{state} |  |
 | *BudgetControllerApi* | [**findById5**](docs/BudgetControllerApi.md#findbyid5) | **GET** budgets/{id} |  |
-| *BudgetControllerApi* | [**getBudgetsByHealth**](docs/BudgetControllerApi.md#getbudgetsbyhealth) | **GET** budgets/{health} |  |
+| *BudgetControllerApi* | [**getBudgetsByHealth**](docs/BudgetControllerApi.md#getbudgetsbyhealth) | **POST** budgets/{health} |  |
 | *BudgetControllerApi* | [**update6**](docs/BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 | *BudgetScheduleControllerApi* | [**findAllByUserAndState2**](docs/BudgetScheduleControllerApi.md#findallbyuserandstate2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
 | *CategoryControllerApi* | [**activate**](docs/CategoryControllerApi.md#activate) | **POST** categories/{id}/activate |  |

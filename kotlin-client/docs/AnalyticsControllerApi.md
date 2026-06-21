@@ -4,10 +4,10 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**balance**](AnalyticsControllerApi.md#balance) | **GET** analytics/dashboard/balance |  |
-| [**budgets**](AnalyticsControllerApi.md#budgets) | **GET** analytics/dashboard/budgets |  |
-| [**getExecution**](AnalyticsControllerApi.md#getExecution) | **GET** analytics/budgets/{id}/execution |  |
-| [**getExecutionsByPeriod**](AnalyticsControllerApi.md#getExecutionsByPeriod) | **GET** analytics/budgets/executions |  |
+| [**balance**](AnalyticsControllerApi.md#balance) | **POST** analytics/dashboard/balance |  |
+| [**budgets**](AnalyticsControllerApi.md#budgets) | **POST** analytics/dashboard/budgets |  |
+| [**getExecution**](AnalyticsControllerApi.md#getExecution) | **POST** analytics/budgets/{id}/execution |  |
+| [**getExecutionsByPeriod**](AnalyticsControllerApi.md#getExecutionsByPeriod) | **POST** analytics/budgets/executions |  |
 
 
 
@@ -137,17 +137,17 @@ No authorization required
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsControllerApi::class.java)
-val request : PeriodRequest =  // PeriodRequest | 
+val periodRequest : PeriodRequest =  // PeriodRequest | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetExecutionResponse> = webService.getExecutionsByPeriod(request)
+    val result : kotlin.collections.List<BudgetExecutionResponse> = webService.getExecutionsByPeriod(periodRequest)
 }
 ```
 
 ### Parameters
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **request** | [**PeriodRequest**](.md)|  | |
+| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 
 ### Return type
 
@@ -159,6 +159,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
