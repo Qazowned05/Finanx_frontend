@@ -16,7 +16,7 @@ class AuthRepository(
     }
 
     suspend fun loginWithGoogle(idToken: String): Response<LoginResponse> {
-        return api.loginWithGoogle(GoogleLoginRequest(idToken = idToken))
+        return api.google(GoogleLoginRequest(idToken = idToken))
     }
 
     suspend fun register(
@@ -36,6 +36,6 @@ class AuthRepository(
             timeZone = timeZone
         )
 
-        return api.registerUser(user)
+        return api.register1(user)
     }
 }
