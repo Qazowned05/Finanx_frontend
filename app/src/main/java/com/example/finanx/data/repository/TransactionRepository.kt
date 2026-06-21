@@ -9,8 +9,10 @@ import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionData
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecord
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.CategoryControllerApi
 import org.openapitools.client.apis.ReasonControllerApi
 import org.openapitools.client.apis.SavingGoalControllerApi
@@ -43,7 +45,8 @@ class TransactionRepository(
 ) {
 
     suspend fun loadTransactionData(userId: Long): TransactionData =
-        coroutineScope {
+        withContext(Dispatchers.IO) {
+            coroutineScope {
             val transactionsDeferred = async {
                 transactionApi
                     .findAllActiveByUser(userId)
@@ -134,48 +137,51 @@ class TransactionRepository(
                 transactions = transactions,
                 formOptions = options
             )
+            }
         }
 
     suspend fun loadScheduledTransactions(
         userId: Long
-    ): List<ScheduledTransactionRecord> = coroutineScope {
-        val runningDeferred = async {
-            transactionScheduleApi
-                .findAllByUserAndState1(
-                    idUser = userId,
-                    state = TransactionScheduleControllerApi
-                        .StateFindAllByUserAndState1
-                        .RUNNING
-                        .value
-                )
-                .bodyOrThrow("No se pudieron obtener las programaciones")
-        }
+    ): List<ScheduledTransactionRecord> = withContext(Dispatchers.IO) {
+        coroutineScope {
+            val runningDeferred = async {
+                transactionScheduleApi
+                    .findAllByUserAndState1(
+                        idUser = userId,
+                        state = TransactionScheduleControllerApi
+                            .StateFindAllByUserAndState1
+                            .RUNNING
+                            .value
+                    )
+                    .bodyOrThrow("No se pudieron obtener las programaciones")
+            }
 
-        val pausedDeferred = async {
-            transactionScheduleApi
-                .findAllByUserAndState1(
-                    idUser = userId,
-                    state = TransactionScheduleControllerApi
-                        .StateFindAllByUserAndState1
-                        .PAUSED
-                        .value
-                )
-                .bodyOrThrow("No se pudieron obtener las programaciones pausadas")
-        }
+            val pausedDeferred = async {
+                transactionScheduleApi
+                    .findAllByUserAndState1(
+                        idUser = userId,
+                        state = TransactionScheduleControllerApi
+                            .StateFindAllByUserAndState1
+                            .PAUSED
+                            .value
+                    )
+                    .bodyOrThrow("No se pudieron obtener las programaciones pausadas")
+            }
 
-        (runningDeferred.await() + pausedDeferred.await())
-            .mapNotNull(TransactionScheduleResponse::toRecord)
-            .sortedBy { it.nextRunAt }
+            (runningDeferred.await() + pausedDeferred.await())
+                .mapNotNull(TransactionScheduleResponse::toRecord)
+                .sortedBy { it.nextRunAt }
+        }
     }
 
     suspend fun createTransaction(
         command: NewTransactionCommand
-    ) {
+    ): Unit = withContext(Dispatchers.IO) {
         if (command.schedule != null) {
             scheduleApi
                 .create1(command.toScheduleRequest())
                 .bodyOrThrow("No se pudo registrar la programación")
-            return
+            return@withContext
         }
 
         val request = command.toRequest()
@@ -188,7 +194,7 @@ class TransactionRepository(
     suspend fun updateTransaction(
         transactionId: Long,
         command: NewTransactionCommand
-    ): TransactionRecord {
+    ): TransactionRecord = withContext(Dispatchers.IO) {
         val updated = transactionApi
             .update1(
                 id = transactionId,
@@ -196,31 +202,31 @@ class TransactionRepository(
             )
             .bodyOrThrow("No se pudo actualizar el movimiento")
 
-        return updated.toRecord(
+        updated.toRecord(
             categoryNames = emptyMap(),
             reasonNames = emptyMap()
         ) ?: throw ApiException("La respuesta del servidor es inválida")
     }
 
-    suspend fun disableTransaction(transactionId: Long) {
+    suspend fun disableTransaction(transactionId: Long) = withContext(Dispatchers.IO) {
         transactionApi
             .disable(transactionId)
             .ensureSuccessful("No se pudo eliminar el movimiento")
     }
 
-    suspend fun pauseSchedule(scheduleId: Long) {
+    suspend fun pauseSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
             .pause(scheduleId)
             .ensureSuccessful("No se pudo pausar la programación")
     }
 
-    suspend fun resumeSchedule(scheduleId: Long) {
+    suspend fun resumeSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
             .resume(scheduleId)
             .ensureSuccessful("No se pudo reanudar la programación")
     }
 
-    suspend fun cancelSchedule(scheduleId: Long) {
+    suspend fun cancelSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
             .cancel(scheduleId)
             .ensureSuccessful("No se pudo cancelar la programación")

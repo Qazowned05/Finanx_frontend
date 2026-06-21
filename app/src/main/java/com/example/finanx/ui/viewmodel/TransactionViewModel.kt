@@ -6,10 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.model.NewTransactionCommand
-import com.example.finanx.data.model.ScheduledTransactionRecord
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecord
-import com.example.finanx.data.model.TransactionsTab
 import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
 
@@ -23,11 +21,8 @@ sealed interface TransactionSaveState {
 data class TransactionUiState(
     val isLoading: Boolean = false,
     val transactions: List<TransactionRecord> = emptyList(),
-    val scheduledTransactions: List<ScheduledTransactionRecord> =
-        emptyList(),
     val formOptions: TransactionFormOptions =
         TransactionFormOptions(),
-    val selectedTab: TransactionsTab = TransactionsTab.ALL,
     val query: String = "",
     val error: String? = null,
     val actionMessage: String? = null,
@@ -58,16 +53,9 @@ class TransactionViewModel(
                 val transactionData =
                     repository.loadTransactionData(userId)
 
-                val scheduled = runCatching {
-                    repository.loadScheduledTransactions(userId)
-                }.getOrElse {
-                    emptyList()
-                }
-
                 state = state.copy(
                     isLoading = false,
                     transactions = transactionData.transactions,
-                    scheduledTransactions = scheduled,
                     formOptions = transactionData.formOptions,
                     error = null
                 )
@@ -89,10 +77,6 @@ class TransactionViewModel(
         state = state.copy(query = query)
     }
 
-    fun setSelectedTab(tab: TransactionsTab) {
-        state = state.copy(selectedTab = tab)
-    }
-
     fun createTransaction(command: NewTransactionCommand) {
         if (state.saveState is TransactionSaveState.Saving) {
             return
@@ -109,11 +93,7 @@ class TransactionViewModel(
 
                 state = state.copy(
                     saveState = TransactionSaveState.Success,
-                    actionMessage = if (command.schedule != null) {
-                        "Programación registrada"
-                    } else {
-                        "Movimiento registrado"
-                    }
+                    actionMessage = "Movimiento registrado"
                 )
 
                 load(command.userId)
@@ -144,30 +124,6 @@ class TransactionViewModel(
         }
     }
 
-    fun pauseSchedule(scheduleId: Long) {
-        executeScheduleAction(
-            successMessage = "Programación pausada"
-        ) {
-            repository.pauseSchedule(scheduleId)
-        }
-    }
-
-    fun resumeSchedule(scheduleId: Long) {
-        executeScheduleAction(
-            successMessage = "Programación reanudada"
-        ) {
-            repository.resumeSchedule(scheduleId)
-        }
-    }
-
-    fun cancelSchedule(scheduleId: Long) {
-        executeScheduleAction(
-            successMessage = "Programación cancelada"
-        ) {
-            repository.cancelSchedule(scheduleId)
-        }
-    }
-
     fun consumeSaveState() {
         state = state.copy(
             saveState = TransactionSaveState.Idle
@@ -176,25 +132,6 @@ class TransactionViewModel(
 
     fun consumeMessage() {
         state = state.copy(actionMessage = null)
-    }
-
-    private fun executeScheduleAction(
-        successMessage: String,
-        action: suspend () -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                action()
-                state = state.copy(
-                    actionMessage = successMessage
-                )
-                refresh()
-            } catch (exception: Exception) {
-                state = state.copy(
-                    error = exception.message
-                )
-            }
-        }
     }
 
     private fun validate(command: NewTransactionCommand) {

@@ -11,6 +11,8 @@ import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -22,7 +24,9 @@ data class HomeUiState(
         emptyList(),
     val error: String? = null,
     val dailyIncomePoints: List<Float> = emptyList(),
-    val dailyExpensePoints: List<Float> = emptyList()
+    val dailyIncomeLabels: List<String> = emptyList(),
+    val dailyExpensePoints: List<Float> = emptyList(),
+    val dailyExpenseLabels: List<String> = emptyList()
 )
 
 class HomeViewModel(
@@ -87,13 +91,13 @@ class HomeViewModel(
                         total + item.amount
                     }
 
-                val incomePointsList = monthlyTransactions
+                val incomeSeries = monthlyTransactions
                     .filter { it.type == MovementType.INCOME }
-                    .map { it.amount.toFloat() }
+                    .toDailySeries()
 
-                val expensePointsList = monthlyTransactions
+                val expenseSeries = monthlyTransactions
                     .filter { it.type == MovementType.SPENT }
-                    .map { it.amount.toFloat() }
+                    .toDailySeries()
 
                 state = HomeUiState(
                     isLoading = false,
@@ -102,8 +106,10 @@ class HomeViewModel(
                     monthlyIncome = monthlyIncome,
                     monthlyExpenses = monthlyExpenses,
                     recentTransactions = data.transactions.take(5),
-                    dailyIncomePoints = incomePointsList,
-                    dailyExpensePoints = expensePointsList
+                    dailyIncomePoints = incomeSeries.points,
+                    dailyIncomeLabels = incomeSeries.labels,
+                    dailyExpensePoints = expenseSeries.points,
+                    dailyExpenseLabels = expenseSeries.labels
                 )
             } catch (exception: Exception) {
                 state = state.copy(
@@ -119,4 +125,30 @@ class HomeViewModel(
         val userId = currentUserId ?: return
         load(userId, currentUserName)
     }
+}
+
+private data class DailySeries(
+    val points: List<Float>,
+    val labels: List<String>
+)
+
+private val dayLabelFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd/MM", Locale("es", "PE"))
+
+private fun List<TransactionRecord>.toDailySeries(): DailySeries {
+    val dailyTotals = groupBy {
+        it.createdAt?.toLocalDate()
+    }
+        .mapNotNull { (date, transactions) ->
+            date ?: return@mapNotNull null
+            date to transactions.fold(BigDecimal.ZERO) { total, item ->
+                total + item.amount
+            }
+        }
+        .sortedBy { it.first }
+
+    return DailySeries(
+        points = dailyTotals.map { it.second.toFloat() },
+        labels = dailyTotals.map { it.first.format(dayLabelFormatter) }
+    )
 }

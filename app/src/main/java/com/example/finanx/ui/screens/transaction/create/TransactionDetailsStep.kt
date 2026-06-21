@@ -63,6 +63,8 @@ fun TransactionDetailsStep(
     isLoading: Boolean,
     loadError: String?,
     saveState: TransactionSaveState,
+    allowSchedule: Boolean,
+    lockScheduleMode: Boolean,
     onFormChange:
         (CreateTransactionFormState) -> Unit,
     onRetry: () -> Unit,
@@ -234,11 +236,14 @@ fun TransactionDetailsStep(
             }
         )
 
-        ScheduleSection(
-            form = form,
-            enabled = !isSaving,
-            onFormChange = onFormChange
-        )
+        if (allowSchedule) {
+            ScheduleSection(
+                form = form,
+                enabled = !isSaving,
+                locked = lockScheduleMode,
+                onFormChange = onFormChange
+            )
+        }
 
         FormDropdown(
             label = "Meta de ahorro",
@@ -400,6 +405,7 @@ private fun TransactionSummaryCard(
 private fun ScheduleSection(
     form: CreateTransactionFormState,
     enabled: Boolean,
+    locked: Boolean,
     onFormChange:
         (CreateTransactionFormState) -> Unit
 ) {
@@ -426,7 +432,11 @@ private fun ScheduleSection(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "Movimiento programado",
+                        text = if (locked) {
+                            "Programación"
+                        } else {
+                            "Movimiento programado"
+                        },
                         fontWeight = FontWeight.SemiBold
                     )
 
@@ -438,22 +448,24 @@ private fun ScheduleSection(
                     )
                 }
 
-                Switch(
-                    checked = form.isScheduled,
-                    enabled = enabled,
-                    onCheckedChange = { checked ->
-                        onFormChange(
-                            form.copy(
-                                isScheduled = checked,
-                                savingGoalId = if (checked) {
-                                    null
-                                } else {
-                                    form.savingGoalId
-                                }
+                if (!locked) {
+                    Switch(
+                        checked = form.isScheduled,
+                        enabled = enabled,
+                        onCheckedChange = { checked ->
+                            onFormChange(
+                                form.copy(
+                                    isScheduled = checked,
+                                    savingGoalId = if (checked) {
+                                        null
+                                    } else {
+                                        form.savingGoalId
+                                    }
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
+                }
             }
 
             if (form.isScheduled) {

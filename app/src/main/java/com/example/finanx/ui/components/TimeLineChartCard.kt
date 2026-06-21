@@ -26,6 +26,7 @@ import kotlin.math.roundToInt
 fun TimeLineChartCard(
     title: String,
     points: List<Float>,
+    pointLabels: List<String> = emptyList(),
     lineColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -64,8 +65,12 @@ fun TimeLineChartCard(
                         .pointerInput(points) {
                             detectTapGestures { tapOffset ->
                                 val width = size.width
-                                val sectionWidth = width / maxOf(points.size - 1, 1)
-                                val index = (tapOffset.x / sectionWidth).roundToInt()
+                                val index = if (points.size == 1) {
+                                    0
+                                } else {
+                                    val sectionWidth = width / points.lastIndex
+                                    (tapOffset.x / sectionWidth).roundToInt()
+                                }
                                 if (index in points.indices) {
                                     selectedIndex = index
                                 }
@@ -74,10 +79,16 @@ fun TimeLineChartCard(
                 ) {
                     val width = size.width
                     val height = size.height
+                    val labelHeight = if (pointLabels.isNotEmpty()) {
+                        22.dp.toPx()
+                    } else {
+                        0f
+                    }
+                    val plotHeight = height - labelHeight
                     val maxPoint = points.maxOrNull()?.takeIf { it > 0f } ?: 1f
 
                     repeat(4) { index ->
-                        val y = height * (index + 1) / 5
+                        val y = plotHeight * (index + 1) / 5
                         drawLine(
                             color = GrayBorder,
                             start = Offset(0f, y),
@@ -90,8 +101,12 @@ fun TimeLineChartCard(
                     val pointOffsets = mutableListOf<Offset>()
 
                     points.forEachIndexed { index, value ->
-                        val x = width * index / maxOf(points.size - 1, 1)
-                        val y = height - (height * (value / maxPoint))
+                        val x = if (points.size == 1) {
+                            width / 2f
+                        } else {
+                            width * index / points.lastIndex
+                        }
+                        val y = plotHeight - (plotHeight * (value / maxPoint))
                         pointOffsets.add(Offset(x, y))
 
                         if (index == 0) {
@@ -101,11 +116,13 @@ fun TimeLineChartCard(
                         }
                     }
 
-                    drawPath(
-                        path = path,
-                        color = lineColor,
-                        style = Stroke(width = 3.dp.toPx())
-                    )
+                    if (points.size > 1) {
+                        drawPath(
+                            path = path,
+                            color = lineColor,
+                            style = Stroke(width = 3.dp.toPx())
+                        )
+                    }
 
                     pointOffsets.forEachIndexed { index, offset ->
                         val isSelected = index == selectedIndex
@@ -124,7 +141,12 @@ fun TimeLineChartCard(
                                 style = Stroke(width = 2.dp.toPx())
                             )
 
-                            val valueText = "S/ ${"%.2f".format(points[index])}"
+                            val label = pointLabels.getOrNull(index)
+                            val valueText = if (label == null) {
+                                "S/ ${"%.2f".format(points[index])}"
+                            } else {
+                                "$label  S/ ${"%.2f".format(points[index])}"
+                            }
                             val textLayoutResult = textMeasurer.measure(
                                 text = valueText,
                                 style = TextStyle(
@@ -137,8 +159,44 @@ fun TimeLineChartCard(
                             drawText(
                                 textLayoutResult = textLayoutResult,
                                 topLeft = Offset(
-                                    x = offset.x - (textLayoutResult.size.width / 2),
+                                    x = (offset.x - (textLayoutResult.size.width / 2))
+                                        .coerceIn(
+                                            0f,
+                                            maxOf(0f, width - textLayoutResult.size.width)
+                                        ),
                                     y = offset.y - 30.dp.toPx()
+                                )
+                            )
+                        }
+                    }
+
+                    if (pointLabels.isNotEmpty()) {
+                        val labelIndexes = if (points.size == 1) {
+                            listOf(0)
+                        } else {
+                            listOf(0, points.lastIndex).distinct()
+                        }
+
+                        labelIndexes.forEach { index ->
+                            val label = pointLabels.getOrNull(index) ?: return@forEach
+                            val offset = pointOffsets.getOrNull(index) ?: return@forEach
+                            val textLayoutResult = textMeasurer.measure(
+                                text = label,
+                                style = TextStyle(
+                                    color = TextGray,
+                                    fontSize = 11.sp
+                                )
+                            )
+
+                            drawText(
+                                textLayoutResult = textLayoutResult,
+                                topLeft = Offset(
+                                    x = (offset.x - (textLayoutResult.size.width / 2))
+                                        .coerceIn(
+                                            0f,
+                                            maxOf(0f, width - textLayoutResult.size.width)
+                                        ),
+                                    y = plotHeight + 6.dp.toPx()
                                 )
                             )
                         }

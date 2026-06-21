@@ -1,51 +1,66 @@
 package com.example.finanx.ui.screens
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import android.app.Activity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.EventRepeat
+import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.finanx.data.model.ScheduledTransactionRecord
-import com.example.finanx.data.model.TransactionRecord
-import com.example.finanx.data.model.TransactionsTab
-import com.example.finanx.ui.theme.*
-import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.components.ProfileMenuAction
 import com.example.finanx.ui.components.TransactionRecordItem
-import com.example.finanx.ui.util.toPen
-import com.example.finanx.ui.util.toReadableDate
-import com.example.finanx.ui.viewmodel.AuthViewModel
+import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.viewmodel.TransactionUiState
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionsScreen(
     state: TransactionUiState,
     onQueryChange: (String) -> Unit,
-    onTabChange: (TransactionsTab) -> Unit,
     onRefresh: () -> Unit,
     onNewTransaction: () -> Unit,
-    onPauseSchedule: (Long) -> Unit,
-    onResumeSchedule: (Long) -> Unit,
-    onCancelSchedule: (Long) -> Unit,
+    onOpenSchedules: () -> Unit,
     onProfile: () -> Unit,
     onLogout: () -> Unit
 ) {
@@ -61,18 +76,9 @@ fun TransactionsScreen(
                 dateString.contains(normalizedQuery)
     }
 
-    val visibleSchedules = state.scheduledTransactions.filter { schedule ->
-        val dateString = schedule.nextRunAt.toSearchDate()
-
-        normalizedQuery.isBlank() ||
-                schedule.description.lowercase().contains(normalizedQuery) ||
-                schedule.categoryName.lowercase().contains(normalizedQuery) ||
-                dateString.contains(normalizedQuery)
-    }
-
     var showDatePicker by remember { mutableStateOf(false) }
+    var showCreateMenu by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -93,16 +99,51 @@ fun TransactionsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNewTransaction,
-                containerColor =
-                    MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "Nuevo movimiento",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+            Box {
+                FloatingActionButton(
+                    onClick = { showCreateMenu = true },
+                    containerColor =
+                        MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Nuevo",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = showCreateMenu,
+                    onDismissRequest = { showCreateMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.ReceiptLong,
+                                contentDescription = null
+                            )
+                        },
+                        text = { Text("Movimiento") },
+                        onClick = {
+                            showCreateMenu = false
+                            onNewTransaction()
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.EventRepeat,
+                                contentDescription = null
+                            )
+                        },
+                        text = { Text("Programación") },
+                        onClick = {
+                            showCreateMenu = false
+                            onOpenSchedules()
+                        }
+                    )
+                }
             }
         }
     ) { padding ->
@@ -144,43 +185,6 @@ fun TransactionsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                SegmentedButton(
-                    selected =
-                        state.selectedTab == TransactionsTab.ALL,
-                    onClick = {
-                        onTabChange(TransactionsTab.ALL)
-                    },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = 0,
-                        count = 2
-                    ),
-                    label = {
-                        Text("Todos")
-                    }
-                )
-
-                SegmentedButton(
-                    selected =
-                        state.selectedTab ==
-                                TransactionsTab.SCHEDULED,
-                    onClick = {
-                        onTabChange(TransactionsTab.SCHEDULED)
-                    },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = 1,
-                        count = 2
-                    ),
-                    label = {
-                        Text("Programados")
-                    }
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-
             when {
                 state.isLoading -> {
                     Box(
@@ -207,13 +211,13 @@ fun TransactionsScreen(
 
                         Spacer(Modifier.height(12.dp))
 
-                        Button(onClick = onRefresh) {
+                        androidx.compose.material3.Button(onClick = onRefresh) {
                             Text("Reintentar")
                         }
                     }
                 }
 
-                state.selectedTab == TransactionsTab.ALL -> {
+                else -> {
                     LazyColumn(
                         verticalArrangement =
                             Arrangement.spacedBy(10.dp),
@@ -232,41 +236,6 @@ fun TransactionsScreen(
                                 key = { it.id }
                             ) {
                                 TransactionRecordItem(it)
-                            }
-                        }
-                    }
-                }
-
-                else -> {
-                    LazyColumn(
-                        verticalArrangement =
-                            Arrangement.spacedBy(10.dp),
-                        contentPadding =
-                            PaddingValues(bottom = 88.dp)
-                    ) {
-                        if (visibleSchedules.isEmpty()) {
-                            item {
-                                EmptyTransactionsMessage(
-                                    "No tienes movimientos programados"
-                                )
-                            }
-                        } else {
-                            items(
-                                items = visibleSchedules,
-                                key = { it.id }
-                            ) { schedule ->
-                                ScheduledTransactionItem(
-                                    item = schedule,
-                                    onPause = {
-                                        onPauseSchedule(schedule.id)
-                                    },
-                                    onResume = {
-                                        onResumeSchedule(schedule.id)
-                                    },
-                                    onCancel = {
-                                        onCancelSchedule(schedule.id)
-                                    }
-                                )
                             }
                         }
                     }
@@ -298,113 +267,6 @@ fun TransactionsScreen(
             }
         ) {
             DatePicker(state = datePickerState)
-        }
-    }
-
-}
-
-@Composable
-private fun ScheduledTransactionItem(
-    item: ScheduledTransactionRecord,
-    onPause: () -> Unit,
-    onResume: () -> Unit,
-    onCancel: () -> Unit
-) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = item.description,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                Text(
-                    text = item.categoryName,
-                    color = TextGray,
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-                Text(
-                    text = "Próximo: ${item.nextRunAt.toReadableDate()}",
-                    color = TextGray,
-                    style = MaterialTheme.typography.labelSmall
-                )
-
-                Text(
-                    text = item.state,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-
-            Text(
-                text = item.amount.toPen(),
-                fontWeight = FontWeight.Bold
-            )
-
-            Box {
-                IconButton(
-                    onClick = {
-                        expanded = true
-                    }
-                ) {
-                    Icon(
-                        Icons.Default.MoreVert,
-                        contentDescription = "Opciones"
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }
-                ) {
-                    if (item.state == "RUNNING") {
-                        DropdownMenuItem(
-                            text = { Text("Pausar") },
-                            onClick = {
-                                expanded = false
-                                onPause()
-                            }
-                        )
-                    }
-
-                    if (item.state == "PAUSED") {
-                        DropdownMenuItem(
-                            text = { Text("Reanudar") },
-                            onClick = {
-                                expanded = false
-                                onResume()
-                            }
-                        )
-                    }
-
-                    DropdownMenuItem(
-                        text = { Text("Cancelar") },
-                        onClick = {
-                            expanded = false
-                            onCancel()
-                        }
-                    )
-                }
-            }
         }
     }
 }

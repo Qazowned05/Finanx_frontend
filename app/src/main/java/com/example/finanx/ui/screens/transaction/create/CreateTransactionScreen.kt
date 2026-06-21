@@ -20,9 +20,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import com.example.finanx.data.model.NewTransactionCommand
+import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.viewmodel.TransactionSaveState
-import com.example.finanx.ui.viewmodel.TransactionUiState
 
 private const val AMOUNT_STEP = 1
 private const val DETAILS_STEP = 2
@@ -32,7 +32,15 @@ private const val TOTAL_STEPS = 2
 @Composable
 fun CreateTransactionScreen(
     userId: Long,
-    state: TransactionUiState,
+    formOptions: TransactionFormOptions,
+    isLoading: Boolean,
+    loadError: String?,
+    saveState: TransactionSaveState,
+    title: String = "Nuevo movimiento",
+    initialForm: CreateTransactionFormState =
+        CreateTransactionFormState(),
+    allowSchedule: Boolean = false,
+    lockScheduleMode: Boolean = false,
     onBack: () -> Unit,
     onRetry: () -> Unit,
     onSubmit: (NewTransactionCommand) -> Unit,
@@ -47,17 +55,17 @@ fun CreateTransactionScreen(
             CreateTransactionFormStateSaver
     ) {
         mutableStateOf(
-            CreateTransactionFormState()
+            initialForm
         )
     }
 
     val isSaving =
-        state.saveState is
+        saveState is
                 TransactionSaveState.Saving
 
-    LaunchedEffect(state.saveState) {
+    LaunchedEffect(saveState) {
         if (
-            state.saveState is
+            saveState is
                     TransactionSaveState.Success
         ) {
             onSaved()
@@ -80,7 +88,7 @@ fun CreateTransactionScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Nuevo movimiento",
+                            text = title,
                             fontWeight = FontWeight.Bold
                         )
 
@@ -134,10 +142,12 @@ fun CreateTransactionScreen(
                 TransactionDetailsStep(
                     paddingValues = paddingValues,
                     form = form,
-                    options = state.formOptions,
-                    isLoading = state.isLoading,
-                    loadError = state.error,
-                    saveState = state.saveState,
+                    options = formOptions,
+                    isLoading = isLoading,
+                    loadError = loadError,
+                    saveState = saveState,
+                    allowSchedule = allowSchedule,
+                    lockScheduleMode = lockScheduleMode,
                     onFormChange = {
                         form = it
                     },
@@ -149,8 +159,7 @@ fun CreateTransactionScreen(
                         form.toCommand(
                             userId = userId,
                             hasExistingReasons =
-                                state
-                                    .formOptions
+                                formOptions
                                     .reasons
                                     .isNotEmpty()
                         )?.let(onSubmit)

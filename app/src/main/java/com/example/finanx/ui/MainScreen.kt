@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
@@ -47,11 +48,14 @@ import com.example.finanx.ui.screens.notification.NotificacionesScreen
 import com.example.finanx.ui.screens.profile.ProfileScreen
 import com.example.finanx.ui.screens.saving.SavingGoalScreen
 import com.example.finanx.ui.screens.transaction.create.CreateTransactionScreen
+import com.example.finanx.ui.screens.transaction.schedule.CreateScheduledTransactionScreen
+import com.example.finanx.ui.screens.transaction.schedule.ScheduledTransactionsScreen
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.BudgetViewModel
 import com.example.finanx.ui.viewmodel.CategoryViewModel
 import com.example.finanx.ui.viewmodel.HomeViewModel
+import com.example.finanx.ui.viewmodel.ScheduledTransactionViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import com.example.finanx.ui.viewmodel.TransactionViewModel
 import com.example.finanx.ui.viewmodel.UserViewModel
@@ -92,6 +96,20 @@ sealed class Screen(
             "create_transaction",
             "Nuevo movimiento",
             Icons.Default.Add
+        )
+
+    data object ScheduledTransactions :
+        Screen(
+            "scheduled_transactions",
+            "Programaciones",
+            Icons.Default.EventRepeat
+        )
+
+    data object CreateScheduledTransaction :
+        Screen(
+            "create_scheduled_transaction",
+            "Nueva programación",
+            Icons.Default.EventRepeat
         )
 
     data object Profile :
@@ -180,6 +198,7 @@ private fun AppNavigation(
     val categoryViewModel: CategoryViewModel = viewModel()
     val savingGoalViewModel: SavingGoalViewModel = viewModel()
     val transactionViewModel: TransactionViewModel = viewModel()
+    val scheduledTransactionViewModel: ScheduledTransactionViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
 
     /*
@@ -319,8 +338,6 @@ private fun AppNavigation(
                     state = transactionViewModel.state,
                     onQueryChange =
                         transactionViewModel::setQuery,
-                    onTabChange =
-                        transactionViewModel::setSelectedTab,
                     onRefresh =
                         transactionViewModel::refresh,
                     onNewTransaction = {
@@ -328,12 +345,11 @@ private fun AppNavigation(
                             Screen.CreateTransaction.route
                         )
                     },
-                    onPauseSchedule =
-                        transactionViewModel::pauseSchedule,
-                    onResumeSchedule =
-                        transactionViewModel::resumeSchedule,
-                    onCancelSchedule =
-                        transactionViewModel::cancelSchedule,
+                    onOpenSchedules = {
+                        navController.navigate(
+                            Screen.ScheduledTransactions.route
+                        )
+                    },
                     onProfile = {
                         navController.navigate(
                             Screen.Profile.route
@@ -428,7 +444,14 @@ private fun AppNavigation(
 
                 CreateTransactionScreen(
                     userId = userId,
-                    state = transactionViewModel.state,
+                    formOptions =
+                        transactionViewModel.state.formOptions,
+                    isLoading =
+                        transactionViewModel.state.isLoading,
+                    loadError =
+                        transactionViewModel.state.error,
+                    saveState =
+                        transactionViewModel.state.saveState,
                     onBack = {
                         navController.popBackStack()
                     },
@@ -454,6 +477,72 @@ private fun AppNavigation(
                             userName = displayName
                         )
 
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Screen.ScheduledTransactions.route) {
+                LaunchedEffect(userId) {
+                    scheduledTransactionViewModel.load(userId)
+                }
+
+                ScheduledTransactionsScreen(
+                    state = scheduledTransactionViewModel.state,
+                    onQueryChange =
+                        scheduledTransactionViewModel::setQuery,
+                    onRefresh =
+                        scheduledTransactionViewModel::refresh,
+                    onNewSchedule = {
+                        navController.navigate(
+                            Screen.CreateScheduledTransaction.route
+                        )
+                    },
+                    onPauseSchedule =
+                        scheduledTransactionViewModel::pauseSchedule,
+                    onResumeSchedule =
+                        scheduledTransactionViewModel::resumeSchedule,
+                    onCancelSchedule =
+                        scheduledTransactionViewModel::cancelSchedule,
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(Screen.CreateScheduledTransaction.route) {
+                LaunchedEffect(userId) {
+                    val options =
+                        scheduledTransactionViewModel
+                            .state
+                            .formOptions
+
+                    if (
+                        options.categories.isEmpty() &&
+                        !scheduledTransactionViewModel.state.isLoading
+                    ) {
+                        scheduledTransactionViewModel.load(userId)
+                    }
+                }
+
+                CreateScheduledTransactionScreen(
+                    userId = userId,
+                    state = scheduledTransactionViewModel.state,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onRetry = {
+                        scheduledTransactionViewModel.load(userId)
+                    },
+                    onSubmit = {
+                        scheduledTransactionViewModel.createSchedule(it)
+                    },
+                    onSaved = {
+                        scheduledTransactionViewModel.consumeSaveState()
+                        homeViewModel.load(
+                            userId = userId,
+                            userName = displayName
+                        )
                         navController.popBackStack()
                     }
                 )

@@ -188,7 +188,8 @@ private fun HomeContent(
         item {
             TimeLineChartCard(
                 title = "Línea de tiempo de Ingresos",
-                points = state.dailyIncomePoints, // Asegúrate de que esto exista en tu HomeUiState
+                points = state.dailyIncomePoints,
+                pointLabels = state.dailyIncomeLabels,
                 lineColor = IncomeGreen
             )
         }
@@ -196,7 +197,8 @@ private fun HomeContent(
         item {
             TimeLineChartCard(
                 title = "Línea de tiempo de Gastos",
-                points = state.dailyExpensePoints, // Asegúrate de que esto exista en tu HomeUiState
+                points = state.dailyExpensePoints,
+                pointLabels = state.dailyExpenseLabels,
                 lineColor = ExpenseRed
             )
         }
@@ -367,12 +369,16 @@ private fun MiniChartPlaceholder(
         val height = size.height
         val safeIncome = incomePoints.ifEmpty { listOf(0f) }
         val safeExpenses = expensePoints.ifEmpty { listOf(0f) }
+        val maxPoint = (safeIncome + safeExpenses)
+            .maxOrNull()
+            ?.takeIf { it > 0f }
+            ?: 1f
 
         fun pathFor(points: List<Float>): Path {
             return Path().apply {
                 points.forEachIndexed { index, value ->
                     val x = if (points.size > 1) width * index / (points.lastIndex) else width / 2f
-                    val y = height - (height * value)
+                    val y = height - (height * (value / maxPoint))
                     if (index == 0) {
                         moveTo(x, y)
                     } else {

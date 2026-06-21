@@ -1,5 +1,9 @@
 package com.example.finanx.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -20,11 +24,6 @@ enum class PaymentMethod {
     OTHER
 }
 
-enum class TransactionsTab {
-    ALL,
-    SCHEDULED
-}
-
 enum class TransactionRecurrenceType {
     DAILY,
     WEEKLY,
@@ -37,27 +36,41 @@ data class SelectOption(
     val label: String
 )
 
+@Entity(tableName = "transactions")
+@TypeConverters(RoomTypeConverters::class)
 data class TransactionRecord(
+    @PrimaryKey
     val id: Long,
+    @ColumnInfo(name = "category_id")
     val categoryId: Long?,
+    @ColumnInfo(name = "category_name")
     val categoryName: String,
+    @ColumnInfo(name = "reason_id")
     val reasonId: Long?,
     val description: String,
     val amount: BigDecimal,
+    @ColumnInfo(name = "payment_method")
     val paymentMethod: PaymentMethod,
     val type: MovementType,
+    @ColumnInfo(name = "created_at")
     val createdAt: LocalDateTime?,
     val active: Boolean
 )
 
+@Entity(tableName = "scheduled_transactions")
+@TypeConverters(RoomTypeConverters::class)
 data class ScheduledTransactionRecord(
+    @PrimaryKey
     val id: Long,
+    @ColumnInfo(name = "category_name")
     val categoryName: String,
     val description: String,
     val amount: BigDecimal,
+    @ColumnInfo(name = "payment_method")
     val paymentMethod: PaymentMethod,
     val type: MovementType,
     val state: String,
+    @ColumnInfo(name = "next_run_at")
     val nextRunAt: LocalDateTime?
 )
 
