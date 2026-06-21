@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost:8080*
 | [**findAllByUser4**](BudgetControllerApi.md#findAllByUser4) | **GET** budgets/user/{idUser} |  |
 | [**findAllByUserAndState4**](BudgetControllerApi.md#findAllByUserAndState4) | **GET** budgets/user/{idUser}/{state} |  |
 | [**findById5**](BudgetControllerApi.md#findById5) | **GET** budgets/{id} |  |
-| [**getBudgetsByHealth**](BudgetControllerApi.md#getBudgetsByHealth) | **GET** budgets/{health} |  |
+| [**getBudgetsByHealth**](BudgetControllerApi.md#getBudgetsByHealth) | **POST** budgets/{health} |  |
 | [**update6**](BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
 
 
@@ -251,10 +251,10 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(BudgetControllerApi::class.java)
 val health : kotlin.String = health_example // kotlin.String | 
-val request : PeriodRequest =  // PeriodRequest | 
+val periodRequest : PeriodRequest =  // PeriodRequest | 
 
 launch(Dispatchers.IO) {
-    val result : TimeBoundListBudgetResponse = webService.getBudgetsByHealth(health, request)
+    val result : TimeBoundListBudgetResponse = webService.getBudgetsByHealth(health, periodRequest)
 }
 ```
 
@@ -262,7 +262,7 @@ launch(Dispatchers.IO) {
 | **health** | **kotlin.String**|  | [enum: OK, NEAR_LIMIT, EXCEEDED, INACTIVE] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **request** | [**PeriodRequest**](.md)|  | |
+| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 
 ### Return type
 
@@ -274,7 +274,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 

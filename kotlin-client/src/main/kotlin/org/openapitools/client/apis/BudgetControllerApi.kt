@@ -11,8 +11,6 @@ import org.openapitools.client.models.BudgetResponse
 import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.TimeBoundListBudgetResponse
 
-import org.openapitools.client.models.*
-
 interface BudgetControllerApi {
     /**
      * POST budgets/{id}/cancel
@@ -116,20 +114,18 @@ interface BudgetControllerApi {
     }
 
     /**
-     * GET budgets/{health}
+     * POST budgets/{health}
      * 
      * 
      * Responses:
      *  - 200: OK
      *
      * @param health 
-     * @param start 
-     * @param end 
-     * @param userId 
+     * @param periodRequest 
      * @return [TimeBoundListBudgetResponse]
      */
-    @GET("budgets/{health}")
-    suspend fun getBudgetsByHealth(@Path("health") health: kotlin.String, @Query("start") start: java.time.LocalDate, @Query("end") end: java.time.LocalDate, @Query("userId") userId: kotlin.Long): Response<TimeBoundListBudgetResponse>
+    @POST("budgets/{health}")
+    suspend fun getBudgetsByHealth(@Path("health") health: kotlin.String, @Body periodRequest: PeriodRequest): Response<TimeBoundListBudgetResponse>
 
     /**
      * PUT budgets/{id}
