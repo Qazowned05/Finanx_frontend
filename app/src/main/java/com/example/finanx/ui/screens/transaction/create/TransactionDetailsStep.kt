@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -19,14 +20,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.MovementType
 import com.example.finanx.data.model.TransactionFormOptions
+import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
@@ -211,13 +215,19 @@ fun TransactionDetailsStep(
             }
         )
 
+        ScheduleSection(
+            form = form,
+            enabled = !isSaving,
+            onFormChange = onFormChange
+        )
+
         FormDropdown(
             label = "Meta de ahorro",
             placeholder = "Sin meta de ahorro",
             items = options.savingGoals,
             selectedItem = selectedGoal,
             itemLabel = { it.label },
-            enabled = !isSaving,
+            enabled = !isSaving && !form.isScheduled,
             allowEmptySelection = true,
             emptySelectionLabel =
                 "Sin meta de ahorro",
@@ -229,6 +239,14 @@ fun TransactionDetailsStep(
                 )
             }
         )
+
+        if (form.isScheduled) {
+            Text(
+                text = "Las metas de ahorro no se envían en movimientos programados porque el contrato actual de programación no expone ese campo.",
+                style = MaterialTheme.typography.labelSmall,
+                color = TextGray
+            )
+        }
 
         if (saveError != null) {
             Card(
@@ -287,7 +305,13 @@ fun TransactionDetailsStep(
                                 .onPrimary
                     )
                 } else {
-                    Text("Guardar")
+                    Text(
+                        if (form.isScheduled) {
+                            "Programar"
+                        } else {
+                            "Guardar"
+                        }
+                    )
                 }
             }
         }
@@ -350,6 +374,209 @@ private fun TransactionSummaryCard(
                 Text("Editar")
             }
         }
+    }
+}
+
+@Composable
+private fun ScheduleSection(
+    form: CreateTransactionFormState,
+    enabled: Boolean,
+    onFormChange:
+        (CreateTransactionFormState) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor =
+                MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement =
+                Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement =
+                    Arrangement.SpaceBetween,
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Movimiento programado",
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Text(
+                        text = "Para gastos o ingresos fijos con recurrencia.",
+                        style =
+                            MaterialTheme.typography.bodySmall,
+                        color = TextGray
+                    )
+                }
+
+                Switch(
+                    checked = form.isScheduled,
+                    enabled = enabled,
+                    onCheckedChange = { checked ->
+                        onFormChange(
+                            form.copy(
+                                isScheduled = checked,
+                                savingGoalId = if (checked) {
+                                    null
+                                } else {
+                                    form.savingGoalId
+                                }
+                            )
+                        )
+                    }
+                )
+            }
+
+            if (form.isScheduled) {
+                RecurrenceTypeDropdown(
+                    selected = form.recurrenceType,
+                    enabled = enabled,
+                    onSelected = { recurrence ->
+                        onFormChange(
+                            form.copy(
+                                recurrenceType = recurrence
+                            )
+                        )
+                    }
+                )
+
+                OutlinedTextField(
+                    value = form.recurrenceIntervalText,
+                    onValueChange = { value ->
+                        if (
+                            value.length <= 3 &&
+                            value.all(Char::isDigit)
+                        ) {
+                            onFormChange(
+                                form.copy(
+                                    recurrenceIntervalText = value
+                                )
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    label = {
+                        Text("Cada cuántos periodos")
+                    },
+                    placeholder = {
+                        Text("1")
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    singleLine = true,
+                    isError =
+                        form.parsedRecurrenceInterval == null,
+                    supportingText = {
+                        Text(
+                            "Ejemplo: 1 = cada ${form.recurrenceType.periodLabel()}"
+                        )
+                    }
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        Arrangement.spacedBy(12.dp)
+                ) {
+                    ScheduleDateField(
+                        label = "Inicio",
+                        value = form.scheduleStartDateText,
+                        enabled = enabled,
+                        isError =
+                            form.parsedScheduleStartDate == null,
+                        modifier = Modifier.weight(1f),
+                        onValueChange = { value ->
+                            onFormChange(
+                                form.copy(
+                                    scheduleStartDateText = value
+                                )
+                            )
+                        }
+                    )
+
+                    ScheduleDateField(
+                        label = "Fin",
+                        value = form.scheduleEndDateText,
+                        enabled = enabled,
+                        isError =
+                            form.parsedScheduleEndDate == null ||
+                                    !form.isScheduleValid,
+                        modifier = Modifier.weight(1f),
+                        onValueChange = { value ->
+                            onFormChange(
+                                form.copy(
+                                    scheduleEndDateText = value
+                                )
+                            )
+                        }
+                    )
+                }
+
+                if (!form.isScheduleValid) {
+                    Text(
+                        text = "Revisa el intervalo y las fechas. Usa formato YYYY-MM-DD y una fecha fin igual o posterior al inicio.",
+                        style =
+                            MaterialTheme.typography.labelSmall,
+                        color =
+                            MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScheduleDateField(
+    label: String,
+    value: String,
+    enabled: Boolean,
+    isError: Boolean,
+    modifier: Modifier,
+    onValueChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        enabled = enabled,
+        label = {
+            Text(label)
+        },
+        placeholder = {
+            Text("YYYY-MM-DD")
+        },
+        singleLine = true,
+        isError = isError
+    )
+}
+
+private fun TransactionRecurrenceType.periodLabel():
+        String {
+    return when (this) {
+        TransactionRecurrenceType.DAILY ->
+            "día"
+
+        TransactionRecurrenceType.WEEKLY ->
+            "semana"
+
+        TransactionRecurrenceType.MONTHLY ->
+            "mes"
+
+        TransactionRecurrenceType.YEARLY ->
+            "año"
     }
 }
 

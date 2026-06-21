@@ -17,12 +17,15 @@ import org.openapitools.client.apis.SavingGoalControllerApi
 import org.openapitools.client.apis.ScheduleControllerApi
 import org.openapitools.client.apis.TransactionControllerApi
 import org.openapitools.client.apis.TransactionScheduleControllerApi
+import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
+import java.time.DayOfWeek
 
 class TransactionRepository(
     private val transactionApi: TransactionControllerApi =
@@ -167,17 +170,19 @@ class TransactionRepository(
 
     suspend fun createTransaction(
         command: NewTransactionCommand
-    ): TransactionRecord {
+    ) {
+        if (command.schedule != null) {
+            scheduleApi
+                .create1(command.toScheduleRequest())
+                .bodyOrThrow("No se pudo registrar la programación")
+            return
+        }
+
         val request = command.toRequest()
 
-        val created = transactionApi
+        transactionApi
             .create(request)
             .bodyOrThrow("No se pudo registrar el movimiento")
-
-        return created.toRecord(
-            categoryNames = emptyMap(),
-            reasonNames = emptyMap()
-        ) ?: throw ApiException("La respuesta del servidor es inválida")
     }
 
     suspend fun updateTransaction(
@@ -241,6 +246,47 @@ private fun NewTransactionCommand.toRequest(): TransactionRequest =
             ?.takeIf(String::isNotBlank),
         savingGoalId = savingGoalId
     )
+
+private fun NewTransactionCommand.toScheduleRequest():
+        TransactionScheduleRequest {
+    val scheduleConfig =
+        schedule
+            ?: throw ApiException("Falta configurar la recurrencia")
+
+    return TransactionScheduleRequest(
+        userId = userId,
+        categoryId = categoryId,
+        type = "TRANSACTION",
+        amount = amount,
+        paymentMethod =
+            TransactionScheduleRequest.PaymentMethod.valueOf(
+                paymentMethod.name
+            ),
+        transactionType =
+            TransactionScheduleRequest.TransactionType.valueOf(
+                type.name
+            ),
+        recurrenceRule = RecurrenceRuleRequest(
+            recurrenceType =
+                RecurrenceRuleRequest.RecurrenceType.valueOf(
+                    scheduleConfig.recurrenceType.name
+                ),
+            interval = scheduleConfig.interval,
+            start = scheduleConfig.startDate,
+            end = scheduleConfig.endDate,
+            dayOfWeek = scheduleConfig.dayOfWeek
+                ?.toRecurrenceDayOfWeek()
+        ),
+        reasonId = reasonId,
+        description = newReason
+            ?.trim()
+            ?.takeIf(String::isNotBlank)
+    )
+}
+
+private fun DayOfWeek.toRecurrenceDayOfWeek():
+        RecurrenceRuleRequest.DayOfWeek =
+    RecurrenceRuleRequest.DayOfWeek.valueOf(name)
 
 private fun TransactionResponse.toRecord(
     categoryNames: Map<Long, String>,

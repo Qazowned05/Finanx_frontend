@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.finanx.data.model.MovementType
 import com.example.finanx.data.model.PaymentMethod
+import com.example.finanx.data.model.TransactionRecurrenceType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -213,6 +214,27 @@ fun PaymentMethodDropdown(
     )
 }
 
+@Composable
+fun RecurrenceTypeDropdown(
+    selected: TransactionRecurrenceType,
+    enabled: Boolean,
+    onSelected: (TransactionRecurrenceType) -> Unit
+) {
+    FormDropdown(
+        label = "Frecuencia",
+        placeholder = "Selecciona una frecuencia",
+        items = TransactionRecurrenceType.entries,
+        selectedItem = selected,
+        itemLabel = {
+            it.toSpanishLabel()
+        },
+        enabled = enabled,
+        onItemSelected = {
+            it?.let(onSelected)
+        }
+    )
+}
+
 private fun PaymentMethod.toSpanishLabel():
         String {
     return when (this) {
@@ -236,5 +258,22 @@ private fun PaymentMethod.toSpanishLabel():
 
         PaymentMethod.OTHER ->
             "Otro"
+    }
+}
+
+private fun TransactionRecurrenceType.toSpanishLabel():
+        String {
+    return when (this) {
+        TransactionRecurrenceType.DAILY ->
+            "Diaria"
+
+        TransactionRecurrenceType.WEEKLY ->
+            "Semanal"
+
+        TransactionRecurrenceType.MONTHLY ->
+            "Mensual"
+
+        TransactionRecurrenceType.YEARLY ->
+            "Anual"
     }
 }

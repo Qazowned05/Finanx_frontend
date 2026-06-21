@@ -24,6 +24,7 @@ import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.model.TransactionsTab
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.AuthViewModel
@@ -254,11 +255,6 @@ fun TransactionsScreen(
             }
         }
     }
-}
-
-@Composable
-fun TransactionRecordItem(x0: TransactionRecord) {
-    TODO("Not yet implemented")
 }
 
 @Composable

@@ -1,5 +1,7 @@
 package com.example.finanx.ui.screens
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
@@ -32,14 +35,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.TimeLineChartCard
 import com.example.finanx.ui.components.TransactionRecordItem
+import com.example.finanx.ui.theme.BluePrimary
+import com.example.finanx.ui.theme.BlueSecondary
 import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.GrayBorder
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.theme.TextLight
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.viewmodel.HomeUiState
 
@@ -164,41 +176,28 @@ private fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Text(
-                text = "Hola, ${state.userName}",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+            HomeSummaryHeader(
+                userName = state.userName,
+                balance = state.balance.toPen(),
+                monthlyIncome = state.monthlyIncome.toPen(),
+                monthlyExpenses = state.monthlyExpenses.toPen()
+            )
+        }
+        item {
+            TimeLineChartCard(
+                title = "Línea de tiempo de Ingresos",
+                points = state.dailyIncomePoints, // Asegúrate de que esto exista en tu HomeUiState
+                lineColor = IncomeGreen
             )
         }
 
         item {
-            BalanceCard(
-                balance = state.balance.toPen()
+            TimeLineChartCard(
+                title = "Línea de tiempo de Gastos",
+                points = state.dailyExpensePoints, // Asegúrate de que esto exista en tu HomeUiState
+                lineColor = ExpenseRed
             )
         }
-
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                HomeSummaryCard(
-                    title = "Ingresos del mes",
-                    amount = state.monthlyIncome.toPen(),
-                    amountColor = IncomeGreen,
-                    modifier = Modifier.weight(1f)
-                )
-
-                HomeSummaryCard(
-                    title = "Gastos del mes",
-                    amount = state.monthlyExpenses.toPen(),
-                    amountColor = ExpenseRed,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-
         item {
             HomeActions(
                 onNewTransaction = onNewTransaction,
@@ -237,6 +236,60 @@ private fun HomeContent(
 }
 
 @Composable
+private fun HomeSummaryHeader(
+    userName: String,
+    balance: String,
+    monthlyIncome: String,
+    monthlyExpenses: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        BlueSecondary,
+                        BluePrimary
+                    )
+                ),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Hola, $userName",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = TextLight
+        )
+
+        BalanceCard(
+            balance = balance
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            HomeSummaryCard(
+                title = "Ingresos del mes",
+                amount = monthlyIncome,
+                amountColor = IncomeGreen,
+                modifier = Modifier.weight(1f)
+            )
+
+            HomeSummaryCard(
+                title = "Gastos del mes",
+                amount = monthlyExpenses,
+                amountColor = ExpenseRed,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
 private fun BalanceCard(
     balance: String
 ) {
@@ -246,37 +299,91 @@ private fun BalanceCard(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement =
+                Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Saldo actual",
-                color = TextGray
-            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Saldo actual",
+                    color = TextGray
+                )
 
-            Spacer(
-                modifier = Modifier.height(6.dp)
-            )
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
 
-            Text(
-                text = balance,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
-            )
+                Text(
+                    text = balance,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-            Spacer(
-                modifier = Modifier.height(4.dp)
-            )
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
 
-            Text(
-                text = "Calculado con tus movimientos activos",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextGray
+                Text(
+                    text = "Calculado con tus movimientos activos",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextGray
+                )
+            }
+
+            MiniChartPlaceholder(
+                modifier = Modifier
+                    .width(92.dp)
+                    .height(62.dp)
             )
         }
     }
 }
+
+@Composable
+private fun MiniChartPlaceholder(
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        val width = size.width
+        val height = size.height
+        val income = listOf(0.70f, 0.52f, 0.18f, 0.36f, 0.10f)
+        val expenses = listOf(0.82f, 0.44f, 0.58f, 0.28f, 0.48f)
+
+        fun pathFor(points: List<Float>): Path {
+            return Path().apply {
+                points.forEachIndexed { index, value ->
+                    val x = width * index / (points.lastIndex)
+                    val y = height * value
+                    if (index == 0) {
+                        moveTo(x, y)
+                    } else {
+                        lineTo(x, y)
+                    }
+                }
+            }
+        }
+
+        drawPath(
+            path = pathFor(income),
+            color = IncomeGreen,
+            style = Stroke(width = 3.dp.toPx())
+        )
+
+        drawPath(
+            path = pathFor(expenses),
+            color = ExpenseRed,
+            style = Stroke(width = 3.dp.toPx())
+        )
+    }
+}
+
 
 @Composable
 private fun HomeActions(

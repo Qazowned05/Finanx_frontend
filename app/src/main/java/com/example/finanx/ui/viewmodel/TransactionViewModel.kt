@@ -109,7 +109,11 @@ class TransactionViewModel(
 
                 state = state.copy(
                     saveState = TransactionSaveState.Success,
-                    actionMessage = "Movimiento registrado"
+                    actionMessage = if (command.schedule != null) {
+                        "Programación registrada"
+                    } else {
+                        "Movimiento registrado"
+                    }
                 )
 
                 load(command.userId)

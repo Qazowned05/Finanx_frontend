@@ -1,6 +1,8 @@
 package com.example.finanx.data.model
 
 import java.math.BigDecimal
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 enum class MovementType {
@@ -21,6 +23,13 @@ enum class PaymentMethod {
 enum class TransactionsTab {
     ALL,
     SCHEDULED
+}
+
+enum class TransactionRecurrenceType {
+    DAILY,
+    WEEKLY,
+    MONTHLY,
+    YEARLY
 }
 
 data class SelectOption(
@@ -71,5 +80,14 @@ data class NewTransactionCommand(
     val type: MovementType,
     val reasonId: Long? = null,
     val newReason: String? = null,
-    val savingGoalId: Long? = null
+    val savingGoalId: Long? = null,
+    val schedule: NewTransactionSchedule? = null
+)
+
+data class NewTransactionSchedule(
+    val recurrenceType: TransactionRecurrenceType,
+    val interval: Int,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+    val dayOfWeek: DayOfWeek? = null
 )

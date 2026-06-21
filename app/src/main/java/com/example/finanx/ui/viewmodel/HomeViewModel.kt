@@ -20,7 +20,9 @@ data class HomeUiState(
     val monthlyExpenses: BigDecimal = BigDecimal.ZERO,
     val recentTransactions: List<TransactionRecord> =
         emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val dailyIncomePoints: List<Float> = emptyList(),
+    val dailyExpensePoints: List<Float> = emptyList()
 )
 
 class HomeViewModel(

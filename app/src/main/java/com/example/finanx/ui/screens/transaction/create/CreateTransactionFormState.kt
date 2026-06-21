@@ -4,8 +4,11 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import com.example.finanx.data.model.MovementType
 import com.example.finanx.data.model.NewTransactionCommand
+import com.example.finanx.data.model.NewTransactionSchedule
 import com.example.finanx.data.model.PaymentMethod
+import com.example.finanx.data.model.TransactionRecurrenceType
 import java.math.BigDecimal
+import java.time.LocalDate
 
 data class CreateTransactionFormState(
     val type: MovementType =
@@ -24,7 +27,20 @@ data class CreateTransactionFormState(
     val paymentMethod: PaymentMethod =
         PaymentMethod.CASH,
 
-    val savingGoalId: Long? = null
+    val savingGoalId: Long? = null,
+
+    val isScheduled: Boolean = false,
+
+    val recurrenceType: TransactionRecurrenceType =
+        TransactionRecurrenceType.MONTHLY,
+
+    val recurrenceIntervalText: String = "1",
+
+    val scheduleStartDateText: String =
+        LocalDate.now().toString(),
+
+    val scheduleEndDateText: String =
+        LocalDate.now().plusYears(1).toString()
 ) {
 
     val parsedAmount: BigDecimal?
@@ -35,6 +51,35 @@ data class CreateTransactionFormState(
     val isFirstStepValid: Boolean
         get() = parsedAmount
             ?.signum() == 1
+
+    val parsedRecurrenceInterval: Int?
+        get() = recurrenceIntervalText
+            .toIntOrNull()
+            ?.takeIf { it > 0 }
+
+    val parsedScheduleStartDate: LocalDate?
+        get() = scheduleStartDateText
+            .toLocalDateOrNull()
+
+    val parsedScheduleEndDate: LocalDate?
+        get() = scheduleEndDateText
+            .toLocalDateOrNull()
+
+    val isScheduleValid: Boolean
+        get() {
+            if (!isScheduled) {
+                return true
+            }
+
+            val startDate =
+                parsedScheduleStartDate ?: return false
+
+            val endDate =
+                parsedScheduleEndDate ?: return false
+
+            return parsedRecurrenceInterval != null &&
+                    !endDate.isBefore(startDate)
+        }
 
     fun usesNewReason(
         hasExistingReasons: Boolean
@@ -55,7 +100,8 @@ data class CreateTransactionFormState(
 
         return isFirstStepValid &&
                 categoryId != null &&
-                reasonIsValid
+                reasonIsValid &&
+                isScheduleValid
     }
 
     fun toCommand(
@@ -75,6 +121,15 @@ data class CreateTransactionFormState(
         val createReason =
             usesNewReason(hasExistingReasons)
 
+        val startDate =
+            parsedScheduleStartDate
+
+        val endDate =
+            parsedScheduleEndDate
+
+        val interval =
+            parsedRecurrenceInterval
+
         return NewTransactionCommand(
             userId = userId,
             categoryId = category,
@@ -91,7 +146,27 @@ data class CreateTransactionFormState(
             } else {
                 null
             },
-            savingGoalId = savingGoalId
+            savingGoalId = if (isScheduled) {
+                null
+            } else {
+                savingGoalId
+            },
+            schedule = if (
+                isScheduled &&
+                startDate != null &&
+                endDate != null &&
+                interval != null
+            ) {
+                NewTransactionSchedule(
+                    recurrenceType = recurrenceType,
+                    interval = interval,
+                    startDate = startDate,
+                    endDate = endDate,
+                    dayOfWeek = startDate.dayOfWeek
+                )
+            } else {
+                null
+            }
         )
     }
 }
@@ -108,7 +183,12 @@ val CreateTransactionFormStateSaver:
                 form.useNewReason,
                 form.newReason,
                 form.paymentMethod.name,
-                form.savingGoalId ?: -1L
+                form.savingGoalId ?: -1L,
+                form.isScheduled,
+                form.recurrenceType.name,
+                form.recurrenceIntervalText,
+                form.scheduleStartDateText,
+                form.scheduleEndDateText
             )
         },
         restore = { values ->
@@ -142,6 +222,31 @@ val CreateTransactionFormStateSaver:
                 savingGoalId =
                     (values[7] as Long)
                         .takeIf { it >= 0 }
+                ,
+                isScheduled =
+                    values.getOrNull(8) as? Boolean
+                        ?: false,
+                recurrenceType = runCatching {
+                    TransactionRecurrenceType.valueOf(
+                        values.getOrNull(9) as String
+                    )
+                }.getOrDefault(
+                    TransactionRecurrenceType.MONTHLY
+                ),
+                recurrenceIntervalText =
+                    values.getOrNull(10) as? String
+                        ?: "1",
+                scheduleStartDateText =
+                    values.getOrNull(11) as? String
+                        ?: LocalDate.now().toString(),
+                scheduleEndDateText =
+                    values.getOrNull(12) as? String
+                        ?: LocalDate.now().plusYears(1).toString()
             )
         }
     )
+
+private fun String.toLocalDateOrNull(): LocalDate? =
+    runCatching {
+        LocalDate.parse(trim())
+    }.getOrNull()
