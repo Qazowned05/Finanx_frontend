@@ -337,16 +337,14 @@ fun CategoryFormDialog(
     title: String,
     initialName: String = "",
     initialDescription: String = "",
-    // AÑADIDO: Recibir el tipo inicial para cuando estamos editando
-    initialType: org.openapitools.client.models.CategoryResponse.Type = org.openapitools.client.models.CategoryResponse.Type.SPENT,
-    // AÑADIDO: Ahora el onConfirm devuelve un 3er parámetro (el tipo)
+    initialType: CategoryResponse.Type = CategoryResponse.Type.SPENT,
+
     onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
     onDismiss: () -> Unit
 ) {
     var name by remember { mutableStateOf(initialName) }
     var description by remember { mutableStateOf(initialDescription) }
 
-    // Convertimos el tipo de respuesta (Response) al tipo de petición (Request) para el estado local
     val initialRequestType = if (initialType.value == "INCOME") {
         org.openapitools.client.models.CategoryRequest.Type.INCOME
     } else {
@@ -361,7 +359,6 @@ fun CategoryFormDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                // AÑADIDO: Selector de Tipo (Ingreso vs Gasto)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -400,7 +397,6 @@ fun CategoryFormDialog(
         },
         confirmButton = {
             Button(
-                // AÑADIDO: Mandamos el 'type' en el onConfirm
                 onClick = { if (name.isNotBlank()) onConfirm(name, description, type) },
                 colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
             ) {

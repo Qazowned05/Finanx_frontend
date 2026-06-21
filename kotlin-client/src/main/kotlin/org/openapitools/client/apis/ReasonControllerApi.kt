@@ -21,10 +21,10 @@ interface ReasonControllerApi {
      * @return [ReasonResponse]
      */
     @POST("reasons")
-    suspend fun createReason(@Body reasonRequest: ReasonRequest): Response<ReasonResponse>
+    suspend fun create3(@Body reasonRequest: ReasonRequest): Response<ReasonResponse>
 
     /**
-     * POST reasons/{id}/disable
+     * POST reasons/{id}
      * 
      * 
      * Responses:
@@ -33,21 +33,8 @@ interface ReasonControllerApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("reasons/{id}/disable")
-    suspend fun disableReason(@Path("id") id: kotlin.Long): Response<Unit>
-
-    /**
-     * GET reasons/{id}
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param id 
-     * @return [ReasonResponse]
-     */
-    @GET("reasons/{id}")
-    suspend fun findReasonById(@Path("id") id: kotlin.Long): Response<ReasonResponse>
+    @POST("reasons/{id}")
+    suspend fun disable1(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
      * GET reasons/user/{idUser}
@@ -60,7 +47,20 @@ interface ReasonControllerApi {
      * @return [kotlin.collections.List<ReasonResponse>]
      */
     @GET("reasons/user/{idUser}")
-    suspend fun findReasonsByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<ReasonResponse>>
+    suspend fun findAllByUser1(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<ReasonResponse>>
+
+    /**
+     * GET reasons/{id}
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param id 
+     * @return [ReasonResponse]
+     */
+    @GET("reasons/{id}")
+    suspend fun findById3(@Path("id") id: kotlin.Long): Response<ReasonResponse>
 
     /**
      * PUT reasons/{id}
@@ -74,6 +74,6 @@ interface ReasonControllerApi {
      * @return [ReasonResponse]
      */
     @PUT("reasons/{id}")
-    suspend fun updateReason(@Path("id") id: kotlin.Long, @Body reasonRequest: ReasonRequest): Response<ReasonResponse>
+    suspend fun update4(@Path("id") id: kotlin.Long, @Body reasonRequest: ReasonRequest): Response<ReasonResponse>
 
 }

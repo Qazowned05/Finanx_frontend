@@ -12,31 +12,31 @@ class BudgetRepository(
     private val api: BudgetControllerApi = RetrofitClient.budgetApi
 ) {
     suspend fun getBudgets(userId: Long): Response<List<BudgetResponse>> {
-        return api.findBudgetsByUser(userId)
+        return api.findAllByUser4(userId)
     }
 
     suspend fun getBudgetsByState(userId: Long, state: String): Response<List<BudgetResponse>> {
-        return api.findBudgetsByUserAndState(userId, state)
+        return api.findAllByUserAndState4(userId, state)
     }
 
     suspend fun getBudgetById(id: Long): Response<BudgetResponse> {
-        return api.findBudgetById(id)
+        return api.findById5(id)
     }
 
     suspend fun createBudget(request: BudgetRequest): Response<BudgetResponse> {
-        return api.createBudget(request)
+        return api.create5(request)
     }
 
     suspend fun updateBudget(id: Long, request: BudgetRequest): Response<BudgetResponse> {
-        return api.updateBudget(id, request)
+        return api.update6(id, request)
     }
 
     suspend fun cancelBudget(id: Long): Response<Unit> {
-        return api.cancelBudget(id)
+        return api.cancel2(id)
     }
 
     suspend fun disableBudget(id: Long): Response<Unit> {
-        return api.disableBudget(id)
+        return api.disable5(id)
     }
 
     suspend fun getBudgetsByHealth(health: String, period: PeriodRequest): Response<TimeBoundListBudgetResponse> {

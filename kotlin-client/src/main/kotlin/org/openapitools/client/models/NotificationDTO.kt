@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -47,7 +48,7 @@ import com.squareup.moshi.JsonClass
  * @param savingGoalId 
  * @param savingGoalDescription 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class NotificationDTO (
 
@@ -67,16 +68,16 @@ data class NotificationDTO (
     val message: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "scheduledAt")
-    val scheduledAt: java.time.OffsetDateTime? = null,
+    val scheduledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "sentAt")
-    val sentAt: java.time.OffsetDateTime? = null,
+    val sentAt: java.time.LocalDateTime? = null,
 
     @Json(name = "state")
     val state: NotificationDTO.State? = null,
@@ -99,7 +100,10 @@ data class NotificationDTO (
     @Json(name = "savingGoalDescription")
     val savingGoalDescription: kotlin.String? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -37,7 +38,7 @@ import com.squareup.moshi.JsonClass
  * @param password 
  * @param timeZone 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class UserRequest (
 
@@ -59,7 +60,10 @@ data class UserRequest (
     @Json(name = "timeZone")
     val timeZone: UserRequest.TimeZone
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

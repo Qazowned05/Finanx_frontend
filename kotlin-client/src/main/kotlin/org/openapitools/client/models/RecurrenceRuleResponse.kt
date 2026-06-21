@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -38,7 +39,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param durationDays 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class RecurrenceRuleResponse (
 
@@ -55,15 +56,18 @@ data class RecurrenceRuleResponse (
     val dayOfWeek: RecurrenceRuleResponse.DayOfWeek? = null,
 
     @Json(name = "start")
-    val start: java.time.OffsetDateTime? = null,
+    val start: java.time.LocalDateTime? = null,
 
     @Json(name = "end")
-    val end: java.time.OffsetDateTime? = null,
+    val end: java.time.LocalDateTime? = null,
 
     @Json(name = "durationDays")
     val durationDays: kotlin.Long? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -33,7 +34,7 @@ import com.squareup.moshi.JsonClass
  * @param email 
  * @param password 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class LoginRequest (
 
@@ -43,7 +44,10 @@ data class LoginRequest (
     @Json(name = "password")
     val password: kotlin.String
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

@@ -11,31 +11,31 @@ class UserRepository(
     private val api: UserControllerApi = RetrofitClient.userApi
 ) {
     suspend fun findById(id: Long): Response<UserResponse> {
-        return api.findUserById(id)
+        return api.findById(id)
     }
 
     suspend fun findAll(): Response<List<UserResponse>> {
-        return api.findAllUsers()
+        return api.findAll()
     }
 
     suspend fun update(id: Long, request: UserRequest): Response<UserResponse> {
-        return api.updateUser(id, request)
+        return api.update(id, request)
     }
 
     suspend fun deactivate(id: Long): Response<UserResponse> {
-        return api.disableUser(id)
+        return api.disable2(id)
     }
 
-    suspend fun activate(id: Long): Response<UserResponse> {
-        return api.activateUser(id)
+    suspend fun enable(id: Long): Response<UserResponse> {
+        return api.enable(id)
     }
 
     suspend fun block(id: Long): Response<UserResponse> {
-        return api.blockUser(id)
+        return api.block(id)
     }
 
     suspend fun searchByName(query: String): Response<List<UserResponse>> {
-        return api.searchUsersByName(query)
+        return api.searchByName(query)
     }
 
     suspend fun listTimeZones(): Response<List<String>> {
@@ -43,6 +43,6 @@ class UserRepository(
     }
 
     suspend fun registerAccount(request: UserRequest): Response<LoginResponse> {
-        return api.registerUserAccount(request)
+        return api.register(request)
     }
 }

@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -37,7 +38,7 @@ import com.squareup.moshi.JsonClass
  * @param disabledAt 
  * @param active 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class ReasonResponse (
 
@@ -51,15 +52,18 @@ data class ReasonResponse (
     val userId: kotlin.Long? = null,
 
     @Json(name = "createdAt")
-    val createdAt: java.time.OffsetDateTime? = null,
+    val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "disabledAt")
-    val disabledAt: java.time.OffsetDateTime? = null,
+    val disabledAt: java.time.LocalDateTime? = null,
 
     @Json(name = "active")
     val active: kotlin.Boolean? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

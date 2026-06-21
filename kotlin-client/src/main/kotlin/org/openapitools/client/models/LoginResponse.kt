@@ -27,6 +27,7 @@ import org.openapitools.client.models.UserResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -34,7 +35,7 @@ import com.squareup.moshi.JsonClass
  * @param user 
  * @param token 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class LoginResponse (
 
@@ -44,7 +45,10 @@ data class LoginResponse (
     @Json(name = "token")
     val token: kotlin.String? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

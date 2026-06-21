@@ -9,8 +9,8 @@
 | **description** | **kotlin.String** |  |  [optional] |
 | **type** | [**inline**](#Type) |  |  [optional] |
 | **active** | **kotlin.Boolean** |  |  [optional] |
-| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 
 
 <a id="Type"></a>

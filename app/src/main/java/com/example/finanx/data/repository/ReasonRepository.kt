@@ -10,22 +10,22 @@ class ReasonRepository(
     private val api: ReasonControllerApi = RetrofitClient.reasonApi
 ) {
     suspend fun getReasonsByUser(userId: Long): Response<List<ReasonResponse>> {
-        return api.findReasonsByUser(userId)
+        return api.findAllByUser1(userId)
     }
 
     suspend fun getReasonById(id: Long): Response<ReasonResponse> {
-        return api.findReasonById(id)
+        return api.findById3(id)
     }
 
     suspend fun createReason(request: ReasonRequest): Response<ReasonResponse> {
-        return api.createReason(request)
+        return api.create3(request)
     }
 
     suspend fun updateReason(id: Long, request: ReasonRequest): Response<ReasonResponse> {
-        return api.updateReason(id, request)
+        return api.update4(id, request)
     }
 
     suspend fun disableReason(id: Long): Response<Unit> {
-        return api.disableReason(id)
+        return api.disable1(id)
     }
 }

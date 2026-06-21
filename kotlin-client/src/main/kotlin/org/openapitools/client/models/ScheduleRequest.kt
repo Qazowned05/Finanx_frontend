@@ -27,6 +27,7 @@ import org.openapitools.client.models.RecurrenceRuleRequest
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -38,7 +39,10 @@ import com.squareup.moshi.JsonClass
  */
 
 
-interface ScheduleRequest {
+interface ScheduleRequest : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     @Json(name = "userId")
     val userId: kotlin.Long

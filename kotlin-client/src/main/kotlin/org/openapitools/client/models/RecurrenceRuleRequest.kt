@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -36,7 +37,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param dayOfWeek 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class RecurrenceRuleRequest (
 
@@ -55,7 +56,10 @@ data class RecurrenceRuleRequest (
     @Json(name = "dayOfWeek")
     val dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

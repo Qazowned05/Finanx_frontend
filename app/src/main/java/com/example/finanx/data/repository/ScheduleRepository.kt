@@ -7,8 +7,8 @@ import org.openapitools.client.apis.TransactionScheduleControllerApi
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.UpdateSchedule200Response
-import org.openapitools.client.models.UpdateScheduleRequest
+import org.openapitools.client.models.Update2200Response
+import org.openapitools.client.models.Update2Request
 import retrofit2.Response
 import java.math.BigDecimal
 
@@ -20,43 +20,43 @@ class ScheduleRepository(
     suspend fun getSchedulesByUserAndState(
         userId: Long,
         state: String
-    ): Response<List<UpdateSchedule200Response>> {
-        return api.findSchedulesByUserAndState(userId, state)
+    ): Response<List<Update2200Response>> {
+        return api.findAllByUserAndState(userId, state)
     }
 
     suspend fun getBudgetSchedulesByUserAndState(
         userId: Long,
         state: String
     ): Response<List<BudgetScheduleResponse>> {
-        return budgetScheduleApi.findBudgetSchedulesByUserAndState(userId, state)
+        return budgetScheduleApi.findAllByUserAndState2(userId, state)
     }
 
     suspend fun getTransactionSchedulesByUserAndState(
         userId: Long,
         state: String
     ): Response<List<TransactionScheduleResponse>> {
-        return transactionScheduleApi.findTransactionSchedulesByUserAndState(userId, state)
+        return transactionScheduleApi.findAllByUserAndState1(userId, state)
     }
 
-    suspend fun pauseSchedule(id: Long): Response<Unit> = api.pauseSchedule(id)
-    suspend fun resumeSchedule(id: Long): Response<Unit> = api.resumeSchedule(id)
-    suspend fun cancelSchedule(id: Long): Response<Unit> = api.cancelSchedule(id)
-    suspend fun disableSchedule(id: Long): Response<Unit> = api.disableSchedule(id)
+    suspend fun pauseSchedule(id: Long): Response<Unit> = api.pause(id)
+    suspend fun resumeSchedule(id: Long): Response<Unit> = api.resume(id)
+    suspend fun cancelSchedule(id: Long): Response<Unit> = api.cancel(id)
+    suspend fun disableSchedule(id: Long): Response<Unit> = api.disable6(id)
 
-    suspend fun updateSchedule(id: Long, request: UpdateScheduleRequest): Response<UpdateSchedule200Response> {
-        return api.updateSchedule(id, request)
+    suspend fun updateSchedule(id: Long, request: Update2Request): Response<Update2200Response> {
+        return api.update2(id, request)
     }
 
     suspend fun createTransactionSchedule(
         userId: Long,
         categoryId: Long,
         amount: BigDecimal,
-        paymentMethod: UpdateScheduleRequest.PaymentMethod,
-        transactionType: UpdateScheduleRequest.TransactionType,
+        paymentMethod: Update2Request.PaymentMethod,
+        transactionType: Update2Request.TransactionType,
         recurrenceRule: RecurrenceRuleRequest,
         reasonId: Long? = null
-    ): Response<UpdateSchedule200Response> {
-        val request = UpdateScheduleRequest(
+    ): Response<Update2200Response> {
+        val request = Update2Request(
             userId = userId,
             categoryId = categoryId,
             type = "TRANSACTION",
@@ -70,7 +70,7 @@ class ScheduleRepository(
             recurrenceRule = recurrenceRule,
             reasonId = reasonId
         )
-        return api.createSchedule(request)
+        return api.create1(request)
     }
 
     suspend fun createBudgetSchedule(
@@ -81,8 +81,8 @@ class ScheduleRepository(
         limitAmount: BigDecimal,
         description: String,
         recurrenceRule: RecurrenceRuleRequest
-    ): Response<UpdateSchedule200Response> {
-        val request = UpdateScheduleRequest(
+    ): Response<Update2200Response> {
+        val request = Update2Request(
             userId = userId,
             categoryId = categoryId,
             type = "BUDGET",
@@ -91,10 +91,10 @@ class ScheduleRepository(
             limitAmount = limitAmount,
             description = description,
             amount = BigDecimal.ZERO,
-            paymentMethod = UpdateScheduleRequest.PaymentMethod.OTHER,
-            transactionType = UpdateScheduleRequest.TransactionType.SPENT,
+            paymentMethod = Update2Request.PaymentMethod.OTHER,
+            transactionType = Update2Request.TransactionType.SPENT,
             recurrenceRule = recurrenceRule
         )
-        return api.createSchedule(request)
+        return api.create1(request)
     }
 }

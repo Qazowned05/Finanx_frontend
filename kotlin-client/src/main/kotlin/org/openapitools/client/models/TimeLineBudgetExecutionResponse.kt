@@ -29,6 +29,7 @@ import org.openapitools.client.models.TimeSeriesPointBudgetExecutionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -39,7 +40,7 @@ import com.squareup.moshi.JsonClass
  * @param aggregate 
  * @param count 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class TimeLineBudgetExecutionResponse (
 
@@ -58,7 +59,10 @@ data class TimeLineBudgetExecutionResponse (
     @Json(name = "count")
     val count: kotlin.Long? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

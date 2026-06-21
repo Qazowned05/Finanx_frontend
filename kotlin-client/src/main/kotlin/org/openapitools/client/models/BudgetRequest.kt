@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -39,7 +40,7 @@ import com.squareup.moshi.JsonClass
  * @param end 
  * @param percentAlert 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class BudgetRequest (
 
@@ -67,7 +68,10 @@ data class BudgetRequest (
     @Json(name = "percentAlert")
     val percentAlert: kotlin.Int? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

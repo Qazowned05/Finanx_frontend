@@ -11,26 +11,26 @@ class SavingGoalRepository(
 ) {
 
     suspend fun getSavingGoals(userId: Long): Response<List<SavingGoalResponse>> {
-        return api.findSavingGoalsByUser(userId)
+        return api.findAllActiveByUser1(userId)
     }
 
     suspend fun getSavingGoalById(id: Long): Response<SavingGoalResponse> {
-        return api.findSavingGoalById(id)
+        return api.findById2(id)
     }
 
     suspend fun createSavingGoal(request: SavingGoalRequest): Response<SavingGoalResponse> {
-        return api.createSavingGoal(request)
+        return api.create2(request)
     }
 
     suspend fun updateSavingGoal(id: Long, request: SavingGoalRequest): Response<SavingGoalResponse> {
-        return api.updateSavingGoal(id, request)
+        return api.update3(id, request)
     }
 
     suspend fun disableSavingGoal(id: Long): Response<Unit> {
-        return api.disableSavingGoal(id)
+        return api.disable3(id)
     }
 
     suspend fun cancelSavingGoal(id: Long): Response<Unit> {
-        return api.cancelSavingGoal(id)
+        return api.cancel1(id)
     }
 }

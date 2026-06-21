@@ -15,13 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
-/**
- * Acción de TopAppBar: ícono de persona (arriba a la derecha) que despliega un menú.
- *
- * Opciones:
- * - "Mi Perfil"
- * - "Cerrar Sesión"
- */
+
 @Composable
 fun ProfileMenuAction(
     onMyProfile: () -> Unit,

@@ -15,10 +15,10 @@
 | **description** | **kotlin.String** |  |  [optional] |
 | **state** | [**inline**](#State) |  |  [optional] |
 | **health** | [**inline**](#Health) |  |  [optional] |
-| **start** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **end** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
+| **start** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **end** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
 | **spentAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **remainingAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
 | **executionPercentage** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |

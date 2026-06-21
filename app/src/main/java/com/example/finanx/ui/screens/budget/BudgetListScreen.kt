@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanx.ui.components.ProfileMenuAction
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.*
@@ -31,7 +32,7 @@ import org.openapitools.client.models.BudgetResponse
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.UpdateScheduleRequest
+import org.openapitools.client.models.Update2Request
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -40,20 +41,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun BudgetListScreen(
     userId: Long,
-    viewModel: BudgetViewModel,
+    bvm: BudgetViewModel,
     authViewModel: AuthViewModel,
     onNavigateToProfile: () -> Unit = {}
 ) {
-    val scheduleViewModel: ScheduleViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    val categoryViewModel: CategoryViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val scheduleViewModel: ScheduleViewModel = viewModel()
+    val categoryViewModel: CategoryViewModel = viewModel()
 
     LaunchedEffect(userId) {
-        viewModel.fetchBudgets(userId)
+        bvm.fetchBudgets(userId)
         scheduleViewModel.fetchAll(userId)
         categoryViewModel.fetchCategories(userId)
     }
 
-    val state = viewModel.budgetState
+    val state = bvm.budgetState
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -155,8 +156,8 @@ fun BudgetListScreen(
                                     items(filteredBudgets) { budget ->
                                         BudgetCard(
                                             budget = budget,
-                                            onCancel = { viewModel.cancelBudget(budget.id ?: 0, userId) },
-                                            onDisable = { viewModel.disableBudget(budget.id ?: 0, userId) }
+                                            onCancel = { bvm.cancelBudget(budget.id ?: 0, userId) },
+                                            onDisable = { bvm.disableBudget(budget.id ?: 0, userId) }
                                         )
                                     }
                                     item { Spacer(modifier = Modifier.height(80.dp)) }
@@ -181,7 +182,7 @@ fun BudgetListScreen(
             CreateBudgetDialog(
                 userId = userId,
                 categoryState = categoryViewModel.categoryState,
-                viewModel = viewModel,
+                viewModel = bvm,
                 onDismiss = { showCreateBudget = false }
             )
         }
@@ -527,8 +528,8 @@ fun CreateRecurringDialog(
     var amountStr by remember { mutableStateOf("") }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
     var categoryExpanded by remember { mutableStateOf(false) }
-    var transactionType by remember { mutableStateOf(UpdateScheduleRequest.TransactionType.SPENT) }
-    var paymentMethod by remember { mutableStateOf(UpdateScheduleRequest.PaymentMethod.CASH) }
+    var transactionType by remember { mutableStateOf(Update2Request.TransactionType.SPENT) }
+    var paymentMethod by remember { mutableStateOf(Update2Request.PaymentMethod.CASH) }
     var alertable by remember { mutableStateOf(true) }
     var percentAlertStr by remember { mutableStateOf("80") }
     var recurrenceType by remember { mutableStateOf(RecurrenceRuleRequest.RecurrenceType.MONTHLY) }
@@ -608,8 +609,8 @@ fun CreateRecurringDialog(
 
                 if (kind == 0) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        FilterChip(selected = transactionType == UpdateScheduleRequest.TransactionType.SPENT, onClick = { transactionType = UpdateScheduleRequest.TransactionType.SPENT }, label = { Text("Gasto") })
-                        FilterChip(selected = transactionType == UpdateScheduleRequest.TransactionType.INCOME, onClick = { transactionType = UpdateScheduleRequest.TransactionType.INCOME }, label = { Text("Ingreso") })
+                        FilterChip(selected = transactionType == Update2Request.TransactionType.SPENT, onClick = { transactionType = Update2Request.TransactionType.SPENT }, label = { Text("Gasto") })
+                        FilterChip(selected = transactionType == Update2Request.TransactionType.INCOME, onClick = { transactionType = Update2Request.TransactionType.INCOME }, label = { Text("Ingreso") })
                     }
                 } else {
                     Row(verticalAlignment = Alignment.CenterVertically) {

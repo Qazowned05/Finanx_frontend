@@ -1,9 +1,10 @@
 package org.openapitools.client.apis
 
+import org.openapitools.client.infrastructure.CollectionFormats.*
 import retrofit2.http.*
 import retrofit2.Response
+import okhttp3.RequestBody
 import com.squareup.moshi.Json
-import org.openapitools.client.models.TransactionScheduleRequest
 
 import org.openapitools.client.models.Update2200Response
 import org.openapitools.client.models.Update2Request
@@ -33,7 +34,7 @@ interface ScheduleControllerApi {
      * @return [Update2200Response]
      */
     @POST("schedule")
-    suspend fun create1(@Body update2Request: TransactionScheduleRequest): Response<Update2200Response>
+    suspend fun create1(@Body update2Request: Update2Request): Response<Update2200Response>
 
     /**
      * DELETE schedule/{id}/disable

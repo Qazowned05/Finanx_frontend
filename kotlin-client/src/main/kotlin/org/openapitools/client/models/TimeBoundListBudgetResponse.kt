@@ -28,6 +28,7 @@ import org.openapitools.client.models.PeriodResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -36,7 +37,7 @@ import com.squareup.moshi.JsonClass
  * @param items 
  * @param count 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class TimeBoundListBudgetResponse (
 
@@ -49,7 +50,10 @@ data class TimeBoundListBudgetResponse (
     @Json(name = "count")
     val count: kotlin.Long? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

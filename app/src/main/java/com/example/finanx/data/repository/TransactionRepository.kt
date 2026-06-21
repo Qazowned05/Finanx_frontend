@@ -22,11 +22,11 @@ import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
 import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
+import org.openapitools.client.models.Update2Request
 import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.time.DayOfWeek
-
 class TransactionRepository(
     private val transactionApi: TransactionControllerApi =
         RetrofitClient.transactionApi,
@@ -247,45 +247,35 @@ private fun NewTransactionCommand.toRequest(): TransactionRequest =
         savingGoalId = savingGoalId
     )
 
-private fun NewTransactionCommand.toScheduleRequest():
-        TransactionScheduleRequest {
+private fun NewTransactionCommand.toScheduleRequest(): Update2Request {
     val scheduleConfig =
-        schedule
-            ?: throw ApiException("Falta configurar la recurrencia")
+        schedule ?: throw ApiException("Falta configurar la recurrencia")
 
-    return TransactionScheduleRequest(
+    return Update2Request(
         userId = userId,
         categoryId = categoryId,
         type = "TRANSACTION",
+        alertable = false,
+        percentAlert = 0,
+        limitAmount = amount,
+        description = newReason?.trim()?.takeIf(String::isNotBlank) ?: "Programación",
         amount = amount,
-        paymentMethod =
-            TransactionScheduleRequest.PaymentMethod.valueOf(
-                paymentMethod.name
-            ),
-        transactionType =
-            TransactionScheduleRequest.TransactionType.valueOf(
-                type.name
-            ),
+        paymentMethod = Update2Request.PaymentMethod.valueOf(paymentMethod.name),
+        transactionType = Update2Request.TransactionType.valueOf(type.name),
         recurrenceRule = RecurrenceRuleRequest(
-            recurrenceType =
-                RecurrenceRuleRequest.RecurrenceType.valueOf(
-                    scheduleConfig.recurrenceType.name
-                ),
+            recurrenceType = RecurrenceRuleRequest.RecurrenceType.valueOf(
+                scheduleConfig.recurrenceType.name
+            ),
             interval = scheduleConfig.interval,
             start = scheduleConfig.startDate,
             end = scheduleConfig.endDate,
-            dayOfWeek = scheduleConfig.dayOfWeek
-                ?.toRecurrenceDayOfWeek()
+            dayOfWeek = scheduleConfig.dayOfWeek?.toRecurrenceDayOfWeek()
         ),
-        reasonId = reasonId,
-        description = newReason
-            ?.trim()
-            ?.takeIf(String::isNotBlank)
+        reasonId = reasonId
     )
 }
 
-private fun DayOfWeek.toRecurrenceDayOfWeek():
-        RecurrenceRuleRequest.DayOfWeek =
+private fun DayOfWeek.toRecurrenceDayOfWeek(): RecurrenceRuleRequest.DayOfWeek =
     RecurrenceRuleRequest.DayOfWeek.valueOf(name)
 
 private fun TransactionResponse.toRecord(
@@ -317,8 +307,7 @@ private fun TransactionResponse.toRecord(
     )
 }
 
-private fun TransactionScheduleResponse.toRecord():
-        ScheduledTransactionRecord? {
+private fun TransactionScheduleResponse.toRecord(): ScheduledTransactionRecord? {
     val scheduleId = id ?: return null
     val responseType = transactionType ?: return null
 
@@ -336,28 +325,20 @@ private fun TransactionScheduleResponse.toRecord():
     )
 }
 
-private fun <T> Response<T>.bodyOrThrow(
-    defaultMessage: String
-): T {
+private fun <T> Response<T>.bodyOrThrow(defaultMessage: String): T {
     if (!isSuccessful) {
         throw ApiException(extractErrorMessage(defaultMessage))
     }
-
-    return body()
-        ?: throw ApiException("$defaultMessage: respuesta vacía")
+    return body() ?: throw ApiException("$defaultMessage: respuesta vacía")
 }
 
-private fun Response<*>.ensureSuccessful(
-    defaultMessage: String
-) {
+private fun Response<*>.ensureSuccessful(defaultMessage: String) {
     if (!isSuccessful) {
         throw ApiException(extractErrorMessage(defaultMessage))
     }
 }
 
-private fun Response<*>.extractErrorMessage(
-    defaultMessage: String
-): String {
+private fun Response<*>.extractErrorMessage(defaultMessage: String): String {
     val content = runCatching {
         errorBody()?.string()
     }.getOrNull().orEmpty()
@@ -366,6 +347,5 @@ private fun Response<*>.extractErrorMessage(
         """"message"\s*:\s*"([^"]+)""""
     ).find(content)?.groupValues?.getOrNull(1)
 
-    return backendMessage
-        ?: "$defaultMessage (${code()})"
+    return backendMessage ?: "$defaultMessage (${code()})"
 }

@@ -26,6 +26,7 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -35,7 +36,7 @@ import com.squareup.moshi.JsonClass
  * @param userId 
  * @param readableString 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class PeriodResponse (
 
@@ -51,7 +52,10 @@ data class PeriodResponse (
     @Json(name = "readableString")
     val readableString: kotlin.String? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

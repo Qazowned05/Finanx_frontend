@@ -30,7 +30,7 @@ class CategoryViewModel : ViewModel() {
         viewModelScope.launch {
             categoryState = CategoryState.Loading
             try {
-                val response = repository.getCategories(userId)
+                val response = repository.getActiveCategories(userId)
                 if (response.isSuccessful && response.body() != null) {
                     categoryState = CategoryState.Success(response.body()!!)
                 } else {
@@ -95,22 +95,6 @@ class CategoryViewModel : ViewModel() {
                     fetchCategories(userId)
                 } else {
                     categoryState = CategoryState.Error("Error al desactivar: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                categoryState = CategoryState.Error("Error de red: ${e.message}")
-            }
-        }
-    }
-
-    fun activateCategory(userId: Long, categoryId: Long) {
-        viewModelScope.launch {
-            try {
-                val response = repository.activateCategory(categoryId)
-                if (response.isSuccessful) {
-                    actionSuccess = "Categoría activada"
-                    fetchCategories(userId)
-                } else {
-                    categoryState = CategoryState.Error("Error al activar: ${response.code()}")
                 }
             } catch (e: Exception) {
                 categoryState = CategoryState.Error("Error de red: ${e.message}")

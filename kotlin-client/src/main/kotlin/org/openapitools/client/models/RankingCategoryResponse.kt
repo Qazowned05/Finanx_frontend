@@ -27,6 +27,7 @@ import org.openapitools.client.models.RankingItemCategoryResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -35,7 +36,7 @@ import com.squareup.moshi.JsonClass
  * @param title 
  * @param items 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class RankingCategoryResponse (
 
@@ -48,7 +49,10 @@ data class RankingCategoryResponse (
     @Json(name = "items")
     val items: kotlin.collections.List<RankingItemCategoryResponse>? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

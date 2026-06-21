@@ -35,6 +35,7 @@ import org.openapitools.client.models.TimeLineTransactionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -54,7 +55,7 @@ import com.squareup.moshi.JsonClass
  * @param topSpentReasons 
  * @param topIncomeReasons 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class TransactionsDashboard (
 
@@ -68,7 +69,7 @@ data class TransactionsDashboard (
     override val title: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.OffsetDateTime? = null,
+    override val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
@@ -100,7 +101,10 @@ data class TransactionsDashboard (
     @Json(name = "topIncomeReasons")
     val topIncomeReasons: RankingReasonSummary? = null
 
-) : DashboardResponse {
+) : DashboardResponse, Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

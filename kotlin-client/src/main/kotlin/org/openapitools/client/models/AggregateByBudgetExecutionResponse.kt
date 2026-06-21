@@ -28,6 +28,7 @@ import org.openapitools.client.models.BudgetExecutionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -37,7 +38,7 @@ import com.squareup.moshi.JsonClass
  * @param factorName 
  * @param sharePercentage 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class AggregateByBudgetExecutionResponse (
 
@@ -53,7 +54,10 @@ data class AggregateByBudgetExecutionResponse (
     @Json(name = "sharePercentage")
     val sharePercentage: java.math.BigDecimal? = null
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

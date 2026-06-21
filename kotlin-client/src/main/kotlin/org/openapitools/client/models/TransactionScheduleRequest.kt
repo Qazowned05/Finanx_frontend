@@ -28,6 +28,7 @@ import org.openapitools.client.models.ScheduleRequest
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -42,7 +43,7 @@ import com.squareup.moshi.JsonClass
  * @param reasonId 
  * @param description 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class TransactionScheduleRequest (
 
@@ -73,7 +74,10 @@ data class TransactionScheduleRequest (
     @Json(name = "description")
     val description: kotlin.String? = null
 
-) : ScheduleRequest {
+) : ScheduleRequest, Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

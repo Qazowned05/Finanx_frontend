@@ -13,6 +13,19 @@ import org.openapitools.client.models.UserRequest
 
 interface AuthControllerApi {
     /**
+     * POST auth/google
+     * 
+     * 
+     * Responses:
+     *  - 200: OK
+     *
+     * @param googleLoginRequest 
+     * @return [LoginResponse]
+     */
+    @POST("auth/google")
+    suspend fun google(@Body googleLoginRequest: GoogleLoginRequest): Response<LoginResponse>
+
+    /**
      * POST auth/login
      * 
      * 
@@ -26,19 +39,6 @@ interface AuthControllerApi {
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
     /**
-     * POST auth/google
-     * 
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param googleLoginRequest 
-     * @return [LoginResponse]
-     */
-    @POST("auth/google")
-    suspend fun loginWithGoogle(@Body googleLoginRequest: GoogleLoginRequest): Response<LoginResponse>
-
-    /**
      * POST auth/register
      * 
      * 
@@ -49,6 +49,6 @@ interface AuthControllerApi {
      * @return [LoginResponse]
      */
     @POST("auth/register")
-    suspend fun registerUser(@Body userRequest: UserRequest): Response<LoginResponse>
+    suspend fun register1(@Body userRequest: UserRequest): Response<LoginResponse>
 
 }

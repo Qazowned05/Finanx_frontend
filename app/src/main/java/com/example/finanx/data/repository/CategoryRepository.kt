@@ -9,32 +9,23 @@ import retrofit2.Response
 class CategoryRepository(
     private val api: CategoryControllerApi = RetrofitClient.categoryApi
 ) {
-
-    suspend fun getCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findCategoriesByUserAndActive(userId, true)
-    }
-
     suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> {
-        return api.findCategoriesByUserAndActive(userId, active)
+        return api.findAllByUserAndActive(userId, active)
     }
 
     suspend fun getActiveCategories(userId: Long): Response<List<CategoryResponse>> {
-        return api.findCategoriesByUserAndActive(idUser = userId, active = true)
+        return api.findAllByUserAndActive(idUser = userId, active = true)
     }
 
     suspend fun createCategory(request: CategoryRequest): Response<CategoryResponse> {
-        return api.createCategory(request)
+        return api.create4(request)
     }
 
     suspend fun updateCategory(id: Long, request: CategoryRequest): Response<CategoryResponse> {
-        return api.updateCategory(id, request)
+        return api.update5(id, request)
     }
 
     suspend fun disableCategory(id: Long): Response<Unit> {
-        return api.disableCategory(id)
-    }
-
-    suspend fun activateCategory(id: Long): Response<CategoryResponse> {
-        return api.activateCategory(id)
+        return api.disable4(id)
     }
 }

@@ -9,33 +9,29 @@ class NotificationRepository(
     private val api: NotificationControllerApi = RetrofitClient.notificationApi
 ) {
     suspend fun getNotificationsByUser(userId: Long): Response<List<NotificationDTO>> {
-        return api.findNotificationsByUser(userId)
+        return api.findAllByUser2(userId)
     }
 
     suspend fun getNotificationById(id: Long): Response<NotificationDTO> {
-        return api.findNotificationById(id)
+        return api.findById6(id)
     }
 
     suspend fun getNotificationsByState(
         userId: Long,
         state: String
     ): Response<List<NotificationDTO>> {
-        return api.findNotificationsByUserAndState(userId, state)
+        return api.findAllByUserAndState3(userId, state)
     }
 
     suspend fun getScheduledNotifications(userId: Long): Response<List<NotificationDTO>> {
-        return api.findScheduledNotificationsByUser(userId)
+        return api.findAllByUser2(userId)
     }
 
     suspend fun discardNotification(notificationId: Long): Response<Unit> {
-        return api.discardNotification(notificationId)
+        return api.discard(notificationId)
     }
 
     suspend fun markAsRead(id: Long): Response<Unit> {
-        return api.markNotificationAsRead(id)
-    }
-
-    suspend fun disableNotification(id: Long): Response<Unit> {
-        return api.disableNotification(id)
+        return api.markAsRead(id)
     }
 }

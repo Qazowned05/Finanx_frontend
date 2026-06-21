@@ -4,10 +4,47 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
+| [**google**](AuthControllerApi.md#google) | **POST** auth/google |  |
 | [**login**](AuthControllerApi.md#login) | **POST** auth/login |  |
-| [**loginWithGoogle**](AuthControllerApi.md#loginWithGoogle) | **POST** auth/google |  |
-| [**registerUser**](AuthControllerApi.md#registerUser) | **POST** auth/register |  |
+| [**register1**](AuthControllerApi.md#register1) | **POST** auth/register |  |
 
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(AuthControllerApi::class.java)
+val googleLoginRequest : GoogleLoginRequest =  // GoogleLoginRequest | 
+
+launch(Dispatchers.IO) {
+    val result : LoginResponse = webService.google(googleLoginRequest)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **googleLoginRequest** | [**GoogleLoginRequest**](GoogleLoginRequest.md)|  | |
+
+### Return type
+
+[**LoginResponse**](LoginResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: */*
 
 
 
@@ -58,47 +95,10 @@ No authorization required
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AuthControllerApi::class.java)
-val googleLoginRequest : GoogleLoginRequest =  // GoogleLoginRequest | 
-
-launch(Dispatchers.IO) {
-    val result : LoginResponse = webService.loginWithGoogle(googleLoginRequest)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **googleLoginRequest** | [**GoogleLoginRequest**](GoogleLoginRequest.md)|  | |
-
-### Return type
-
-[**LoginResponse**](LoginResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: */*
-
-
-
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(AuthControllerApi::class.java)
 val userRequest : UserRequest =  // UserRequest | 
 
 launch(Dispatchers.IO) {
-    val result : LoginResponse = webService.registerUser(userRequest)
+    val result : LoginResponse = webService.register1(userRequest)
 }
 ```
 

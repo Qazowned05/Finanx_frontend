@@ -26,25 +26,22 @@ package org.openapitools.client.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
  *
  * @param name 
- * @param type 
  * @param description 
  * @param userId 
  * @param type 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class CategoryRequest (
 
     @Json(name = "name")
     val name: kotlin.String,
-
-    @Json(name = "type")
-    val type: CategoryRequest.Type,
 
     @Json(name = "description")
     val description: kotlin.String,
@@ -55,7 +52,10 @@ data class CategoryRequest (
     @Json(name = "type")
     val type: CategoryRequest.Type
 
-) {
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
     /**
      * 

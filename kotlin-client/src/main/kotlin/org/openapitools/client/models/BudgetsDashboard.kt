@@ -34,6 +34,7 @@ import org.openapitools.client.models.TimeLineBudgetExecutionResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 /**
  * 
@@ -53,7 +54,7 @@ import com.squareup.moshi.JsonClass
  * @param totalBudgetSpentAmount 
  * @param totalBudgetRemainingAmount 
  */
-@JsonClass(generateAdapter = true)
+
 
 data class BudgetsDashboard (
 
@@ -67,7 +68,7 @@ data class BudgetsDashboard (
     override val title: kotlin.String? = null,
 
     @Json(name = "createdAt")
-    override val createdAt: java.time.OffsetDateTime? = null,
+    override val createdAt: java.time.LocalDateTime? = null,
 
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
@@ -99,7 +100,10 @@ data class BudgetsDashboard (
     @Json(name = "totalBudgetRemainingAmount")
     val totalBudgetRemainingAmount: java.math.BigDecimal? = null
 
-) : DashboardResponse {
+) : DashboardResponse, Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 123
+    }
 
 
 }

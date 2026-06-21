@@ -10,7 +10,6 @@ import com.example.finanx.data.repository.NotificationRepository
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.NotificationDTO
 
-// Estado de la pantalla de notificaciones.
 data class NotificationUiState(
     val isLoading: Boolean = false,
     val notifications: List<NotificationDTO> = emptyList(),
@@ -58,7 +57,6 @@ class NotificationViewModel : ViewModel() {
         }
     }
 
-    // Descarta una notificación y actualiza la lista.
     fun discardNotification(userId: Long, notificationId: Long) {
         viewModelScope.launch {
             try {
@@ -79,7 +77,6 @@ class NotificationViewModel : ViewModel() {
         }
     }
 
-    // Limpia las notificaciones leídas.
     fun clearRead(userId: Long) {
         viewModelScope.launch {
             try {

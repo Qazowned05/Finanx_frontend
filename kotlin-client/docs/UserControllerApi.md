@@ -4,15 +4,16 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**activateUser**](UserControllerApi.md#activateUser) | **POST** users/{id}/activate |  |
-| [**blockUser**](UserControllerApi.md#blockUser) | **POST** users/{id}/block |  |
-| [**disableUser**](UserControllerApi.md#disableUser) | **POST** users/{id}/disable |  |
-| [**findAllUsers**](UserControllerApi.md#findAllUsers) | **GET** users |  |
-| [**findUserById**](UserControllerApi.md#findUserById) | **GET** users/{id} |  |
+| [**block**](UserControllerApi.md#block) | **POST** users/{id}/block |  |
+| [**delete**](UserControllerApi.md#delete) | **POST** users/{id} |  |
+| [**disable2**](UserControllerApi.md#disable2) | **POST** users/{id}/disable |  |
+| [**enable**](UserControllerApi.md#enable) | **POST** users/{id}/activate |  |
+| [**findAll**](UserControllerApi.md#findAll) | **GET** users |  |
+| [**findById**](UserControllerApi.md#findById) | **GET** users/{id} |  |
 | [**listTimeZones**](UserControllerApi.md#listTimeZones) | **GET** users/timezones |  |
-| [**registerUserAccount**](UserControllerApi.md#registerUserAccount) | **POST** users/register |  |
-| [**searchUsersByName**](UserControllerApi.md#searchUsersByName) | **GET** users/search |  |
-| [**updateUser**](UserControllerApi.md#updateUser) | **PUT** users/{id} |  |
+| [**register**](UserControllerApi.md#register) | **POST** users/register |  |
+| [**searchByName**](UserControllerApi.md#searchByName) | **GET** users/search |  |
+| [**update**](UserControllerApi.md#update) | **PUT** users/{id} |  |
 
 
 
@@ -30,7 +31,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.activateUser(id)
+    val result : UserResponse = webService.block(id)
 }
 ```
 
@@ -67,7 +68,44 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.blockUser(id)
+    webService.delete(id)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.Long**|  | |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(UserControllerApi::class.java)
+val id : kotlin.Long = 789 // kotlin.Long | 
+
+launch(Dispatchers.IO) {
+    val result : UserResponse = webService.disable2(id)
 }
 ```
 
@@ -104,7 +142,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.disableUser(id)
+    val result : UserResponse = webService.enable(id)
 }
 ```
 
@@ -140,7 +178,7 @@ val apiClient = ApiClient()
 val webService = apiClient.createWebservice(UserControllerApi::class.java)
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<UserResponse> = webService.findAllUsers()
+    val result : kotlin.collections.List<UserResponse> = webService.findAll()
 }
 ```
 
@@ -175,7 +213,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.findUserById(id)
+    val result : UserResponse = webService.findById(id)
 }
 ```
 
@@ -246,7 +284,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val userRequest : UserRequest =  // UserRequest | 
 
 launch(Dispatchers.IO) {
-    val result : LoginResponse = webService.registerUserAccount(userRequest)
+    val result : LoginResponse = webService.register(userRequest)
 }
 ```
 
@@ -283,7 +321,7 @@ val webService = apiClient.createWebservice(UserControllerApi::class.java)
 val string : kotlin.String = string_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<UserResponse> = webService.searchUsersByName(string)
+    val result : kotlin.collections.List<UserResponse> = webService.searchByName(string)
 }
 ```
 
@@ -321,7 +359,7 @@ val id : kotlin.Long = 789 // kotlin.Long |
 val userRequest : UserRequest =  // UserRequest | 
 
 launch(Dispatchers.IO) {
-    val result : UserResponse = webService.updateUser(id, userRequest)
+    val result : UserResponse = webService.update(id, userRequest)
 }
 ```
 

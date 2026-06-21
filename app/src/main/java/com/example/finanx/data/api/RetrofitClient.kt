@@ -17,6 +17,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import org.openapitools.client.apis.NotificationControllerApi
 import org.openapitools.client.apis.AnalyticsControllerApi
+import org.openapitools.client.apis.BudgetScheduleControllerApi
 
 object TokenStore {
     var token: String = ""
@@ -129,6 +130,15 @@ object RetrofitClient {
             .client(client)
             .build()
             .create(ReasonControllerApi::class.java)
+    }
+
+    val budgetScheduleApi: BudgetScheduleControllerApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(BudgetScheduleControllerApi::class.java)
     }
 
     val transactionScheduleApi: TransactionScheduleControllerApi by lazy {

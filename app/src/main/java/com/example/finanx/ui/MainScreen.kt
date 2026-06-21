@@ -348,7 +348,7 @@ private fun AppNavigation(
             composable(Screen.Calendar.route) {
                 BudgetListScreen(
                     userId = userId,
-                    viewModel = budgetViewModel,
+                    bvm = budgetViewModel,
                     authViewModel = authViewModel,
                     onNavigateToProfile = {
                         navController.navigate(

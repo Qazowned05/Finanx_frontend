@@ -4,12 +4,12 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancelSavingGoal**](SavingGoalControllerApi.md#cancelSavingGoal) | **POST** savings/{id}/cancel |  |
-| [**createSavingGoal**](SavingGoalControllerApi.md#createSavingGoal) | **POST** savings |  |
-| [**disableSavingGoal**](SavingGoalControllerApi.md#disableSavingGoal) | **POST** savings/{id}/disable |  |
-| [**findSavingGoalById**](SavingGoalControllerApi.md#findSavingGoalById) | **GET** savings/{id} |  |
-| [**findSavingGoalsByUser**](SavingGoalControllerApi.md#findSavingGoalsByUser) | **GET** savings/user/{idUser} |  |
-| [**updateSavingGoal**](SavingGoalControllerApi.md#updateSavingGoal) | **PUT** savings/{id} |  |
+| [**cancel1**](SavingGoalControllerApi.md#cancel1) | **POST** savings/{id}/cancel |  |
+| [**create2**](SavingGoalControllerApi.md#create2) | **POST** savings |  |
+| [**disable3**](SavingGoalControllerApi.md#disable3) | **POST** savings/{id}/disable |  |
+| [**findAllActiveByUser1**](SavingGoalControllerApi.md#findAllActiveByUser1) | **GET** savings/user/{idUser} |  |
+| [**findById2**](SavingGoalControllerApi.md#findById2) | **GET** savings/{id} |  |
+| [**update3**](SavingGoalControllerApi.md#update3) | **PUT** savings/{id} |  |
 
 
 
@@ -27,7 +27,7 @@ val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.cancelSavingGoal(id)
+    webService.cancel1(id)
 }
 ```
 
@@ -64,7 +64,7 @@ val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val savingGoalRequest : SavingGoalRequest =  // SavingGoalRequest | 
 
 launch(Dispatchers.IO) {
-    val result : SavingGoalResponse = webService.createSavingGoal(savingGoalRequest)
+    val result : SavingGoalResponse = webService.create2(savingGoalRequest)
 }
 ```
 
@@ -101,7 +101,7 @@ val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.disableSavingGoal(id)
+    webService.disable3(id)
 }
 ```
 
@@ -135,47 +135,10 @@ No authorization required
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
-val id : kotlin.Long = 789 // kotlin.Long | 
-
-launch(Dispatchers.IO) {
-    val result : SavingGoalResponse = webService.findSavingGoalById(id)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long**|  | |
-
-### Return type
-
-[**SavingGoalResponse**](SavingGoalResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val idUser : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<SavingGoalResponse> = webService.findSavingGoalsByUser(idUser)
+    val result : kotlin.collections.List<SavingGoalResponse> = webService.findAllActiveByUser1(idUser)
 }
 ```
 
@@ -210,10 +173,47 @@ No authorization required
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | 
+
+launch(Dispatchers.IO) {
+    val result : SavingGoalResponse = webService.findById2(id)
+}
+```
+
+### Parameters
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.Long**|  | |
+
+### Return type
+
+[**SavingGoalResponse**](SavingGoalResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(SavingGoalControllerApi::class.java)
+val id : kotlin.Long = 789 // kotlin.Long | 
 val savingGoalRequest : SavingGoalRequest =  // SavingGoalRequest | 
 
 launch(Dispatchers.IO) {
-    val result : SavingGoalResponse = webService.updateSavingGoal(id, savingGoalRequest)
+    val result : SavingGoalResponse = webService.update3(id, savingGoalRequest)
 }
 ```
 

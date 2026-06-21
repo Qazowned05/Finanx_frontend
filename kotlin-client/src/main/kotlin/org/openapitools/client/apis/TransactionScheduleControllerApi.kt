@@ -13,7 +13,7 @@ interface TransactionScheduleControllerApi {
     /**
     * enum for parameter state
     */
-    enum class StateFindTransactionSchedulesByUserAndState(val value: kotlin.String) {
+    enum class StateFindAllByUserAndState1(val value: kotlin.String) {
         @Json(name = "RUNNING") RUNNING("RUNNING"),
         @Json(name = "PAUSED") PAUSED("PAUSED"),
         @Json(name = "FINALIZED") FINALIZED("FINALIZED"),
@@ -34,6 +34,6 @@ interface TransactionScheduleControllerApi {
      * @return [kotlin.collections.List<TransactionScheduleResponse>]
      */
     @GET("schedule/transactions/user/{idUser}/{state}")
-    suspend fun findTransactionSchedulesByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<TransactionScheduleResponse>>
+    suspend fun findAllByUserAndState1(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<TransactionScheduleResponse>>
 
 }

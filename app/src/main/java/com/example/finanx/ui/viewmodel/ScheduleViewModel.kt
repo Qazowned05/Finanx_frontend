@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.UpdateScheduleRequest
+import org.openapitools.client.models.Update2Request
 import java.math.BigDecimal
 
 sealed class RecurringState {
@@ -63,8 +63,8 @@ class ScheduleViewModel : ViewModel() {
         userId: Long,
         categoryId: Long,
         amount: BigDecimal,
-        paymentMethod: UpdateScheduleRequest.PaymentMethod,
-        transactionType: UpdateScheduleRequest.TransactionType,
+        paymentMethod: Update2Request.PaymentMethod,
+        transactionType: Update2Request.TransactionType,
         recurrenceType: RecurrenceRuleRequest.RecurrenceType,
         interval: Int,
         start: java.time.LocalDate,
