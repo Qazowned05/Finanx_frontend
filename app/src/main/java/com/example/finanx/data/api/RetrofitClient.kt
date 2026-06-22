@@ -24,7 +24,7 @@ object TokenStore {
 }
 
 object RetrofitClient {
-    private const val BASE_URL = "http://34.95.232.182/"
+    private const val BASE_URL = "https://e460-132-251-1-116.ngrok-free.app/"
 
     private val moshi = Serializer.moshi
 
