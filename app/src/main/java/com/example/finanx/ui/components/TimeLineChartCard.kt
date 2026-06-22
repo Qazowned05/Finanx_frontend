@@ -7,7 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -58,6 +60,8 @@ fun TimeLineChartCard(
                 }
             } else {
                 val surfaceColor = MaterialTheme.colorScheme.surface
+                val tooltipContainerColor = MaterialTheme.colorScheme.inverseSurface
+                val tooltipTextColor = MaterialTheme.colorScheme.inverseOnSurface
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -150,21 +154,43 @@ fun TimeLineChartCard(
                             val textLayoutResult = textMeasurer.measure(
                                 text = valueText,
                                 style = TextStyle(
-                                    color = lineColor,
+                                    color = tooltipTextColor,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 12.sp
                                 )
                             )
 
+                            val tooltipHorizontalPadding = 8.dp.toPx()
+                            val tooltipVerticalPadding = 5.dp.toPx()
+                            val tooltipWidth =
+                                textLayoutResult.size.width +
+                                        tooltipHorizontalPadding * 2
+                            val tooltipHeight =
+                                textLayoutResult.size.height +
+                                        tooltipVerticalPadding * 2
+                            val tooltipX =
+                                (offset.x - tooltipWidth / 2)
+                                    .coerceIn(
+                                        0f,
+                                        maxOf(0f, width - tooltipWidth)
+                                    )
+                            val tooltipY =
+                                (offset.y - tooltipHeight - 12.dp.toPx())
+                                    .coerceAtLeast(0f)
+
+                            drawRoundRect(
+                                color = tooltipContainerColor,
+                                topLeft = Offset(tooltipX, tooltipY),
+                                size = Size(tooltipWidth, tooltipHeight),
+                                cornerRadius =
+                                    CornerRadius(6.dp.toPx(), 6.dp.toPx())
+                            )
+
                             drawText(
                                 textLayoutResult = textLayoutResult,
                                 topLeft = Offset(
-                                    x = (offset.x - (textLayoutResult.size.width / 2))
-                                        .coerceIn(
-                                            0f,
-                                            maxOf(0f, width - textLayoutResult.size.width)
-                                        ),
-                                    y = offset.y - 30.dp.toPx()
+                                    x = tooltipX + tooltipHorizontalPadding,
+                                    y = tooltipY + tooltipVerticalPadding
                                 )
                             )
                         }

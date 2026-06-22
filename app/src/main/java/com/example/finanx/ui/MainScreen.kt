@@ -228,6 +228,22 @@ private fun AppNavigation(
             it.route == currentRoute
         }
 
+    fun navigateToBottomRoute(route: String) {
+        navController.navigate(route) {
+            popUpTo(
+                navController
+                    .graph
+                    .findStartDestination()
+                    .id
+            ) {
+                saveState = true
+            }
+
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
@@ -244,19 +260,7 @@ private fun AppNavigation(
                             selected = selected,
                             onClick = {
                                 if (!selected) {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(
-                                            navController
-                                                .graph
-                                                .findStartDestination()
-                                                .id
-                                        ) {
-                                            saveState = true
-                                        }
-
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                    navigateToBottomRoute(screen.route)
                                 }
                             },
                             icon = {
@@ -306,7 +310,7 @@ private fun AppNavigation(
                         )
                     },
                     onOpenTransactions = {
-                        navController.navigate(
+                        navigateToBottomRoute(
                             Screen.Transactions.route
                         )
                     },
