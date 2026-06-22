@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.components.FinanxConfirmDialog
 import com.example.finanx.ui.components.FinanxEditDialog
 import com.example.finanx.ui.theme.*
+import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.UserActionState
 import com.example.finanx.ui.viewmodel.UserViewModel
 import org.openapitools.client.models.UserResponse
@@ -281,13 +282,9 @@ private fun AccountDetailsSection(
             if (expanded) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = GrayBorder)
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                    DetailRow("ID", user.id?.toString() ?: "-")
                     DetailRow("Usuario", user.username ?: "-")
-                    DetailRow("Rol", user.role?.value ?: "-")
-                    DetailRow("Estado", user.state?.value ?: "-")
-                    DetailRow("Balance", "PEN ${user.moneyBalance ?: "0.00"}")
                     DetailRow("Zona Horaria", user.timeZone?.value?.replace("_", " ")?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "-")
-                    DetailRow("Creado", user.createdAt?.toString()?.take(10) ?: "-")
+                    DetailRow("Creado", user.createdAt?.toLocalDate().toReadableDate())
                 }
             }
         }

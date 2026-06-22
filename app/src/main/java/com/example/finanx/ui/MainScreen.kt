@@ -593,7 +593,18 @@ private fun AppNavigation(
 
             composable(Screen.Notifications.route) {
                 NotificacionesScreen(
-                    userId = userId
+                    userId = userId,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onProfile = {
+                        navController.navigate(
+                            Screen.Profile.route
+                        )
+                    },
+                    onLogout = {
+                        authViewModel.logout()
+                    }
                 )
             }
 

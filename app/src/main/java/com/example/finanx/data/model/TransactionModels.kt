@@ -45,6 +45,10 @@ data class TransactionRecord(
     val categoryId: Long?,
     @ColumnInfo(name = "category_name")
     val categoryName: String,
+    @ColumnInfo(name = "saving_goal_id")
+    val savingGoalId: Long? = null,
+    @ColumnInfo(name = "saving_goal_name")
+    val savingGoalName: String? = null,
     @ColumnInfo(name = "reason_id")
     val reasonId: Long?,
     val description: String,

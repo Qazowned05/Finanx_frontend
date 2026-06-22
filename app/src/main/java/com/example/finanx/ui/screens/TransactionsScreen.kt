@@ -1,5 +1,6 @@
 package com.example.finanx.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.ui.components.FinanxTopAppBar
+import com.example.finanx.ui.components.TransactionDetailDialog
 import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.util.toSearchDate
@@ -77,6 +80,7 @@ fun TransactionsScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showCreateMenu by remember { mutableStateOf(false) }
+    var selectedTransaction by remember { mutableStateOf<TransactionRecord?>(null) }
     val datePickerState = rememberDatePickerState()
 
     Scaffold(
@@ -225,8 +229,13 @@ fun TransactionsScreen(
                             items(
                                 items = visibleTransactions,
                                 key = { it.id }
-                            ) {
-                                TransactionRecordItem(it)
+                            ) { transaction ->
+                                TransactionRecordItem(
+                                    transaction = transaction,
+                                    modifier = Modifier.clickable {
+                                        selectedTransaction = transaction
+                                    }
+                                )
                             }
                         }
                     }
@@ -242,7 +251,7 @@ fun TransactionsScreen(
                 TextButton(onClick = {
                     showDatePicker = false
                     datePickerState.selectedDateMillis?.let { millis ->
-                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                         sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
                         val formattedDate = sdf.format(Date(millis))
                         onQueryChange(formattedDate)
@@ -259,6 +268,13 @@ fun TransactionsScreen(
         ) {
             DatePicker(state = datePickerState)
         }
+    }
+
+    selectedTransaction?.let { transaction ->
+        TransactionDetailDialog(
+            transaction = transaction,
+            onDismiss = { selectedTransaction = null }
+        )
     }
 }
 

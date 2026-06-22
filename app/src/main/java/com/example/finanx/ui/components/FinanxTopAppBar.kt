@@ -1,6 +1,7 @@
 package com.example.finanx.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 @Composable
 fun FinanxTopAppBar(
     title: String,
+    onBack: (() -> Unit)? = null,
     onNotifications: (() -> Unit)? = null,
     onProfile: () -> Unit,
     onLogout: () -> Unit
@@ -30,6 +32,17 @@ fun FinanxTopAppBar(
                 color = contentColor,
                 fontWeight = FontWeight.Bold
             )
+        },
+        navigationIcon = {
+            if (onBack != null) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Regresar",
+                        tint = contentColor
+                    )
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = containerColor,

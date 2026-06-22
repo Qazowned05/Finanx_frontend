@@ -52,7 +52,9 @@ import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.TransactionSaveState
+import java.time.LocalDate
 import java.util.TimeZone
 
 @Composable
@@ -557,7 +559,7 @@ private fun ScheduleSection(
 
                 if (!form.isScheduleValid) {
                     Text(
-                        text = "Revisa el intervalo y las fechas. Usa formato YYYY-MM-DD y una fecha fin igual o posterior al inicio.",
+                        text = "Revisa el intervalo y las fechas. Usa formato dd-MM-yyyy y una fecha fin igual o posterior al inicio.",
                         style =
                             MaterialTheme.typography.labelSmall,
                         color =
@@ -585,7 +587,7 @@ private fun ScheduleDateField(
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = value,
+            value = value.toDisplayScheduleDate(),
             onValueChange = {}, // Vacío porque la entrada viene del calendario
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
@@ -594,7 +596,7 @@ private fun ScheduleDateField(
                 Text(label)
             },
             placeholder = {
-                Text("YYYY-MM-DD")
+                Text("dd-MM-yyyy")
             },
             singleLine = true,
             isError = isError,
@@ -653,6 +655,13 @@ private fun ScheduleDateField(
         }
     }
 }
+
+private fun String.toDisplayScheduleDate(): String =
+    runCatching {
+        LocalDate.parse(this).toReadableDate()
+    }.getOrElse {
+        this
+    }
 
 private fun TransactionRecurrenceType.periodLabel():
         String {

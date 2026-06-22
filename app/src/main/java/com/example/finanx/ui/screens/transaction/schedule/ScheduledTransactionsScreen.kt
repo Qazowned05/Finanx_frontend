@@ -230,7 +230,7 @@ fun ScheduledTransactionsScreen(
                 TextButton(onClick = {
                     showDatePicker = false
                     datePickerState.selectedDateMillis?.let { millis ->
-                        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                         sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
                         onQueryChange(sdf.format(Date(millis)))
                     }

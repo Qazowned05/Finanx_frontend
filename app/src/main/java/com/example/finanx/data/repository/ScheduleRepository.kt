@@ -9,6 +9,8 @@ import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import org.openapitools.client.models.Update2200Response
 import org.openapitools.client.models.Update2Request
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.math.BigDecimal
 
@@ -20,32 +22,35 @@ class ScheduleRepository(
     suspend fun getSchedulesByUserAndState(
         userId: Long,
         state: String
-    ): Response<List<Update2200Response>> {
-        return api.findAllByUserAndState(userId, state)
-    }
+    ): Response<List<Update2200Response>> =
+        withContext(Dispatchers.IO) { api.findAllByUserAndState(userId, state) }
 
     suspend fun getBudgetSchedulesByUserAndState(
         userId: Long,
         state: String
-    ): Response<List<BudgetScheduleResponse>> {
-        return budgetScheduleApi.findAllByUserAndState2(userId, state)
-    }
+    ): Response<List<BudgetScheduleResponse>> =
+        withContext(Dispatchers.IO) { budgetScheduleApi.findAllByUserAndState2(userId, state) }
 
     suspend fun getTransactionSchedulesByUserAndState(
         userId: Long,
         state: String
-    ): Response<List<TransactionScheduleResponse>> {
-        return transactionScheduleApi.findAllByUserAndState1(userId, state)
-    }
+    ): Response<List<TransactionScheduleResponse>> =
+        withContext(Dispatchers.IO) { transactionScheduleApi.findAllByUserAndState1(userId, state) }
 
-    suspend fun pauseSchedule(id: Long): Response<Unit> = api.pause(id)
-    suspend fun resumeSchedule(id: Long): Response<Unit> = api.resume(id)
-    suspend fun cancelSchedule(id: Long): Response<Unit> = api.cancel(id)
-    suspend fun disableSchedule(id: Long): Response<Unit> = api.disable6(id)
+    suspend fun pauseSchedule(id: Long): Response<Unit> =
+        withContext(Dispatchers.IO) { api.pause(id) }
 
-    suspend fun updateSchedule(id: Long, request: Update2Request): Response<Update2200Response> {
-        return api.update2(id, request)
-    }
+    suspend fun resumeSchedule(id: Long): Response<Unit> =
+        withContext(Dispatchers.IO) { api.resume(id) }
+
+    suspend fun cancelSchedule(id: Long): Response<Unit> =
+        withContext(Dispatchers.IO) { api.cancel(id) }
+
+    suspend fun disableSchedule(id: Long): Response<Unit> =
+        withContext(Dispatchers.IO) { api.disable6(id) }
+
+    suspend fun updateSchedule(id: Long, request: Update2Request): Response<Update2200Response> =
+        withContext(Dispatchers.IO) { api.update2(id, request) }
 
     suspend fun createTransactionSchedule(
         userId: Long,
@@ -55,7 +60,7 @@ class ScheduleRepository(
         transactionType: Update2Request.TransactionType,
         recurrenceRule: RecurrenceRuleRequest,
         reasonId: Long? = null
-    ): Response<Update2200Response> {
+    ): Response<Update2200Response> = withContext(Dispatchers.IO) {
         val request = Update2Request(
             userId = userId,
             categoryId = categoryId,
@@ -70,7 +75,7 @@ class ScheduleRepository(
             recurrenceRule = recurrenceRule,
             reasonId = reasonId
         )
-        return api.create1(request)
+        api.create1(request)
     }
 
     suspend fun createBudgetSchedule(
@@ -81,7 +86,7 @@ class ScheduleRepository(
         limitAmount: BigDecimal,
         description: String,
         recurrenceRule: RecurrenceRuleRequest
-    ): Response<Update2200Response> {
+    ): Response<Update2200Response> = withContext(Dispatchers.IO) {
         val request = Update2Request(
             userId = userId,
             categoryId = categoryId,
@@ -95,6 +100,6 @@ class ScheduleRepository(
             transactionType = Update2Request.TransactionType.SPENT,
             recurrenceRule = recurrenceRule
         )
-        return api.create1(request)
+        api.create1(request)
     }
 }

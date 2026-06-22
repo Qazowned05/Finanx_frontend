@@ -3,9 +3,16 @@ package com.example.finanx.ui.util
 import com.example.finanx.data.model.PaymentMethod
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+private val displayDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd-MM-yyyy", Locale("es", "PE"))
+
+private val displayDateTimeFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm", Locale("es", "PE"))
 
 fun BigDecimal.toPen(): String {
     val formatter = NumberFormat.getNumberInstance(
@@ -23,20 +30,27 @@ fun LocalDateTime?.toReadableDate(): String {
         return "Fecha no disponible"
     }
 
-    return format(
-        DateTimeFormatter.ofPattern(
-            "dd MMM yyyy, HH:mm",
-            Locale("es", "PE")
-        )
-    )
+    return format(displayDateTimeFormatter)
 }
 
 fun LocalDateTime?.toSearchDate(): String {
     if (this == null) return ""
 
-    return format(
-        DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale("es", "PE"))
-    )
+    return format(displayDateFormatter)
+}
+
+fun LocalDate?.toReadableDate(): String {
+    if (this == null) {
+        return "Fecha no disponible"
+    }
+
+    return format(displayDateFormatter)
+}
+
+fun LocalDate?.toSearchDate(): String {
+    if (this == null) return ""
+
+    return format(displayDateFormatter)
 }
 
 fun PaymentMethod.toLabel(): String =

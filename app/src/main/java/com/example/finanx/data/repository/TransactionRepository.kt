@@ -89,11 +89,19 @@ class TransactionRepository(
                 }
                 .toMap()
 
+            val savingGoalNames = goals
+                .mapNotNull { goal ->
+                    val id = goal.id ?: return@mapNotNull null
+                    id to goal.description.orEmpty()
+                }
+                .toMap()
+
             val transactions = transactionsDeferred.await()
                 .mapNotNull { response ->
                     response.toRecord(
                         categoryNames = categoryNames,
-                        reasonNames = reasonNames
+                        reasonNames = reasonNames,
+                        savingGoalNames = savingGoalNames
                     )
                 }
                 .sortedByDescending { it.createdAt }
@@ -204,7 +212,8 @@ class TransactionRepository(
 
         updated.toRecord(
             categoryNames = emptyMap(),
-            reasonNames = emptyMap()
+            reasonNames = emptyMap(),
+            savingGoalNames = emptyMap()
         ) ?: throw ApiException("La respuesta del servidor es inválida")
     }
 
@@ -286,7 +295,8 @@ private fun DayOfWeek.toRecurrenceDayOfWeek(): RecurrenceRuleRequest.DayOfWeek =
 
 private fun TransactionResponse.toRecord(
     categoryNames: Map<Long, String>,
-    reasonNames: Map<Long, String>
+    reasonNames: Map<Long, String>,
+    savingGoalNames: Map<Long, String>
 ): TransactionRecord? {
     val transactionId = id ?: return null
     val responseType = type ?: return null
@@ -298,6 +308,10 @@ private fun TransactionResponse.toRecord(
             ?.let(categoryNames::get)
             ?.takeIf(String::isNotBlank)
             ?: "Sin categoría",
+        savingGoalId = savingGoalId,
+        savingGoalName = savingGoalId
+            ?.let(savingGoalNames::get)
+            ?.takeIf(String::isNotBlank),
         reasonId = reasonId,
         description = reasonId
             ?.let(reasonNames::get)

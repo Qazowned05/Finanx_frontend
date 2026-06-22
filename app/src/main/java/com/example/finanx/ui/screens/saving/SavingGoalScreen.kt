@@ -34,6 +34,14 @@ val goalIcons = listOf(
     Icons.Default.Savings, Icons.Default.Star, Icons.Default.Category
 )
 
+private fun SavingGoalResponse.State?.toSavingGoalStateLabel(): String =
+    when (this) {
+        SavingGoalResponse.State.RUNNING -> "En progreso"
+        SavingGoalResponse.State.COMPLETED -> "Completada"
+        SavingGoalResponse.State.CANCELLED -> "Cancelada"
+        null -> "Sin estado"
+    }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavingGoalScreen(
@@ -116,24 +124,24 @@ fun SavingGoalScreen(
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            val groupedGoals = state.goals.groupBy { it.state?.value ?: "SIN ESTADO" }
+                            val groupedGoals = state.goals.groupBy { it.state }
 
                             groupedGoals.forEach { (status, goals) ->
                                 item {
                                     Text(
-                                        text = status,
+                                        text = status.toSavingGoalStateLabel(),
                                         style = MaterialTheme.typography.titleMedium,
                                         color = when (status) {
-                                            "COMPLETED" -> IncomeGreen
-                                            "RUNNING" -> BrownPrimary
+                                            SavingGoalResponse.State.COMPLETED -> IncomeGreen
+                                            SavingGoalResponse.State.RUNNING -> BrownPrimary
                                             else -> StoneGray
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .background(
                                                 when (status) {
-                                                    "COMPLETED" -> IncomeGreen.copy(alpha = 0.08f)
-                                                    "RUNNING" -> GoldAccent.copy(alpha = 0.08f)
+                                                    SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
+                                                    SavingGoalResponse.State.RUNNING -> GoldAccent.copy(alpha = 0.08f)
                                                     else -> StoneGray.copy(alpha = 0.08f)
                                                 },
                                                 RoundedCornerShape(6.dp)
@@ -322,13 +330,12 @@ fun SavingGoalCard(
                     Spacer(modifier = Modifier.height(2.dp))
                     Text("Meta: S/ ${goal.targetAmount ?: BigDecimal.ZERO}", color = StoneGray, style = MaterialTheme.typography.bodyMedium)
                 }
-                val stateValue = goal.state?.value
                 Box(
                     modifier = Modifier
                         .background(
-                            when (stateValue) {
-                                "COMPLETED" -> IncomeGreen.copy(alpha = 0.12f)
-                                "RUNNING" -> GoldAccent.copy(alpha = 0.18f)
+                            when (goal.state) {
+                                SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.12f)
+                                SavingGoalResponse.State.RUNNING -> GoldAccent.copy(alpha = 0.18f)
                                 else -> StoneGray.copy(alpha = 0.12f)
                             },
                             RoundedCornerShape(20.dp)
@@ -336,11 +343,11 @@ fun SavingGoalCard(
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        stateValue.orEmpty(),
+                        goal.state.toSavingGoalStateLabel(),
                         style = MaterialTheme.typography.labelSmall,
-                        color = when (stateValue) {
-                            "COMPLETED" -> IncomeGreen
-                            "RUNNING" -> BrownPrimary
+                        color = when (goal.state) {
+                            SavingGoalResponse.State.COMPLETED -> IncomeGreen
+                            SavingGoalResponse.State.RUNNING -> BrownPrimary
                             else -> StoneGray
                         }
                     )

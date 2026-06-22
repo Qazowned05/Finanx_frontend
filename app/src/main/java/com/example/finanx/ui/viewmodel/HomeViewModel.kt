@@ -8,11 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.model.MovementType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.repository.TransactionRepository
+import com.example.finanx.ui.util.toReadableDate
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 data class HomeUiState(
     val isLoading: Boolean = false,
@@ -132,9 +131,6 @@ private data class DailySeries(
     val labels: List<String>
 )
 
-private val dayLabelFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd/MM", Locale("es", "PE"))
-
 private fun List<TransactionRecord>.toDailySeries(): DailySeries {
     val dailyTotals = groupBy {
         it.createdAt?.toLocalDate()
@@ -149,6 +145,6 @@ private fun List<TransactionRecord>.toDailySeries(): DailySeries {
 
     return DailySeries(
         points = dailyTotals.map { it.second.toFloat() },
-        labels = dailyTotals.map { it.first.format(dayLabelFormatter) }
+        labels = dailyTotals.map { it.first.toReadableDate() }
     )
 }

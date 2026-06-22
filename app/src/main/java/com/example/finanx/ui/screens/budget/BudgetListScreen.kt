@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
+import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.*
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
@@ -35,7 +36,13 @@ import org.openapitools.client.models.TransactionScheduleResponse
 import org.openapitools.client.models.Update2Request
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
+private enum class BudgetFilter(
+    val label: String
+) {
+    ALL("Todos"),
+    CANCELLED("Cancelados")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +67,7 @@ fun BudgetListScreen(
     val activity = context as? Activity
 
     var search by remember { mutableStateOf("") }
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedFilter by remember { mutableStateOf(BudgetFilter.ALL) }
     var mainTab by remember { mutableStateOf(0) } // 0 = Presupuestos, 1 = Recurrentes
     var showCreateBudget by remember { mutableStateOf(false) }
     var showCreateRecurring by remember { mutableStateOf(false) }
@@ -106,15 +113,18 @@ fun BudgetListScreen(
                     shape = RoundedCornerShape(12.dp)
                 )
 
-                val tabs = listOf("Todos", "ACTIVE", "DISABLED", "CANCELLED", "FINALIZED")
-                ScrollableTabRow(
-                    selectedTabIndex = selectedTab,
+                val filters = BudgetFilter.values().toList()
+                TabRow(
+                    selectedTabIndex = filters.indexOf(selectedFilter),
                     containerColor = WarmBackground,
-                    contentColor = BrownPrimary,
-                    edgePadding = 16.dp
+                    contentColor = BrownPrimary
                 ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(selected = selectedTab == index, onClick = { selectedTab = index }, text = { Text(title) })
+                    filters.forEach { filter ->
+                        Tab(
+                            selected = selectedFilter == filter,
+                            onClick = { selectedFilter = filter },
+                            text = { Text(filter.label) }
+                        )
                     }
                 }
 
@@ -125,12 +135,10 @@ fun BudgetListScreen(
                         }
                         is BudgetState.Success -> {
                             val filteredBudgets = state.budgets.filter { budget ->
-                                val stateOk = when (selectedTab) {
-                                    0 -> true
-                                    1 -> budget.state == BudgetResponse.State.ACTIVE
-                                    2 -> budget.state == BudgetResponse.State.DISABLED
-                                    3 -> budget.state == BudgetResponse.State.CANCELLED
-                                    else -> budget.state == BudgetResponse.State.FINALIZED
+                                val stateOk = when (selectedFilter) {
+                                    BudgetFilter.ALL -> true
+                                    BudgetFilter.CANCELLED ->
+                                        budget.state == BudgetResponse.State.CANCELLED
                                 }
                                 val searchOk = search.isBlank() ||
                                         budget.description?.contains(search, ignoreCase = true) == true ||
@@ -198,10 +206,10 @@ fun BudgetListScreen(
 @Composable
 fun BudgetCard(budget: BudgetResponse, onCancel: () -> Unit, onDisable: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val health = budget.health?.value
-    val healthColor = when (health) {
-        "EXCEEDED" -> ExpenseRed
-        "NEAR_LIMIT" -> GoldAccent
+    val healthColor = when (budget.health) {
+        BudgetResponse.Health.EXCEEDED -> ExpenseRed
+        BudgetResponse.Health.NEAR_LIMIT -> GoldAccent
+        BudgetResponse.Health.INACTIVE -> StoneGray
         else -> IncomeGreen
     }
 
@@ -220,7 +228,7 @@ fun BudgetCard(budget: BudgetResponse, onCancel: () -> Unit, onDisable: () -> Un
                 Box(
                     modifier = Modifier.background(healthColor.copy(alpha = 0.12f), RoundedCornerShape(20.dp)).padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
-                    Text(health.orEmpty(), color = healthColor, style = MaterialTheme.typography.labelSmall)
+                    Text(budget.health.toBudgetHealthLabel(), color = healthColor, style = MaterialTheme.typography.labelSmall)
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
@@ -230,7 +238,7 @@ fun BudgetCard(budget: BudgetResponse, onCancel: () -> Unit, onDisable: () -> Un
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Estado:", color = StoneGray, style = MaterialTheme.typography.bodyMedium)
-                Text(budget.state?.value.orEmpty(), color = BrownSecondary, style = MaterialTheme.typography.bodyMedium)
+                Text(budget.state.toBudgetStateLabel(), color = BrownSecondary, style = MaterialTheme.typography.bodyMedium)
             }
             if (expanded && budget.state == BudgetResponse.State.ACTIVE) {
                 Spacer(modifier = Modifier.height(12.dp))
@@ -246,6 +254,25 @@ fun BudgetCard(budget: BudgetResponse, onCancel: () -> Unit, onDisable: () -> Un
         }
     }
 }
+
+private fun BudgetResponse.State?.toBudgetStateLabel(): String =
+    when (this) {
+        BudgetResponse.State.ACTIVE -> "Activo"
+        BudgetResponse.State.DISABLED -> "Deshabilitado"
+        BudgetResponse.State.CANCELLED -> "Cancelado"
+        BudgetResponse.State.FINALIZED -> "Finalizado"
+        null -> "Sin estado"
+    }
+
+private fun BudgetResponse.Health?.toBudgetHealthLabel(): String =
+    when (this) {
+        BudgetResponse.Health.OK -> "Saludable"
+        BudgetResponse.Health.NEAR_LIMIT -> "Cerca del límite"
+        BudgetResponse.Health.EXCEEDED -> "Excedido"
+        BudgetResponse.Health.INACTIVE -> "Inactivo"
+        null -> "Sin datos"
+    }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateBudgetDialog(
@@ -262,7 +289,6 @@ fun CreateBudgetDialog(
     var categoryExpanded by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE
     var startDate by remember { mutableStateOf(LocalDate.now()) }
     var endDate by remember { mutableStateOf(LocalDate.now().plusMonths(1)) }
     var showStartPicker by remember { mutableStateOf(false) }
@@ -331,7 +357,7 @@ fun CreateBudgetDialog(
                 }
 
                 OutlinedTextField(
-                    value = startDate.format(formatter),
+                    value = startDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha inicio") },
                     modifier = Modifier.fillMaxWidth().clickable { showStartPicker = true },
@@ -339,7 +365,7 @@ fun CreateBudgetDialog(
                     shape = RoundedCornerShape(12.dp)
                 )
                 OutlinedTextField(
-                    value = endDate.format(formatter),
+                    value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha fin") },
                     modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },
@@ -467,7 +493,7 @@ fun RecurringTransactionCard(ts: TransactionScheduleResponse, onPause: () -> Uni
                 Text(ts.categoryName ?: "Transacción recurrente", style = MaterialTheme.typography.titleMedium, color = BrownPrimary)
                 Text("S/ ${ts.amount ?: BigDecimal.ZERO}", style = MaterialTheme.typography.titleMedium, color = if (ts.transactionType?.value == "INCOME") IncomeGreen else ExpenseRed)
             }
-            Text("Próxima ejecución: ${ts.nextRunAt?.toLocalDate() ?: "—"}", style = MaterialTheme.typography.labelMedium, color = StoneGray)
+            Text("Próxima ejecución: ${ts.nextRunAt?.toLocalDate().toReadableDate()}", style = MaterialTheme.typography.labelMedium, color = StoneGray)
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = if (isPaused) onResume else onPause, modifier = Modifier.weight(1f)) {
@@ -497,7 +523,7 @@ fun RecurringBudgetCard(bs: BudgetScheduleResponse, onPause: () -> Unit, onResum
                 Text(bs.description ?: bs.categoryName ?: "Presupuesto recurrente", style = MaterialTheme.typography.titleMedium, color = BrownPrimary)
                 Text("S/ ${bs.limitAmount ?: BigDecimal.ZERO}", style = MaterialTheme.typography.titleMedium, color = BrownPrimary)
             }
-            Text("Próxima ejecución: ${bs.nextRunAt?.toLocalDate() ?: "—"}", style = MaterialTheme.typography.labelMedium, color = StoneGray)
+            Text("Próxima ejecución: ${bs.nextRunAt?.toLocalDate().toReadableDate()}", style = MaterialTheme.typography.labelMedium, color = StoneGray)
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = if (isPaused) onResume else onPause, modifier = Modifier.weight(1f)) {
@@ -533,7 +559,6 @@ fun CreateRecurringDialog(
     var interval by remember { mutableStateOf("1") }
 
     val context = LocalContext.current
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE
     var startDate by remember { mutableStateOf(LocalDate.now()) }
     var endDate by remember { mutableStateOf(LocalDate.now().plusYears(1)) }
     var showStartPicker by remember { mutableStateOf(false) }
@@ -645,7 +670,7 @@ fun CreateRecurringDialog(
                 )
 
                 OutlinedTextField(
-                    value = startDate.format(formatter),
+                    value = startDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha inicio") },
                     modifier = Modifier.fillMaxWidth().clickable { showStartPicker = true },
@@ -653,7 +678,7 @@ fun CreateRecurringDialog(
                     shape = RoundedCornerShape(12.dp)
                 )
                 OutlinedTextField(
-                    value = endDate.format(formatter),
+                    value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha fin") },
                     modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },

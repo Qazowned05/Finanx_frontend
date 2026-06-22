@@ -6,18 +6,18 @@ import org.openapitools.client.models.GoogleLoginRequest
 import org.openapitools.client.models.LoginRequest
 import org.openapitools.client.models.LoginResponse
 import org.openapitools.client.models.UserRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class AuthRepository(
     private val api: AuthControllerApi = RetrofitClient.authApi
 ) {
-    suspend fun login(email: String, password: String): Response<LoginResponse> {
-        return api.login(LoginRequest(email, password))
-    }
+    suspend fun login(email: String, password: String): Response<LoginResponse> =
+        withContext(Dispatchers.IO) { api.login(LoginRequest(email, password)) }
 
-    suspend fun loginWithGoogle(idToken: String): Response<LoginResponse> {
-        return api.google(GoogleLoginRequest(idToken = idToken))
-    }
+    suspend fun loginWithGoogle(idToken: String): Response<LoginResponse> =
+        withContext(Dispatchers.IO) { api.google(GoogleLoginRequest(idToken = idToken)) }
 
     suspend fun register(
         username: String,
@@ -26,7 +26,7 @@ class AuthRepository(
         email: String,
         password: String,
         timeZone: UserRequest.TimeZone
-    ): Response<LoginResponse> {
+    ): Response<LoginResponse> = withContext(Dispatchers.IO) {
         val user = UserRequest(
             username = username,
             name = name,
@@ -36,6 +36,6 @@ class AuthRepository(
             timeZone = timeZone
         )
 
-        return api.register1(user)
+        api.register1(user)
     }
 }

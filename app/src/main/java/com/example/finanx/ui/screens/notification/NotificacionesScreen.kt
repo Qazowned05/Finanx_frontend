@@ -31,6 +31,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,12 +44,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.finanx.ui.components.FinanxTopAppBar
+import com.example.finanx.ui.theme.BrownPrimary
+import com.example.finanx.ui.theme.BrownSecondary
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.GoldAccent
+import com.example.finanx.ui.theme.IncomeGreen
+import com.example.finanx.ui.theme.StoneGray
+import com.example.finanx.ui.theme.SurfaceWhite
+import com.example.finanx.ui.theme.WarmBackground
 import com.example.finanx.ui.viewmodel.NotificationViewModel
 import org.openapitools.client.models.NotificationDTO
 
 @Composable
 fun NotificacionesScreen(
     userId: Long,
+    onBack: () -> Unit,
+    onProfile: () -> Unit,
+    onLogout: () -> Unit,
     viewModel: NotificationViewModel = viewModel()
 ) {
     val state = viewModel.notificationState
@@ -60,77 +73,83 @@ fun NotificacionesScreen(
     val visibleNotifications = state.notifications
         .filter { it.state != NotificationDTO.State.DISCARD }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF8F7FC))
-            .padding(horizontal = 18.dp, vertical = 20.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+    Scaffold(
+        containerColor = WarmBackground,
+        topBar = {
+            FinanxTopAppBar(
+                title = "Notificaciones",
+                onBack = onBack,
+                onNotifications = null,
+                onProfile = onProfile,
+                onLogout = onLogout
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(WarmBackground)
+                .padding(padding)
+                .padding(horizontal = 18.dp, vertical = 20.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Notificaciones",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF20232D)
-                )
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "${visibleNotifications.size} pendientes",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF6B7280)
+                    color = StoneGray,
+                    modifier = Modifier.weight(1f)
                 )
-            }
 
-            IconButton(onClick = { viewModel.fetchAll(userId) }) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Actualizar",
-                    tint = Color(0xFF4F46E5)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(color = Color(0xFF4F46E5))
-            }
-        }
-
-        state.error?.let { error ->
-            ErrorMessage(
-                message = error,
-                onRetry = { viewModel.fetchAll(userId) }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        if (!state.isLoading && visibleNotifications.isEmpty()) {
-            EmptyNotifications()
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(visibleNotifications) { notification ->
-                    NotificationItem(
-                        notification = notification,
-                        onDiscard = {
-                            notification.id?.let { notificationId ->
-                                viewModel.discardNotification(userId, notificationId)
-                            }
-                        }
+                IconButton(onClick = { viewModel.fetchAll(userId) }) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Actualizar",
+                        tint = BrownPrimary
                     )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = BrownPrimary)
+                }
+            }
+
+            state.error?.let { error ->
+                ErrorMessage(
+                    message = error,
+                    onRetry = { viewModel.fetchAll(userId) }
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            if (!state.isLoading && visibleNotifications.isEmpty()) {
+                EmptyNotifications()
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(visibleNotifications) { notification ->
+                        NotificationItem(
+                            notification = notification,
+                            onDiscard = {
+                                notification.id?.let { notificationId ->
+                                    viewModel.discardNotification(userId, notificationId)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -147,7 +166,7 @@ private fun NotificationItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -180,7 +199,7 @@ private fun NotificationItem(
                     text = notification.message ?: "Sin mensaje",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF2F3340)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -209,7 +228,7 @@ private fun NotificationItem(
                 Icon(
                     imageVector = Icons.Default.DeleteOutline,
                     contentDescription = "Descartar notificación",
-                    tint = Color(0xFF6B7280)
+                    tint = StoneGray
                 )
             }
         }
@@ -224,7 +243,7 @@ private fun ErrorMessage(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF1F2))
+        colors = CardDefaults.cardColors(containerColor = ExpenseRed.copy(alpha = 0.1f))
     ) {
         Row(
             modifier = Modifier
@@ -235,7 +254,7 @@ private fun ErrorMessage(
             Icon(
                 imageVector = Icons.Default.Error,
                 contentDescription = null,
-                tint = Color(0xFFDC2626)
+                tint = ExpenseRed
             )
 
             Text(
@@ -243,7 +262,7 @@ private fun ErrorMessage(
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 10.dp),
-                color = Color(0xFF991B1B),
+                color = ExpenseRed,
                 style = MaterialTheme.typography.bodySmall
             )
 
@@ -266,13 +285,13 @@ private fun EmptyNotifications() {
             modifier = Modifier
                 .size(72.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFEDEBFF)),
+                .background(BrownSecondary.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Notifications,
                 contentDescription = null,
-                tint = Color(0xFF4F46E5),
+                tint = BrownPrimary,
                 modifier = Modifier.size(34.dp)
             )
         }
@@ -283,7 +302,7 @@ private fun EmptyNotifications() {
             text = "No tienes notificaciones",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF20232D)
+            color = BrownPrimary
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -291,7 +310,7 @@ private fun EmptyNotifications() {
         Text(
             text = "Cuando haya novedades aparecerán aquí.",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF6B7280)
+            color = StoneGray
         )
     }
 }
@@ -306,26 +325,26 @@ private fun notificationStyle(notification: NotificationDTO): NotificationVisual
     return when (notification.type) {
         NotificationDTO.Type.WARNING -> NotificationVisualStyle(
             icon = Icons.Default.Warning,
-            color = Color(0xFFD97706),
-            background = Color(0xFFFFF7ED)
+            color = GoldAccent,
+            background = GoldAccent.copy(alpha = 0.12f)
         )
 
         NotificationDTO.Type.SUCCESS -> NotificationVisualStyle(
             icon = Icons.Default.CheckCircle,
-            color = Color(0xFF16A34A),
-            background = Color(0xFFECFDF3)
+            color = IncomeGreen,
+            background = IncomeGreen.copy(alpha = 0.12f)
         )
 
         NotificationDTO.Type.ERROR -> NotificationVisualStyle(
             icon = Icons.Default.Error,
-            color = Color(0xFFDC2626),
-            background = Color(0xFFFFF1F2)
+            color = ExpenseRed,
+            background = ExpenseRed.copy(alpha = 0.12f)
         )
 
         NotificationDTO.Type.INFO, null -> NotificationVisualStyle(
             icon = Icons.Default.Info,
-            color = Color(0xFF4F46E5),
-            background = Color(0xFFEDEBFF)
+            color = BrownPrimary,
+            background = BrownSecondary.copy(alpha = 0.14f)
         )
     }
 }
