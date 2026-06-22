@@ -2,14 +2,14 @@ package com.example.finanx.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Paleta empresarial Finanx — marrón/gris elegante
-val BrownPrimary = Color(0xFF2B2118)      // Marrón casi negro: AppBar, botones principales, nav activo
-val BrownSecondary = Color(0xFF6B4F3B)    // Marrón medio: acentos, iconos activos, enlaces
-val GoldAccent = Color(0xFFC9A876)        // Dorado arena: detalles especiales, badges, progreso
-val WarmBackground = Color(0xFFF5F1EB)    // Fondo cálido general (reemplaza blanco frío)
-val SurfaceWhite = Color(0xFFFFFFFF)      // Tarjetas y superficies elevadas
-val StoneGray = Color(0xFF5C5650)         // Texto secundario / gris piedra
-val BorderSoft = Color(0xFFE3DCD0)        // Bordes suaves, divisores
+
+val BrownPrimary = Color(0xFF2B2118)
+val BrownSecondary = Color(0xFF6B4F3B)
+val GoldAccent = Color(0xFFC9A876)
+val WarmBackground = Color(0xFFF5F1EB)
+val SurfaceWhite = Color(0xFFFFFFFF)
+val StoneGray = Color(0xFF5C5650)
+val BorderSoft = Color(0xFFE3DCD0)
 
 val TextDark = Color(0xFF2B2118)
 val TextGray = StoneGray
