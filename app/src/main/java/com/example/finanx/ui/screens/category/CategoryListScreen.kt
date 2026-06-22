@@ -21,17 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.components.ProfileMenuAction
-import com.example.finanx.ui.theme.BluePrimary
+import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.CategoryViewModel
 import org.openapitools.client.models.CategoryResponse
-
-val categoryColors = listOf(
-    Color(0xFF6C63FF), Color(0xFFFF6584), Color(0xFF43C6AC),
-    Color(0xFFF7971E), Color(0xFF4776E6), Color(0xFFFF5F6D),
-    Color(0xFF11998E), Color(0xFFFC5C7D), Color(0xFF6A82FB)
-)
 
 val categoryIcons = listOf(
     Icons.Default.ShoppingCart, Icons.Default.Home, Icons.Default.DirectionsCar,
@@ -71,12 +65,12 @@ fun CategoryListScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = Color(0xFFEEF2FF),
+            containerColor = WarmBackground,
             topBar = {
                 TopAppBar(
                     title = { Text("Categorías", fontWeight = FontWeight.Bold, color = Color.White) },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF6B8FD6)
+                        containerColor = BrownPrimary
                     ),
                     actions = {
                         ProfileMenuAction(
@@ -89,7 +83,7 @@ fun CategoryListScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = { showCreateDialog = true },
-                    containerColor = BluePrimary,
+                    containerColor = BrownPrimary,
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
@@ -99,7 +93,7 @@ fun CategoryListScreen(
             Box(modifier = Modifier.padding(padding).fillMaxSize()) {
                 when (state) {
                     is CategoryState.Loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)
                     }
                     is CategoryState.Success -> {
                         if (state.categories.isEmpty()) {
@@ -110,29 +104,49 @@ fun CategoryListScreen(
                                 Icon(
                                     Icons.Default.Category,
                                     contentDescription = null,
-                                    tint = Color(0xFFCBD5E0),
+                                    tint = StoneGray,
                                     modifier = Modifier.size(64.dp)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                                Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = BrownPrimary)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("Toca + para agregar una", color = Color.Gray, fontSize = 13.sp)
+                                Text("Toca + para agregar una", color = StoneGray, fontSize = 13.sp)
                             }
                         } else {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                items(count = state.categories.size) { index ->
-                                    val category = state.categories[index]
-                                    CategoryCard(
-                                        category = category,
-                                        colorIndex = index % categoryColors.size,
-                                        iconIndex = index % categoryIcons.size,
-                                        isSelected = categorySelected?.id == category.id,
-                                        onLongPress = { categorySelected = category },
-                                        onDismiss = { categorySelected = null }
-                                    )
+                                val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
+
+                                groupedCategories.forEach { (type, categories) ->
+                                    // Barra discriminadora por tipo
+                                    item {
+                                        Text(
+                                            text = if (type == "INCOME") "Ingresos" else "Gastos",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = if (type == "INCOME") IncomeGreen else ExpenseRed,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(
+                                                    if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
+                                                    else ExpenseRed.copy(alpha = 0.08f),
+                                                    RoundedCornerShape(6.dp)
+                                                )
+                                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                                        )
+                                    }
+
+                                    items(categories.size) { index ->
+                                        val category = categories[index]
+                                        CategoryCard(
+                                            category = category,
+                                            iconIndex = index % categoryIcons.size,
+                                            isSelected = categorySelected?.id == category.id,
+                                            onLongPress = { categorySelected = category },
+                                            onDismiss = { categorySelected = null }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -147,18 +161,12 @@ fun CategoryListScreen(
                 }
             }
         }
-
-
-
     }
-
-
     categorySelected?.let { category ->
-        val active = category.active == true
         AlertDialog(
             onDismissRequest = { categorySelected = null },
-            title = { Text(category.name.orEmpty(), fontWeight = FontWeight.Bold) },
-            text = { Text("¿Qué deseas hacer con esta categoría?") },
+            title = { Text(category.name.orEmpty(), fontWeight = FontWeight.Bold, color = BrownPrimary) },
+            text = { Text("¿Qué deseas hacer con esta categoría?", color = StoneGray) },
             confirmButton = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
@@ -166,7 +174,7 @@ fun CategoryListScreen(
                             categoryToDisable = category
                             categorySelected = null
                         },
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = ExpenseRed)
                     ) {
                         Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -177,7 +185,7 @@ fun CategoryListScreen(
                             categoryToEdit = category
                             categorySelected = null
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                        colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -186,7 +194,7 @@ fun CategoryListScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { categorySelected = null }) { Text("Cancelar") }
+                TextButton(onClick = { categorySelected = null }) { Text("Cancelar", color = StoneGray) }
             }
         )
     }
@@ -194,12 +202,12 @@ fun CategoryListScreen(
     categoryToDisable?.let { category ->
         AlertDialog(
             onDismissRequest = { categoryToDisable = null },
-            containerColor = Color.White,
+            containerColor = SurfaceWhite,
             title = {
                 Text(
                     "¿Eliminar esta categoría?",
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red
+                    color = ExpenseRed
                 )
             },
             text = {
@@ -207,7 +215,7 @@ fun CategoryListScreen(
                     "Estás a punto de eliminar \"${category.name.orEmpty()}\". " +
                             "Las transacciones existentes no se verán afectadas, pero esta categoría " +
                             "ya no estará disponible para nuevos registros.",
-                    color = Color(0xFF4A5568)
+                    color = StoneGray
                 )
             },
             confirmButton = {
@@ -216,13 +224,13 @@ fun CategoryListScreen(
                         viewModel.disableCategory(userId, category.id!!)
                         categoryToDisable = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    colors = ButtonDefaults.buttonColors(containerColor = ExpenseRed)
                 ) {
                     Text("Sí, eliminar", color = Color.White)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { categoryToDisable = null }) { Text("Cancelar") }
+                TextButton(onClick = { categoryToDisable = null }) { Text("Cancelar", color = StoneGray) }
             }
         )
     }
@@ -245,7 +253,6 @@ fun CategoryListScreen(
             initialDescription = category.description.orEmpty(),
             initialType = category.type ?: org.openapitools.client.models.CategoryResponse.Type.SPENT,
             onConfirm = { name, description, selectedType ->
-                // NOTA: Para el update, convertimos el enum de Response a Request
                 val requestType = if (selectedType.value == "INCOME")
                     org.openapitools.client.models.CategoryRequest.Type.INCOME
                 else
@@ -258,21 +265,19 @@ fun CategoryListScreen(
         )
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryCard(
     category: CategoryResponse,
-    colorIndex: Int,
     iconIndex: Int,
     isSelected: Boolean,
     onLongPress: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val active = category.active == true
-    val accentColor = if (active) categoryColors[colorIndex] else Color(0xFFCBD5E0)
+    val accentColor = if (active) IncomeGreen else StoneGray
     val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) Color(0xFFFFCDD2) else Color.White,
+        targetValue = if (isSelected) ExpenseRed.copy(alpha = 0.08f) else SurfaceWhite,
         label = ""
     )
 
@@ -311,13 +316,13 @@ fun CategoryCard(
                     category.name.orEmpty(),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
-                    color = if (isSelected) Color.Red else Color(0xFF1A202C)
+                    color = if (isSelected) ExpenseRed else BrownSecondary
                 )
                 if (!category.description.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         category.description!!,
-                        color = Color(0xFF718096),
+                        color = StoneGray,
                         fontSize = 13.sp
                     )
                 }
@@ -326,7 +331,7 @@ fun CategoryCard(
                 modifier = Modifier
                     .size(8.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(if (active) Color(0xFF2F855A) else Color(0xFFCBD5E0))
+                    .background(if (active) IncomeGreen else StoneGray)
             )
         }
     }
@@ -338,7 +343,6 @@ fun CategoryFormDialog(
     initialName: String = "",
     initialDescription: String = "",
     initialType: CategoryResponse.Type = CategoryResponse.Type.SPENT,
-
     onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -355,10 +359,9 @@ fun CategoryFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(title, fontWeight = FontWeight.Bold) },
+        title = { Text(title, fontWeight = FontWeight.Bold, color = BrownPrimary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -369,14 +372,14 @@ fun CategoryFormDialog(
                             selected = type == org.openapitools.client.models.CategoryRequest.Type.SPENT,
                             onClick = { type = org.openapitools.client.models.CategoryRequest.Type.SPENT }
                         )
-                        Text("Gasto", fontSize = 14.sp)
+                        Text("Gasto", fontSize = 14.sp, color = ExpenseRed)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
                             selected = type == org.openapitools.client.models.CategoryRequest.Type.INCOME,
                             onClick = { type = org.openapitools.client.models.CategoryRequest.Type.INCOME }
                         )
-                        Text("Ingreso", fontSize = 14.sp)
+                        Text("Ingreso", fontSize = 14.sp, color = IncomeGreen)
                     }
                 }
 
@@ -398,13 +401,13 @@ fun CategoryFormDialog(
         confirmButton = {
             Button(
                 onClick = { if (name.isNotBlank()) onConfirm(name, description, type) },
-                colors = ButtonDefaults.buttonColors(containerColor = BluePrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
             ) {
                 Text("Guardar", color = Color.White)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = StoneGray) }
         }
     )
 }

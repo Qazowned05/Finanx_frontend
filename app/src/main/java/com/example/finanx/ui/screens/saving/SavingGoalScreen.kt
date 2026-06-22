@@ -68,8 +68,8 @@ fun SavingGoalScreen(
         containerColor = WarmBackground,
         topBar = {
             TopAppBar(
-                title = { Text("Metas de ahorro", color = BrownPrimary, style = MaterialTheme.typography.titleLarge) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmBackground),
+                title = { Text("Metas de ahorro", color = Color.White, style = MaterialTheme.typography.titleLarge) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = BrownPrimary),
                 actions = {
                     ProfileMenuAction(
                         onMyProfile = { },
@@ -113,21 +113,52 @@ fun SavingGoalScreen(
                         }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(count = state.goals.size) { index ->
-                                val goal = state.goals[index]
-                                SavingGoalCard(
-                                    goal = goal,
-                                    iconIndex = index % goalIcons.size,
-                                    isSelected = goalSelected?.id == goal.id,
-                                    onLongPress = { goalSelected = goal },
-                                    onDismiss = { goalSelected = null }
-                                )
+                            val groupedGoals = state.goals.groupBy { it.state?.value ?: "SIN ESTADO" }
+
+                            groupedGoals.forEach { (status, goals) ->
+                                item {
+                                    Text(
+                                        text = status,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = when (status) {
+                                            "COMPLETED" -> IncomeGreen
+                                            "RUNNING" -> BrownPrimary
+                                            else -> StoneGray
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                when (status) {
+                                                    "COMPLETED" -> IncomeGreen.copy(alpha = 0.08f)
+                                                    "RUNNING" -> GoldAccent.copy(alpha = 0.08f)
+                                                    else -> StoneGray.copy(alpha = 0.08f)
+                                                },
+                                                RoundedCornerShape(6.dp)
+                                            )
+                                            .padding(vertical = 6.dp, horizontal = 12.dp)
+                                    )
+                                }
+
+                                items(goals.size) { index ->
+                                    val goal = goals[index]
+                                    SavingGoalCard(
+                                        goal = goal,
+                                        iconIndex = index % goalIcons.size,
+                                        isSelected = goalSelected?.id == goal.id,
+                                        onLongPress = { goalSelected = goal },
+                                        onDismiss = { goalSelected = null }
+                                    )
+                                }
                             }
+
                             item { Spacer(modifier = Modifier.height(72.dp)) }
                         }
+
                     }
                 }
                 is SavingGoalState.Error -> {
