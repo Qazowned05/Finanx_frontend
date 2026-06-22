@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalState
@@ -39,7 +39,9 @@ val goalIcons = listOf(
 fun SavingGoalScreen(
     userId: Long,
     viewModel: SavingGoalViewModel,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    onNavigateToNotifications: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
 ) {
     LaunchedEffect(userId) {
         viewModel.fetchSavingGoals(userId)
@@ -67,15 +69,11 @@ fun SavingGoalScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = WarmBackground,
         topBar = {
-            TopAppBar(
-                title = { Text("Metas de ahorro", color = Color.White, style = MaterialTheme.typography.titleLarge) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = BrownPrimary),
-                actions = {
-                    ProfileMenuAction(
-                        onMyProfile = { },
-                        onLogout = { authViewModel.logout(activity) }
-                    )
-                }
+            FinanxTopAppBar(
+                title = "Metas de ahorro",
+                onNotifications = onNavigateToNotifications,
+                onProfile = onNavigateToProfile,
+                onLogout = { authViewModel.logout(activity) }
             )
         },
         floatingActionButton = {
@@ -480,4 +478,3 @@ fun SavingGoalFormDialog(
         }
     )
 }
-

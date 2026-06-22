@@ -211,10 +211,8 @@ private fun AppNavigation(
         Screen.Home,
         Screen.Transactions,
         Screen.Calendar,
-        Screen.Analysis,
         Screen.Categories,
         Screen.SavingGoals,
-        Screen.More
     )
 
     val navBackStackEntry by
@@ -354,6 +352,11 @@ private fun AppNavigation(
                             Screen.ScheduledTransactions.route
                         )
                     },
+                    onNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
+                        )
+                    },
                     onProfile = {
                         navController.navigate(
                             Screen.Profile.route
@@ -373,6 +376,11 @@ private fun AppNavigation(
                     onNavigateToProfile = {
                         navController.navigate(
                             Screen.Profile.route
+                        )
+                    },
+                    onNavigateToNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
                         )
                     }
                 )
@@ -414,7 +422,17 @@ private fun AppNavigation(
                 CategoryListScreen(
                     userId = userId,
                     viewModel = categoryViewModel,
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    onNavigateToNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
+                        )
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(
+                            Screen.Profile.route
+                        )
+                    }
                 )
             }
 
@@ -422,7 +440,17 @@ private fun AppNavigation(
                 SavingGoalScreen(
                     userId = userId,
                     viewModel = savingGoalViewModel,
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    onNavigateToNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
+                        )
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(
+                            Screen.Profile.route
+                        )
+                    }
                 )
             }
 

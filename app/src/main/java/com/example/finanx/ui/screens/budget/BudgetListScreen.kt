@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.*
 import org.openapitools.client.models.BudgetRequest
@@ -43,7 +43,8 @@ fun BudgetListScreen(
     userId: Long,
     bvm: BudgetViewModel,
     authViewModel: AuthViewModel,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    onNavigateToNotifications: () -> Unit = {}
 ) {
     val scheduleViewModel: ScheduleViewModel = viewModel()
     val categoryViewModel: CategoryViewModel = viewModel()
@@ -67,15 +68,11 @@ fun BudgetListScreen(
     Scaffold(
         containerColor = WarmBackground,
         topBar = {
-            TopAppBar(
-                title = { Text("Presupuestos", color = BrownPrimary, style = MaterialTheme.typography.titleLarge) },
-                actions = {
-                    ProfileMenuAction(
-                        onMyProfile = onNavigateToProfile,
-                        onLogout = { authViewModel.logout(activity) }
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmBackground)
+            FinanxTopAppBar(
+                title = "Presupuestos",
+                onNotifications = onNavigateToNotifications,
+                onProfile = onNavigateToProfile,
+                onLogout = { authViewModel.logout(activity) }
             )
         },
         floatingActionButton = {

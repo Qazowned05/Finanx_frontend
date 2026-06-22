@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.components.ProfileMenuAction
+import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
@@ -38,7 +38,9 @@ val categoryIcons = listOf(
 fun CategoryListScreen(
     userId: Long,
     viewModel: CategoryViewModel,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    onNavigateToNotifications: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
 ) {
     LaunchedEffect(userId) {
         viewModel.fetchCategories(userId)
@@ -67,17 +69,11 @@ fun CategoryListScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             containerColor = WarmBackground,
             topBar = {
-                TopAppBar(
-                    title = { Text("Categorías", fontWeight = FontWeight.Bold, color = Color.White) },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = BrownPrimary
-                    ),
-                    actions = {
-                        ProfileMenuAction(
-                            onMyProfile = { },
-                            onLogout = { authViewModel.logout(activity) }
-                        )
-                    }
+                FinanxTopAppBar(
+                    title = "Categorías",
+                    onNotifications = onNavigateToNotifications,
+                    onProfile = onNavigateToProfile,
+                    onLogout = { authViewModel.logout(activity) }
                 )
             },
             floatingActionButton = {
