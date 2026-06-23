@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.FinanxTopAppBar
@@ -63,6 +64,8 @@ fun SavingGoalScreen(
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalToDelete by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalSelected by remember { mutableStateOf<SavingGoalResponse?>(null) }
+    var goalDetail by remember { mutableStateOf<SavingGoalResponse?>(null) }
+
 
     val snackbarHostState = remember { SnackbarHostState() }
     val actionSuccess = viewModel.actionSuccess
@@ -157,7 +160,8 @@ fun SavingGoalScreen(
                                         iconIndex = index % goalIcons.size,
                                         isSelected = goalSelected?.id == goal.id,
                                         onLongPress = { goalSelected = goal },
-                                        onDismiss = { goalSelected = null }
+                                        onDismiss = { goalSelected = null },
+                                        onClick = { goalDetail = goal }
                                     )
                                 }
                             }
@@ -271,6 +275,36 @@ fun SavingGoalScreen(
             onSuccessDismiss = { goalToEdit = null }
         )
     }
+    goalDetail?.let { goal ->
+        AlertDialog(
+            onDismissRequest = { goalDetail = null },
+            title = { Text("Detalles de la meta", color = BrownPrimary) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    DetailRow(Icons.Default.Description, "Descripción", goal.description.orEmpty())
+                    DetailRow(Icons.Default.AttachMoney, "Monto objetivo", "S/ ${goal.targetAmount ?: BigDecimal.ZERO}")
+                    DetailRow(Icons.Default.Savings, "Acumulado", "S/ ${goal.accumulated ?: BigDecimal.ZERO}")
+                    DetailRow(Icons.Default.Flag, "Estado", goal.state?.name ?: "Sin estado")
+                    DetailRow(Icons.Default.TrendingUp, "Progreso", "${goal.progressPercentage?.toInt() ?: 0}%")
+                    DetailRow(Icons.Default.List, "Movimientos", "${goal.transactionsCount ?: 0}")
+                    DetailRow(Icons.Default.Today, "Días restantes", "${goal.daysRemaining ?: 0}")
+                    DetailRow(Icons.Default.Calculate, "Aporte promedio", "S/ ${goal.averageContribution ?: BigDecimal.ZERO}")
+                    goal.deadline?.let { DetailRow(Icons.Default.DateRange, "Fecha límite", it.toLocalDate().toString()) }
+                    goal.createdAt?.let { DetailRow(Icons.Default.Event, "Fecha creación", it.toLocalDate().toString()) }
+                    goal.completedAt?.let { DetailRow(Icons.Default.CheckCircle, "Completada", it.toLocalDate().toString()) }
+                    goal.disabledAt?.let { DetailRow(Icons.Default.Block, "Deshabilitada", it.toLocalDate().toString()) }
+                    goal.estimatedCompletionDate?.let { DetailRow(Icons.Default.Schedule, "Estimación", it.toLocalDate().toString()) }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { goalDetail = null }) {
+                    Text("Cerrar", color = BrownSecondary)
+                }
+            }
+        )
+    }
+
+
 
     LaunchedEffect(actionSuccess) {
         if (actionSuccess != null) {
@@ -279,6 +313,15 @@ fun SavingGoalScreen(
         }
     }
 }
+@Composable
+fun DetailRow(icon: ImageVector, label: String, value: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, tint = BrownSecondary, modifier = Modifier.size(18.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text("$label: $value", color = TextDark, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -287,7 +330,8 @@ fun SavingGoalCard(
     iconIndex: Int,
     isSelected: Boolean,
     onLongPress: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onClick: () -> Unit
 ) {
     val accentColor = BrownSecondary
 
@@ -295,7 +339,7 @@ fun SavingGoalCard(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { if (isSelected) onDismiss() },
+                onClick = onClick,
                 onLongClick = onLongPress
             ),
         shape = RoundedCornerShape(14.dp),
