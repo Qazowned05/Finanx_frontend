@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -356,37 +358,70 @@ fun CreateBudgetDialog(
                     }
                 }
 
+                // Fecha inicio con ícono
                 OutlinedTextField(
                     value = startDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha inicio") },
-                    modifier = Modifier.fillMaxWidth().clickable { showStartPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showStartPicker = true }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Seleccionar fecha inicio")
+                        }
+                    }
                 )
+
+// Fecha fin con ícono
                 OutlinedTextField(
                     value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha fin") },
-                    modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showEndPicker = true }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Seleccionar fecha fin")
+                        }
+                    }
                 )
+
 
                 if (showStartPicker) {
                     DatePickerDialog(
                         context,
-                        { _, year, month, day -> startDate = LocalDate.of(year, month + 1, day); showStartPicker = false },
+                        { _, year, month, day ->
+                            startDate = LocalDate.of(year, month + 1, day)
+                            showStartPicker = false
+                        },
                         startDate.year, startDate.monthValue - 1, startDate.dayOfMonth
-                    ).show()
+                    ).apply {
+                        setOnShowListener {
+                            getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(BrownPrimary.toArgb())
+                            getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(BrownSecondary.toArgb())
+                        }
+                    }.show()
                 }
+
                 if (showEndPicker) {
                     DatePickerDialog(
                         context,
-                        { _, year, month, day -> endDate = LocalDate.of(year, month + 1, day); showEndPicker = false },
+                        { _, year, month, day ->
+                            endDate = LocalDate.of(year, month + 1, day)
+                            showEndPicker = false
+                        },
                         endDate.year, endDate.monthValue - 1, endDate.dayOfMonth
-                    ).show()
+                    ).apply {
+                        setOnShowListener {
+                            getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(BrownPrimary.toArgb())
+                            getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(BrownSecondary.toArgb())
+                        }
+                    }.show()
                 }
+
+
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Alertas", color = StoneGray)
@@ -669,22 +704,60 @@ fun CreateRecurringDialog(
                     shape = RoundedCornerShape(12.dp)
                 )
 
+                // Fecha inicio con ícono de calendario
                 OutlinedTextField(
                     value = startDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha inicio") },
-                    modifier = Modifier.fillMaxWidth().clickable { showStartPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showStartPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = "Seleccionar fecha inicio")
+                        }
+                    }
                 )
+
+// Fecha fin con ícono de calendario
                 OutlinedTextField(
                     value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha fin") },
-                    modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showEndPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = "Seleccionar fecha fin")
+                        }
+                    }
                 )
+
+// Dialogo para Fecha inicio
+                if (showStartPicker) {
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, day ->
+                            startDate = LocalDate.of(year, month + 1, day)
+                            showStartPicker = false
+                        },
+                        startDate.year, startDate.monthValue - 1, startDate.dayOfMonth
+                    ).show()
+                }
+
+// Dialogo para Fecha fin
+                if (showEndPicker) {
+                    DatePickerDialog(
+                        context,
+                        { _, year, month, day ->
+                            endDate = LocalDate.of(year, month + 1, day)
+                            showEndPicker = false
+                        },
+                        endDate.year, endDate.monthValue - 1, endDate.dayOfMonth
+                    ).show()
+                }
+
 
                 if (showStartPicker) {
                     DatePickerDialog(context, { _, y, m, d -> startDate = LocalDate.of(y, m + 1, d); showStartPicker = false }, startDate.year, startDate.monthValue - 1, startDate.dayOfMonth).show()
