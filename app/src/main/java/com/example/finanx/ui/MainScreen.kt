@@ -387,7 +387,17 @@ private fun AppNavigation(
             composable(Screen.Analysis.route) {
                 AnalysisScreen(
                     authViewModel     = authViewModel,
-                    analyticsViewModel = analyticsViewModel
+                    analyticsViewModel = analyticsViewModel,
+                    onNavigateToProfile = {
+                        navController.navigate(
+                            Screen.Profile.route
+                        )
+                    },
+                    onNavigateToNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
+                        )
+                    }
                 )
             }
 
@@ -489,16 +499,8 @@ private fun AppNavigation(
                         transactionViewModel.createTransaction(it)
                     },
                     onSaved = {
-                        /*
-                         * Evita que Success vuelva a disparar la
-                         * navegación al recomponer.
-                         */
                         transactionViewModel.consumeSaveState()
 
-                        /*
-                         * Actualiza Home después de crear el
-                         * movimiento.
-                         */
                         homeViewModel.load(
                             userId = userId,
                             userName = displayName
@@ -605,7 +607,19 @@ private fun AppNavigation(
 
             composable(Screen.AnalyticsDashboard.route) {
                 AnalyticsScreen(
-                    userId = userId
+                    userId = userId,
+                    authViewModel = authViewModel,
+                    viewModel = analyticsViewModel,
+                    onNavigateToNotifications = {
+                        navController.navigate(
+                            Screen.Notifications.route
+                        )
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(
+                            Screen.Profile.route
+                        )
+                    }
                 )
             }
         }

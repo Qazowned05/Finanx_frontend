@@ -3,6 +3,9 @@ package com.example.finanx.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
+val Red = Color(0xFFFF0000)
+
+
 val BrownPrimary = Color(0xFF2B2118)
 val BrownSecondary = Color(0xFF6B4F3B)
 val GoldAccent = Color(0xFFC9A876)

@@ -10,13 +10,18 @@ import com.example.finanx.ui.viewmodel.AnalyticsViewModel
 @Composable
 fun AnalysisScreen(
     authViewModel: AuthViewModel,
-    analyticsViewModel: AnalyticsViewModel = viewModel()
+    analyticsViewModel: AnalyticsViewModel = viewModel(),
+    onNavigateToNotifications: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val authState = authViewModel.authState
     val userId = (authState as? AuthState.Success)?.user?.id ?: return
 
     AnalyticsScreen(
         userId    = userId,
-        viewModel = analyticsViewModel
+        viewModel = analyticsViewModel,
+        authViewModel = authViewModel,
+        onNavigateToNotifications = onNavigateToNotifications,
+        onNavigateToProfile = onNavigateToProfile
     )
 }

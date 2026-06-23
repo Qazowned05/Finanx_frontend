@@ -1,5 +1,6 @@
 package com.example.finanx.ui.screens.analytics
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,9 +34,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.screens.analytics.components.AggregateCard
 import com.example.finanx.ui.screens.analytics.components.AiFab
 import com.example.finanx.ui.screens.analytics.components.BarItem
@@ -49,6 +52,7 @@ import com.example.finanx.ui.screens.analytics.components.MetricCard
 import com.example.finanx.ui.screens.analytics.components.PeriodSelectorRow
 import com.example.finanx.ui.screens.analytics.components.SectionTitle
 import com.example.finanx.ui.viewmodel.AnalyticsViewModel
+import com.example.finanx.ui.viewmodel.AuthViewModel
 import org.openapitools.client.models.AggregateByTransactionType
 import org.openapitools.client.models.TransactionsDashboard
 import java.math.BigDecimal
@@ -59,9 +63,15 @@ import java.util.Locale
 @Composable
 fun AnalyticsScreen(
     userId: Long,
-    viewModel: AnalyticsViewModel = viewModel()
+    viewModel: AnalyticsViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel(),
+    onNavigateToNotifications: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {}
 ) {
     val state = viewModel.state
+
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     LaunchedEffect(userId) {
         viewModel.loadDashboard(userId)
@@ -83,36 +93,13 @@ fun AnalyticsScreen(
     Scaffold(
         containerColor = WarmBackground,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = "Análisis",
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = TextLight
-                        )
-                        Text(
-                            text = state.dashboard?.periodResponse?.readableString
-                                ?: "Últimos 30 días",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextLight.copy(alpha = 0.7f)
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.refresh(userId) }) {
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = "Actualizar",
-                            tint = GoldAccent
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BrownPrimary,
-                    titleContentColor = TextLight
-                )
+            FinanxTopAppBar(
+                title = "Análisis",
+                subtitle = state.dashboard?.periodResponse?.readableString ?: "Últimos 30 días",
+                onNotifications = onNavigateToNotifications,
+                onProfile = onNavigateToProfile,
+                onLogout = { authViewModel.logout(activity) },
+                onRefresh = { viewModel.refresh(userId) }
             )
         },
         floatingActionButton = {

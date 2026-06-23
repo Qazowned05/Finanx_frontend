@@ -1,6 +1,5 @@
 package com.example.finanx.ui.screens.budget
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,8 +23,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Switch
@@ -48,7 +50,6 @@ import com.example.finanx.ui.viewmodel.BudgetViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetRequest
-import org.openapitools.client.models.BudgetResponse
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
@@ -85,9 +86,21 @@ fun CreateBudgetDialog(
 
     val parsedLimit = limitAmount.toBigDecimalOrNull()
     val parsedPercent = percentAlertStr.toIntOrNull()
-    val canCreate = description.isNotBlank() && parsedLimit != null && selectedCategoryId != null && !endDate.isBefore(startDate)
+
+    val canCreate =
+        description.isNotBlank() &&
+                parsedLimit != null &&
+                selectedCategoryId != null &&
+                !startDate.isBefore(LocalDate.now()) &&
+                !endDate.isBefore(LocalDate.now().plusDays(1)) &&
+                !endDate.isBefore(startDate)
 
     if (showStartPicker) {
+        val todayMillis = LocalDate.now()
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = startDate
                 .atStartOfDay(ZoneId.systemDefault())
@@ -95,28 +108,33 @@ fun CreateBudgetDialog(
                 .toEpochMilli(),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    val today = LocalDate.now()
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli()
-                    return utcTimeMillis >= today
+                    return utcTimeMillis >= todayMillis
                 }
             }
         )
+
         DatePickerDialog(
             onDismissRequest = { showStartPicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        startDate = Instant.ofEpochMilli(millis)
+                        val newDate = Instant.ofEpochMilli(millis)
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate()
+
+                        startDate = newDate
+
+                        if (endDate.isBefore(startDate.plusDays(1))) {
+                            endDate = startDate.plusDays(1)
+                        }
                     }
                     showStartPicker = false
                 }) { Text("Aceptar") }
             },
             dismissButton = {
-                TextButton(onClick = { showStartPicker = false }) { Text("Cancelar") }
+                TextButton(onClick = { showStartPicker = false }) {
+                    Text("Cancelar")
+                }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -124,6 +142,11 @@ fun CreateBudgetDialog(
     }
 
     if (showEndPicker) {
+        val tomorrowMillis = LocalDate.now().plusDays(1)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = endDate
                 .atStartOfDay(ZoneId.systemDefault())
@@ -131,14 +154,11 @@ fun CreateBudgetDialog(
                 .toEpochMilli(),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    val tomorrow = LocalDate.now().plusDays(1)
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli()
-                    return utcTimeMillis >= tomorrow
+                    return utcTimeMillis >= tomorrowMillis
                 }
             }
         )
+
         DatePickerDialog(
             onDismissRequest = { showEndPicker = false },
             confirmButton = {
@@ -152,7 +172,9 @@ fun CreateBudgetDialog(
                 }) { Text("Aceptar") }
             },
             dismissButton = {
-                TextButton(onClick = { showEndPicker = false }) { Text("Cancelar") }
+                TextButton(onClick = { showEndPicker = false }) {
+                    Text("Cancelar")
+                }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -212,17 +234,28 @@ fun CreateBudgetDialog(
                     value = startDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha inicio") },
-                    modifier = Modifier.fillMaxWidth().clickable { showStartPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showStartPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = null)
+                        }
+                    }
                 )
+
                 OutlinedTextField(
                     value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha fin") },
-                    modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showEndPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = null)
+                        }
+                    }
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -274,6 +307,7 @@ fun CreateBudgetDialog(
         }
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBudgetDialog(
@@ -304,27 +338,38 @@ fun EditBudgetDialog(
 
     val parsedLimit = limitAmount.toBigDecimalOrNull()
     val parsedPercent = percentAlertStr.toIntOrNull()
-    val canUpdate = description.isNotBlank() && parsedLimit != null
+
+    val canUpdate =
+        description.isNotBlank() &&
+                parsedLimit != null &&
+                !endDate.isBefore(LocalDate.now().plusDays(1))
 
     if (showEndPicker) {
+        val tomorrowMillis = LocalDate.now().plusDays(1)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = endDate
-                .atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli(),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    val tomorrow = LocalDate.now().plusDays(1)
-                        .atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                    return utcTimeMillis >= tomorrow
+                    return utcTimeMillis >= tomorrowMillis
                 }
             }
         )
+
         DatePickerDialog(
             onDismissRequest = { showEndPicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
                         endDate = Instant.ofEpochMilli(millis)
-                            .atZone(ZoneId.systemDefault()).toLocalDate()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
                     }
                     showEndPicker = false
                 }) { Text("Aceptar") }
@@ -332,7 +377,9 @@ fun EditBudgetDialog(
             dismissButton = {
                 TextButton(onClick = { showEndPicker = false }) { Text("Cancelar") }
             }
-        ) { DatePicker(state = datePickerState) }
+        ) {
+            DatePicker(state = datePickerState)
+        }
     }
 
     AlertDialog(
@@ -362,9 +409,14 @@ fun EditBudgetDialog(
                     value = endDate.toReadableDate(),
                     onValueChange = {},
                     label = { Text("Fecha límite") },
-                    modifier = Modifier.fillMaxWidth().clickable { showEndPicker = true },
+                    modifier = Modifier.fillMaxWidth(),
                     readOnly = true,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        IconButton(onClick = { showEndPicker = true }) {
+                            Icon(Icons.Default.DateRange, contentDescription = null)
+                        }
+                    }
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Alertas", color = StoneGray)
