@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -66,7 +67,7 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                 .padding(top = 8.dp, bottom = 24.dp)
         ) {
             IconButton(onClick = onBackToLogin) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = BrownPrimary)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = BrownPrimary)
             }
 
             Spacer(modifier = Modifier.height(8.dp))

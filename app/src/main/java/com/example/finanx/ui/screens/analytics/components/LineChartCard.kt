@@ -18,10 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.screens.analytics.BorderSoft
-import com.example.finanx.ui.screens.analytics.GoldAccent
-import com.example.finanx.ui.screens.analytics.SurfaceWhite
-import com.example.finanx.ui.screens.analytics.TextGray
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart

@@ -616,8 +616,6 @@ private fun ScheduleDateField(
             }
         )
 
-        // Capa invisible encima del campo. Permite que al tocar
-        // en cualquier parte (no solo el ícono) se abra el calendario.
         if (enabled) {
             Surface(
                 modifier = Modifier.matchParentSize(),

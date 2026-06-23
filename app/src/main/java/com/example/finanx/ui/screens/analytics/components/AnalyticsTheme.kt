@@ -1,8 +1,7 @@
-package com.example.finanx.ui.screens.analytics
+package com.example.finanx.ui.screens.analytics.components
 
 import androidx.compose.ui.graphics.Color
 
-// ── Palette ──────────────────────────────────────────────────────────────────
 val BrownPrimary     = Color(0xFF2B2118)
 val BrownSecondary   = Color(0xFF6B4F3B)
 val GoldAccent       = Color(0xFFC9A876)

@@ -17,11 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.screens.analytics.BorderSoft
-import com.example.finanx.ui.screens.analytics.GoldAccent
-import com.example.finanx.ui.screens.analytics.SurfaceWhite
-import com.example.finanx.ui.screens.analytics.TextDark
-import com.example.finanx.ui.screens.analytics.TextGray
 import org.openapitools.client.models.Aggregate
 import java.math.BigDecimal
 import java.text.NumberFormat
