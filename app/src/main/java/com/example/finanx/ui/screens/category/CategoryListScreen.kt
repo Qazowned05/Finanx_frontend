@@ -116,7 +116,7 @@ fun CategoryListScreen(
                                 val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
 
                                 groupedCategories.forEach { (type, categories) ->
-                                    // Barra discriminadora por tipo
+
                                     item {
                                         Text(
                                             text = if (type == "INCOME") "Ingresos" else "Gastos",

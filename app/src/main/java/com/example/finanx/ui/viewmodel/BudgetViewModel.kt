@@ -6,14 +6,22 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.repository.BudgetRepository
+import com.example.finanx.ui.util.buildCurrentMonthPeriod
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
 
 sealed class BudgetState {
     object Loading : BudgetState()
-    data class Success(val budgets: List<BudgetResponse>) : BudgetState()
+    data class Success(val budgets: List<BudgetExecutionResponse>) : BudgetState()
     data class Error(val message: String) : BudgetState()
+}
+
+sealed class SimpleBudgetState {
+    object Loading : SimpleBudgetState()
+    data class Success(val budgets: List<BudgetResponse>) : SimpleBudgetState()
+    data class Error(val message: String) : SimpleBudgetState()
 }
 
 sealed class BudgetActionState {
@@ -29,21 +37,40 @@ class BudgetViewModel : ViewModel() {
     var budgetState by mutableStateOf<BudgetState>(BudgetState.Loading)
         private set
 
+    var simpleBudgetState by mutableStateOf<SimpleBudgetState>(SimpleBudgetState.Loading)
+        private set
+
     var actionState by mutableStateOf<BudgetActionState>(BudgetActionState.Idle)
         private set
 
-    fun fetchBudgets(userId: Long) {
+    fun fetchDetailedBudgets(userId: Long) {
         viewModelScope.launch {
             budgetState = BudgetState.Loading
-            try {
-                val response = repository.getBudgets(userId)
+            budgetState = try {
+                val response = repository.getDetailedBudgets(buildCurrentMonthPeriod(userId))
                 if (response.isSuccessful && response.body() != null) {
-                    budgetState = BudgetState.Success(response.body()!!)
+                    BudgetState.Success(response.body()!!)
                 } else {
-                    budgetState = BudgetState.Error("Error al cargar presupuestos: ${response.code()}")
+                    BudgetState.Error("Error al cargar presupuestos: ${response.code()}")
                 }
             } catch (e: Exception) {
-                budgetState = BudgetState.Error("Error de red: ${e.message}")
+                BudgetState.Error("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchBudgets(userId: Long) {
+        viewModelScope.launch {
+            simpleBudgetState = SimpleBudgetState.Loading
+            simpleBudgetState = try {
+                val response = repository.getBudgets(userId)
+                if (response.isSuccessful && response.body() != null) {
+                    SimpleBudgetState.Success(response.body()!!)
+                } else {
+                    SimpleBudgetState.Error("Error al cargar presupuestos: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                SimpleBudgetState.Error("Error de red: ${e.message}")
             }
         }
     }
@@ -55,9 +82,26 @@ class BudgetViewModel : ViewModel() {
                 val response = repository.createBudget(request)
                 if (response.isSuccessful) {
                     actionState = BudgetActionState.Success
-                    fetchBudgets(userId)
+                    fetchDetailedBudgets(userId)
                 } else {
                     actionState = BudgetActionState.Error("No se pudo crear: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                actionState = BudgetActionState.Error("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    fun updateBudget(id: Long, request: BudgetRequest, userId: Long) {
+        viewModelScope.launch {
+            actionState = BudgetActionState.Loading
+            try {
+                val response = repository.updateBudget(id, request)
+                if (response.isSuccessful) {
+                    actionState = BudgetActionState.Success
+                    fetchDetailedBudgets(userId)
+                } else {
+                    actionState = BudgetActionState.Error("No se pudo actualizar: ${response.message()}")
                 }
             } catch (e: Exception) {
                 actionState = BudgetActionState.Error("Error de red: ${e.message}")
@@ -69,7 +113,7 @@ class BudgetViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repository.cancelBudget(id)
-                if (response.isSuccessful) fetchBudgets(userId)
+                if (response.isSuccessful) fetchDetailedBudgets(userId)
             } catch (e: Exception) {
                 budgetState = BudgetState.Error("Error de red: ${e.message}")
             }
@@ -80,7 +124,7 @@ class BudgetViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repository.disableBudget(id)
-                if (response.isSuccessful) fetchBudgets(userId)
+                if (response.isSuccessful) fetchDetailedBudgets(userId)
             } catch (e: Exception) {
                 budgetState = BudgetState.Error("Error de red: ${e.message}")
             }

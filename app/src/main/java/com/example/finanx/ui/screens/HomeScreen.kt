@@ -299,7 +299,7 @@ private fun BalanceCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Saldo actual",
+                    text = "Balance actual",
                     color = TextGray
                 )
 

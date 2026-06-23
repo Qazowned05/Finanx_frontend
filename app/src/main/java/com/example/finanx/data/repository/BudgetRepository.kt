@@ -8,13 +8,19 @@ import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.TimeBoundListBudgetResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.openapitools.client.apis.AnalyticsControllerApi
+import org.openapitools.client.models.BudgetExecutionResponse
 import retrofit2.Response
 
 class BudgetRepository(
-    private val api: BudgetControllerApi = RetrofitClient.budgetApi
+    private val api: BudgetControllerApi = RetrofitClient.budgetApi,
+    private val analyticsApi: AnalyticsControllerApi = RetrofitClient.analyticsApi
 ) {
     suspend fun getBudgets(userId: Long): Response<List<BudgetResponse>> =
         withContext(Dispatchers.IO) { api.findAllByUser4(userId) }
+
+    suspend fun getDetailedBudgets(request: PeriodRequest): Response<List<BudgetExecutionResponse>> =
+        withContext(Dispatchers.IO) { analyticsApi.getExecutionsByPeriod(request) }
 
     suspend fun getBudgetsByState(userId: Long, state: String): Response<List<BudgetResponse>> =
         withContext(Dispatchers.IO) { api.findAllByUserAndState4(userId, state) }

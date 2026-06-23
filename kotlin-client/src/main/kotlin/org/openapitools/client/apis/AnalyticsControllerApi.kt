@@ -9,6 +9,7 @@ import com.squareup.moshi.Json
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.Budgets200Response
 import org.openapitools.client.models.PeriodRequest
+import org.openapitools.client.models.TransactionsDashboard
 
 interface AnalyticsControllerApi {
     /**
@@ -20,10 +21,10 @@ interface AnalyticsControllerApi {
      *
      * @param periodRequest 
      * @param prompt  (optional)
-     * @return [Budgets200Response]
+     * @return [TransactionsDashboard]
      */
     @POST("analytics/dashboard/balance")
-    suspend fun balance(@Body periodRequest: PeriodRequest, @Query("prompt") prompt: kotlin.String? = null): Response<Budgets200Response>
+    suspend fun balance(@Body periodRequest: PeriodRequest, @Query("prompt") prompt: kotlin.String? = null): Response<TransactionsDashboard>
 
     /**
      * POST analytics/dashboard/budgets

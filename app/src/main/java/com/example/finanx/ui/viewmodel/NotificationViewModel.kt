@@ -25,7 +25,6 @@ class NotificationViewModel : ViewModel() {
     var notificationState by mutableStateOf(NotificationUiState())
         private set
 
-    // Carga todas las notificaciones del usuario.
     fun fetchAll(userId: Long) {
         viewModelScope.launch {
             notificationState = notificationState.copy(

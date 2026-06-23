@@ -1,7 +1,8 @@
 [versions]
-agp                        = "8.7.3"
+agp                        = "8.10.0"
 kotlin                     = "2.2.20"
 ksp                        = "2.2.20-2.0.4"
+vico = "2.0.0"
 
 converterMoshi             = "3.0.0"
 kotlinxDatetime            = "0.8.0"
@@ -67,6 +68,8 @@ kotlinx-coroutines-android                 = { group = "org.jetbrains.kotlinx", 
 kotlinx-coroutines-core                    = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlin-reflect                             = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 androidx-annotation-jvm                    = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+vico-compose    = { group = "com.patrykandpatrick.vico", name = "compose",    version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

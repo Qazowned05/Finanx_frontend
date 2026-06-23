@@ -15,7 +15,7 @@ val googleClientId: String = gradleLocalProperties(
 
 android {
     namespace = "com.example.finanx"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.finanx"
@@ -57,6 +57,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)

@@ -50,6 +50,7 @@ import com.example.finanx.ui.screens.saving.SavingGoalScreen
 import com.example.finanx.ui.screens.transaction.create.CreateTransactionScreen
 import com.example.finanx.ui.screens.transaction.schedule.CreateScheduledTransactionScreen
 import com.example.finanx.ui.screens.transaction.schedule.ScheduledTransactionsScreen
+import com.example.finanx.ui.viewmodel.AnalyticsViewModel
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.BudgetViewModel
@@ -193,6 +194,8 @@ private fun AppNavigation(
 
     val navController = rememberNavController()
 
+
+    val analyticsViewModel: AnalyticsViewModel = viewModel()
     val homeViewModel: HomeViewModel = viewModel()
     val budgetViewModel: BudgetViewModel = viewModel()
     val categoryViewModel: CategoryViewModel = viewModel()
@@ -201,17 +204,12 @@ private fun AppNavigation(
     val scheduledTransactionViewModel: ScheduledTransactionViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
 
-    /*
-     * Solo cinco destinos principales.
-     *
-     * Categorías y metas se abren desde "Más", por lo que no deben
-     * volver a aparecer en la barra inferior.
-     */
     val bottomNavigationScreens = listOf(
         Screen.Home,
         Screen.Transactions,
         Screen.Calendar,
         Screen.Categories,
+        Screen.Analysis,
         Screen.SavingGoals,
     )
 
@@ -388,7 +386,8 @@ private fun AppNavigation(
 
             composable(Screen.Analysis.route) {
                 AnalysisScreen(
-                    authViewModel = authViewModel
+                    authViewModel     = authViewModel,
+                    analyticsViewModel = analyticsViewModel
                 )
             }
 
@@ -455,11 +454,7 @@ private fun AppNavigation(
             }
 
             composable(Screen.CreateTransaction.route) {
-                /*
-                 * Si el usuario llega desde Home antes de entrar a
-                 * Movimientos, aún podrían no haberse cargado las
-                 * categorías, motivos y metas.
-                 */
+
                 LaunchedEffect(userId) {
                     val options =
                         transactionViewModel

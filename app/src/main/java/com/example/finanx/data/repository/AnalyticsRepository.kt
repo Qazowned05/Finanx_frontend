@@ -5,14 +5,15 @@ import org.openapitools.client.models.Budgets200Response
 import org.openapitools.client.models.PeriodRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.openapitools.client.models.TransactionsDashboard
 import retrofit2.Response
 
 class AnalyticsRepository(
     private val api: AnalyticsControllerApi
 ) {
-    suspend fun getDashboard(
+    suspend fun getBalanceDashboard(
         period: PeriodRequest,
         prompt: String? = null
-    ): Response<Budgets200Response> =
+    ): Response<TransactionsDashboard> =
         withContext(Dispatchers.IO) { api.balance(period) }
 }

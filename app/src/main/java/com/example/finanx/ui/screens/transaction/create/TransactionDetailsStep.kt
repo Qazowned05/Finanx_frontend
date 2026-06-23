@@ -588,10 +588,10 @@ private fun ScheduleDateField(
     Box(modifier = modifier) {
         OutlinedTextField(
             value = value.toDisplayScheduleDate(),
-            onValueChange = {}, // Vacío porque la entrada viene del calendario
+            onValueChange = {},
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            readOnly = true, // CRÍTICO: Evita que se abra el teclado de texto
+            readOnly = true,
             label = {
                 Text(label)
             },

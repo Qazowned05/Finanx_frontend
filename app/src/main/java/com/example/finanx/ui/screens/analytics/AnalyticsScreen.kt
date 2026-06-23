@@ -10,399 +10,405 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Insights
-import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.finanx.ui.screens.analytics.components.AggregateCard
+import com.example.finanx.ui.screens.analytics.components.AiFab
+import com.example.finanx.ui.screens.analytics.components.BarItem
+import com.example.finanx.ui.screens.analytics.components.ChatBotPromptDialog
+import com.example.finanx.ui.screens.analytics.components.DonutChartCard
+import com.example.finanx.ui.screens.analytics.components.DonutSlice
+import com.example.finanx.ui.screens.analytics.components.HorizontalBarChartCard
+import com.example.finanx.ui.screens.analytics.components.InsightSummaryCard
+import com.example.finanx.ui.screens.analytics.components.LineChartCard
+import com.example.finanx.ui.screens.analytics.components.MetricCard
+import com.example.finanx.ui.screens.analytics.components.PeriodSelectorRow
+import com.example.finanx.ui.screens.analytics.components.SectionTitle
 import com.example.finanx.ui.viewmodel.AnalyticsViewModel
-import org.openapitools.client.models.BudgetExecutionResponse
-import org.openapitools.client.models.BudgetResponse
-import org.openapitools.client.models.Insight
+import org.openapitools.client.models.AggregateByTransactionType
+import org.openapitools.client.models.TransactionsDashboard
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsScreen(
     userId: Long,
     viewModel: AnalyticsViewModel = viewModel()
-) {/*
-    val state = viewModel.analyticsState
+) {
+    val state = viewModel.state
 
     LaunchedEffect(userId) {
         viewModel.loadDashboard(userId)
     }
-
-    val dashboard = state.dashboard
-    val transactions = dashboard?.transactions
-    val budgets = dashboard?.budgets
-    val categories = dashboard?.categories
-    val insights = dashboard?.insights.orEmpty()
-    val executions = budgets?.budgetExecutions.orEmpty()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF7F8FC))
-            .padding(horizontal = 16.dp, vertical = 18.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Resumen Financiero",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF20232D)
-                )
-                Text(
-                    text = "Resumen de los últimos 30 días",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF6B7280)
-                )
-            }
-
-            IconButton(onClick = { viewModel.loadDashboard(userId) }) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Actualizar",
-                    tint = Color(0xFF2563EB)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = Color(0xFF2563EB))
-                }
-            }
-
-            state.error != null -> {
-                ErrorPanel(
-                    message = state.error,
-                    onRetry = { viewModel.loadDashboard(userId) }
-                )
-            }
-
-            dashboard == null -> {
-                EmptyPanel()
-            }
-
-            else -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            MetricCard(
-                                title = "Ingresos",
-                                value = money(transactions?.totalIncomeAmount),
-                                icon = Icons.Default.ArrowUpward,
-                                color = Color(0xFF16A34A),
-                                modifier = Modifier.weight(1f)
-                            )
-                            MetricCard(
-                                title = "Gastos",
-                                value = money(transactions?.totalSpentAmount),
-                                icon = Icons.Default.ArrowDownward,
-                                color = Color(0xFFDC2626),
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            MetricCard(
-                                title = "Balance",
-                                value = money(transactions?.netAmount),
-                                icon = Icons.Default.TrendingUp,
-                                color = Color(0xFF2563EB),
-                                modifier = Modifier.weight(1f)
-                            )
-                            MetricCard(
-                                title = "Disponible",
-                                value = money(budgets?.totalBudgetRemainingAmount),
-                                icon = Icons.Default.AccountBalanceWallet,
-                                color = Color(0xFF7C3AED),
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-
-                    item {
-                        SectionTitle("Presupuestos")
-                    }
-
-                    if (executions.isEmpty()) {
-                        item {
-                            SmallMessage("No hay ejecución de presupuestos para este periodo.")
-                        }
-                    } else {
-                        items(executions.take(5)) { budget ->
-                            BudgetExecutionItem(budget)
-                        }
-                    }
-
-                    item {
-                        SectionTitle("Mayores Movimientos")
-                    }
-
-                    val topCategories = categories?.topSpentCategories.orEmpty()
-                    if (topCategories.isEmpty()) {
-                        item {
-                            SmallMessage("No hay categorías con movimientos todavía.")
-                        }
-                    } else {
-                        items(topCategories.take(5)) { item ->
-                            SimpleRankItem(
-                                title = item.item?.categoryName ?: "Categoría",
-                                value = money(item.metricValue),
-                                detail = "${item.occurrenceCount ?: 0} movimientos"
-                            )
-                        }
-                    }
-
-                    item {
-                        SectionTitle("Recomendaciones")
-                    }
-
-                    if (insights.isEmpty()) {
-                        item {
-                            SmallMessage("Aún no hay recomendaciones para mostrar.")
-                        }
-                    } else {
-                        items(insights.take(4)) { insight ->
-                            InsightItem(insight)
-                        }
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-                }
-            }
-        }
-    }*/
-}
-
-@Composable
-private fun MetricCard(
-    title: String,
-    value: String,
-    icon: ImageVector,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Icon(icon, contentDescription = null, tint = color)
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(title, color = Color(0xFF6B7280), style = MaterialTheme.typography.bodySmall)
-            Text(value, fontWeight = FontWeight.Bold, color = Color(0xFF20232D))
-        }
-    }
-}
-
-@Composable
-private fun BudgetExecutionItem(budget: BudgetExecutionResponse) {
-    val percentage = budget.executionPercentage?.toFloat() ?: 0f
-    val progress = (percentage / 100f).coerceIn(0f, 1f)
-    val color = when (budget.health) {
-        BudgetExecutionResponse.Health.EXCEEDED -> Color(0xFFDC2626)
-        BudgetExecutionResponse.Health.NEAR_LIMIT -> Color(0xFFD97706)
-        BudgetExecutionResponse.Health.OK -> Color(0xFF16A34A)
-        else -> Color(0xFF6B7280)
-    }
-
-    Card(
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = budget.description ?: "Presupuesto",
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF20232D)
-                    )
-                    Text(
-                        text = "${money(budget.spentAmount)} de ${money(budget.limitAmount)}",
-                        color = Color(0xFF6B7280),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-                Text(
-                    text = "${percentage.toInt()}%",
-                    fontWeight = FontWeight.Bold,
-                    color = color
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.fillMaxWidth(),
-                color = color,
-                trackColor = Color(0xFFE5E7EB)
-            )
-        }
-    }
-}
-
-@Composable
-private fun SimpleRankItem(
-    title: String,
-    value: String,
-    detail: String
-) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Default.PieChart, contentDescription = null, tint = Color(0xFF2563EB))
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp)
-            ) {
-                Text(title, fontWeight = FontWeight.SemiBold)
-                Text(detail, color = Color(0xFF6B7280), style = MaterialTheme.typography.bodySmall)
-            }
-            Text(value, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-private fun InsightItem(insight: Insight) {
-    val color = when (insight.severity) {
-        Insight.Severity.CRITICAL -> Color(0xFFDC2626)
-        Insight.Severity.WARNING -> Color(0xFFD97706)
-        Insight.Severity.INFO -> Color(0xFF2563EB)
-        null -> Color(0xFF2563EB)
-    }
-
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(Icons.Default.Insights, contentDescription = null, tint = color)
-            Column(modifier = Modifier.padding(start = 12.dp)) {
-                Text(
-                    text = insight.title ?: "Insight",
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF20232D)
-                )
-                Text(
-                    text = insight.description ?: insight.action ?: "Sin detalle",
-                    color = Color(0xFF6B7280),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Bold,
-        color = Color(0xFF20232D),
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(top = 6.dp)
-    )
-}
-
-@Composable
-private fun SmallMessage(text: String) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(14.dp),
-            color = Color(0xFF6B7280),
-            style = MaterialTheme.typography.bodyMedium
+    if (state.showChatDialog) {
+        ChatBotPromptDialog(
+            prompt      = state.pendingPrompt,
+            isLoading   = state.isAiLoading,
+            onPromptChange = viewModel::onPromptChange,
+            onSubmit    = { viewModel.submitPrompt(userId) },
+            onSkip      = {
+                viewModel.closeChatDialog()
+                viewModel.loadDashboard(userId, prompt = null)
+            },
+            onDismiss   = viewModel::closeChatDialog
         )
     }
+
+    Scaffold(
+        containerColor = WarmBackground,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(
+                            text = "Análisis",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = TextLight
+                        )
+                        Text(
+                            text = state.dashboard?.periodResponse?.readableString
+                                ?: "Últimos 30 días",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextLight.copy(alpha = 0.7f)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.refresh(userId) }) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = "Actualizar",
+                            tint = GoldAccent
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = BrownPrimary,
+                    titleContentColor = TextLight
+                )
+            )
+        },
+        floatingActionButton = {
+            AiFab(
+                isAiLoading = state.isAiLoading,
+                onClick     = viewModel::openChatDialog
+            )
+        }
+    ) { innerPadding ->
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(WarmBackground)
+        ) {
+            when {
+                state.isLoading -> LoadingPanel()
+                state.error != null -> ErrorPanel(
+                    message = state.error,
+                    onRetry = { viewModel.refresh(userId) }
+                )
+                state.dashboard == null -> EmptyPanel()
+                else -> DashboardContent(
+                    dashboard   = state.dashboard,
+                    startDate   = state.startDate,
+                    endDate     = state.endDate,
+                    isAiLoading = state.isAiLoading,
+                    onQuickSelect = { days ->
+                        val end   = java.time.LocalDate.now()
+                        val start = end.minusDays(days.toLong())
+                        viewModel.setStartDate(start)
+                        viewModel.setEndDate(end)
+                        viewModel.loadDashboard(userId)
+                    }
+                )
+            }
+        }
+    }
+}
+@Composable
+private fun DashboardContent(
+    dashboard: TransactionsDashboard,
+    startDate: java.time.LocalDate,
+    endDate: java.time.LocalDate,
+    isAiLoading: Boolean,
+    onQuickSelect: (Int) -> Unit
+) {
+    val agg          = dashboard.aggregate
+    val typeRanking  = dashboard.summaryByType
+    val catRanking   = dashboard.topCategories ?: dashboard.summaryByCategory
+    val spentReasons = dashboard.topSpentReasons
+    val incReasons   = dashboard.topIncomeReasons
+    val pmRanking    = dashboard.summaryByPaymentMethod
+    val expenses     = dashboard.dailyExpenses
+    val income       = dashboard.dailyIncome
+    val insights     = dashboard.insightSummary
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(
+            top = 14.dp,
+            bottom = 100.dp
+        )
+    ) {
+        item {
+            PeriodSelectorRow(
+                start = startDate,
+                end   = endDate,
+                onQuickSelect = onQuickSelect
+            )
+        }
+
+        if (isAiLoading) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(BrownPrimary, androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    CircularProgressIndicator(color = GoldAccent, modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                    Text("Generando análisis con IA…", color = TextLight,
+                        style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        if (agg != null) {
+            item {
+                SectionTitle("Resumen del período")
+            }
+            item {
+                val incomeItem = typeRanking?.items?.firstOrNull {
+                    it.aggregate?.factor == AggregateByTransactionType.Factor.INCOME
+                }
+                val spentItem = typeRanking?.items?.firstOrNull {
+                    it.aggregate?.factor == AggregateByTransactionType.Factor.SPENT
+                }
+                val incomeVal = incomeItem?.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO
+                val spentVal  = spentItem?.aggregate?.aggregate?.totalAmount  ?: BigDecimal.ZERO
+                val net       = incomeVal.subtract(spentVal)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    MetricCard(
+                        title       = "Ingresos",
+                        value       = money(incomeVal),
+                        icon        = Icons.Default.ArrowUpward,
+                        accentColor = IncomeGreen,
+                        modifier    = Modifier.weight(1f)
+                    )
+                    MetricCard(
+                        title       = "Gastos",
+                        value       = money(spentVal),
+                        icon        = Icons.Default.ArrowDownward,
+                        accentColor = ExpenseRed,
+                        modifier    = Modifier.weight(1f)
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
+                MetricCard(
+                    title       = "Balance neto",
+                    value       = money(net),
+                    icon        = Icons.Default.TrendingUp,
+                    accentColor = GoldAccent,
+                    modifier    = Modifier.fillMaxWidth()
+                )
+            }
+
+            item { AggregateCard(aggregate = agg) }
+        }
+
+        if (typeRanking != null) {
+            item { SectionTitle("Distribución por tipo") }
+            item {
+                val slices = typeRanking.items.orEmpty().mapNotNull { rankItem ->
+                    val factor = rankItem.aggregate?.factor ?: return@mapNotNull null
+                    val share  = rankItem.aggregate?.sharePercentage
+                        ?.toFloat()?.div(100f) ?: 0f
+                    val label  = when (factor) {
+                        AggregateByTransactionType.Factor.INCOME -> "Ingresos"
+                        AggregateByTransactionType.Factor.SPENT  -> "Gastos"
+                    }
+                    val color  = if (factor == AggregateByTransactionType.Factor.INCOME)
+                        IncomeGreen else ExpenseRed
+                    DonutSlice(label, share, color)
+                }
+                DonutChartCard(title = "Ingresos vs Gastos", slices = slices)
+            }
+        }
+
+        if (catRanking != null) {
+            item { SectionTitle("Top categorías de gasto") }
+            item {
+                val bars = catRanking.items.orEmpty().map { rankItem ->
+                    BarItem(
+                        label = rankItem.aggregate?.factor?.name ?: "Categoría",
+                        value = rankItem.metricValue ?: BigDecimal.ZERO,
+                        share = (rankItem.aggregate?.sharePercentage
+                            ?.toFloat() ?: 0f) / 100f,
+                        badge = "${rankItem.rank}°"
+                    )
+                }
+                HorizontalBarChartCard(
+                    title    = catRanking.title ?: "Categorías",
+                    items    = bars,
+                    barColor = ExpenseRed
+                )
+            }
+        }
+
+        if (pmRanking != null) {
+            item { SectionTitle("Métodos de pago") }
+            item {
+                val bars = pmRanking.items.orEmpty().map { rankItem ->
+                    BarItem(
+                        label = rankItem.aggregate?.factorName ?: "Método",
+                        value = rankItem.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO,
+                        share = (rankItem.aggregate?.sharePercentage
+                            ?.toFloat() ?: 0f) / 100f
+                    )
+                }
+                HorizontalBarChartCard(
+                    title    = pmRanking.title ?: "Métodos de pago",
+                    items    = bars,
+                    barColor = GoldAccent
+                )
+            }
+        }
+
+        if (expenses != null) {
+            item { SectionTitle("Evolución de gastos") }
+            item {
+                LineChartCard(
+                    timeline  = expenses,
+                    lineColor = ExpenseRed
+                )
+            }
+        }
+
+        if (income != null) {
+            item { SectionTitle("Evolución de ingresos") }
+            item {
+                LineChartCard(
+                    timeline  = income,
+                    lineColor = IncomeGreen
+                )
+            }
+        }
+
+        if (spentReasons != null) {
+            item { SectionTitle("Principales conceptos de gasto") }
+            item {
+                val bars = spentReasons.items.orEmpty().map { rankItem ->
+                    BarItem(
+                        label = rankItem.aggregate?.factorName ?: "Concepto",
+                        value = rankItem.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO,
+                        share = (rankItem.aggregate?.sharePercentage
+                            ?.toFloat() ?: 0f) / 100f,
+                        badge = "${rankItem.aggregate?.aggregate?.occurrenceCount ?: 0}x"
+                    )
+                }
+                HorizontalBarChartCard(
+                    title    = spentReasons.title ?: "Conceptos de gasto",
+                    items    = bars,
+                    barColor = ExpenseRed
+                )
+            }
+        }
+
+        if (incReasons != null) {
+            item { SectionTitle("Principales fuentes de ingreso") }
+            item {
+                val bars = incReasons.items.orEmpty().map { rankItem ->
+                    BarItem(
+                        label = rankItem.aggregate?.factorName ?: "Fuente",
+                        value = rankItem.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO,
+                        share = (rankItem.aggregate?.sharePercentage
+                            ?.toFloat() ?: 0f) / 100f,
+                        badge = "${rankItem.aggregate?.aggregate?.occurrenceCount ?: 0}x"
+                    )
+                }
+                HorizontalBarChartCard(
+                    title    = incReasons.title ?: "Fuentes de ingreso",
+                    items    = bars,
+                    barColor = IncomeGreen
+                )
+            }
+        }
+
+        if (insights != null) {
+            item { SectionTitle("Recomendaciones") }
+            item {
+                InsightSummaryCard(
+                    insightSummary = insights,
+                    aiGenerated    = true
+                )
+            }
+        }
+    }
 }
 
 @Composable
-private fun ErrorPanel(
-    message: String,
-    onRetry: () -> Unit
-) {
-    Card(
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF1F2))
+private fun LoadingPanel() {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(color = GoldAccent)
+    }
+}
+
+@Composable
+private fun ErrorPanel(message: String, onRetry: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFFDC2626))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(message, color = Color(0xFF991B1B))
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = onRetry) {
-                Text("Reintentar")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(Icons.Default.Warning, null, tint = ExpenseRed,
+                modifier = Modifier.size(40.dp))
+            Spacer(Modifier.height(12.dp))
+            Text(message, color = TextDark, style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(12.dp))
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+            ) {
+                Text("Reintentar", color = TextLight)
             }
         }
     }
@@ -410,15 +416,10 @@ private fun ErrorPanel(
 
 @Composable
 private fun EmptyPanel() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("No hay datos de analíticas disponibles.", color = Color(0xFF6B7280))
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("No hay datos de analíticas para este período.", color = TextGray)
     }
 }
 
-private fun money(value: BigDecimal?): String {
-    val format = NumberFormat.getCurrencyInstance(Locale("es", "PE"))
-    return format.format(value ?: BigDecimal.ZERO)
-}
+private fun money(value: BigDecimal): String =
+    NumberFormat.getCurrencyInstance(Locale("es", "PE")).format(value)

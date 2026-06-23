@@ -8,52 +8,98 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.AnalyticsRepository
 import kotlinx.coroutines.launch
-import org.openapitools.client.models.DashboardResponse
 import org.openapitools.client.models.PeriodRequest
+import org.openapitools.client.models.TransactionsDashboard
 import java.time.LocalDate
 
 data class AnalyticsUiState(
-    val isLoading: Boolean = false,
-    val dashboard: DashboardResponse? = null,
-    val error: String? = null
+    val isLoading: Boolean        = false,
+    val dashboard: TransactionsDashboard? = null,
+    val error: String?            = null,
+
+    val startDate: LocalDate = LocalDate.now().minusDays(30),
+    val endDate:   LocalDate = LocalDate.now(),
+
+    val showChatDialog: Boolean = false,
+    val pendingPrompt:  String  = "",
+
+    val isAiLoading: Boolean = false,
 )
 
 class AnalyticsViewModel : ViewModel() {
-    var dashboardResponse by mutableStateOf<DashboardResponse?>(null)
 
     private val repository = AnalyticsRepository(RetrofitClient.analyticsApi)
 
-    var analyticsState by mutableStateOf(AnalyticsUiState())
+    var state by mutableStateOf(AnalyticsUiState())
         private set
 
-    fun loadDashboard(userId: Long) {
-        viewModelScope.launch {
-            analyticsState = analyticsState.copy(isLoading = true, error = null)
+    fun setStartDate(date: LocalDate) { state = state.copy(startDate = date) }
+    fun setEndDate(date: LocalDate)   { state = state.copy(endDate   = date) }
 
-            val end = LocalDate.now()
-            val start = end.minusDays(30)
+    fun openChatDialog()  { state = state.copy(showChatDialog = true,  pendingPrompt = "") }
+    fun closeChatDialog() { state = state.copy(showChatDialog = false, pendingPrompt = "") }
+    fun onPromptChange(text: String) { state = state.copy(pendingPrompt = text) }
+
+    fun loadDashboard(userId: Long, prompt: String? = null) {
+        val withAi = prompt != null
+
+        viewModelScope.launch {
+            state = if (withAi) {
+                state.copy(
+                    isAiLoading    = true,
+                    showChatDialog = false,
+                    error          = null
+                )
+            } else {
+                state.copy(
+                    isLoading = true,
+                    error     = null
+                )
+            }
+
+            val periodRequest = PeriodRequest(
+                start  = state.startDate,
+                end    = state.endDate,
+                userId = userId
+            )
 
             try {
-                val response = repository.getDashboard(PeriodRequest(start = start, end = end, userId = userId))
+                val response = repository.getBalanceDashboard(
+                    period = periodRequest,
+                    prompt  = prompt
+                )
 
-                analyticsState = if (response.isSuccessful) {
-                    analyticsState.copy(
-                        isLoading = false,
-                        dashboard = response.body() as DashboardResponse?,
-                        error = null
+                val dashboard = response.body() as TransactionsDashboard
+
+                state = if (response.isSuccessful) {
+                    state.copy(
+                        isLoading   = false,
+                        isAiLoading = false,
+                        dashboard   = dashboard,
+                        error       = null
                     )
                 } else {
-                    analyticsState.copy(
-                        isLoading = false,
-                        error = "No se pudieron cargar las analíticas: ${response.code()}"
+                    state.copy(
+                        isLoading   = false,
+                        isAiLoading = false,
+                        error       = "Error ${response.code()}: no se pudo cargar el panel."
                     )
                 }
+
             } catch (e: Exception) {
-                analyticsState = analyticsState.copy(
-                    isLoading = false,
-                    error = "Error de red: ${e.message}"
+                state = state.copy(
+                    isLoading   = false,
+                    isAiLoading = false,
+                    error       = "Error de red: ${e.message}"
                 )
             }
         }
     }
+
+    fun submitPrompt(userId: Long) {
+        val prompt = state.pendingPrompt.trim().ifEmpty { null }
+        loadDashboard(userId, prompt)
+    }
+
+    fun refresh(userId: Long) = loadDashboard(userId, null)
 }

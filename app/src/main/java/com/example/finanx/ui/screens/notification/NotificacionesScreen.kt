@@ -353,7 +353,7 @@ private fun notificationStateText(state: NotificationDTO.State?): String {
     return when (state) {
         NotificationDTO.State.SENT -> "Nueva"
         NotificationDTO.State.READ -> "Leída"
-        NotificationDTO.State.SCHEDULED -> "Programada"
+        NotificationDTO.State.SCHEDULED -> "Nueva"
         NotificationDTO.State.DISCARD -> "Descartada"
         null -> "Sin estado"
     }
