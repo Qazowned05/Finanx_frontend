@@ -23,12 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.ScheduleControllerApi
-import org.openapitools.client.models.Update2200Response
-import org.openapitools.client.models.Update2Request
 
 class ScheduleControllerApiTest : ShouldSpec() {
     init {

@@ -23,11 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.InsightSummary
-import org.openapitools.client.models.Insight
 
 class InsightSummaryTest : ShouldSpec() {
     init {

@@ -45,71 +45,72 @@ All URIs are relative to *http://localhost:8080*
 
 | Class | Method | HTTP request | Description |
 | ------------ | ------------- | ------------- | ------------- |
-| *AnalyticsControllerApi* | [**balance**](docs/AnalyticsControllerApi.md#balance) | **POST** analytics/dashboard/balance |  |
-| *AnalyticsControllerApi* | [**budgets**](docs/AnalyticsControllerApi.md#budgets) | **POST** analytics/dashboard/budgets |  |
-| *AnalyticsControllerApi* | [**getExecution**](docs/AnalyticsControllerApi.md#getexecution) | **POST** analytics/budgets/{id}/execution |  |
-| *AnalyticsControllerApi* | [**getExecutionsByPeriod**](docs/AnalyticsControllerApi.md#getexecutionsbyperiod) | **POST** analytics/budgets/executions |  |
-| *AuthControllerApi* | [**google**](docs/AuthControllerApi.md#google) | **POST** auth/google |  |
-| *AuthControllerApi* | [**login**](docs/AuthControllerApi.md#login) | **POST** auth/login |  |
-| *AuthControllerApi* | [**register1**](docs/AuthControllerApi.md#register1) | **POST** auth/register |  |
-| *BudgetControllerApi* | [**cancel2**](docs/BudgetControllerApi.md#cancel2) | **POST** budgets/{id}/cancel |  |
-| *BudgetControllerApi* | [**create5**](docs/BudgetControllerApi.md#create5) | **POST** budgets |  |
-| *BudgetControllerApi* | [**disable5**](docs/BudgetControllerApi.md#disable5) | **POST** budgets/{id}/disable |  |
-| *BudgetControllerApi* | [**findAllByUser4**](docs/BudgetControllerApi.md#findallbyuser4) | **GET** budgets/user/{idUser} |  |
-| *BudgetControllerApi* | [**findAllByUserAndState4**](docs/BudgetControllerApi.md#findallbyuserandstate4) | **GET** budgets/user/{idUser}/{state} |  |
-| *BudgetControllerApi* | [**findById5**](docs/BudgetControllerApi.md#findbyid5) | **GET** budgets/{id} |  |
-| *BudgetControllerApi* | [**getBudgetsByHealth**](docs/BudgetControllerApi.md#getbudgetsbyhealth) | **POST** budgets/{health} |  |
-| *BudgetControllerApi* | [**update6**](docs/BudgetControllerApi.md#update6) | **PUT** budgets/{id} |  |
-| *BudgetScheduleControllerApi* | [**findAllByUserAndState2**](docs/BudgetScheduleControllerApi.md#findallbyuserandstate2) | **GET** schedule/budgets/user/{idUser}/{state} |  |
-| *CategoryControllerApi* | [**create4**](docs/CategoryControllerApi.md#create4) | **POST** categories |  |
-| *CategoryControllerApi* | [**disable4**](docs/CategoryControllerApi.md#disable4) | **POST** categories/{id}/disable |  |
-| *CategoryControllerApi* | [**findAllByUser3**](docs/CategoryControllerApi.md#findallbyuser3) | **GET** categories/user/{idUser} |  |
-| *CategoryControllerApi* | [**findAllByUserAndActive**](docs/CategoryControllerApi.md#findallbyuserandactive) | **GET** categories/user/{idUser}/{active} |  |
-| *CategoryControllerApi* | [**findById4**](docs/CategoryControllerApi.md#findbyid4) | **GET** categories/{id} |  |
-| *CategoryControllerApi* | [**update5**](docs/CategoryControllerApi.md#update5) | **PUT** categories/{id} |  |
-| *NotificationControllerApi* | [**discard**](docs/NotificationControllerApi.md#discard) | **POST** notifications/discard |  |
-| *NotificationControllerApi* | [**findAllByUser2**](docs/NotificationControllerApi.md#findallbyuser2) | **GET** notifications/user/{idUser} |  |
-| *NotificationControllerApi* | [**findAllByUserAndState3**](docs/NotificationControllerApi.md#findallbyuserandstate3) | **GET** notifications/user/{idUser}/{state} |  |
-| *NotificationControllerApi* | [**findById6**](docs/NotificationControllerApi.md#findbyid6) | **GET** notifications/{id} |  |
-| *NotificationControllerApi* | [**markAsRead**](docs/NotificationControllerApi.md#markasread) | **POST** notifications/mark-as-read |  |
-| *NotificationControllerApi* | [**purge**](docs/NotificationControllerApi.md#purge) | **POST** notifications/user/{userId}/purge-older-than |  |
-| *ReasonControllerApi* | [**create3**](docs/ReasonControllerApi.md#create3) | **POST** reasons |  |
-| *ReasonControllerApi* | [**disable1**](docs/ReasonControllerApi.md#disable1) | **POST** reasons/{id} |  |
-| *ReasonControllerApi* | [**findAllByUser1**](docs/ReasonControllerApi.md#findallbyuser1) | **GET** reasons/user/{idUser} |  |
-| *ReasonControllerApi* | [**findById3**](docs/ReasonControllerApi.md#findbyid3) | **GET** reasons/{id} |  |
-| *ReasonControllerApi* | [**update4**](docs/ReasonControllerApi.md#update4) | **PUT** reasons/{id} |  |
-| *SavingGoalControllerApi* | [**cancel1**](docs/SavingGoalControllerApi.md#cancel1) | **POST** savings/{id}/cancel |  |
-| *SavingGoalControllerApi* | [**create2**](docs/SavingGoalControllerApi.md#create2) | **POST** savings |  |
-| *SavingGoalControllerApi* | [**disable3**](docs/SavingGoalControllerApi.md#disable3) | **POST** savings/{id}/disable |  |
-| *SavingGoalControllerApi* | [**findAllActiveByUser1**](docs/SavingGoalControllerApi.md#findallactivebyuser1) | **GET** savings/user/{idUser} |  |
-| *SavingGoalControllerApi* | [**findById2**](docs/SavingGoalControllerApi.md#findbyid2) | **GET** savings/{id} |  |
-| *SavingGoalControllerApi* | [**update3**](docs/SavingGoalControllerApi.md#update3) | **PUT** savings/{id} |  |
-| *ScheduleControllerApi* | [**cancel**](docs/ScheduleControllerApi.md#cancel) | **POST** schedule/{id}/cancel |  |
-| *ScheduleControllerApi* | [**create1**](docs/ScheduleControllerApi.md#create1) | **POST** schedule |  |
-| *ScheduleControllerApi* | [**disable6**](docs/ScheduleControllerApi.md#disable6) | **DELETE** schedule/{id}/disable |  |
-| *ScheduleControllerApi* | [**findAllByUserAndState**](docs/ScheduleControllerApi.md#findallbyuserandstate) | **GET** schedule/user/{idUser}/{state} |  |
-| *ScheduleControllerApi* | [**pause**](docs/ScheduleControllerApi.md#pause) | **POST** schedule/{id}/pause |  |
-| *ScheduleControllerApi* | [**resume**](docs/ScheduleControllerApi.md#resume) | **POST** schedule/{id}/resume |  |
-| *ScheduleControllerApi* | [**update2**](docs/ScheduleControllerApi.md#update2) | **PUT** schedule/{id} |  |
-| *TransactionControllerApi* | [**create**](docs/TransactionControllerApi.md#create) | **POST** transactions |  |
-| *TransactionControllerApi* | [**disable**](docs/TransactionControllerApi.md#disable) | **DELETE** transactions/{id} |  |
-| *TransactionControllerApi* | [**findAllActiveByUser**](docs/TransactionControllerApi.md#findallactivebyuser) | **GET** transactions/user/{userId}/active |  |
-| *TransactionControllerApi* | [**findAllByCategoryAndDateBetween**](docs/TransactionControllerApi.md#findallbycategoryanddatebetween) | **GET** transactions/user/{userId}/category/{categoryId}/between |  |
-| *TransactionControllerApi* | [**findAllByUser**](docs/TransactionControllerApi.md#findallbyuser) | **GET** transactions/{userId} |  |
-| *TransactionControllerApi* | [**findAllByUserBetween**](docs/TransactionControllerApi.md#findallbyuserbetween) | **GET** transactions/user/{userId}/between |  |
-| *TransactionControllerApi* | [**findById1**](docs/TransactionControllerApi.md#findbyid1) | **GET** transactions/{id} |  |
-| *TransactionControllerApi* | [**update1**](docs/TransactionControllerApi.md#update1) | **PUT** transactions/{id} |  |
-| *TransactionScheduleControllerApi* | [**findAllByUserAndState1**](docs/TransactionScheduleControllerApi.md#findallbyuserandstate1) | **GET** schedule/transactions/user/{idUser}/{state} |  |
-| *UserControllerApi* | [**block**](docs/UserControllerApi.md#block) | **POST** users/{id}/block |  |
-| *UserControllerApi* | [**delete**](docs/UserControllerApi.md#delete) | **POST** users/{id} |  |
-| *UserControllerApi* | [**disable2**](docs/UserControllerApi.md#disable2) | **POST** users/{id}/disable |  |
-| *UserControllerApi* | [**enable**](docs/UserControllerApi.md#enable) | **POST** users/{id}/activate |  |
-| *UserControllerApi* | [**findAll**](docs/UserControllerApi.md#findall) | **GET** users |  |
-| *UserControllerApi* | [**findById**](docs/UserControllerApi.md#findbyid) | **GET** users/{id} |  |
-| *UserControllerApi* | [**listTimeZones**](docs/UserControllerApi.md#listtimezones) | **GET** users/timezones |  |
-| *UserControllerApi* | [**register**](docs/UserControllerApi.md#register) | **POST** users/register |  |
-| *UserControllerApi* | [**searchByName**](docs/UserControllerApi.md#searchbyname) | **GET** users/search |  |
-| *UserControllerApi* | [**update**](docs/UserControllerApi.md#update) | **PUT** users/{id} |  |
+| *AnalyticsApi* | [**getBalanceDashboard**](docs/AnalyticsApi.md#getbalancedashboard) | **POST** analytics/dashboard/balance | Dashboard de balance |
+| *AnalyticsApi* | [**getBudgetExecution**](docs/AnalyticsApi.md#getbudgetexecution) | **POST** analytics/budgets/{id}/execution | Ejecucion de presupuesto |
+| *AnalyticsApi* | [**getBudgetsDashboard**](docs/AnalyticsApi.md#getbudgetsdashboard) | **POST** analytics/dashboard/budgets | Dashboard de presupuestos |
+| *AnalyticsApi* | [**getBudgetsExecutionsByPeriod**](docs/AnalyticsApi.md#getbudgetsexecutionsbyperiod) | **POST** analytics/budgets/executions | Ejecuciones por periodo |
+| *AuthApi* | [**authRegister**](docs/AuthApi.md#authregister) | **POST** auth/register | Registro |
+| *AuthApi* | [**authWithGoogle**](docs/AuthApi.md#authwithgoogle) | **POST** auth/google | Login con Google |
+| *AuthApi* | [**login**](docs/AuthApi.md#login) | **POST** auth/login | Login |
+| *BudgetsApi* | [**cancelBudget**](docs/BudgetsApi.md#cancelbudget) | **POST** budgets/{id}/cancel | Cancelar presupuesto |
+| *BudgetsApi* | [**createBudget**](docs/BudgetsApi.md#createbudget) | **POST** budgets | Crear presupuesto |
+| *BudgetsApi* | [**disableBudget**](docs/BudgetsApi.md#disablebudget) | **POST** budgets/{id}/disable | Deshabilitar presupuesto |
+| *BudgetsApi* | [**findAllBudgetsByPeriodAndHealth**](docs/BudgetsApi.md#findallbudgetsbyperiodandhealth) | **POST** budgets/{health} | Filtrar por salud |
+| *BudgetsApi* | [**findAllBudgetsByUser**](docs/BudgetsApi.md#findallbudgetsbyuser) | **GET** budgets/user/{idUser} | Listar presupuestos por usuario |
+| *BudgetsApi* | [**findAllBudgetsByUserAndState**](docs/BudgetsApi.md#findallbudgetsbyuserandstate) | **GET** budgets/user/{idUser}/{state} | Listar por usuario y estado |
+| *BudgetsApi* | [**findBudgetById**](docs/BudgetsApi.md#findbudgetbyid) | **GET** budgets/{id} | Buscar presupuesto |
+| *BudgetsApi* | [**updateBudget**](docs/BudgetsApi.md#updatebudget) | **PUT** budgets/{id} | Actualizar presupuesto |
+| *CategoriesApi* | [**createCategory**](docs/CategoriesApi.md#createcategory) | **POST** categories | Crear categoria |
+| *CategoriesApi* | [**disableCategory**](docs/CategoriesApi.md#disablecategory) | **POST** categories/{id}/disable | Deshabilitar categoria |
+| *CategoriesApi* | [**findAllCategoriesByUser**](docs/CategoriesApi.md#findallcategoriesbyuser) | **GET** categories/user/{idUser} | Listar categorias por usuario |
+| *CategoriesApi* | [**findAllCategoriesyUserAndActive**](docs/CategoriesApi.md#findallcategoriesyuserandactive) | **GET** categories/user/{idUser}/{active} | Listar categorias por usuario y estado |
+| *CategoriesApi* | [**findCategoryById**](docs/CategoriesApi.md#findcategorybyid) | **GET** categories/{id} | Buscar categoria por ID |
+| *CategoriesApi* | [**updateCategory**](docs/CategoriesApi.md#updatecategory) | **PUT** categories/{id} | Actualizar categoria |
+| *NotificationsApi* | [**discardNotification**](docs/NotificationsApi.md#discardnotification) | **POST** notifications/discard | Descartar notificacion |
+| *NotificationsApi* | [**findAllNotificationByUser**](docs/NotificationsApi.md#findallnotificationbyuser) | **GET** notifications/user/{idUser} | Listar notificaciones por usuario |
+| *NotificationsApi* | [**findAllNotificationsByUserAndState**](docs/NotificationsApi.md#findallnotificationsbyuserandstate) | **GET** notifications/user/{idUser}/{state} | Listar por estado |
+| *NotificationsApi* | [**findNotificationById**](docs/NotificationsApi.md#findnotificationbyid) | **GET** notifications/{id} | Buscar notificacion |
+| *NotificationsApi* | [**markAsRead**](docs/NotificationsApi.md#markasread) | **POST** notifications/mark-as-read | Marcar como leida |
+| *NotificationsApi* | [**purgeNotifications**](docs/NotificationsApi.md#purgenotifications) | **POST** notifications/user/{userId}/purge-older-than | Eliminar notificaciones antiguas |
+| *ReasonsApi* | [**createReason**](docs/ReasonsApi.md#createreason) | **POST** reasons | Crear razon |
+| *ReasonsApi* | [**disableReason**](docs/ReasonsApi.md#disablereason) | **POST** reasons/{id}/disable | Deshabilitar razon |
+| *ReasonsApi* | [**findAllReasonByUser**](docs/ReasonsApi.md#findallreasonbyuser) | **GET** reasons/user/{idUser} | Listar razones por usuario |
+| *ReasonsApi* | [**findReasonById**](docs/ReasonsApi.md#findreasonbyid) | **GET** reasons/{id} | Buscar razon |
+| *ReasonsApi* | [**updateReason**](docs/ReasonsApi.md#updatereason) | **PUT** reasons/{id} | Actualizar razon |
+| *SavingsApi* | [**cancelSavingGoal**](docs/SavingsApi.md#cancelsavinggoal) | **POST** savings/{id}/cancel | Cancelar meta |
+| *SavingsApi* | [**createSavingGoal**](docs/SavingsApi.md#createsavinggoal) | **POST** savings | Crear meta |
+| *SavingsApi* | [**disableSavingGoal**](docs/SavingsApi.md#disablesavinggoal) | **POST** savings/{id}/disable | Deshabilitar meta |
+| *SavingsApi* | [**findAllActiveSavingGoalByUser**](docs/SavingsApi.md#findallactivesavinggoalbyuser) | **GET** savings/user/{idUser} | Listar metas activas |
+| *SavingsApi* | [**findSavingGoalById**](docs/SavingsApi.md#findsavinggoalbyid) | **GET** savings/{id} | Obtener una meta de ahorro |
+| *SavingsApi* | [**updateSavingGoal**](docs/SavingsApi.md#updatesavinggoal) | **PUT** savings/{id} | Actualizar meta |
+| *ScheduleApi* | [**cancelSchedule**](docs/ScheduleApi.md#cancelschedule) | **POST** schedule/{id}/cancel | Cancelar programacion |
+| *ScheduleApi* | [**createSchedule**](docs/ScheduleApi.md#createschedule) | **POST** schedule | Crear programacion |
+| *ScheduleApi* | [**disableSchedule**](docs/ScheduleApi.md#disableschedule) | **DELETE** schedule/{id}/disable | Deshabilitar programacion |
+| *ScheduleApi* | [**findAllScheduleByUserAndState**](docs/ScheduleApi.md#findallschedulebyuserandstate) | **GET** schedule/user/{idUser}/{state} | Listar programaciones por usuario y estado |
+| *ScheduleApi* | [**pauseSchedule**](docs/ScheduleApi.md#pauseschedule) | **POST** schedule/{id}/pause | Pausar programacion |
+| *ScheduleApi* | [**resumeSchedule**](docs/ScheduleApi.md#resumeschedule) | **POST** schedule/{id}/resume | Reanudar programacion |
+| *ScheduleApi* | [**updateSchedule**](docs/ScheduleApi.md#updateschedule) | **PUT** schedule/{id} | Actualizar programacion |
+| *ScheduleBudgetsApi* | [**findAllBudgetScheduleByUserAndState**](docs/ScheduleBudgetsApi.md#findallbudgetschedulebyuserandstate) | **GET** schedule/budgets/user/{idUser}/{state} | Listar programaciones de presupuestos |
+| *ScheduleTransactionsApi* | [**findAllTScheduleByUserAndState**](docs/ScheduleTransactionsApi.md#findalltschedulebyuserandstate) | **GET** schedule/transactions/user/{idUser}/{state} | Listar programaciones de transacciones |
+| *TransactionsApi* | [**createTransaction**](docs/TransactionsApi.md#createtransaction) | **POST** transactions | Crear transaccion |
+| *TransactionsApi* | [**findAllActiveTransactionByUser**](docs/TransactionsApi.md#findallactivetransactionbyuser) | **GET** transactions/user/{userId}/active | Listar transacciones activas |
+| *TransactionsApi* | [**findAllTransactionByCategoryAndDateBetween**](docs/TransactionsApi.md#findalltransactionbycategoryanddatebetween) | **GET** transactions/user/{userId}/category/{categoryId}/between | Filtrar por categoria y fecha |
+| *TransactionsApi* | [**findAllTransactionByUser**](docs/TransactionsApi.md#findalltransactionbyuser) | **GET** transactions/user/{userId} | Listar transacciones por usuario |
+| *TransactionsApi* | [**findAllTransactionsByUserBetween**](docs/TransactionsApi.md#findalltransactionsbyuserbetween) | **GET** transactions/user/{userId}/between | Listar transacciones por rango |
+| *TransactionsApi* | [**findTransactionById**](docs/TransactionsApi.md#findtransactionbyid) | **GET** transactions/{id} | Buscar transaccion |
+| *TransactionsApi* | [**transactionDelete**](docs/TransactionsApi.md#transactiondelete) | **DELETE** transactions/{id} | Eliminar transaccion |
+| *TransactionsApi* | [**updateTransaction**](docs/TransactionsApi.md#updatetransaction) | **PUT** transactions/{id} | Actualizar transaccion |
+| *UsersApi* | [**blockUser**](docs/UsersApi.md#blockuser) | **POST** users/{id}/block | Bloquear usuario |
+| *UsersApi* | [**deleteUser**](docs/UsersApi.md#deleteuser) | **DELETE** users/{id}/delete | Eliminar usuario |
+| *UsersApi* | [**disableUser**](docs/UsersApi.md#disableuser) | **POST** users/{id}/disable | Deshabilitar usuario |
+| *UsersApi* | [**enableUser**](docs/UsersApi.md#enableuser) | **POST** users/{id}/activate | Habilitar usuario |
+| *UsersApi* | [**findAllUser**](docs/UsersApi.md#findalluser) | **GET** users | Listar todos los usuarios |
+| *UsersApi* | [**findUserById**](docs/UsersApi.md#finduserbyid) | **GET** users/{id} | Buscar usuario por ID |
+| *UsersApi* | [**listTimeZones**](docs/UsersApi.md#listtimezones) | **GET** users/timezones | Listar zonas horarias disponibles |
+| *UsersApi* | [**registerUser**](docs/UsersApi.md#registeruser) | **POST** users/register | Registrar un nuevo usuario |
+| *UsersApi* | [**resetUserData**](docs/UsersApi.md#resetuserdata) | **POST** users/{id}/reset-data | Resetear datos de usuario |
+| *UsersApi* | [**searchUserByName**](docs/UsersApi.md#searchuserbyname) | **GET** users/search | Buscar usuarios por nombre |
+| *UsersApi* | [**updateUser**](docs/UsersApi.md#updateuser) | **PUT** users/{id} | Actualizar datos de usuario |
 
 
 <a id="documentation-for-models"></a>
@@ -130,12 +131,13 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.BudgetResponse](docs/BudgetResponse.md)
  - [org.openapitools.client.models.BudgetScheduleRequest](docs/BudgetScheduleRequest.md)
  - [org.openapitools.client.models.BudgetScheduleResponse](docs/BudgetScheduleResponse.md)
- - [org.openapitools.client.models.Budgets200Response](docs/Budgets200Response.md)
  - [org.openapitools.client.models.BudgetsDashboard](docs/BudgetsDashboard.md)
  - [org.openapitools.client.models.CategoryRequest](docs/CategoryRequest.md)
  - [org.openapitools.client.models.CategoryResponse](docs/CategoryResponse.md)
  - [org.openapitools.client.models.CategorySummary](docs/CategorySummary.md)
+ - [org.openapitools.client.models.CreateScheduleRequest](docs/CreateScheduleRequest.md)
  - [org.openapitools.client.models.DashboardResponse](docs/DashboardResponse.md)
+ - [org.openapitools.client.models.GetBudgetsDashboard200Response](docs/GetBudgetsDashboard200Response.md)
  - [org.openapitools.client.models.GoogleLoginRequest](docs/GoogleLoginRequest.md)
  - [org.openapitools.client.models.Insight](docs/Insight.md)
  - [org.openapitools.client.models.InsightSummary](docs/InsightSummary.md)
@@ -182,8 +184,8 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.TransactionScheduleRequest](docs/TransactionScheduleRequest.md)
  - [org.openapitools.client.models.TransactionScheduleResponse](docs/TransactionScheduleResponse.md)
  - [org.openapitools.client.models.TransactionsDashboard](docs/TransactionsDashboard.md)
- - [org.openapitools.client.models.Update2200Response](docs/Update2200Response.md)
- - [org.openapitools.client.models.Update2Request](docs/Update2Request.md)
+ - [org.openapitools.client.models.UpdateSchedule200Response](docs/UpdateSchedule200Response.md)
+ - [org.openapitools.client.models.UpdateScheduleRequest](docs/UpdateScheduleRequest.md)
  - [org.openapitools.client.models.UserRequest](docs/UserRequest.md)
  - [org.openapitools.client.models.UserResponse](docs/UserResponse.md)
 

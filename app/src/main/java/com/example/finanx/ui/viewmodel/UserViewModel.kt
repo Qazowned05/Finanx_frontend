@@ -94,10 +94,10 @@ class UserViewModel : ViewModel() {
                     timeZone = currentUser.timeZone?.toRequestTimeZone() ?: UserRequest.TimeZone.AMERICA_LIMA
                 )
                 val response = repository.update(userId, request)
-                if (response.isSuccessful) {
-                    updatePasswordState = UserActionState.Success("Contraseña actualizada correctamente")
+                updatePasswordState = if (response.isSuccessful) {
+                    UserActionState.Success("Contraseña actualizada correctamente")
                 } else {
-                    updatePasswordState = UserActionState.Error("Error al actualizar contraseña: ${response.code()}")
+                    UserActionState.Error("Error al actualizar contraseña: ${response.code()}")
                 }
             } catch (e: Exception) {
                 updatePasswordState = UserActionState.Error("Error de red: ${e.message}")
@@ -108,18 +108,59 @@ class UserViewModel : ViewModel() {
     fun deactivateAccount(userId: Long) {
         viewModelScope.launch {
             deactivateState = UserActionState.Loading
-            try {
-                val response = repository.deactivate(userId)
+            deactivateState = try {
+                val response = repository.disable(userId)
                 if (response.isSuccessful) {
-                    deactivateState = UserActionState.Success("Cuenta deshabilitada correctamente")
+                    UserActionState.Success("Cuenta deshabilitada correctamente")
                 } else {
-                    deactivateState = UserActionState.Error("Error al deshabilitar cuenta: ${response.code()}")
+                    UserActionState.Error("Error al deshabilitar cuenta: ${response.code()}")
                 }
             } catch (e: Exception) {
-                deactivateState = UserActionState.Error("Error de red: ${e.message}")
+                UserActionState.Error("Error de red: ${e.message}")
             }
         }
     }
+
+    var resetDataState by mutableStateOf<UserActionState>(UserActionState.Idle)
+        private set
+
+    var deleteAccountState by mutableStateOf<UserActionState>(UserActionState.Idle)
+        private set
+
+    fun resetData(userId: Long) {
+        viewModelScope.launch {
+            resetDataState = UserActionState.Loading
+            resetDataState = try {
+                val response = repository.resetData(userId)
+                if (response.isSuccessful) {
+                    UserActionState.Success("Datos reiniciados correctamente")
+                } else {
+                    UserActionState.Error("Error al reiniciar datos: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                UserActionState.Error("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteAccount(userId: Long) {
+        viewModelScope.launch {
+            deleteAccountState = UserActionState.Loading
+            deleteAccountState = try {
+                val response = repository.delete(userId)
+                if (response.isSuccessful) {
+                    UserActionState.Success("Cuenta eliminada correctamente")
+                } else {
+                    UserActionState.Error("Error al eliminar cuenta: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                UserActionState.Error("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    fun resetResetDataState() { resetDataState = UserActionState.Idle }
+    fun resetDeleteAccountState() { deleteAccountState = UserActionState.Idle }
 
     fun resetUpdateNameState() { updateNameState = UserActionState.Idle }
     fun resetUpdatePasswordState() { updatePasswordState = UserActionState.Idle }

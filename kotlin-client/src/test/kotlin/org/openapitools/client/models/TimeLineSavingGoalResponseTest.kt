@@ -23,13 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.TimeLineSavingGoalResponse
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.PeriodResponse
-import org.openapitools.client.models.TimeSeriesPointSavingGoalResponse
 
 class TimeLineSavingGoalResponseTest : ShouldSpec() {
     init {

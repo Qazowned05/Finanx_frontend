@@ -3,21 +3,21 @@ package com.example.finanx.data.api
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.openapitools.client.apis.ReasonControllerApi
-import org.openapitools.client.apis.ScheduleControllerApi
-import org.openapitools.client.apis.TransactionScheduleControllerApi
-import org.openapitools.client.apis.AuthControllerApi
-import org.openapitools.client.apis.BudgetControllerApi
-import org.openapitools.client.apis.CategoryControllerApi
-import org.openapitools.client.apis.SavingGoalControllerApi
-import org.openapitools.client.apis.TransactionControllerApi
-import org.openapitools.client.apis.UserControllerApi
+import org.openapitools.client.apis.AnalyticsApi
+import org.openapitools.client.apis.AuthApi
+import org.openapitools.client.apis.BudgetsApi
+import org.openapitools.client.apis.CategoriesApi
+import org.openapitools.client.apis.NotificationsApi
+import org.openapitools.client.apis.ReasonsApi
+import org.openapitools.client.apis.SavingsApi
+import org.openapitools.client.apis.ScheduleApi
+import org.openapitools.client.apis.ScheduleBudgetsApi
+import org.openapitools.client.apis.ScheduleTransactionsApi
+import org.openapitools.client.apis.TransactionsApi
+import org.openapitools.client.apis.UsersApi
 import org.openapitools.client.infrastructure.Serializer
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import org.openapitools.client.apis.NotificationControllerApi
-import org.openapitools.client.apis.AnalyticsControllerApi
-import org.openapitools.client.apis.BudgetScheduleControllerApi
 
 object TokenStore {
     var token: String = ""
@@ -51,111 +51,111 @@ object RetrofitClient {
         .addInterceptor(logging)
         .build()
 
-    val authApi: AuthControllerApi by lazy {
+    val authApi: AuthApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(AuthControllerApi::class.java)
+            .create(AuthApi::class.java)
     }
 
-    val budgetApi: BudgetControllerApi by lazy {
+    val budgetApi: BudgetsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(BudgetControllerApi::class.java)
+            .create(BudgetsApi::class.java)
     }
 
-    val userApi: UserControllerApi by lazy {
+    val userApi: UsersApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(UserControllerApi::class.java)
+            .create(UsersApi::class.java)
     }
 
-    val categoryApi: CategoryControllerApi by lazy {
+    val categoryApi: CategoriesApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(CategoryControllerApi::class.java)
+            .create(CategoriesApi::class.java)
     }
 
-    val savingGoalApi: SavingGoalControllerApi by lazy {
+    val savingGoalApi: SavingsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(SavingGoalControllerApi::class.java)
+            .create(SavingsApi::class.java)
     }
 
-    val transactionApi: TransactionControllerApi by lazy {
+    val transactionApi: TransactionsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(TransactionControllerApi::class.java)
+            .create(TransactionsApi::class.java)
     }
 
-    val notificationApi: NotificationControllerApi by lazy {
+    val notificationApi: NotificationsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(NotificationControllerApi::class.java)
+            .create(NotificationsApi::class.java)
     }
 
-    val analyticsApi: AnalyticsControllerApi by lazy {
+    val analyticsApi: AnalyticsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(AnalyticsControllerApi::class.java)
+            .create(AnalyticsApi::class.java)
     }
 
-    val reasonApi: ReasonControllerApi by lazy {
+    val reasonApi: ReasonsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(ReasonControllerApi::class.java)
+            .create(ReasonsApi::class.java)
     }
 
-    val budgetScheduleApi: BudgetScheduleControllerApi by lazy {
+    val budgetScheduleApi: ScheduleBudgetsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(BudgetScheduleControllerApi::class.java)
+            .create(ScheduleBudgetsApi::class.java)
     }
 
-    val transactionScheduleApi: TransactionScheduleControllerApi by lazy {
+    val transactionScheduleApi: ScheduleTransactionsApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(TransactionScheduleControllerApi::class.java)
+            .create(ScheduleTransactionsApi::class.java)
     }
 
-    val scheduleApi: ScheduleControllerApi by lazy {
+    val scheduleApi: ScheduleApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
-            .create(ScheduleControllerApi::class.java)
+            .create(ScheduleApi::class.java)
     }
 }

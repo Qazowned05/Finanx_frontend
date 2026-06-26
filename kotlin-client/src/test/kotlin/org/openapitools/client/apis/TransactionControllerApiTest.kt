@@ -23,12 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.TransactionControllerApi
-import org.openapitools.client.models.TransactionRequest
-import org.openapitools.client.models.TransactionResponse
 
 class TransactionControllerApiTest : ShouldSpec() {
     init {

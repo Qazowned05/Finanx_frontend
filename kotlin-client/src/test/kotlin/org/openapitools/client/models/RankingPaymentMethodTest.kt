@@ -23,11 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.RankingPaymentMethod
-import org.openapitools.client.models.RankingItemPaymentMethod
 
 class RankingPaymentMethodTest : ShouldSpec() {
     init {

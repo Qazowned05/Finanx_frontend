@@ -4,11 +4,11 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **recurrenceType** | [**inline**](#RecurrenceType) |  |  |
-| **interval** | **kotlin.Int** |  |  |
-| **start** | [**java.time.LocalDate**](java.time.LocalDate.md) |  |  |
-| **end** | [**java.time.LocalDate**](java.time.LocalDate.md) |  |  |
-| **dayOfWeek** | [**inline**](#DayOfWeek) |  |  [optional] |
+| **recurrenceType** | [**inline**](#RecurrenceType) | Tipo de recurrencia (diaria, semanal, mensual, anual) |  |
+| **interval** | **kotlin.Int** | Intervalo de repeticion segun el tipo de recurrencia |  |
+| **start** | [**java.time.LocalDate**](java.time.LocalDate.md) | Fecha de inicio de la recurrencia (formato yyyy-MM-dd) |  |
+| **end** | [**java.time.LocalDate**](java.time.LocalDate.md) | Fecha de fin de la recurrencia (formato yyyy-MM-dd) |  |
+| **dayOfWeek** | [**inline**](#DayOfWeek) | Dia especifico de la semana en que aplica la recurrencia (solo relevante si recurrenceType &#x3D; WEEKLY) |  [optional] |
 
 
 <a id="RecurrenceType"></a>

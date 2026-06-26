@@ -9,8 +9,8 @@ import com.example.finanx.data.repository.ScheduleRepository
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.Update2Request
 import java.math.BigDecimal
 
 sealed class RecurringState {
@@ -63,8 +63,8 @@ class ScheduleViewModel : ViewModel() {
         userId: Long,
         categoryId: Long,
         amount: BigDecimal,
-        paymentMethod: Update2Request.PaymentMethod,
-        transactionType: Update2Request.TransactionType,
+        paymentMethod: TransactionScheduleRequest.PaymentMethod,
+        transactionType: TransactionScheduleRequest.TransactionType,
         recurrenceType: RecurrenceRuleRequest.RecurrenceType,
         interval: Int,
         start: java.time.LocalDate,

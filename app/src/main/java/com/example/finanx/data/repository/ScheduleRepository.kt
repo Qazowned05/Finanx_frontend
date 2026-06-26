@@ -1,73 +1,73 @@
 package com.example.finanx.data.repository
 
 import com.example.finanx.data.api.RetrofitClient
-import org.openapitools.client.apis.BudgetScheduleControllerApi
-import org.openapitools.client.apis.ScheduleControllerApi
-import org.openapitools.client.apis.TransactionScheduleControllerApi
-import org.openapitools.client.models.BudgetScheduleResponse
-import org.openapitools.client.models.RecurrenceRuleRequest
-import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.Update2200Response
-import org.openapitools.client.models.Update2Request
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.openapitools.client.apis.ScheduleApi
+import org.openapitools.client.apis.ScheduleBudgetsApi
+import org.openapitools.client.apis.ScheduleTransactionsApi
+import org.openapitools.client.models.BudgetScheduleRequest
+import org.openapitools.client.models.BudgetScheduleResponse
+import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionScheduleRequest
+import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Response
 import java.math.BigDecimal
 
 class ScheduleRepository(
-    private val api: ScheduleControllerApi = RetrofitClient.scheduleApi,
-    private val budgetScheduleApi: BudgetScheduleControllerApi = RetrofitClient.budgetScheduleApi,
-    private val transactionScheduleApi: TransactionScheduleControllerApi = RetrofitClient.transactionScheduleApi
+    private val api: ScheduleApi = RetrofitClient.scheduleApi,
+    private val budgetScheduleApi: ScheduleBudgetsApi = RetrofitClient.budgetScheduleApi,
+    private val transactionScheduleApi: ScheduleTransactionsApi = RetrofitClient.transactionScheduleApi
 ) {
     suspend fun getSchedulesByUserAndState(
         userId: Long,
         state: String
-    ): Response<List<Update2200Response>> =
-        withContext(Dispatchers.IO) { api.findAllByUserAndState(userId, state) }
+    ): Response<List<ScheduleResponse>> =
+        withContext(Dispatchers.IO) { api.findAllScheduleByUserAndState(userId, state) }
 
     suspend fun getBudgetSchedulesByUserAndState(
         userId: Long,
         state: String
     ): Response<List<BudgetScheduleResponse>> =
-        withContext(Dispatchers.IO) { budgetScheduleApi.findAllByUserAndState2(userId, state) }
+        withContext(Dispatchers.IO) { budgetScheduleApi.findAllBudgetScheduleByUserAndState(userId, state) }
 
     suspend fun getTransactionSchedulesByUserAndState(
         userId: Long,
         state: String
     ): Response<List<TransactionScheduleResponse>> =
-        withContext(Dispatchers.IO) { transactionScheduleApi.findAllByUserAndState1(userId, state) }
+        withContext(Dispatchers.IO) { transactionScheduleApi.findAllTScheduleByUserAndState(userId, state) }
 
     suspend fun pauseSchedule(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.pause(id) }
+        withContext(Dispatchers.IO) { api.pauseSchedule(id) }
 
     suspend fun resumeSchedule(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.resume(id) }
+        withContext(Dispatchers.IO) { api.resumeSchedule(id) }
 
     suspend fun cancelSchedule(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.cancel(id) }
+        withContext(Dispatchers.IO) { api.cancelSchedule(id) }
 
     suspend fun disableSchedule(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.disable6(id) }
+        withContext(Dispatchers.IO) { api.disableSchedule(id) }
 
-    suspend fun updateSchedule(id: Long, request: Update2Request): Response<Update2200Response> =
-        withContext(Dispatchers.IO) { api.update2(id, request) }
+    suspend fun updateSchedule(id: Long, request: ScheduleRequest): Response<ScheduleResponse> =
+        withContext(Dispatchers.IO) { api.updateSchedule(id, request) }
 
     suspend fun createTransactionSchedule(
         userId: Long,
         categoryId: Long,
         amount: BigDecimal,
-        paymentMethod: Update2Request.PaymentMethod,
-        transactionType: Update2Request.TransactionType,
+        paymentMethod: TransactionScheduleRequest.PaymentMethod,
+        transactionType: TransactionScheduleRequest.TransactionType,
         recurrenceRule: RecurrenceRuleRequest,
         reasonId: Long? = null
-    ): Response<Update2200Response> = withContext(Dispatchers.IO) {
-        val request = Update2Request(
+    ): Response<ScheduleResponse> = withContext(Dispatchers.IO) {
+        val request: ScheduleRequest = TransactionScheduleRequest(
             userId = userId,
             categoryId = categoryId,
             type = "TRANSACTION",
-            alertable = false,
-            percentAlert = 0,
-            limitAmount = BigDecimal.ZERO,
             description = "",
             amount = amount,
             paymentMethod = paymentMethod,
@@ -75,7 +75,7 @@ class ScheduleRepository(
             recurrenceRule = recurrenceRule,
             reasonId = reasonId
         )
-        api.create1(request)
+        api.createSchedule(request)
     }
 
     suspend fun createBudgetSchedule(
@@ -86,8 +86,8 @@ class ScheduleRepository(
         limitAmount: BigDecimal,
         description: String,
         recurrenceRule: RecurrenceRuleRequest
-    ): Response<Update2200Response> = withContext(Dispatchers.IO) {
-        val request = Update2Request(
+    ): Response<ScheduleResponse> = withContext(Dispatchers.IO) {
+        val request: ScheduleRequest = BudgetScheduleRequest(
             userId = userId,
             categoryId = categoryId,
             type = "BUDGET",
@@ -95,11 +95,8 @@ class ScheduleRepository(
             percentAlert = percentAlert,
             limitAmount = limitAmount,
             description = description,
-            amount = BigDecimal.ZERO,
-            paymentMethod = Update2Request.PaymentMethod.OTHER,
-            transactionType = Update2Request.TransactionType.SPENT,
             recurrenceRule = recurrenceRule
         )
-        api.create1(request)
+        api.createSchedule(request)
     }
 }

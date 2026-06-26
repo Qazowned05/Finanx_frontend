@@ -4,11 +4,11 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **reasonId** | **kotlin.Long** |  |  [optional] |
-| **reasonDesc** | **kotlin.String** |  |  [optional] |
-| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **paymentMethod** | [**inline**](#PaymentMethod) |  |  [optional] |
-| **transactionType** | [**inline**](#TransactionType) |  |  [optional] |
+| **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion |  [optional] |
+| **reasonDesc** | **kotlin.String** | Descripcion del motivo asociado a la transaccion |  [optional] |
+| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion programada |  [optional] |
+| **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago de la transaccion |  [optional] |
+| **transactionType** | [**inline**](#TransactionType) | Tipo de transaccion (ingreso o gasto) |  [optional] |
 
 
 <a id="PaymentMethod"></a>

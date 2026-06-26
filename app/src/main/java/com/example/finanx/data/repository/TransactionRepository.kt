@@ -13,34 +13,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import org.openapitools.client.apis.CategoryControllerApi
-import org.openapitools.client.apis.ReasonControllerApi
-import org.openapitools.client.apis.SavingGoalControllerApi
-import org.openapitools.client.apis.ScheduleControllerApi
-import org.openapitools.client.apis.TransactionControllerApi
-import org.openapitools.client.apis.TransactionScheduleControllerApi
+import org.openapitools.client.apis.CategoriesApi
+import org.openapitools.client.apis.ReasonsApi
+import org.openapitools.client.apis.SavingsApi
+import org.openapitools.client.apis.ScheduleApi
+import org.openapitools.client.apis.ScheduleTransactionsApi
+import org.openapitools.client.apis.TransactionsApi
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
 import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.Update2Request
 import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.time.DayOfWeek
 class TransactionRepository(
-    private val transactionApi: TransactionControllerApi =
+    private val transactionApi: TransactionsApi =
         RetrofitClient.transactionApi,
-    private val categoryApi: CategoryControllerApi =
+    private val categoryApi: CategoriesApi =
         RetrofitClient.categoryApi,
-    private val reasonApi: ReasonControllerApi =
+    private val reasonApi: ReasonsApi =
         RetrofitClient.reasonApi,
-    private val savingGoalApi: SavingGoalControllerApi =
+    private val savingGoalApi: SavingsApi =
         RetrofitClient.savingGoalApi,
-    private val transactionScheduleApi: TransactionScheduleControllerApi =
+    private val transactionScheduleApi: ScheduleTransactionsApi =
         RetrofitClient.transactionScheduleApi,
-    private val scheduleApi: ScheduleControllerApi =
+    private val scheduleApi: ScheduleApi =
         RetrofitClient.scheduleApi
 ) {
 
@@ -49,25 +48,25 @@ class TransactionRepository(
             coroutineScope {
             val transactionsDeferred = async {
                 transactionApi
-                    .findAllActiveByUser(userId)
+                    .findAllActiveTransactionByUser(userId)
                     .bodyOrThrow("No se pudieron obtener los movimientos")
             }
 
             val categoriesDeferred = async {
                 categoryApi
-                    .findAllByUser3(userId)
+                    .findAllCategoriesByUser(userId)
                     .bodyOrThrow("No se pudieron obtener las categorías")
             }
 
             val reasonsDeferred = async {
                 reasonApi
-                    .findAllByUser1(userId)
+                    .findAllReasonByUser(userId)
                     .bodyOrThrow("No se pudieron obtener los motivos")
             }
 
             val goalsDeferred = async {
                 savingGoalApi
-                    .findAllActiveByUser1(userId)
+                    .findAllActiveSavingGoalByUser(userId)
                     .bodyOrThrow("No se pudieron obtener las metas")
             }
 
@@ -154,10 +153,10 @@ class TransactionRepository(
         coroutineScope {
             val runningDeferred = async {
                 transactionScheduleApi
-                    .findAllByUserAndState1(
+                    .findAllTScheduleByUserAndState(
                         idUser = userId,
-                        state = TransactionScheduleControllerApi
-                            .StateFindAllByUserAndState1
+                        state = ScheduleTransactionsApi
+                            .StateFindAllTScheduleByUserAndState
                             .RUNNING
                             .value
                     )
@@ -166,10 +165,10 @@ class TransactionRepository(
 
             val pausedDeferred = async {
                 transactionScheduleApi
-                    .findAllByUserAndState1(
+                    .findAllTScheduleByUserAndState(
                         idUser = userId,
-                        state = TransactionScheduleControllerApi
-                            .StateFindAllByUserAndState1
+                        state = ScheduleTransactionsApi
+                            .StateFindAllTScheduleByUserAndState
                             .PAUSED
                             .value
                     )
@@ -187,7 +186,7 @@ class TransactionRepository(
     ): Unit = withContext(Dispatchers.IO) {
         if (command.schedule != null) {
             scheduleApi
-                .create1(command.toScheduleRequest())
+                .createSchedule(command.toScheduleRequest())
                 .bodyOrThrow("No se pudo registrar la programación")
             return@withContext
         }
@@ -195,7 +194,7 @@ class TransactionRepository(
         val request = command.toRequest()
 
         transactionApi
-            .create(request)
+            .createTransaction(request)
             .bodyOrThrow("No se pudo registrar el movimiento")
     }
 
@@ -204,7 +203,7 @@ class TransactionRepository(
         command: NewTransactionCommand
     ): TransactionRecord = withContext(Dispatchers.IO) {
         val updated = transactionApi
-            .update1(
+            .updateTransaction(
                 id = transactionId,
                 transactionRequest = command.toRequest()
             )
@@ -219,25 +218,25 @@ class TransactionRepository(
 
     suspend fun disableTransaction(transactionId: Long) = withContext(Dispatchers.IO) {
         transactionApi
-            .disable(transactionId)
+            .transactionDelete(transactionId)
             .ensureSuccessful("No se pudo eliminar el movimiento")
     }
 
     suspend fun pauseSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
-            .pause(scheduleId)
+            .pauseSchedule(scheduleId)
             .ensureSuccessful("No se pudo pausar la programación")
     }
 
     suspend fun resumeSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
-            .resume(scheduleId)
+            .resumeSchedule(scheduleId)
             .ensureSuccessful("No se pudo reanudar la programación")
     }
 
     suspend fun cancelSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
         scheduleApi
-            .cancel(scheduleId)
+            .cancelSchedule(scheduleId)
             .ensureSuccessful("No se pudo cancelar la programación")
     }
 }
@@ -262,21 +261,18 @@ private fun NewTransactionCommand.toRequest(): TransactionRequest =
         savingGoalId = savingGoalId
     )
 
-private fun NewTransactionCommand.toScheduleRequest(): Update2Request {
+private fun NewTransactionCommand.toScheduleRequest(): TransactionScheduleRequest {
     val scheduleConfig =
         schedule ?: throw ApiException("Falta configurar la recurrencia")
 
-    return Update2Request(
+    return TransactionScheduleRequest(
         userId = userId,
         categoryId = categoryId,
         type = "TRANSACTION",
-        alertable = false,
-        percentAlert = 0,
-        limitAmount = amount,
         description = newReason?.trim()?.takeIf(String::isNotBlank) ?: "Programación",
         amount = amount,
-        paymentMethod = Update2Request.PaymentMethod.valueOf(paymentMethod.name),
-        transactionType = Update2Request.TransactionType.valueOf(type.name),
+        paymentMethod = TransactionScheduleRequest.PaymentMethod.valueOf(paymentMethod.name),
+        transactionType = TransactionScheduleRequest.TransactionType.valueOf(type.name),
         recurrenceRule = RecurrenceRuleRequest(
             recurrenceType = RecurrenceRuleRequest.RecurrenceType.valueOf(
                 scheduleConfig.recurrenceType.name

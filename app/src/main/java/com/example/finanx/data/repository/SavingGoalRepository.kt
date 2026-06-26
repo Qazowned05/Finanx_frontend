@@ -1,32 +1,32 @@
 package com.example.finanx.data.repository
 
 import com.example.finanx.data.api.RetrofitClient
-import org.openapitools.client.apis.SavingGoalControllerApi
-import org.openapitools.client.models.SavingGoalRequest
-import org.openapitools.client.models.SavingGoalResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.openapitools.client.apis.SavingsApi
+import org.openapitools.client.models.SavingGoalRequest
+import org.openapitools.client.models.SavingGoalResponse
 import retrofit2.Response
 
 class SavingGoalRepository(
-    private val api: SavingGoalControllerApi = RetrofitClient.savingGoalApi
+    private val api: SavingsApi = RetrofitClient.savingGoalApi
 ) {
 
     suspend fun getSavingGoals(userId: Long): Response<List<SavingGoalResponse>> =
-        withContext(Dispatchers.IO) { api.findAllActiveByUser1(userId) }
+        withContext(Dispatchers.IO) { api.findAllActiveSavingGoalByUser(userId) }
 
     suspend fun getSavingGoalById(id: Long): Response<SavingGoalResponse> =
-        withContext(Dispatchers.IO) { api.findById2(id) }
+        withContext(Dispatchers.IO) { api.findSavingGoalById(id) }
 
     suspend fun createSavingGoal(request: SavingGoalRequest): Response<SavingGoalResponse> =
-        withContext(Dispatchers.IO) { api.create2(request) }
+        withContext(Dispatchers.IO) { api.createSavingGoal(request) }
 
     suspend fun updateSavingGoal(id: Long, request: SavingGoalRequest): Response<SavingGoalResponse> =
-        withContext(Dispatchers.IO) { api.update3(id, request) }
+        withContext(Dispatchers.IO) { api.updateSavingGoal(id, request) }
 
     suspend fun disableSavingGoal(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.disable3(id) }
+        withContext(Dispatchers.IO) { api.disableSavingGoal(id) }
 
     suspend fun cancelSavingGoal(id: Long): Response<Unit> =
-        withContext(Dispatchers.IO) { api.cancel1(id) }
+        withContext(Dispatchers.IO) { api.cancelSavingGoal(id) }
 }

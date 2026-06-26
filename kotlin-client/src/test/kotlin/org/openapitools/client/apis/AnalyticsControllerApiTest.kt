@@ -23,13 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.AnalyticsControllerApi
-import org.openapitools.client.models.BudgetExecutionResponse
-import org.openapitools.client.models.Budgets200Response
-import org.openapitools.client.models.PeriodRequest
 
 class AnalyticsControllerApiTest : ShouldSpec() {
     init {

@@ -4,12 +4,12 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **name** | **kotlin.String** |  |  |
-| **lastname** | **kotlin.String** |  |  |
-| **email** | **kotlin.String** |  |  |
-| **username** | **kotlin.String** |  |  |
-| **password** | **kotlin.String** |  |  |
-| **timeZone** | [**inline**](#TimeZone) |  |  |
+| **name** | **kotlin.String** | Nombres del usuario |  |
+| **lastname** | **kotlin.String** | Apellidos del usuario |  |
+| **email** | **kotlin.String** | Correo electronico del usuario |  |
+| **username** | **kotlin.String** | Nombre de usuario unico |  |
+| **password** | **kotlin.String** | ContraseÃ±a del usuario |  |
+| **timeZone** | [**inline**](#TimeZone) | Zona horaria preferida del usuario |  |
 
 
 <a id="TimeZone"></a>

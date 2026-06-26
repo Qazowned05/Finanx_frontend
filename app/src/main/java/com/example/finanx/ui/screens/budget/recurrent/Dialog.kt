@@ -1,7 +1,5 @@
 package com.example.finanx.ui.screens.budget.recurrent
 
-import android.app.DatePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +55,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.theme.BrownPrimary
@@ -71,10 +68,10 @@ import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.RecurringActionState
 import com.example.finanx.ui.viewmodel.RecurringState
 import com.example.finanx.ui.viewmodel.ScheduleViewModel
-import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
-import org.openapitools.client.models.Update2Request
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
@@ -165,8 +162,8 @@ fun CreateRecurringDialog(
     var amountStr by remember { mutableStateOf("") }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
     var categoryExpanded by remember { mutableStateOf(false) }
-    var transactionType by remember { mutableStateOf(Update2Request.TransactionType.SPENT) }
-    var paymentMethod by remember { mutableStateOf(Update2Request.PaymentMethod.CASH) }
+    var transactionType by remember { mutableStateOf(TransactionScheduleRequest.TransactionType.SPENT) }
+    var paymentMethod by remember { mutableStateOf(TransactionScheduleRequest.PaymentMethod.CASH) }
     var alertable by remember { mutableStateOf(true) }
     var percentAlertStr by remember { mutableStateOf("80") }
     var recurrenceType by remember { mutableStateOf(RecurrenceRuleRequest.RecurrenceType.MONTHLY) }
@@ -245,8 +242,10 @@ fun CreateRecurringDialog(
 
                 if (kind == 0) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        FilterChip(selected = transactionType == Update2Request.TransactionType.SPENT, onClick = { transactionType = Update2Request.TransactionType.SPENT }, label = { Text("Gasto") })
-                        FilterChip(selected = transactionType == Update2Request.TransactionType.INCOME, onClick = { transactionType = Update2Request.TransactionType.INCOME }, label = { Text("Ingreso") })
+                        FilterChip(selected = transactionType == TransactionScheduleRequest.TransactionType.SPENT, onClick = { transactionType =
+                            TransactionScheduleRequest.TransactionType.SPENT }, label = { Text("Gasto") })
+                        FilterChip(selected = transactionType == TransactionScheduleRequest.TransactionType.INCOME, onClick = { transactionType =
+                            TransactionScheduleRequest.TransactionType.INCOME }, label = { Text("Ingreso") })
                     }
                 } else {
                     Row(verticalAlignment = Alignment.CenterVertically) {

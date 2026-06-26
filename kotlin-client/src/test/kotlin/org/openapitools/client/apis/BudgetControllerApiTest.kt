@@ -23,14 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.BudgetControllerApi
-import org.openapitools.client.models.BudgetRequest
-import org.openapitools.client.models.BudgetResponse
-import org.openapitools.client.models.PeriodRequest
-import org.openapitools.client.models.TimeBoundListBudgetResponse
 
 class BudgetControllerApiTest : ShouldSpec() {
     init {

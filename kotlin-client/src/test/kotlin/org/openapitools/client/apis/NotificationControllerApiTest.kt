@@ -23,11 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.NotificationControllerApi
-import org.openapitools.client.models.NotificationDTO
 
 class NotificationControllerApiTest : ShouldSpec() {
     init {

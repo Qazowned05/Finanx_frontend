@@ -4,22 +4,22 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long** |  |  [optional] |
-| **userId** | **kotlin.Long** |  |  [optional] |
-| **userEmail** | **kotlin.String** |  |  [optional] |
-| **type** | [**inline**](#Type) |  |  [optional] |
-| **message** | **kotlin.String** |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **scheduledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **sentAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **state** | [**inline**](#State) |  |  [optional] |
-| **scheduleId** | **kotlin.Long** |  |  [optional] |
-| **budgetId** | **kotlin.Long** |  |  [optional] |
-| **budgetDescription** | **kotlin.String** |  |  [optional] |
-| **budgetState** | [**inline**](#BudgetState) |  |  [optional] |
-| **savingGoalId** | **kotlin.Long** |  |  [optional] |
-| **savingGoalDescription** | **kotlin.String** |  |  [optional] |
+| **id** | **kotlin.Long** | Identificador unico de la notificacion |  [optional] |
+| **userId** | **kotlin.Long** | Identificador del usuario asociado a la notificacion |  [optional] |
+| **userEmail** | **kotlin.String** | Correo electronico del usuario |  [optional] |
+| **type** | [**inline**](#Type) | Tipo de notificacion |  [optional] |
+| **message** | **kotlin.String** | Mensaje de la notificacion |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion de la notificacion |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que la notificacion fue deshabilitada, si aplica |  [optional] |
+| **scheduledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora programada para enviar la notificacion |  [optional] |
+| **sentAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que la notificacion fue enviada |  [optional] |
+| **state** | [**inline**](#State) | Estado actual de la notificacion |  [optional] |
+| **scheduleId** | **kotlin.Long** | Identificador de la programacion asociada |  [optional] |
+| **budgetId** | **kotlin.Long** | Identificador del presupuesto asociado |  [optional] |
+| **budgetDescription** | **kotlin.String** | Descripcion del presupuesto asociado |  [optional] |
+| **budgetState** | [**inline**](#BudgetState) | Estado del presupuesto asociado |  [optional] |
+| **savingGoalId** | **kotlin.Long** | Identificador de la meta de ahorro asociada |  [optional] |
+| **savingGoalDescription** | **kotlin.String** | Descripcion de la meta de ahorro asociada |  [optional] |
 
 
 <a id="Type"></a>

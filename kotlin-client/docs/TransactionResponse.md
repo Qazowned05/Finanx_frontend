@@ -4,20 +4,20 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long** |  |  [optional] |
-| **userId** | **kotlin.Long** |  |  [optional] |
-| **categoryId** | **kotlin.Long** |  |  [optional] |
-| **categoryName** | **kotlin.String** |  |  [optional] |
-| **reasonId** | **kotlin.Long** |  |  [optional] |
-| **reasonDescription** | **kotlin.String** |  |  [optional] |
-| **savingGoalId** | **kotlin.Long** |  |  [optional] |
-| **scheduleId** | **kotlin.Long** |  |  [optional] |
-| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **paymentMethod** | [**inline**](#PaymentMethod) |  |  [optional] |
-| **type** | [**inline**](#Type) |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **active** | **kotlin.Boolean** |  |  [optional] |
+| **id** | **kotlin.Long** | Identificador unico de la transaccion |  [optional] |
+| **userId** | **kotlin.Long** | Identificador unico del usuario asociado a la transaccion |  [optional] |
+| **categoryId** | **kotlin.Long** | Identificador unico de la categoria asociada a la transaccion |  [optional] |
+| **categoryName** | **kotlin.String** | Nombre de la categoria asociada a la transaccion |  [optional] |
+| **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion, si aplica |  [optional] |
+| **reasonDescription** | **kotlin.String** | Descripcion del motivo asociado a la transaccion |  [optional] |
+| **savingGoalId** | **kotlin.Long** | Identificador de la meta de ahorro asociada, si aplica |  [optional] |
+| **scheduleId** | **kotlin.Long** | Identificador de la programacion asociada, si aplica |  [optional] |
+| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion |  [optional] |
+| **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago utilizado en la transaccion |  [optional] |
+| **type** | [**inline**](#Type) | Tipo de transaccion (ingreso o gasto) |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion de la transaccion |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que la transaccion fue deshabilitada, si aplica |  [optional] |
+| **active** | **kotlin.Boolean** | Indica si la transaccion esta activa |  [optional] |
 
 
 <a id="PaymentMethod"></a>

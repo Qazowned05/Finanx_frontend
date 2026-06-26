@@ -4,14 +4,14 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long** |  |  |
-| **categoryId** | **kotlin.Long** |  |  |
-| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  |
-| **paymentMethod** | [**inline**](#PaymentMethod) |  |  |
-| **type** | [**inline**](#Type) |  |  |
-| **reasonId** | **kotlin.Long** |  |  [optional] |
-| **description** | **kotlin.String** |  |  [optional] |
-| **savingGoalId** | **kotlin.Long** |  |  [optional] |
+| **userId** | **kotlin.Long** | Identificador unico del usuario asociado a la transaccion |  |
+| **categoryId** | **kotlin.Long** | Identificador unico de la categoria asociada a la transaccion |  |
+| **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion (debe ser mayor a 0) |  |
+| **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago utilizado en la transaccion |  |
+| **type** | [**inline**](#Type) | Tipo de transaccion (ingreso o gasto) |  |
+| **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion, si aplica |  [optional] |
+| **description** | **kotlin.String** | Descripcion de la transaccion |  [optional] |
+| **savingGoalId** | **kotlin.Long** | Identificador de la meta de ahorro asociada, si aplica |  [optional] |
 
 
 <a id="PaymentMethod"></a>

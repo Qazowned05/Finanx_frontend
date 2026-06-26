@@ -582,6 +582,7 @@ private fun AppNavigation(
                     user = user,
                     userId = userId,
                     viewModel = userViewModel,
+                    onLogout = { authViewModel.logout() },
                     onBack = {
                         navController.popBackStack()
                     }

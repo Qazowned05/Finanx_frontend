@@ -23,12 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.ReasonControllerApi
-import org.openapitools.client.models.ReasonRequest
-import org.openapitools.client.models.ReasonResponse
 
 class ReasonControllerApiTest : ShouldSpec() {
     init {

@@ -23,12 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.CategoryControllerApi
-import org.openapitools.client.models.CategoryRequest
-import org.openapitools.client.models.CategoryResponse
 
 class CategoryControllerApiTest : ShouldSpec() {
     init {

@@ -23,11 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.AggregateByPaymentMethod
-import org.openapitools.client.models.Aggregate
 
 class AggregateByPaymentMethodTest : ShouldSpec() {
     init {

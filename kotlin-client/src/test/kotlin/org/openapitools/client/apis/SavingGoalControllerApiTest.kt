@@ -23,12 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.SavingGoalControllerApi
-import org.openapitools.client.models.SavingGoalRequest
-import org.openapitools.client.models.SavingGoalResponse
 
 class SavingGoalControllerApiTest : ShouldSpec() {
     init {

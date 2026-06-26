@@ -43,7 +43,7 @@ fun InsightSummaryCard(
     aiGenerated: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    val insights = insightSummary.insights.orEmpty()
+    val insights = insightSummary.insights.orEmpty();
     if (insights.isEmpty()) return
 
     Card(

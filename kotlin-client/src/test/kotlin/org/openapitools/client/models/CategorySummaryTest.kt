@@ -23,10 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.CategorySummary
 
 class CategorySummaryTest : ShouldSpec() {
     init {

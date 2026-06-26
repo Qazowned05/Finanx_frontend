@@ -23,12 +23,7 @@
 
 package org.openapitools.client.models
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.models.AggregateBySavingGoalResponse
-import org.openapitools.client.models.Aggregate
-import org.openapitools.client.models.SavingGoalResponse
 
 class AggregateBySavingGoalResponseTest : ShouldSpec() {
     init {

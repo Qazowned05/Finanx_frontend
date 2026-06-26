@@ -23,13 +23,7 @@
 
 package org.openapitools.client.apis
 
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
-
-import org.openapitools.client.apis.UserControllerApi
-import org.openapitools.client.models.LoginResponse
-import org.openapitools.client.models.UserRequest
-import org.openapitools.client.models.UserResponse
 
 class UserControllerApiTest : ShouldSpec() {
     init {

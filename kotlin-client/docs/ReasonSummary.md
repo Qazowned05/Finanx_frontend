@@ -4,8 +4,8 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long** |  |  [optional] |
-| **description** | **kotlin.String** |  |  [optional] |
+| **id** | **kotlin.Long** | Identificador unico del motivo |  [optional] |
+| **description** | **kotlin.String** | Descripcion breve del motivo |  [optional] |
 
 
 

@@ -4,18 +4,18 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
-| **id** | **kotlin.Long** |  |  [optional] |
-| **name** | **kotlin.String** |  |  [optional] |
-| **lastname** | **kotlin.String** |  |  [optional] |
-| **email** | **kotlin.String** |  |  [optional] |
-| **username** | **kotlin.String** |  |  [optional] |
-| **role** | [**inline**](#Role) |  |  [optional] |
-| **state** | [**inline**](#State) |  |  [optional] |
-| **moneyBalance** | [**java.math.BigDecimal**](java.math.BigDecimal.md) |  |  [optional] |
-| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) |  |  [optional] |
-| **fullName** | **kotlin.String** |  |  [optional] |
-| **timeZone** | [**inline**](#TimeZone) |  |  [optional] |
+| **id** | **kotlin.Long** | Identificador unico del usuario |  [optional] |
+| **name** | **kotlin.String** | Nombres del usuario |  [optional] |
+| **lastname** | **kotlin.String** | Apellidos del usuario |  [optional] |
+| **email** | **kotlin.String** | Correo electronico del usuario |  [optional] |
+| **username** | **kotlin.String** | Nombre de usuario unico |  [optional] |
+| **role** | [**inline**](#Role) | Rol asignado al usuario |  [optional] |
+| **state** | [**inline**](#State) | Estado actual del usuario |  [optional] |
+| **moneyBalance** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Balance monetario del usuario |  [optional] |
+| **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion del usuario |  [optional] |
+| **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que el usuario fue deshabilitado, si aplica |  [optional] |
+| **fullName** | **kotlin.String** | Nombre completo del usuario en formato concatenado |  [optional] |
+| **timeZone** | [**inline**](#TimeZone) | Zona horaria preferida del usuario |  [optional] |
 
 
 <a id="Role"></a>
