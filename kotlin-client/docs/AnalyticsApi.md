@@ -25,18 +25,16 @@ Genera el dashboard de balance basado en un periodo y un prompt opcional.
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsApi::class.java)
 val periodRequest : PeriodRequest =  // PeriodRequest | 
-val prompt : kotlin.String = prompt_example // kotlin.String | Prompt opcional
 
 launch(Dispatchers.IO) {
-    val result : GetBudgetsDashboard200Response = webService.getBalanceDashboard(periodRequest, prompt)
+    val result : GetBudgetsDashboard200Response = webService.getBalanceDashboard(periodRequest)
 }
 ```
 
 ### Parameters
-| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **prompt** | **kotlin.String**| Prompt opcional | [optional] |
+| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 
 ### Return type
 
@@ -105,18 +103,16 @@ Genera el dashboard de presupuestos.
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsApi::class.java)
 val periodRequest : PeriodRequest =  // PeriodRequest | 
-val prompt : kotlin.String = prompt_example // kotlin.String | 
 
 launch(Dispatchers.IO) {
-    val result : GetBudgetsDashboard200Response = webService.getBudgetsDashboard(periodRequest, prompt)
+    val result : GetBudgetsDashboard200Response = webService.getBudgetsDashboard(periodRequest)
 }
 ```
 
 ### Parameters
-| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **prompt** | **kotlin.String**|  | [optional] |
+| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
 
 ### Return type
 

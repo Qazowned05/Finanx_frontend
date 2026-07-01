@@ -2,7 +2,7 @@ package com.example.finanx.ui.screens.transaction.create
 
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.NewTransactionCommand
 import com.example.finanx.data.model.NewTransactionSchedule
 import com.example.finanx.data.model.PaymentMethod
@@ -11,8 +11,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class CreateTransactionFormState(
-    val type: MovementType =
-        MovementType.SPENT,
+    val type: TransactionType = TransactionType.SPENT,
 
     val amountText: String = "",
 
@@ -194,11 +193,11 @@ val CreateTransactionFormStateSaver:
         restore = { values ->
             CreateTransactionFormState(
                 type = runCatching {
-                    MovementType.valueOf(
+                    TransactionType.valueOf(
                         values[0] as String
                     )
                 }.getOrDefault(
-                    MovementType.SPENT
+                    TransactionType.SPENT
                 ),
                 amountText =
                     values[1] as String,
@@ -221,8 +220,7 @@ val CreateTransactionFormStateSaver:
                 ),
                 savingGoalId =
                     (values[7] as Long)
-                        .takeIf { it >= 0 }
-                ,
+                        .takeIf { it >= 0 },
                 isScheduled =
                     values.getOrNull(8) as? Boolean
                         ?: false,

@@ -1,7 +1,8 @@
 package com.example.finanx.data.repository
 
 import com.example.finanx.data.api.RetrofitClient
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.CategoryOption
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.NewTransactionCommand
 import com.example.finanx.data.model.PaymentMethod
 import com.example.finanx.data.model.ScheduledTransactionRecord
@@ -110,9 +111,10 @@ class TransactionRepository(
                     .filter { it.active == true }
                     .mapNotNull { category ->
                         val id = category.id ?: return@mapNotNull null
-                        SelectOption(
+                        CategoryOption(
                             id = id,
-                            label = category.name ?: "Categoría $id"
+                            label = category.name ?: "Categoría $id",
+                            type = TransactionType.valueOf(category.type.toString())
                         )
                     }
                     .sortedBy { it.label },
@@ -185,8 +187,7 @@ class TransactionRepository(
         command: NewTransactionCommand
     ): Unit = withContext(Dispatchers.IO) {
         if (command.schedule != null) {
-            scheduleApi
-                .createSchedule(command.toScheduleRequest())
+            scheduleApi.createSchedule(command.toScheduleRequest())
                 .bodyOrThrow("No se pudo registrar la programación")
             return@withContext
         }
@@ -317,7 +318,7 @@ private fun TransactionResponse.toRecord(
         paymentMethod = PaymentMethod.valueOf(
             paymentMethod?.name ?: PaymentMethod.OTHER.name
         ),
-        type = MovementType.valueOf(responseType.name),
+        type = TransactionType.valueOf(responseType.name),
         createdAt = createdAt,
         active = active == true
     )
@@ -335,7 +336,7 @@ private fun TransactionScheduleResponse.toRecord(): ScheduledTransactionRecord? 
         paymentMethod = PaymentMethod.valueOf(
             paymentMethod?.name ?: PaymentMethod.OTHER.name
         ),
-        type = MovementType.valueOf(responseType.name),
+        type = TransactionType.valueOf(responseType.name),
         state = state?.name ?: "CREATED",
         nextRunAt = nextRunAt
     )

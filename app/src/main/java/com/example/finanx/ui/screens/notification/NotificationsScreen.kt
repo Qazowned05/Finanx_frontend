@@ -31,7 +31,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,7 +43,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.BrownPrimary
 import com.example.finanx.ui.theme.BrownSecondary
 import com.example.finanx.ui.theme.ExpenseRed
@@ -73,83 +71,68 @@ fun NotificacionesScreen(
     val visibleNotifications = state.notifications
         .filter { it.state != NotificationDTO.State.DISCARD }
 
-    Scaffold(
-        containerColor = WarmBackground,
-        topBar = {
-            FinanxTopAppBar(
-                title = "Notificaciones",
-                onBack = onBack,
-                onNotifications = null,
-                onProfile = onProfile,
-                onLogout = onLogout
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(WarmBackground)
-                .padding(padding)
-                .padding(horizontal = 18.dp, vertical = 20.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 18.dp, vertical = 20.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Text(
+                text = "${visibleNotifications.size} pendientes",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(onClick = { viewModel.fetchAll(userId) }) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Actualizar",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "${visibleNotifications.size} pendientes",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = StoneGray,
-                    modifier = Modifier.weight(1f)
-                )
-
-                IconButton(onClick = { viewModel.fetchAll(userId) }) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Actualizar",
-                        tint = BrownPrimary
-                    )
-                }
+                CircularProgressIndicator(color = BrownPrimary)
             }
+        }
 
-            Spacer(modifier = Modifier.height(18.dp))
+        state.error?.let { error ->
+            ErrorMessage(
+                message = error,
+                onRetry = { viewModel.fetchAll(userId) }
+            )
 
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = BrownPrimary)
-                }
-            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
-            state.error?.let { error ->
-                ErrorMessage(
-                    message = error,
-                    onRetry = { viewModel.fetchAll(userId) }
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-
-            if (!state.isLoading && visibleNotifications.isEmpty()) {
-                EmptyNotifications()
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(visibleNotifications) { notification ->
-                        NotificationItem(
-                            notification = notification,
-                            onDiscard = {
-                                notification.id?.let { notificationId ->
-                                    viewModel.discardNotification(userId, notificationId)
-                                }
+        if (!state.isLoading && visibleNotifications.isEmpty()) {
+            EmptyNotifications()
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(visibleNotifications) { notification ->
+                    NotificationItem(
+                        notification = notification,
+                        onDiscard = {
+                            notification.id?.let { notificationId ->
+                                viewModel.discardNotification(userId, notificationId)
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
@@ -166,7 +149,7 @@ private fun NotificationItem(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -228,7 +211,7 @@ private fun NotificationItem(
                 Icon(
                     imageVector = Icons.Default.DeleteOutline,
                     contentDescription = "Descartar notificación",
-                    tint = StoneGray
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

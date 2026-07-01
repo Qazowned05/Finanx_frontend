@@ -46,6 +46,7 @@ import java.io.Serializable
  * @param createdAt Fecha y hora de creacion del dashboard
  * @param insightSummary Resumen de insights generados para el periodo
  * @param aggregate Agregado general con metricas calculadas
+ * @param balance Balance del periodo
  * @param summaryByCategory Ranking de categorias con metricas resumidas
  * @param summaryByPaymentMethod Ranking de metodos de pago con metricas resumidas
  * @param summaryByType Ranking por tipo de transaccion con metricas resumidas
@@ -81,6 +82,10 @@ data class TransactionsDashboard (
     /* Agregado general con metricas calculadas */
     @Json(name = "aggregate")
     override val aggregate: Aggregate? = null,
+
+    /* Balance del periodo */
+    @Json(name = "balance")
+    val balance: java.math.BigDecimal? = null,
 
     /* Ranking de categorias con metricas resumidas */
     @Json(name = "summaryByCategory")

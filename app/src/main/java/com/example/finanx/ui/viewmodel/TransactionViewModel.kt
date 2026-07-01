@@ -108,6 +108,7 @@ class TransactionViewModel(
         }
     }
 
+    //TODO
     fun disableTransaction(transactionId: Long) {
         viewModelScope.launch {
             try {

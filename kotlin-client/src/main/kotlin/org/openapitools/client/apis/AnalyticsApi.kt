@@ -3,12 +3,9 @@ package org.openapitools.client.apis
 import org.openapitools.client.infrastructure.CollectionFormats.*
 import retrofit2.http.*
 import retrofit2.Response
-import okhttp3.RequestBody
-import com.squareup.moshi.Json
 
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetsDashboard
-import org.openapitools.client.models.GetBudgetsDashboard200Response
 import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.TransactionsDashboard
 
@@ -16,17 +13,16 @@ interface AnalyticsApi {
     /**
      * POST analytics/dashboard/balance
      * Dashboard de balance
-     * Genera el dashboard de balance basado en un periodo y un prompt opcional.
+     * Genera el dashboard de balance basado en un periodo.
      * Responses:
      *  - 200: Dashboard generado
      *  - 400: Request invalido
      *
-     * @param periodRequest 
-     * @param prompt Prompt opcional (optional)
-     * @return [GetBudgetsDashboard200Response]
+     * @param periodRequest
+     * @return [TransactionsDashboard]
      */
     @POST("analytics/dashboard/balance")
-    suspend fun getBalanceDashboard(@Body periodRequest: PeriodRequest, @Query("prompt") prompt: kotlin.String? = null): Response<TransactionsDashboard>
+    suspend fun getBalanceDashboard(@Body periodRequest: PeriodRequest): Response<TransactionsDashboard>
 
     /**
      * POST analytics/budgets/{id}/execution
@@ -50,12 +46,11 @@ interface AnalyticsApi {
      *  - 200: Dashboard generado
      *  - 400: Request invalido
      *
-     * @param periodRequest 
-     * @param prompt  (optional)
+     * @param periodRequest
      * @return [BudgetsDashboard]
      */
     @POST("analytics/dashboard/budgets")
-    suspend fun getBudgetsDashboard(@Body periodRequest: PeriodRequest, @Query("prompt") prompt: kotlin.String? = null): Response<BudgetsDashboard>
+    suspend fun getBudgetsDashboard(@Body periodRequest: PeriodRequest): Response<BudgetsDashboard>
 
     /**
      * POST analytics/budgets/executions

@@ -132,15 +132,23 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+
                 OutlinedButton(
                     onClick = { if (activity != null) viewModel.loginWithGoogle(activity) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, BrownSecondary.copy(alpha = 0.4f))
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp,
+                        BrownSecondary.copy(alpha = 0.4f)
+                    )
                 ) {
-                    Text("Continuar con Google", style = MaterialTheme.typography.labelLarge, color = BrownPrimary)
+                    Text(
+                        "Continuar con Google",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = BrownPrimary
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

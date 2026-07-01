@@ -59,8 +59,9 @@ android {
 dependencies {
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
+    implementation(libs.androidx.security.crypto)
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)

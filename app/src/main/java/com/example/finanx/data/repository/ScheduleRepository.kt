@@ -11,8 +11,6 @@ import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.ScheduleRequest
 import org.openapitools.client.models.ScheduleResponse
-import org.openapitools.client.models.TransactionRequest
-import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Response
 import java.math.BigDecimal
@@ -55,48 +53,6 @@ class ScheduleRepository(
     suspend fun updateSchedule(id: Long, request: ScheduleRequest): Response<ScheduleResponse> =
         withContext(Dispatchers.IO) { api.updateSchedule(id, request) }
 
-    suspend fun createTransactionSchedule(
-        userId: Long,
-        categoryId: Long,
-        amount: BigDecimal,
-        paymentMethod: TransactionScheduleRequest.PaymentMethod,
-        transactionType: TransactionScheduleRequest.TransactionType,
-        recurrenceRule: RecurrenceRuleRequest,
-        reasonId: Long? = null
-    ): Response<ScheduleResponse> = withContext(Dispatchers.IO) {
-        val request: ScheduleRequest = TransactionScheduleRequest(
-            userId = userId,
-            categoryId = categoryId,
-            type = "TRANSACTION",
-            description = "",
-            amount = amount,
-            paymentMethod = paymentMethod,
-            transactionType = transactionType,
-            recurrenceRule = recurrenceRule,
-            reasonId = reasonId
-        )
-        api.createSchedule(request)
-    }
-
-    suspend fun createBudgetSchedule(
-        userId: Long,
-        categoryId: Long,
-        alertable: Boolean,
-        percentAlert: Int,
-        limitAmount: BigDecimal,
-        description: String,
-        recurrenceRule: RecurrenceRuleRequest
-    ): Response<ScheduleResponse> = withContext(Dispatchers.IO) {
-        val request: ScheduleRequest = BudgetScheduleRequest(
-            userId = userId,
-            categoryId = categoryId,
-            type = "BUDGET",
-            alertable = alertable,
-            percentAlert = percentAlert,
-            limitAmount = limitAmount,
-            description = description,
-            recurrenceRule = recurrenceRule
-        )
-        api.createSchedule(request)
-    }
+    suspend fun createSchedule(request: ScheduleRequest): Response<ScheduleResponse> = withContext(Dispatchers.IO) {
+        api.createSchedule(request) }
 }

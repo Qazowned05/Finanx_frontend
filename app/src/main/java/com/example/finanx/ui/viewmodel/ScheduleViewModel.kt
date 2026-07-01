@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.repository.ScheduleRepository
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.BudgetScheduleRequest
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.ScheduleRequest
 import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import java.math.BigDecimal
+import java.time.LocalDate
 
 sealed class RecurringState {
     object Loading : RecurringState()
@@ -62,13 +65,15 @@ class ScheduleViewModel : ViewModel() {
     fun createTransactionSchedule(
         userId: Long,
         categoryId: Long,
+        reasonId: Long?,
+        description: String?,
         amount: BigDecimal,
         paymentMethod: TransactionScheduleRequest.PaymentMethod,
         transactionType: TransactionScheduleRequest.TransactionType,
         recurrenceType: RecurrenceRuleRequest.RecurrenceType,
         interval: Int,
-        start: java.time.LocalDate,
-        end: java.time.LocalDate,
+        start: LocalDate,
+        end: LocalDate,
         dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null
     ) {
         viewModelScope.launch {
@@ -81,14 +86,17 @@ class ScheduleViewModel : ViewModel() {
                     end = end,
                     dayOfWeek = dayOfWeek
                 )
-                val response = repository.createTransactionSchedule(
+                val response = repository.createSchedule(TransactionScheduleRequest(
                     userId = userId,
                     categoryId = categoryId,
+                    type = "TRANSACTION",
+                    description = description,
                     amount = amount,
                     paymentMethod = paymentMethod,
                     transactionType = transactionType,
-                    recurrenceRule = rule
-                )
+                    recurrenceRule = rule,
+                    reasonId = reasonId
+                ))
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success
                     fetchAll(userId)
@@ -110,8 +118,8 @@ class ScheduleViewModel : ViewModel() {
         description: String,
         recurrenceType: RecurrenceRuleRequest.RecurrenceType,
         interval: Int,
-        start: java.time.LocalDate,
-        end: java.time.LocalDate,
+        start: LocalDate,
+        end: LocalDate,
         dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null
     ) {
         viewModelScope.launch {
@@ -124,14 +132,17 @@ class ScheduleViewModel : ViewModel() {
                     end = end,
                     dayOfWeek = dayOfWeek
                 )
-                val response = repository.createBudgetSchedule(
-                    userId = userId,
-                    categoryId = categoryId,
-                    alertable = alertable,
-                    percentAlert = percentAlert,
-                    limitAmount = limitAmount,
-                    description = description,
-                    recurrenceRule = rule
+                val response = repository.createSchedule(
+                    BudgetScheduleRequest(
+                        userId = userId,
+                        categoryId = categoryId,
+                        alertable = alertable,
+                        percentAlert = percentAlert,
+                        limitAmount = limitAmount,
+                        description = description,
+                        recurrenceRule = rule,
+                        type = "BUDGET"
+                    )
                 )
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success

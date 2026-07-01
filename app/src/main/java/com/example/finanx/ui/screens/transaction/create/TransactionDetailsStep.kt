@@ -3,7 +3,6 @@ package com.example.finanx.ui.screens.transaction.create
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -38,6 +37,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,7 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalFocusManager
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.ui.theme.ExpenseRed
@@ -59,7 +59,6 @@ import java.util.TimeZone
 
 @Composable
 fun TransactionDetailsStep(
-    paddingValues: PaddingValues,
     form: CreateTransactionFormState,
     options: TransactionFormOptions,
     isLoading: Boolean,
@@ -79,8 +78,7 @@ fun TransactionDetailsStep(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
@@ -91,7 +89,6 @@ fun TransactionDetailsStep(
 
     if (options.categories.isEmpty()) {
         EmptyCategoriesContent(
-            paddingValues = paddingValues,
             message = loadError
                 ?: "No tienes categorías disponibles.",
             onRetry = onRetry
@@ -100,38 +97,44 @@ fun TransactionDetailsStep(
         return
     }
 
-    val hasExistingReasons =
-        options.reasons.isNotEmpty()
+    val hasExistingReasons = options.reasons.isNotEmpty()
 
-    val useNewReason =
-        form.usesNewReason(hasExistingReasons)
+    val useNewReason = form.usesNewReason(hasExistingReasons)
 
-    val selectedCategory =
-        options.categories.firstOrNull {
+    val selectedCategory = options.categories.firstOrNull {
             it.id == form.categoryId
         }
 
-    val selectedReason =
-        options.reasons.firstOrNull {
+    val selectedReason = options.reasons.firstOrNull {
             it.id == form.reasonId
         }
 
-    val selectedGoal =
-        options.savingGoals.firstOrNull {
+    val selectedGoal = options.savingGoals.firstOrNull {
             it.id == form.savingGoalId
+    }
+
+    val isSaving = saveState is TransactionSaveState.Saving
+
+    val saveError = (saveState as? TransactionSaveState.Error)
+            ?.message
+
+    val filteredCategories = options.categories.filter {
+        it.type == form.type
+    }
+
+    LaunchedEffect(form.type) {
+        val valid = options.categories.any {
+            it.id == form.categoryId && it.type == form.type
         }
 
-    val isSaving =
-        saveState is TransactionSaveState.Saving
-
-    val saveError =
-        (saveState as? TransactionSaveState.Error)
-            ?.message
+        if (!valid) {
+            onFormChange(form.copy(categoryId = null))
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
             .verticalScroll(rememberScrollState())
             .padding(20.dp),
         verticalArrangement =
@@ -141,29 +144,6 @@ fun TransactionDetailsStep(
             form = form,
             onEdit = onPrevious,
             enabled = !isSaving
-        )
-
-        FormDropdown(
-            label = "Categoría",
-            placeholder = "Selecciona una categoría",
-            items = options.categories,
-            selectedItem = selectedCategory,
-            itemLabel = { it.label },
-            enabled = !isSaving,
-            onItemSelected = { option ->
-                onFormChange(
-                    form.copy(
-                        categoryId = option?.id
-                    )
-                )
-            }
-        )
-
-        Text(
-            text = "La categoría debe corresponder al tipo de movimiento.",
-            style =
-                MaterialTheme.typography.labelSmall,
-            color = TextGray
         )
 
         if (hasExistingReasons) {
@@ -198,7 +178,7 @@ fun TransactionDetailsStep(
                     Text(
                         if (
                             form.type ==
-                            MovementType.INCOME
+                            TransactionType.INCOME
                         ) {
                             "Ejemplo: Pago de sueldo"
                         } else {
@@ -225,6 +205,29 @@ fun TransactionDetailsStep(
                 }
             )
         }
+
+        FormDropdown(
+            label = "Categoría",
+            placeholder = "Selecciona una categoría",
+            items = filteredCategories,
+            selectedItem = selectedCategory,
+            itemLabel = { it.label },
+            enabled = !isSaving,
+            onItemSelected = { option ->
+                onFormChange(
+                    form.copy(
+                        categoryId = option?.id
+                    )
+                )
+            }
+        )
+
+        Text(
+            text = "La categoría debe corresponder al tipo de movimiento.",
+            style =
+                MaterialTheme.typography.labelSmall,
+            color = TextGray
+        )
 
         PaymentMethodDropdown(
             selected = form.paymentMethod,
@@ -278,9 +281,7 @@ fun TransactionDetailsStep(
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor =
-                        MaterialTheme
-                            .colorScheme
-                            .errorContainer
+                        MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
@@ -351,7 +352,7 @@ private fun TransactionSummaryCard(
     enabled: Boolean
 ) {
     val isIncome =
-        form.type == MovementType.INCOME
+        form.type == TransactionType.INCOME
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -680,14 +681,12 @@ private fun TransactionRecurrenceType.periodLabel():
 
 @Composable
 private fun EmptyCategoriesContent(
-    paddingValues: PaddingValues,
     message: String,
     onRetry: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
             .padding(24.dp),
         horizontalAlignment =
             Alignment.CenterHorizontally,

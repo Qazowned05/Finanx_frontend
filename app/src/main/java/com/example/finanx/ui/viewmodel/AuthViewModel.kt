@@ -7,15 +7,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.api.RetrofitClient
-import com.example.finanx.data.api.TokenStore
+import com.example.finanx.data.auth.TokenStore
 import com.example.finanx.data.api.parseErrorMessage
 import com.example.finanx.data.auth.GoogleAuthError
 import com.example.finanx.data.auth.GoogleAuthManager
 import com.example.finanx.data.auth.GoogleAuthOutcome
-import com.example.finanx.data.auth.UserManager
 import com.example.finanx.data.auth.LoginType
+import com.example.finanx.data.auth.UserManager
 import com.example.finanx.data.auth.WEB_CLIENT_ID
 import com.example.finanx.data.repository.AuthRepository
+import com.example.finanx.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.UserResponse
 
@@ -27,17 +28,39 @@ sealed class AuthState {
 }
 
 class AuthViewModel : ViewModel() {
+    private val userRepository = UserRepository(RetrofitClient.userApi)
     private val repository = AuthRepository(RetrofitClient.authApi)
 
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set
 
-    private fun onAuthSuccess(user: UserResponse, token: String?, type: LoginType = LoginType.LOCAL) {
-        UserManager.userId = user.id ?: 0L
-        UserManager.currentUser = user
-        UserManager.loginType = type
-        TokenStore.token = token ?: ""
-        authState = AuthState.Success(user)
+    /**
+     * Intenta restaurar la sesión desde el token persistido en disco.
+     * Se llama desde MainScreen al arrancar la app.
+     * Si el token existe, lo valida contra el backend y restaura el estado.
+     * Si expiró o es inválido, limpia y muestra el login.
+     */
+    fun restoreSession() {
+        if (!TokenStore.isLoggedIn) return
+
+        viewModelScope.launch {
+            authState = AuthState.Loading
+            try {
+                val response = userRepository.findById(TokenStore.userId)
+                val user = response.body()
+                if (response.isSuccessful && user != null) {
+                    UserManager.userId = user.id ?: 0L
+                    UserManager.currentUser = user
+                    UserManager.loginType = LoginType.valueOf(TokenStore.loginType)
+                    authState = AuthState.Success(user)
+                } else {
+                    TokenStore.clear()
+                    authState = AuthState.Idle
+                }
+            } catch (e: Exception) {
+                authState = AuthState.Idle
+            }
+        }
     }
 
     fun login(email: String, password: String) {
@@ -67,7 +90,6 @@ class AuthViewModel : ViewModel() {
         password: String,
         timeZone: org.openapitools.client.models.UserRequest.TimeZone
     ) {
-        TokenStore.token = ""
         viewModelScope.launch {
             authState = AuthState.Loading
             authState = try {
@@ -75,7 +97,7 @@ class AuthViewModel : ViewModel() {
                 val body = response.body()
                 val user = body?.user
                 if (response.isSuccessful && user != null) {
-                    onAuthSuccess(user, body.token)
+                    onAuthSuccess(user, body.token, LoginType.LOCAL)
                     AuthState.Success(user)
                 } else {
                     AuthState.Error(response.parseErrorMessage())
@@ -86,22 +108,15 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun loginWithGoogle(activity: Activity, forceButtonFlow: Boolean = false) {
+    fun loginWithGoogle(activity: Activity) {
         viewModelScope.launch {
             authState = AuthState.Loading
             authState = try {
                 val authManager = GoogleAuthManager.create(activity)
-                val outcome = if (forceButtonFlow) {
-                    authManager.signInWithButton(
-                        activity = activity,
-                        serverClientId = WEB_CLIENT_ID
-                    )
-                } else {
-                    authManager.signInWithBottomSheet(
-                        activity = activity,
-                        serverClientId = WEB_CLIENT_ID
-                    )
-                }
+                val outcome = authManager.signInWithButton(
+                    activity = activity,
+                    serverClientId = WEB_CLIENT_ID
+                )
 
                 when (outcome) {
                     is GoogleAuthOutcome.Success -> {
@@ -116,7 +131,6 @@ class AuthViewModel : ViewModel() {
                             AuthState.Error(response.parseErrorMessage())
                         }
                     }
-
                     is GoogleAuthOutcome.Failure -> {
                         AuthState.Error(outcome.error.toUserMessage())
                     }
@@ -128,9 +142,9 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout(activity: Activity? = null) {
+        TokenStore.clear()
         UserManager.userId = 0L
         UserManager.currentUser = null
-        TokenStore.token = ""
         authState = AuthState.Idle
 
         viewModelScope.launch {
@@ -138,9 +152,19 @@ class AuthViewModel : ViewModel() {
                 activity?.let {
                     GoogleAuthManager.create(it.applicationContext).signOut()
                 }
-            } catch (_: Throwable) {
-            }
+            } catch (_: Throwable) {}
         }
+    }
+
+    private fun onAuthSuccess(user: UserResponse, token: String?, type: LoginType) {
+        val safeToken = token ?: ""
+        TokenStore.token = safeToken
+        TokenStore.userId = user.id ?: 0L
+        TokenStore.loginType = type.name
+        UserManager.userId = user.id ?: 0L
+        UserManager.currentUser = user
+        UserManager.loginType = type
+        authState = AuthState.Success(user)
     }
 }
 

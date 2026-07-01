@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
@@ -47,8 +46,6 @@ fun CategoryListScreen(
     }
 
     val state = viewModel.categoryState
-    val context = LocalContext.current
-    val activity = context as? Activity
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var categoryToEdit by remember { mutableStateOf<CategoryResponse?>(null) }
@@ -64,96 +61,85 @@ fun CategoryListScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = WarmBackground,
-            topBar = {
-                FinanxTopAppBar(
-                    title = "Categorías",
-                    onNotifications = onNavigateToNotifications,
-                    onProfile = onNavigateToProfile,
-                    onLogout = { authViewModel.logout(activity) }
-                )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { showCreateDialog = true },
-                    containerColor = BrownPrimary,
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
-                }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showCreateDialog = true },
+                containerColor = BrownPrimary,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
             }
-        ) { padding ->
-            Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-                when (state) {
-                    is CategoryState.Loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)
-                    }
-                    is CategoryState.Success -> {
-                        if (state.categories.isEmpty()) {
-                            Column(
-                                modifier = Modifier.align(Alignment.Center),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Icon(
-                                    Icons.Default.Category,
-                                    contentDescription = null,
-                                    tint = StoneGray,
-                                    modifier = Modifier.size(64.dp)
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = BrownPrimary)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text("Toca + para agregar una", color = StoneGray, fontSize = 13.sp)
-                            }
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
+        }
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (state) {
+                is CategoryState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)
+                }
+                is CategoryState.Success -> {
+                    if (state.categories.isEmpty()) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                Icons.Default.Category,
+                                contentDescription = null,
+                                tint = StoneGray,
+                                modifier = Modifier.size(64.dp)
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = BrownPrimary)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Toca + para agregar una", color = StoneGray, fontSize = 13.sp)
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
 
-                                groupedCategories.forEach { (type, categories) ->
+                            groupedCategories.forEach { (type, categories) ->
 
-                                    item {
-                                        Text(
-                                            text = if (type == "INCOME") "Ingresos" else "Gastos",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = if (type == "INCOME") IncomeGreen else ExpenseRed,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
-                                                    else ExpenseRed.copy(alpha = 0.08f),
-                                                    RoundedCornerShape(6.dp)
-                                                )
-                                                .padding(vertical = 6.dp, horizontal = 12.dp)
-                                        )
-                                    }
+                                item {
+                                    Text(
+                                        text = if (type == "INCOME") "Ingresos" else "Gastos",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = if (type == "INCOME") IncomeGreen else ExpenseRed,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
+                                                else ExpenseRed.copy(alpha = 0.08f),
+                                                RoundedCornerShape(6.dp)
+                                            )
+                                            .padding(vertical = 6.dp, horizontal = 12.dp)
+                                    )
+                                }
 
-                                    items(categories.size) { index ->
-                                        val category = categories[index]
-                                        CategoryCard(
-                                            category = category,
-                                            iconIndex = index % categoryIcons.size,
-                                            isSelected = categorySelected?.id == category.id,
-                                            onLongPress = { categorySelected = category },
-                                            onDismiss = { categorySelected = null }
-                                        )
-                                    }
+                                items(categories.size) { index ->
+                                    val category = categories[index]
+                                    CategoryCard(
+                                        category = category,
+                                        iconIndex = index % categoryIcons.size,
+                                        isSelected = categorySelected?.id == category.id,
+                                        onLongPress = { categorySelected = category },
+                                        onDismiss = { categorySelected = null }
+                                    )
                                 }
                             }
                         }
                     }
-                    is CategoryState.Error -> {
-                        Text(
-                            text = state.message,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                        )
-                    }
+                }
+                is CategoryState.Error -> {
+                    Text(
+                        text = state.message,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                    )
                 }
             }
         }

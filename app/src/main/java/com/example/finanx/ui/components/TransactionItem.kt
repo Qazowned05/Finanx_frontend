@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
@@ -39,7 +39,7 @@ fun TransactionRecordItem(
     modifier: Modifier = Modifier
 ) {
     val isIncome =
-        transaction.type == MovementType.INCOME
+        transaction.type == TransactionType.INCOME
 
     val movementColor =
         if (isIncome) IncomeGreen else ExpenseRed

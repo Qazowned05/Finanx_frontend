@@ -66,112 +66,96 @@ fun ProfileScreen(
         return
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Mi Perfil", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        ProfileHeader(user)
+        ProfileMenuSection(
+            user = user,
+            onEditName = { showEditNameDialog = true },
+            onChangePassword = { showChangePasswordDialog = true }
+        )
+        AccountDetailsSection(user, showDetailsSection, onToggle = { showDetailsSection = !showDetailsSection })
+        DangerSection(
+            onDeactivate = { showDeactivateDialog = true },
+            onResetData = { showResetDataScreen = true },
+            onDeleteAccount = { showDeleteAccountScreen = true }
+        )
+    }
+
+    if (showEditNameDialog) {
+        EditNameDialog(
+            user = user,
+            state = viewModel.updateNameState,
+            onConfirm = { newName ->
+                viewModel.updateName(userId, newName, user)
+            },
+            onDismiss = {
+                showEditNameDialog = false
+                viewModel.resetUpdateNameState()
+            },
+            onReset = { viewModel.resetUpdateNameState() }
+        )
+    }
+
+    if (showChangePasswordDialog) {
+        ChangePasswordDialog(
+            state = viewModel.updatePasswordState,
+            onConfirm = { newPassword ->
+                viewModel.updatePassword(userId, newPassword, user)
+            },
+            onDismiss = {
+                showChangePasswordDialog = false
+                viewModel.resetUpdatePasswordState()
+            },
+            onReset = { viewModel.resetUpdatePasswordState() }
+        )
+    }
+
+    if (showDeactivateDialog) {
+        FinanxConfirmDialog(
+            title = "Deshabilitar Cuenta",
+            message = "¿Estás seguro de deshabilitar tu cuenta? Podrás reactivarla después contactando con el administrador.",
+            confirmText = "Deshabilitar",
+            isDanger = true,
+            onConfirm = {
+                viewModel.deactivateAccount(userId)
+                showDeactivateDialog = false
+            },
+            onDismiss = { showDeactivateDialog = false }
+        )
+    }
+
+    when (val deactivateState = viewModel.deactivateState) {
+        is UserActionState.Success -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.resetDeactivateState() },
+                title = { Text("Cuenta Deshabilitada", fontWeight = FontWeight.Bold) },
+                text = { Text(deactivateState.message) },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.resetDeactivateState() }) {
+                        Text("Aceptar")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-            )
-        },
-        containerColor = LightBackground
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            ProfileHeader(user)
-            ProfileMenuSection(
-                user = user,
-                onEditName = { showEditNameDialog = true },
-                onChangePassword = { showChangePasswordDialog = true }
-            )
-            AccountDetailsSection(user, showDetailsSection, onToggle = { showDetailsSection = !showDetailsSection })
-            DangerSection(
-                onDeactivate = { showDeactivateDialog = true },
-                onResetData = { showResetDataScreen = true },
-                onDeleteAccount = { showDeleteAccountScreen = true }
+                }
             )
         }
-
-        if (showEditNameDialog) {
-            EditNameDialog(
-                user = user,
-                state = viewModel.updateNameState,
-                onConfirm = { newName ->
-                    viewModel.updateName(userId, newName, user)
-                },
-                onDismiss = {
-                    showEditNameDialog = false
-                    viewModel.resetUpdateNameState()
-                },
-                onReset = { viewModel.resetUpdateNameState() }
-            )
-        }
-
-        if (showChangePasswordDialog) {
-            ChangePasswordDialog(
-                state = viewModel.updatePasswordState,
-                onConfirm = { newPassword ->
-                    viewModel.updatePassword(userId, newPassword, user)
-                },
-                onDismiss = {
-                    showChangePasswordDialog = false
-                    viewModel.resetUpdatePasswordState()
-                },
-                onReset = { viewModel.resetUpdatePasswordState() }
-            )
-        }
-
-        if (showDeactivateDialog) {
-            FinanxConfirmDialog(
-                title = "Deshabilitar Cuenta",
-                message = "¿Estás seguro de deshabilitar tu cuenta? Podrás reactivarla después contactando con el administrador.",
-                confirmText = "Deshabilitar",
-                isDanger = true,
-                onConfirm = {
-                    viewModel.deactivateAccount(userId)
-                    showDeactivateDialog = false
-                },
-                onDismiss = { showDeactivateDialog = false }
-            )
-        }
-
-        when (val deactivateState = viewModel.deactivateState) {
-            is UserActionState.Success -> {
-                AlertDialog(
-                    onDismissRequest = { viewModel.resetDeactivateState() },
-                    title = { Text("Cuenta Deshabilitada", fontWeight = FontWeight.Bold) },
-                    text = { Text(deactivateState.message) },
-                    confirmButton = {
-                        TextButton(onClick = { viewModel.resetDeactivateState() }) {
-                            Text("Aceptar")
-                        }
+        is UserActionState.Error -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.resetDeactivateState() },
+                title = { Text("Error", fontWeight = FontWeight.Bold) },
+                text = { Text(deactivateState.message) },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.resetDeactivateState() }) {
+                        Text("Aceptar")
                     }
-                )
-            }
-            is UserActionState.Error -> {
-                AlertDialog(
-                    onDismissRequest = { viewModel.resetDeactivateState() },
-                    title = { Text("Error", fontWeight = FontWeight.Bold) },
-                    text = { Text(deactivateState.message) },
-                    confirmButton = {
-                        TextButton(onClick = { viewModel.resetDeactivateState() }) {
-                            Text("Aceptar")
-                        }
-                    }
-                )
-            }
-            else -> {}
+                }
+            )
         }
+        else -> {}
     }
 }
 

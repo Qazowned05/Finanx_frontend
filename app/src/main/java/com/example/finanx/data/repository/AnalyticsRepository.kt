@@ -12,8 +12,7 @@ class AnalyticsRepository(
     private val api: AnalyticsApi
 ) {
     suspend fun getBalanceDashboard(
-        period: PeriodRequest,
-        prompt: String? = null
+        period: PeriodRequest
     ): Response<TransactionsDashboard> =
         withContext(Dispatchers.IO) { api.getBalanceDashboard(period) }
 }

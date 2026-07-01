@@ -9,7 +9,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-enum class MovementType {
+enum class TransactionType {
     SPENT,
     INCOME
 }
@@ -36,6 +36,12 @@ data class SelectOption(
     val label: String
 )
 
+data class CategoryOption(
+    val id: Long,
+    val label: String,
+    val type: TransactionType
+)
+
 @Entity(tableName = "transactions")
 @TypeConverters(RoomTypeConverters::class)
 data class TransactionRecord(
@@ -55,7 +61,7 @@ data class TransactionRecord(
     val amount: BigDecimal,
     @ColumnInfo(name = "payment_method")
     val paymentMethod: PaymentMethod,
-    val type: MovementType,
+    val type: TransactionType,
     @ColumnInfo(name = "created_at")
     val createdAt: LocalDateTime?,
     val active: Boolean
@@ -72,14 +78,14 @@ data class ScheduledTransactionRecord(
     val amount: BigDecimal,
     @ColumnInfo(name = "payment_method")
     val paymentMethod: PaymentMethod,
-    val type: MovementType,
+    val type: TransactionType,
     val state: String,
     @ColumnInfo(name = "next_run_at")
     val nextRunAt: LocalDateTime?
 )
 
 data class TransactionFormOptions(
-    val categories: List<SelectOption> = emptyList(),
+    val categories: List<CategoryOption> = emptyList(),
     val reasons: List<SelectOption> = emptyList(),
     val savingGoals: List<SelectOption> = emptyList()
 )
@@ -94,7 +100,7 @@ data class NewTransactionCommand(
     val categoryId: Long,
     val amount: BigDecimal,
     val paymentMethod: PaymentMethod,
-    val type: MovementType,
+    val type: TransactionType,
     val reasonId: Long? = null,
     val newReason: String? = null,
     val savingGoalId: Long? = null,

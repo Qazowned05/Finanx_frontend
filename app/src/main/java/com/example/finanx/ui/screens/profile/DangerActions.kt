@@ -23,10 +23,6 @@ import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.UserActionState
 import com.example.finanx.ui.viewmodel.UserViewModel
 
-// ─────────────────────────────────────────────
-// RESET DATA SCREEN
-// ─────────────────────────────────────────────
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetDataScreen(
@@ -38,7 +34,6 @@ fun ResetDataScreen(
     var showConfirmDialog by remember { mutableStateOf(false) }
     val resetState = viewModel.resetDataState
 
-    // Cuando el reset es exitoso → logout
     LaunchedEffect(resetState) {
         if (resetState is UserActionState.Success) {
             viewModel.resetResetDataState()

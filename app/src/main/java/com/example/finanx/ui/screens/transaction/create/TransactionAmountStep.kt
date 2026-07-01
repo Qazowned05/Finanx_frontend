@@ -25,7 +25,6 @@ private val moneyInputRegex =
 
 @Composable
 fun TransactionAmountStep(
-    paddingValues: PaddingValues,
     form: CreateTransactionFormState,
     onFormChange:
         (CreateTransactionFormState) -> Unit,
@@ -38,7 +37,6 @@ fun TransactionAmountStep(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
             .padding(20.dp),
         verticalArrangement =
             Arrangement.spacedBy(20.dp)

@@ -23,6 +23,9 @@ docs/CategoriesApi.md
 docs/CategoryRequest.md
 docs/CategoryResponse.md
 docs/CategorySummary.md
+docs/ChatBotApi.md
+docs/ChatHistoryResponse.md
+docs/ChatSessionResponse.md
 docs/CreateScheduleRequest.md
 docs/DashboardResponse.md
 docs/GetBudgetsDashboard200Response.md
@@ -63,6 +66,7 @@ docs/ScheduleRequest.md
 docs/ScheduleResponse.md
 docs/ScheduleTransactionsApi.md
 docs/ScheduledProjection.md
+docs/SendMessageRequest.md
 docs/TSchedulesDashboard.md
 docs/TimeBoundListBudgetResponse.md
 docs/TimeLineBudgetExecutionResponse.md
@@ -93,6 +97,7 @@ src/main/kotlin/org/openapitools/client/apis/AnalyticsApi.kt
 src/main/kotlin/org/openapitools/client/apis/AuthApi.kt
 src/main/kotlin/org/openapitools/client/apis/BudgetsApi.kt
 src/main/kotlin/org/openapitools/client/apis/CategoriesApi.kt
+src/main/kotlin/org/openapitools/client/apis/ChatBotApi.kt
 src/main/kotlin/org/openapitools/client/apis/NotificationsApi.kt
 src/main/kotlin/org/openapitools/client/apis/ReasonsApi.kt
 src/main/kotlin/org/openapitools/client/apis/SavingsApi.kt
@@ -132,6 +137,8 @@ src/main/kotlin/org/openapitools/client/models/BudgetsDashboard.kt
 src/main/kotlin/org/openapitools/client/models/CategoryRequest.kt
 src/main/kotlin/org/openapitools/client/models/CategoryResponse.kt
 src/main/kotlin/org/openapitools/client/models/CategorySummary.kt
+src/main/kotlin/org/openapitools/client/models/ChatHistoryResponse.kt
+src/main/kotlin/org/openapitools/client/models/ChatSessionResponse.kt
 src/main/kotlin/org/openapitools/client/models/CreateScheduleRequest.kt
 src/main/kotlin/org/openapitools/client/models/DashboardResponse.kt
 src/main/kotlin/org/openapitools/client/models/GetBudgetsDashboard200Response.kt
@@ -166,6 +173,7 @@ src/main/kotlin/org/openapitools/client/models/SavingGoalsDashboard.kt
 src/main/kotlin/org/openapitools/client/models/ScheduleRequest.kt
 src/main/kotlin/org/openapitools/client/models/ScheduleResponse.kt
 src/main/kotlin/org/openapitools/client/models/ScheduledProjection.kt
+src/main/kotlin/org/openapitools/client/models/SendMessageRequest.kt
 src/main/kotlin/org/openapitools/client/models/TSchedulesDashboard.kt
 src/main/kotlin/org/openapitools/client/models/TimeBoundListBudgetResponse.kt
 src/main/kotlin/org/openapitools/client/models/TimeLineBudgetExecutionResponse.kt
@@ -185,3 +193,7 @@ src/main/kotlin/org/openapitools/client/models/UpdateSchedule200Response.kt
 src/main/kotlin/org/openapitools/client/models/UpdateScheduleRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserRequest.kt
 src/main/kotlin/org/openapitools/client/models/UserResponse.kt
+src/test/kotlin/org/openapitools/client/apis/ChatBotApiTest.kt
+src/test/kotlin/org/openapitools/client/models/ChatHistoryResponseTest.kt
+src/test/kotlin/org/openapitools/client/models/ChatSessionResponseTest.kt
+src/test/kotlin/org/openapitools/client/models/SendMessageRequestTest.kt

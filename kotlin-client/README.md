@@ -66,6 +66,12 @@ All URIs are relative to *http://localhost:8080*
 | *CategoriesApi* | [**findAllCategoriesyUserAndActive**](docs/CategoriesApi.md#findallcategoriesyuserandactive) | **GET** categories/user/{idUser}/{active} | Listar categorias por usuario y estado |
 | *CategoriesApi* | [**findCategoryById**](docs/CategoriesApi.md#findcategorybyid) | **GET** categories/{id} | Buscar categoria por ID |
 | *CategoriesApi* | [**updateCategory**](docs/CategoriesApi.md#updatecategory) | **PUT** categories/{id} | Actualizar categoria |
+| *ChatBotApi* | [**closeSession**](docs/ChatBotApi.md#closesession) | **PATCH** users/{userId}/chat/sessions/{sessionId}/close | Cerrar sesion de chat |
+| *ChatBotApi* | [**findAllSessionsByUser**](docs/ChatBotApi.md#findallsessionsbyuser) | **GET** users/{userId}/chat/sessions | Listar sesiones del usuario |
+| *ChatBotApi* | [**findSessionById**](docs/ChatBotApi.md#findsessionbyid) | **GET** users/{userId}/chat/sessions/{sessionId} | Obtener sesion por ID |
+| *ChatBotApi* | [**findSessionByUUID**](docs/ChatBotApi.md#findsessionbyuuid) | **GET** users/{userId}/chat/sessions/uuid/{uuid} | Obtener sesion por UUID |
+| *ChatBotApi* | [**sendMessage**](docs/ChatBotApi.md#sendmessage) | **POST** users/{userId}/chat/sessions/{sessionId}/messages | Enviar mensaje al chatbot |
+| *ChatBotApi* | [**startSession**](docs/ChatBotApi.md#startsession) | **POST** users/{userId}/chat/sessions | Iniciar sesion de chat |
 | *NotificationsApi* | [**discardNotification**](docs/NotificationsApi.md#discardnotification) | **POST** notifications/discard | Descartar notificacion |
 | *NotificationsApi* | [**findAllNotificationByUser**](docs/NotificationsApi.md#findallnotificationbyuser) | **GET** notifications/user/{idUser} | Listar notificaciones por usuario |
 | *NotificationsApi* | [**findAllNotificationsByUserAndState**](docs/NotificationsApi.md#findallnotificationsbyuserandstate) | **GET** notifications/user/{idUser}/{state} | Listar por estado |
@@ -135,6 +141,8 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.CategoryRequest](docs/CategoryRequest.md)
  - [org.openapitools.client.models.CategoryResponse](docs/CategoryResponse.md)
  - [org.openapitools.client.models.CategorySummary](docs/CategorySummary.md)
+ - [org.openapitools.client.models.ChatHistoryResponse](docs/ChatHistoryResponse.md)
+ - [org.openapitools.client.models.ChatSessionResponse](docs/ChatSessionResponse.md)
  - [org.openapitools.client.models.CreateScheduleRequest](docs/CreateScheduleRequest.md)
  - [org.openapitools.client.models.DashboardResponse](docs/DashboardResponse.md)
  - [org.openapitools.client.models.GetBudgetsDashboard200Response](docs/GetBudgetsDashboard200Response.md)
@@ -169,6 +177,7 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.ScheduleRequest](docs/ScheduleRequest.md)
  - [org.openapitools.client.models.ScheduleResponse](docs/ScheduleResponse.md)
  - [org.openapitools.client.models.ScheduledProjection](docs/ScheduledProjection.md)
+ - [org.openapitools.client.models.SendMessageRequest](docs/SendMessageRequest.md)
  - [org.openapitools.client.models.TSchedulesDashboard](docs/TSchedulesDashboard.md)
  - [org.openapitools.client.models.TimeBoundListBudgetResponse](docs/TimeBoundListBudgetResponse.md)
  - [org.openapitools.client.models.TimeLineBudgetExecutionResponse](docs/TimeLineBudgetExecutionResponse.md)

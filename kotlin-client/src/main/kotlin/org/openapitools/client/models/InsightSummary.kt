@@ -41,7 +41,7 @@ data class InsightSummary (
 
     /* Lista de insights */
     @Json(name = "insights")
-    val insights: List<Insight>? = null,
+    val insights: kotlin.collections.List<Insight>? = null,
 
     /* Numero total de insights */
     @Json(name = "insightsCount")

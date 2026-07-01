@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.ui.theme.BrownPrimary
 import com.example.finanx.ui.theme.StoneGray
@@ -106,8 +106,8 @@ private fun DetailRow(
     }
 }
 
-private fun MovementType.toMovementLabel(): String =
+private fun TransactionType.toMovementLabel(): String =
     when (this) {
-        MovementType.INCOME -> "Ingreso"
-        MovementType.SPENT -> "Gasto"
+        TransactionType.INCOME -> "Ingreso"
+        TransactionType.SPENT -> "Gasto"
     }

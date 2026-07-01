@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.repository.TransactionRepository
 import com.example.finanx.ui.util.toReadableDate
@@ -70,32 +70,32 @@ class HomeViewModel(
                     BigDecimal.ZERO
                 ) { accumulated, transaction ->
                     when (transaction.type) {
-                        MovementType.INCOME ->
+                        TransactionType.INCOME ->
                             accumulated + transaction.amount
 
-                        MovementType.SPENT ->
+                        TransactionType.SPENT ->
                             accumulated - transaction.amount
                     }
                 }
 
                 val monthlyIncome = monthlyTransactions
-                    .filter { it.type == MovementType.INCOME }
+                    .filter { it.type == TransactionType.INCOME }
                     .fold(BigDecimal.ZERO) { total, item ->
                         total + item.amount
                     }
 
                 val monthlyExpenses = monthlyTransactions
-                    .filter { it.type == MovementType.SPENT }
+                    .filter { it.type == TransactionType.SPENT }
                     .fold(BigDecimal.ZERO) { total, item ->
                         total + item.amount
                     }
 
                 val incomeSeries = monthlyTransactions
-                    .filter { it.type == MovementType.INCOME }
+                    .filter { it.type == TransactionType.INCOME }
                     .toDailySeries()
 
                 val expenseSeries = monthlyTransactions
-                    .filter { it.type == MovementType.SPENT }
+                    .filter { it.type == TransactionType.SPENT }
                     .toDailySeries()
 
                 state = HomeUiState(

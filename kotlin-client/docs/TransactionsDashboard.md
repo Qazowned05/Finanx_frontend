@@ -4,6 +4,7 @@
 ## Properties
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
+| **balance** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Balance del periodo |  [optional] |
 | **summaryByCategory** | [**RankingCategorySummary**](RankingCategorySummary.md) | Ranking de categorias con metricas resumidas |  [optional] |
 | **summaryByPaymentMethod** | [**RankingPaymentMethod**](RankingPaymentMethod.md) | Ranking de metodos de pago con metricas resumidas |  [optional] |
 | **summaryByType** | [**RankingTransactionType**](RankingTransactionType.md) | Ranking por tipo de transaccion con metricas resumidas |  [optional] |

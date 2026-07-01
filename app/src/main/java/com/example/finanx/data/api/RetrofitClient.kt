@@ -1,5 +1,6 @@
 package com.example.finanx.data.api
 
+import com.example.finanx.data.auth.TokenStore
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -7,6 +8,7 @@ import org.openapitools.client.apis.AnalyticsApi
 import org.openapitools.client.apis.AuthApi
 import org.openapitools.client.apis.BudgetsApi
 import org.openapitools.client.apis.CategoriesApi
+import org.openapitools.client.apis.ChatBotApi
 import org.openapitools.client.apis.NotificationsApi
 import org.openapitools.client.apis.ReasonsApi
 import org.openapitools.client.apis.SavingsApi
@@ -19,12 +21,8 @@ import org.openapitools.client.infrastructure.Serializer
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-object TokenStore {
-    var token: String = ""
-}
-
 object RetrofitClient {
-    private const val BASE_URL = "http://34.95.232.182/"
+    private const val BASE_URL = "https://03e2-132-251-0-246.ngrok-free.app/"
 
     private val moshi = Serializer.moshi
 
@@ -157,5 +155,14 @@ object RetrofitClient {
             .client(client)
             .build()
             .create(ScheduleApi::class.java)
+    }
+
+    val chatApi: ChatBotApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
+            .build()
+            .create(ChatBotApi::class.java)
     }
 }

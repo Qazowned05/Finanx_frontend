@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -13,18 +14,26 @@ import com.example.finanx.ui.theme.BrownPrimary
 import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.theme.TextLight
 
+/**
+ * TopAppBar compartido por todas las screens a través del Scaffold principal de AppNavigation.
+ * Las screens NO instancian su propio Scaffold ni su propio TopAppBar.
+ *
+ * Orden de acciones: Refresh? | Finn | Notificaciones | Perfil(dropdown)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinanxTopAppBar(
     title: String,
     subtitle: String? = null,
-    onBack: (() -> Unit)? = null,
-    onNotifications: (() -> Unit)? = null,
+    showBack: Boolean = false,
+    onBack: () -> Unit = {},
+    onRefresh: (() -> Unit)? = null,
+    onFinn: () -> Unit,
+    onNotifications: () -> Unit,
     onProfile: () -> Unit,
     onLogout: () -> Unit,
-    onRefresh: (() -> Unit)? = null
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var profileMenuExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         title = {
@@ -45,8 +54,8 @@ fun FinanxTopAppBar(
             }
         },
         navigationIcon = {
-            onBack?.let {
-                IconButton(onClick = it) {
+            if (showBack) {
+                IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Regresar",
@@ -56,6 +65,7 @@ fun FinanxTopAppBar(
             }
         },
         actions = {
+            // Refresh opcional — solo pantallas que lo necesiten
             onRefresh?.let {
                 IconButton(onClick = it) {
                     Icon(
@@ -66,17 +76,26 @@ fun FinanxTopAppBar(
                 }
             }
 
-            onNotifications?.let {
-                IconButton(onClick = it) {
-                    Icon(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = "Notificaciones",
-                        tint = TextLight
-                    )
-                }
+            // Finn — siempre visible, igual que Copilot en IntelliJ
+            IconButton(onClick = onFinn) {
+                Icon(
+                    imageVector = Icons.Default.AutoAwesome,
+                    contentDescription = "Abrir Finn",
+                    tint = GoldAccent
+                )
             }
 
-            IconButton(onClick = { expanded = true }) {
+            // Notificaciones
+            IconButton(onClick = onNotifications) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notificaciones",
+                    tint = TextLight
+                )
+            }
+
+            // Perfil con dropdown
+            IconButton(onClick = { profileMenuExpanded = true }) {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "Perfil",
@@ -84,20 +103,20 @@ fun FinanxTopAppBar(
                 )
             }
             DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+                expanded = profileMenuExpanded,
+                onDismissRequest = { profileMenuExpanded = false }
             ) {
                 DropdownMenuItem(
                     text = { Text("Mi Perfil") },
                     onClick = {
-                        expanded = false
+                        profileMenuExpanded = false
                         onProfile()
                     }
                 )
                 DropdownMenuItem(
                     text = { Text("Cerrar Sesión") },
                     onClick = {
-                        expanded = false
+                        profileMenuExpanded = false
                         onLogout()
                     }
                 )

@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalState
@@ -58,7 +57,6 @@ fun SavingGoalScreen(
 
     val state = viewModel.savingGoalState
     val context = LocalContext.current
-    val activity = context as? Activity
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
@@ -78,15 +76,6 @@ fun SavingGoalScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = WarmBackground,
-        topBar = {
-            FinanxTopAppBar(
-                title = "Metas de ahorro",
-                onNotifications = onNavigateToNotifications,
-                onProfile = onNavigateToProfile,
-                onLogout = { authViewModel.logout(activity) }
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
@@ -98,7 +87,7 @@ fun SavingGoalScreen(
             }
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             when (state) {
                 is SavingGoalState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)

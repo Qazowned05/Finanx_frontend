@@ -30,10 +30,10 @@ class RoomTypeConverters {
         value?.let(PaymentMethod::valueOf)
 
     @TypeConverter
-    fun movementTypeToString(value: MovementType?): String? =
+    fun movementTypeToString(value: TransactionType?): String? =
         value?.name
 
     @TypeConverter
-    fun stringToMovementType(value: String?): MovementType? =
-        value?.let(MovementType::valueOf)
+    fun stringToMovementType(value: String?): TransactionType? =
+        value?.let(TransactionType::valueOf)
 }

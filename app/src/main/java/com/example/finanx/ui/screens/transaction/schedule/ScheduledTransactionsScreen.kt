@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
@@ -86,25 +87,6 @@ fun ScheduledTransactionsScreen(
     val datePickerState = rememberDatePickerState()
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Programaciones",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Atrás"
-                        )
-                    }
-                }
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNewSchedule,
@@ -121,7 +103,6 @@ fun ScheduledTransactionsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
@@ -187,16 +168,22 @@ fun ScheduledTransactionsScreen(
 
                 else -> {
                     LazyColumn(
-                        verticalArrangement =
-                            Arrangement.spacedBy(10.dp),
-                        contentPadding =
-                            PaddingValues(bottom = 88.dp)
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(bottom = 88.dp)
                     ) {
                         if (visibleSchedules.isEmpty()) {
                             item {
-                                EmptySchedulesMessage(
-                                    "No tienes movimientos programados"
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 48.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "No tienes movimientos Programados",
+                                        color = MaterialTheme.colorScheme.onBackground
+                                    )
+                                }
                             }
                         } else {
                             items(
@@ -351,15 +338,5 @@ private fun ScheduledTransactionItem(
 private fun EmptySchedulesMessage(
     message: String
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 48.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = message,
-            color = TextGray
-        )
-    }
+
 }

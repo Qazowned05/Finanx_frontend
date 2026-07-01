@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.EventRepeat
@@ -31,6 +32,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -44,9 +47,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecord
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.components.TransactionDetailDialog
 import com.example.finanx.ui.components.TransactionRecordItem
+import com.example.finanx.ui.theme.BrownPrimary
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.viewmodel.TransactionUiState
@@ -79,73 +82,29 @@ fun TransactionsScreen(
     }
 
     var showDatePicker by remember { mutableStateOf(false) }
-    var showCreateMenu by remember { mutableStateOf(false) }
     var selectedTransaction by remember { mutableStateOf<TransactionRecord?>(null) }
     val datePickerState = rememberDatePickerState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            FinanxTopAppBar(
-                title = "Movimientos",
-                onNotifications = onNotifications,
-                onProfile = onProfile,
-                onLogout = onLogout
-            )
-        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
-            Box {
-                FloatingActionButton(
-                    onClick = { showCreateMenu = true },
-                    containerColor =
-                        MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = "Nuevo",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = showCreateMenu,
-                    onDismissRequest = { showCreateMenu = false }
-                ) {
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.ReceiptLong,
-                                contentDescription = null
-                            )
-                        },
-                        text = { Text("Movimiento") },
-                        onClick = {
-                            showCreateMenu = false
-                            onNewTransaction()
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.EventRepeat,
-                                contentDescription = null
-                            )
-                        },
-                        text = { Text("Programación") },
-                        onClick = {
-                            showCreateMenu = false
-                            onOpenSchedules()
-                        }
-                    )
-                }
+            FloatingActionButton(
+                onClick = { onNewTransaction() },
+                containerColor = MaterialTheme.colorScheme.surface
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Nuevo",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
@@ -221,9 +180,17 @@ fun TransactionsScreen(
                     ) {
                         if (visibleTransactions.isEmpty()) {
                             item {
-                                EmptyTransactionsMessage(
-                                    "No se encontraron movimientos"
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 48.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Aún nada por aquí",
+                                        color = TextGray
+                                    )
+                                }
                             }
                         } else {
                             items(
@@ -240,6 +207,7 @@ fun TransactionsScreen(
                         }
                     }
                 }
+
             }
         }
     }
@@ -274,23 +242,6 @@ fun TransactionsScreen(
         TransactionDetailDialog(
             transaction = transaction,
             onDismiss = { selectedTransaction = null }
-        )
-    }
-}
-
-@Composable
-private fun EmptyTransactionsMessage(
-    message: String
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 48.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = message,
-            color = TextGray
         )
     }
 }

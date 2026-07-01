@@ -38,13 +38,11 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.components.TimeLineChartCard
 import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.theme.BluePrimary
 import com.example.finanx.ui.theme.BlueSecondary
 import com.example.finanx.ui.theme.ExpenseRed
-import com.example.finanx.ui.theme.GrayBorder
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.theme.TextLight
@@ -61,40 +59,24 @@ fun HomeScreen(
     onLogout: () -> Unit,
     onRetry: () -> Unit
 ) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            FinanxTopAppBar(
-                title = "Mis finanzas",
-                onNotifications = onNotifications,
-                onProfile = onProfile,
-                onLogout = onLogout
+    when {
+        state.isLoading -> {
+            LoadingContent()
+        }
+
+        state.error != null -> {
+            ErrorContent(
+                message = state.error,
+                onRetry = onRetry
             )
         }
-    ) { paddingValues ->
-        when {
-            state.isLoading -> {
-                LoadingContent(
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
 
-            state.error != null -> {
-                ErrorContent(
-                    message = state.error.orEmpty(),
-                    onRetry = onRetry,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
-
-            else -> {
-                HomeContent(
-                    state = state,
-                    onNewTransaction = onNewTransaction,
-                    onOpenTransactions = onOpenTransactions,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+        else -> {
+            HomeContent(
+                state = state,
+                onNewTransaction = onNewTransaction,
+                onOpenTransactions = onOpenTransactions
+            )
         }
     }
 }

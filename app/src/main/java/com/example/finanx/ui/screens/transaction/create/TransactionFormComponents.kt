@@ -17,19 +17,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.finanx.data.model.MovementType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.PaymentMethod
 import com.example.finanx.data.model.TransactionRecurrenceType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionTypeSelector(
-    selected: MovementType,
-    onSelected: (MovementType) -> Unit
+    selected: TransactionType,
+    onSelected: (TransactionType) -> Unit
 ) {
     val options = listOf(
-        MovementType.SPENT to "Gasto",
-        MovementType.INCOME to "Ingreso"
+        TransactionType.SPENT to "Gasto",
+        TransactionType.INCOME to "Ingreso"
     )
 
     SingleChoiceSegmentedButtonRow(

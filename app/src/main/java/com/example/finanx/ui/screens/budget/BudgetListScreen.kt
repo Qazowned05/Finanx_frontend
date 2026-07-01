@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.finanx.ui.components.FinanxTopAppBar
 import com.example.finanx.ui.screens.budget.recurrent.CreateRecurringDialog
 import com.example.finanx.ui.screens.budget.recurrent.RecurringTab
 import com.example.finanx.ui.screens.saving.goalIcons
@@ -52,37 +51,28 @@ fun BudgetListScreen(
 
     val detailedState = bvm.budgetState
     val simpleState = bvm.simpleBudgetState
-    val context = LocalContext.current
-    val activity = context as? Activity
+    val snackbarHostState = remember { SnackbarHostState() }
 
     var search by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf(BudgetFilter.ALL) }
-    var mainTab by remember { mutableStateOf(0) }
+    var mainTab by remember { mutableIntStateOf(0) }
     var selectedBudgetId by remember { mutableStateOf<Long?>(null) }
     var showCreateBudget by remember { mutableStateOf(false) }
     var showCreateRecurring by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = WarmBackground,
-        topBar = {
-            FinanxTopAppBar(
-                title = "Presupuestos",
-                onNotifications = onNavigateToNotifications,
-                onProfile = onNavigateToProfile,
-                onLogout = { authViewModel.logout(activity) }
-            )
-        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { if (mainTab == 0) showCreateBudget = true else showCreateRecurring = true },
-                containerColor = BrownPrimary,
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nuevo")
             }
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
 
             TabRow(
                 selectedTabIndex = mainTab,
@@ -103,7 +93,7 @@ fun BudgetListScreen(
                     shape = RoundedCornerShape(12.dp)
                 )
 
-                val filters = BudgetFilter.values().toList()
+                val filters = BudgetFilter.entries
                 TabRow(
                     selectedTabIndex = filters.indexOf(selectedFilter),
                     containerColor = WarmBackground,

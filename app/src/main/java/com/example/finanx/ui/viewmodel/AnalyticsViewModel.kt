@@ -19,11 +19,6 @@ data class AnalyticsUiState(
 
     val startDate: LocalDate = LocalDate.now().minusDays(30),
     val endDate:   LocalDate = LocalDate.now(),
-
-    val showChatDialog: Boolean = false,
-    val pendingPrompt:  String  = "",
-
-    val isAiLoading: Boolean = false,
 )
 
 class AnalyticsViewModel : ViewModel() {
@@ -36,26 +31,12 @@ class AnalyticsViewModel : ViewModel() {
     fun setStartDate(date: LocalDate) { state = state.copy(startDate = date) }
     fun setEndDate(date: LocalDate)   { state = state.copy(endDate   = date) }
 
-    fun openChatDialog()  { state = state.copy(showChatDialog = true,  pendingPrompt = "") }
-    fun closeChatDialog() { state = state.copy(showChatDialog = false, pendingPrompt = "") }
-    fun onPromptChange(text: String) { state = state.copy(pendingPrompt = text) }
-
-    fun loadDashboard(userId: Long, prompt: String? = null) {
-        val withAi = prompt != null
-
+    fun loadDashboard(userId: Long) {
         viewModelScope.launch {
-            state = if (withAi) {
-                state.copy(
-                    isAiLoading    = true,
-                    showChatDialog = false,
-                    error          = null
-                )
-            } else {
-                state.copy(
-                    isLoading = true,
-                    error     = null
-                )
-            }
+            state = state.copy(
+                isLoading = true,
+                error     = null
+            )
 
             val periodRequest = PeriodRequest(
                 start  = state.startDate,
@@ -65,8 +46,7 @@ class AnalyticsViewModel : ViewModel() {
 
             try {
                 val response = repository.getBalanceDashboard(
-                    period = periodRequest,
-                    prompt  = prompt
+                    period = periodRequest
                 )
 
                 val dashboard = response.body() as TransactionsDashboard
@@ -74,14 +54,12 @@ class AnalyticsViewModel : ViewModel() {
                 state = if (response.isSuccessful) {
                     state.copy(
                         isLoading   = false,
-                        isAiLoading = false,
                         dashboard   = dashboard,
                         error       = null
                     )
                 } else {
                     state.copy(
                         isLoading   = false,
-                        isAiLoading = false,
                         error       = "Error ${response.code()}: no se pudo cargar el panel."
                     )
                 }
@@ -89,17 +67,11 @@ class AnalyticsViewModel : ViewModel() {
             } catch (e: Exception) {
                 state = state.copy(
                     isLoading   = false,
-                    isAiLoading = false,
                     error       = "Error de red: ${e.message}"
                 )
             }
         }
     }
 
-    fun submitPrompt(userId: Long) {
-        val prompt = state.pendingPrompt.trim().ifEmpty { null }
-        loadDashboard(userId, prompt)
-    }
-
-    fun refresh(userId: Long) = loadDashboard(userId, null)
+    fun refresh(userId: Long) = loadDashboard(userId)
 }

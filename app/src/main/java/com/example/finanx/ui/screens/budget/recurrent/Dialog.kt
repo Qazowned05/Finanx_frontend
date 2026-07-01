@@ -39,6 +39,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
@@ -49,6 +50,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -157,7 +159,7 @@ fun CreateRecurringDialog(
     viewModel: ScheduleViewModel,
     onDismiss: () -> Unit
 ) {
-    var kind by remember { mutableStateOf(0) } // 0 = transacción, 1 = presupuesto
+    var kind by remember { mutableIntStateOf(0) } // 0 = transacción, 1 = presupuesto
     var description by remember { mutableStateOf("") }
     var amountStr by remember { mutableStateOf("") }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
@@ -169,7 +171,6 @@ fun CreateRecurringDialog(
     var recurrenceType by remember { mutableStateOf(RecurrenceRuleRequest.RecurrenceType.MONTHLY) }
     var interval by remember { mutableStateOf("1") }
 
-    val context = LocalContext.current
     var startDate by remember { mutableStateOf(LocalDate.now()) }
     var endDate by remember { mutableStateOf(LocalDate.now().plusYears(1)) }
     var showStartPicker by remember { mutableStateOf(false) }
@@ -191,7 +192,7 @@ fun CreateRecurringDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nuevo recurrente", color = BrownPrimary) },
+        title = { Text("Nuevo recurrente", color = MaterialTheme.colorScheme.onSurface) },
         text = {
             val scrollState = rememberScrollState()
             Column(
@@ -211,7 +212,7 @@ fun CreateRecurringDialog(
                             readOnly = true,
                             label = { Text("Categoría") },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryExpanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
                         )
                         ExposedDropdownMenu(expanded = categoryExpanded, onDismissRequest = { categoryExpanded = false }) {
@@ -408,6 +409,9 @@ fun CreateRecurringDialog(
                         viewModel.createTransactionSchedule(
                             userId = userId,
                             categoryId = catId,
+                            //TODO
+                            reasonId = 1,
+                            description = description,
                             amount = parsedAmount ?: BigDecimal.ZERO,
                             paymentMethod = paymentMethod,
                             transactionType = transactionType,
