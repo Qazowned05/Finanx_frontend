@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.finanx.ui.components.EmptyStateCard
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
@@ -80,20 +81,18 @@ fun CategoryListScreen(
                 }
                 is CategoryState.Success -> {
                     if (state.categories.isEmpty()) {
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Category,
-                                contentDescription = null,
-                                tint = StoneGray,
-                                modifier = Modifier.size(64.dp)
+                            EmptyStateCard(
+                                icon = Icons.Default.Category,
+                                title = "Sin categorías",
+                                subtitle = "Toca + para agregar una",
+                                actionLabel = "Nueva categoría",
+                                onAction = { showCreateDialog = true }
                             )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text("Sin categorías", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = BrownPrimary)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Toca + para agregar una", color = StoneGray, fontSize = 13.sp)
                         }
                     } else {
                         LazyColumn(

@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -34,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.NewTransactionCommand
 import com.example.finanx.data.model.TransactionFormOptions
+import com.example.finanx.data.model.PaymentMethod
+import com.example.finanx.data.preferences.TransactionQuickPrefs
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.viewmodel.TransactionSaveState
 
@@ -44,6 +45,7 @@ private const val TOTAL_STEPS = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTransactionScreen(
+    registerHasUnsaved: ((() -> Boolean) -> Unit)? = null,
     userId: Long,
     formOptions: TransactionFormOptions,
     isLoading: Boolean,
@@ -61,15 +63,19 @@ fun CreateTransactionScreen(
     onSubmit: (NewTransactionCommand) -> Unit,
     onSaved: () -> Unit
 ) {
-    var step by rememberSaveable { mutableIntStateOf(AMOUNT_STEP)
-    }
+    val rememberedPaymentMethod = TransactionQuickPrefs.lastPaymentMethod() ?: PaymentMethod.CASH
+    val preferredInitialForm = initialForm.copy(
+        paymentMethod = rememberedPaymentMethod
+    )
 
-    var form by rememberSaveable(stateSaver =
-            CreateTransactionFormStateSaver
+    var form by rememberSaveable(
+        preferredInitialForm.type,
+        preferredInitialForm.categoryId,
+        preferredInitialForm.paymentMethod,
+        preferredInitialForm.isScheduled,
+        stateSaver = CreateTransactionFormStateSaver
     ) {
-        mutableStateOf(
-            initialForm
-        )
+        mutableStateOf(preferredInitialForm)
     }
 
     val isSaving = saveState is TransactionSaveState.Saving
@@ -78,7 +84,27 @@ fun CreateTransactionScreen(
         if (saveState is TransactionSaveState.Success) { onSaved() }
     }
 
-    BackHandler(enabled = step == 2 && !isSaving) { onStepChange(1) }
+    LaunchedEffect(formOptions.categories, form.type) {
+        if (form.categoryId == null) {
+            val preferredCategoryId = TransactionQuickPrefs.lastCategoryId(form.type)
+            val categoryId = preferredCategoryId?.let { preferredId ->
+                formOptions.categories.firstOrNull { it.id == preferredId && it.type == form.type }?.id
+            } ?: formOptions.categories.firstOrNull { it.type == form.type }?.id
+
+            if (categoryId != null) {
+                form = form.copy(categoryId = categoryId)
+            }
+        }
+    }
+
+    // register unsaved-check callback for parent navigation to use when deciding to pop
+    registerHasUnsaved?.invoke {
+        form != preferredInitialForm
+    }
+
+    BackHandler(enabled = step == DETAILS_STEP && !isSaving) {
+        onStepChange(AMOUNT_STEP)
+    }
 
     when (step) {
         AMOUNT_STEP -> {
@@ -88,7 +114,7 @@ fun CreateTransactionScreen(
                     form = it
                 },
                 onContinue = {
-                    step = DETAILS_STEP
+                    onStepChange(DETAILS_STEP)
                 }
             )
         }
@@ -107,7 +133,7 @@ fun CreateTransactionScreen(
                 },
                 onRetry = onRetry,
                 onPrevious = {
-                    step = AMOUNT_STEP
+                    onStepChange(AMOUNT_STEP)
                 },
                 onSave = {
                     form.toCommand(

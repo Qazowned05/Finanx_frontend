@@ -90,16 +90,8 @@ data class CreateTransactionFormState(
     fun isValid(
         hasExistingReasons: Boolean
     ): Boolean {
-        val reasonIsValid =
-            if (usesNewReason(hasExistingReasons)) {
-                newReason.isNotBlank()
-            } else {
-                reasonId != null
-            }
-
         return isFirstStepValid &&
                 categoryId != null &&
-                reasonIsValid &&
                 isScheduleValid
     }
 
@@ -141,7 +133,7 @@ data class CreateTransactionFormState(
                 reasonId
             },
             newReason = if (createReason) {
-                newReason.trim()
+                newReason.trim().takeIf(String::isNotBlank)
             } else {
                 null
             },

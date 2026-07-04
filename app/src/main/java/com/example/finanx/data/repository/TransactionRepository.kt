@@ -149,40 +149,6 @@ class TransactionRepository(
             }
         }
 
-    suspend fun loadScheduledTransactions(
-        userId: Long
-    ): List<ScheduledTransactionRecord> = withContext(Dispatchers.IO) {
-        coroutineScope {
-            val runningDeferred = async {
-                transactionScheduleApi
-                    .findAllTScheduleByUserAndState(
-                        idUser = userId,
-                        state = ScheduleTransactionsApi
-                            .StateFindAllTScheduleByUserAndState
-                            .RUNNING
-                            .value
-                    )
-                    .bodyOrThrow("No se pudieron obtener las programaciones")
-            }
-
-            val pausedDeferred = async {
-                transactionScheduleApi
-                    .findAllTScheduleByUserAndState(
-                        idUser = userId,
-                        state = ScheduleTransactionsApi
-                            .StateFindAllTScheduleByUserAndState
-                            .PAUSED
-                            .value
-                    )
-                    .bodyOrThrow("No se pudieron obtener las programaciones pausadas")
-            }
-
-            (runningDeferred.await() + pausedDeferred.await())
-                .mapNotNull(TransactionScheduleResponse::toRecord)
-                .sortedBy { it.nextRunAt }
-        }
-    }
-
     suspend fun createTransaction(
         command: NewTransactionCommand
     ): Unit = withContext(Dispatchers.IO) {
@@ -221,24 +187,6 @@ class TransactionRepository(
         transactionApi
             .transactionDelete(transactionId)
             .ensureSuccessful("No se pudo eliminar el movimiento")
-    }
-
-    suspend fun pauseSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
-        scheduleApi
-            .pauseSchedule(scheduleId)
-            .ensureSuccessful("No se pudo pausar la programación")
-    }
-
-    suspend fun resumeSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
-        scheduleApi
-            .resumeSchedule(scheduleId)
-            .ensureSuccessful("No se pudo reanudar la programación")
-    }
-
-    suspend fun cancelSchedule(scheduleId: Long) = withContext(Dispatchers.IO) {
-        scheduleApi
-            .cancelSchedule(scheduleId)
-            .ensureSuccessful("No se pudo cancelar la programación")
     }
 }
 

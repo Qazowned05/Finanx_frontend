@@ -1,7 +1,7 @@
 package com.example.finanx.ui.screens.budget
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -15,14 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.screens.saving.goalIcons
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.BrownSecondary
-import com.example.finanx.ui.theme.ExpenseRed
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.IncomeGreen
-import com.example.finanx.ui.theme.StoneGray
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
 import org.openapitools.client.models.BudgetExecutionResponse
@@ -133,13 +125,13 @@ private fun BudgetCardContent(
     onDisable: () -> Unit,
     onEdit: () -> Unit
 ) {
-    val accentColor = BrownSecondary
-    var expanded by remember { mutableStateOf(false) }
+    val accentColor = MaterialTheme.colorScheme.primary
+    var showOptions by remember { mutableStateOf(false) }
 
     val healthColor = when (health) {
-        BudgetHealth.EXCEEDED -> ExpenseRed
-        BudgetHealth.NEAR_LIMIT -> GoldAccent
-        else -> IncomeGreen
+        BudgetHealth.EXCEEDED -> MaterialTheme.colorScheme.error
+        BudgetHealth.NEAR_LIMIT -> MaterialTheme.colorScheme.secondary
+        else -> MaterialTheme.colorScheme.primary
     }
 
     val healthLabel = when (health) {
@@ -152,9 +144,9 @@ private fun BudgetCardContent(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { expanded = !expanded },
+            .combinedClickable(onClick = {}, onLongClick = { showOptions = true }),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -179,10 +171,10 @@ private fun BudgetCardContent(
                     Text(
                         description,
                         style = MaterialTheme.typography.titleMedium,
-                        color = TextDark
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text(categoryName, color = StoneGray, style = MaterialTheme.typography.bodyMedium)
+                    Text(categoryName, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
                 }
                 if (health != null) {
                     Box(
@@ -205,15 +197,15 @@ private fun BudgetCardContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Límite: ${limitAmount.toPen()}", color = StoneGray, style = MaterialTheme.typography.labelMedium)
+                Text("Límite: ${limitAmount.toPen()}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
                 if (spentAmount != null) {
-                    Text("Gastado: ${spentAmount.toPen()}", color = StoneGray, style = MaterialTheme.typography.labelMedium)
+                    Text("Gastado: ${spentAmount.toPen()}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
                 }
             }
 
             if (remainingAmount != null) {
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Disponible: ${remainingAmount.toPen()}", color = StoneGray, style = MaterialTheme.typography.labelMedium)
+                Text("Disponible: ${remainingAmount.toPen()}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
             }
 
             if (showProgress && progressPercentage != null) {
@@ -229,40 +221,40 @@ private fun BudgetCardContent(
                 Text(
                     "${progressPercentage.toInt()}% ejecutado",
                     style = MaterialTheme.typography.labelMedium,
-                    color = BrownPrimary
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
             if (createdAt != null) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Creado: $createdAt", color = StoneGray, style = MaterialTheme.typography.labelSmall)
-            }
-
-            if (expanded && state == BudgetState.ACTIVE) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (health == BudgetHealth.OK) {
-                        OutlinedButton(
-                            onClick = { onEdit(); expanded = false },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text("Editar", color = BrownPrimary)
-                        }
-                    }
-                    OutlinedButton(
-                        onClick = { onDisable(); expanded = false },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Eliminar", color = BrownSecondary)
-                    }
-                    OutlinedButton(
-                        onClick = { onCancel(); expanded = false },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Cancelar", color = ExpenseRed)
-                    }
-                }
+                Text("Creado: $createdAt", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelSmall)
             }
         }
+    }
+
+    if (showOptions) {
+        AlertDialog(
+            onDismissRequest = { showOptions = false },
+            title = { Text("Opciones de presupuesto") },
+            text = { Text("Elige una acción para este presupuesto") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onEdit()
+                    showOptions = false
+                }) { Text("Editar") }
+            },
+            dismissButton = {
+                Row {
+                    TextButton(onClick = {
+                        onDisable()
+                        showOptions = false
+                    }) { Text("Eliminar") }
+                    TextButton(onClick = {
+                        onCancel()
+                        showOptions = false
+                    }) { Text("Cancelar") }
+                }
+            }
+        )
     }
 }

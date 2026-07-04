@@ -112,7 +112,9 @@ fun <T> FormDropdown(
     enabled: Boolean,
     onItemSelected: (T?) -> Unit,
     allowEmptySelection: Boolean = false,
-    emptySelectionLabel: String = ""
+    emptySelectionLabel: String = "",
+    supportingText: String? = null,
+    isError: Boolean = false
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -144,6 +146,10 @@ fun <T> FormDropdown(
             label = {
                 Text(label)
             },
+            supportingText = supportingText?.let { text ->
+                { Text(text) }
+            },
+            isError = isError,
             placeholder = {
                 Text(placeholder)
             },

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.AppBarState
 import com.example.finanx.ui.theme.*
+import com.example.finanx.ui.viewmodel.ChatUiState
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
@@ -41,7 +42,6 @@ import com.example.finanx.ui.viewmodel.ChatViewModel
  * - Con sesión activa → chat multi-turno en tiempo real
  * - Sesión seleccionada (cerrada) → historial read-only
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
     userId: Long,
@@ -51,20 +51,30 @@ fun ChatScreen(
     val state = viewModel.state
 
     LaunchedEffect(Unit) {
-        onAppBarState(AppBarState(title = "Finn", subtitle = "Asistente financiero"))
         viewModel.loadSessions(userId)
     }
 
-    // Vista historial de sesión cerrada (read-only)
-    if (state.selectedSession != null) {
-        SessionHistoryView(
-            session = state.selectedSession,
-            onBack = viewModel::closeSelectedSession
+    LaunchedEffect(state.selectedSession, state.activeSession) {
+        onAppBarState(
+            when {
+                state.selectedSession != null -> AppBarState(
+                    title = "Conversación anterior",
+                    subtitle = sessionStateLabel(state.selectedSession.state)
+                )
+                state.activeSession != null -> AppBarState(
+                    title = "Finn",
+                    subtitle = "Sesión activa"
+                )
+                else -> AppBarState(title = "Finn", subtitle = "Asistente financiero")
+            }
         )
+    }
+
+    if (state.selectedSession != null) {
+        SessionHistoryView(session = state.selectedSession)
         return
     }
 
-    // Sesión activa — chat en tiempo real
     if (state.activeSession != null) {
         ActiveChatView(
             state = state,
@@ -75,7 +85,6 @@ fun ChatScreen(
         return
     }
 
-    // Sin sesión activa — lista de sesiones pasadas
     SessionListView(
         state = state,
         onNewSession = { viewModel.startSession(userId) },
@@ -83,11 +92,9 @@ fun ChatScreen(
     )
 }
 
-// ─── Vista: sesión activa ─────────────────────────────────────────────────────
-
 @Composable
 private fun ActiveChatView(
-    state: com.example.finanx.ui.viewmodel.ChatUiState,
+    state: ChatUiState,
     onInputChange: (String) -> Unit,
     onSend: () -> Unit,
     onClose: () -> Unit
@@ -95,7 +102,6 @@ private fun ActiveChatView(
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
-    // Auto-scroll al último mensaje
     LaunchedEffect(state.messages.size) {
         if (state.messages.isNotEmpty()) {
             scope.launch {
@@ -109,28 +115,13 @@ private fun ActiveChatView(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Header de sesión activa
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(BrownPrimary)
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .background(GoldAccent, CircleShape)
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = "Sesión activa",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = TextLight.copy(alpha = 0.8f)
-                )
-            }
             TextButton(onClick = onClose) {
                 Text(
                     text = "Cerrar sesión",
@@ -140,7 +131,6 @@ private fun ActiveChatView(
             }
         }
 
-        // Mensajes
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -153,7 +143,6 @@ private fun ActiveChatView(
                 ChatBubble(message = msg)
             }
 
-            // Indicador de "Finn está escribiendo..."
             if (state.isSending) {
                 item {
                     TypingIndicator()
@@ -161,7 +150,6 @@ private fun ActiveChatView(
             }
         }
 
-        // Error inline
         AnimatedVisibility(
             visible = state.error != null,
             enter = fadeIn(),
@@ -179,7 +167,6 @@ private fun ActiveChatView(
             }
         }
 
-        // Input
         ChatInputBar(
             text = state.inputText,
             isSending = state.isSending,

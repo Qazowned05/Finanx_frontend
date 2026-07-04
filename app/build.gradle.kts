@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.finanx"
-        minSdk = 26
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
     implementation(libs.androidx.security.crypto)
+    implementation(libs.moshi.adapters)
+    implementation(libs.androidx.appcompat)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.credentials)

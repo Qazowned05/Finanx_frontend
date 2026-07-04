@@ -85,7 +85,7 @@ fun LineChartCard(
 
             timeline.aggregate?.let { agg ->
                 Text(
-                    text = "${agg.occurrenceCount ?: 0} transacciones  ·  " +
+                    text = "${agg.occurrenceCount ?: 0} movimientos  ·  " +
                             "Prom. S/ ${"%.2f".format(agg.averageAmount ?: 0.toBigDecimal())}",
                     color = TextGray,
                     style = MaterialTheme.typography.labelSmall,

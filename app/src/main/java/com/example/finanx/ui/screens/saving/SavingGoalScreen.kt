@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.components.EmptyStateCard
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalState
@@ -46,17 +47,13 @@ private fun SavingGoalResponse.State?.toSavingGoalStateLabel(): String =
 @Composable
 fun SavingGoalScreen(
     userId: Long,
-    viewModel: SavingGoalViewModel,
-    authViewModel: AuthViewModel,
-    onNavigateToNotifications: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    viewModel: SavingGoalViewModel
 ) {
     LaunchedEffect(userId) {
         viewModel.fetchSavingGoals(userId)
     }
 
     val state = viewModel.savingGoalState
-    val context = LocalContext.current
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
@@ -79,8 +76,8 @@ fun SavingGoalScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = BrownPrimary,
-                contentColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nueva meta")
@@ -94,20 +91,18 @@ fun SavingGoalScreen(
                 }
                 is SavingGoalState.Success -> {
                     if (state.goals.isEmpty()) {
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Savings,
-                                contentDescription = null,
-                                tint = BrownSecondary.copy(alpha = 0.4f),
-                                modifier = Modifier.size(56.dp)
+                            EmptyStateCard(
+                                icon = Icons.Default.Savings,
+                                title = "Sin metas de ahorro",
+                                subtitle = "Toca + para agregar una",
+                                actionLabel = "Nueva meta",
+                                onAction = { showCreateDialog = true }
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("Sin metas de ahorro", style = MaterialTheme.typography.titleMedium, color = BrownPrimary)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Toca + para agregar una", color = StoneGray, style = MaterialTheme.typography.bodyMedium)
                         }
                     } else {
                         LazyColumn(
@@ -194,7 +189,7 @@ fun SavingGoalScreen(
                             goalToEdit = goal
                             goalSelected = null
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -203,7 +198,7 @@ fun SavingGoalScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { goalSelected = null }) { Text("Cancelar", color = StoneGray) }
+                TextButton(onClick = { goalSelected = null }) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         )
     }
@@ -211,14 +206,14 @@ fun SavingGoalScreen(
     goalToDelete?.let { goal ->
         AlertDialog(
             onDismissRequest = { goalToDelete = null },
-            containerColor = SurfaceWhite,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = { Text("¿Eliminar esta meta?", color = ExpenseRed) },
             text = {
                 Text(
                     "Estás a punto de eliminar \"${goal.description.orEmpty()}\". " +
                             "Esta acción no se puede deshacer y se perderán todos los registros " +
                             "de progreso y transacciones asociadas a esta meta.",
-                    color = StoneGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             confirmButton = {
@@ -233,7 +228,7 @@ fun SavingGoalScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { goalToDelete = null }) { Text("Cancelar", color = StoneGray) }
+                TextButton(onClick = { goalToDelete = null }) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         )
     }
@@ -333,7 +328,11 @@ fun SavingGoalCard(
             ),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) ExpenseRed.copy(alpha = 0.08f) else SurfaceWhite
+            containerColor = if (isSelected) {
+                ExpenseRed.copy(alpha = 0.08f)
+            } else {
+                MaterialTheme.colorScheme.surfaceContainer
+            }
         ),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
@@ -358,10 +357,10 @@ fun SavingGoalCard(
                     Text(
                         goal.description.orEmpty(),
                         style = MaterialTheme.typography.titleMedium,
-                        color = if (isSelected) ExpenseRed else TextDark
+                        color = if (isSelected) ExpenseRed else MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text("Meta: S/ ${goal.targetAmount ?: BigDecimal.ZERO}", color = StoneGray, style = MaterialTheme.typography.bodyMedium)
+                    Text("Meta: S/ ${goal.targetAmount ?: BigDecimal.ZERO}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
                 }
                 Box(
                     modifier = Modifier

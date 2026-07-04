@@ -13,10 +13,17 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.YearMonth
 
+data class HomeAlert(
+    val title: String,
+    val message: String
+)
+
 data class HomeUiState(
     val isLoading: Boolean = false,
     val userName: String = "",
-    val balance: BigDecimal = BigDecimal.ZERO,
+    val primaryBalance: BigDecimal = BigDecimal.ZERO,
+    val primaryAlert: HomeAlert? = null,
+    val primaryActionLabel: String = "Registrar movimiento",
     val monthlyIncome: BigDecimal = BigDecimal.ZERO,
     val monthlyExpenses: BigDecimal = BigDecimal.ZERO,
     val recentTransactions: List<TransactionRecord> =
@@ -98,10 +105,26 @@ class HomeViewModel(
                     .filter { it.type == TransactionType.SPENT }
                     .toDailySeries()
 
+                val primaryAlert = when {
+                    balance < BigDecimal.ZERO -> HomeAlert(
+                        title = "Tu saldo está en rojo",
+                        message = "Te conviene registrar un ingreso o revisar tus gastos recientes para recuperar equilibrio."
+                    )
+
+                    monthlyExpenses > monthlyIncome -> HomeAlert(
+                        title = "Este mes gastaste más de lo que ingresaste",
+                        message = "Revisa los movimientos recientes para detectar qué categoría está pesando más."
+                    )
+
+                    else -> null
+                }
+
                 state = HomeUiState(
                     isLoading = false,
                     userName = userName,
-                    balance = balance,
+                    primaryBalance = balance,
+                    primaryAlert = primaryAlert,
+                    primaryActionLabel = "Registrar movimiento",
                     monthlyIncome = monthlyIncome,
                     monthlyExpenses = monthlyExpenses,
                     recentTransactions = data.transactions.take(5),

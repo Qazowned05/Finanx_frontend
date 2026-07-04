@@ -1,6 +1,7 @@
 package com.example.finanx.ui.util
 
 import com.example.finanx.data.model.PaymentMethod
+import com.example.finanx.data.model.TransactionType
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -62,4 +63,10 @@ fun PaymentMethod.toLabel(): String =
         PaymentMethod.YAPE -> "Yape"
         PaymentMethod.PLIN -> "Plin"
         PaymentMethod.OTHER -> "Otro"
+    }
+
+fun TransactionType.toReadableType(): String =
+    when (this) {
+        TransactionType.SPENT -> "Gasto"
+        TransactionType.INCOME -> "Ingreso"
     }

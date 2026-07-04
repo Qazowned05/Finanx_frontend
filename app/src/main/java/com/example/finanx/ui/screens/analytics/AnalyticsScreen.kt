@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,11 +22,6 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
-/**
- * AnalyticsScreen no necesita authViewModel, onNavigateToNotifications
- * ni onNavigateToProfile — el Scaffold principal en AppNavigation maneja
- * todo eso desde el TopAppBar compartido.
- */
 @Composable
 fun AnalyticsScreen(
     userId: Long,
@@ -137,7 +133,7 @@ private fun DashboardContent(
                 Spacer(Modifier.height(10.dp))
                 MetricCard(
                     title = "Balance neto", value = money(net),
-                    icon = Icons.Default.TrendingUp, accentColor = GoldAccent,
+                    icon = Icons.AutoMirrored.Filled.TrendingUp, accentColor = GoldAccent,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -162,7 +158,7 @@ private fun DashboardContent(
         }
 
         if (catRanking != null) {
-            item { SectionTitle("Top categorías de gasto") }
+            item { SectionTitle("Top categorías") }
             item {
                 val bars = catRanking.items.orEmpty().map { rankItem ->
                     BarItem(
@@ -232,7 +228,7 @@ private fun DashboardContent(
 
         if (insights != null) {
             item { SectionTitle("Recomendaciones") }
-            item { InsightSummaryCard(insightSummary = insights, aiGenerated = true) }
+            item { InsightSummaryCard(insightSummary = insights) }
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.finanx
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.finanx.data.auth.TokenStore
+import com.example.finanx.data.preferences.TransactionQuickPrefs
 
 /**
  * Application entry point.
@@ -13,7 +15,9 @@ import com.example.finanx.data.auth.TokenStore
  */
 class FinanxApplication : Application() {
     override fun onCreate() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate()
         TokenStore.init(this)
+        TransactionQuickPrefs.init(this)
     }
 }

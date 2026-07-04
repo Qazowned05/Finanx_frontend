@@ -56,7 +56,7 @@ fun AggregateCard(
             ) {
                 AggStat("Total", money(aggregate.totalAmount))
                 AggStat("Promedio", money(aggregate.averageAmount))
-                AggStat("N°", aggregate.occurrenceCount?.toString() ?: "–")
+                AggStat("Cant.", aggregate.occurrenceCount?.toString() ?: "–")
             }
 
             Spacer(Modifier.height(8.dp))

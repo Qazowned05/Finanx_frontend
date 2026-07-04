@@ -25,6 +25,12 @@ class NotificationViewModel : ViewModel() {
     var notificationState by mutableStateOf(NotificationUiState())
         private set
 
+    val badgeCount: Int
+        get() = notificationState.notifications.count {
+            it.state == NotificationDTO.State.SCHEDULED ||
+                it.state == NotificationDTO.State.SENT
+        }
+
     fun fetchAll(userId: Long) {
         viewModelScope.launch {
             notificationState = notificationState.copy(
@@ -92,6 +98,26 @@ class NotificationViewModel : ViewModel() {
             } catch (e: Exception) {
                 notificationState = notificationState.copy(
                     error = "No se pudieron limpiar las notificaciones leídas."
+                )
+            }
+        }
+    }
+
+    fun markAsRead(userId: Long, id: Long): Unit {
+        viewModelScope.launch {
+            try {
+                val response = repository.markAsRead(id)
+
+                if (response.isSuccessful) {
+                    fetchAll(userId)
+                } else {
+                    notificationState = notificationState.copy(
+                        error = "No se pudo marcar como leída la notificación: ${response.code()}"
+                    )
+                }
+            } catch (e: Exception) {
+                notificationState = notificationState.copy(
+                    error = "Error de red: ${e.message}"
                 )
             }
         }

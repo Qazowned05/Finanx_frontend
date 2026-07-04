@@ -7,9 +7,22 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.*
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.theme.BrownPrimary
 import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.theme.TextLight
@@ -32,6 +45,7 @@ fun FinanxTopAppBar(
     onNotifications: () -> Unit,
     onProfile: () -> Unit,
     onLogout: () -> Unit,
+    notificationCount: Int = 0
 ) {
     var profileMenuExpanded by remember { mutableStateOf(false) }
 
@@ -65,7 +79,6 @@ fun FinanxTopAppBar(
             }
         },
         actions = {
-            // Refresh opcional — solo pantallas que lo necesiten
             onRefresh?.let {
                 IconButton(onClick = it) {
                     Icon(
@@ -76,7 +89,6 @@ fun FinanxTopAppBar(
                 }
             }
 
-            // Finn — siempre visible, igual que Copilot en IntelliJ
             IconButton(onClick = onFinn) {
                 Icon(
                     imageVector = Icons.Default.AutoAwesome,
@@ -85,22 +97,36 @@ fun FinanxTopAppBar(
                 )
             }
 
-            // Notificaciones
-            IconButton(onClick = onNotifications) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notificaciones",
-                    tint = TextLight
-                )
-            }
-
-            // Perfil con dropdown
             IconButton(onClick = { profileMenuExpanded = true }) {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "Perfil",
                     tint = TextLight
                 )
+            }
+            BadgedBox(
+                badge = {
+                    if (notificationCount > 0) {
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        ) {
+                            Text(
+                                text = notificationCount.toString(),
+                                fontSize = 10.sp,
+                                modifier = Modifier.scale(0.9f)
+                            )
+                        }
+                    }
+                }
+            ) {
+                IconButton(onClick = onNotifications) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notificaciones",
+                        tint = TextLight
+                    )
+                }
             }
             DropdownMenu(
                 expanded = profileMenuExpanded,

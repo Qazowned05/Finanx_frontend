@@ -43,12 +43,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalFocusManager
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecurrenceType
+import com.example.finanx.data.preferences.TransactionQuickPrefs
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
@@ -118,9 +120,12 @@ fun TransactionDetailsStep(
     val saveError = (saveState as? TransactionSaveState.Error)
             ?.message
 
-    val filteredCategories = options.categories.filter {
-        it.type == form.type
-    }
+    val preferredCategoryId = form.categoryId ?: TransactionQuickPrefs.lastCategoryId(form.type)
+    val filteredCategories = options.categories
+        .filter { it.type == form.type }
+        .sortedWith(compareBy({
+            if (it.id == preferredCategoryId) 0 else 1
+        }, { it.label.lowercase() }))
 
     LaunchedEffect(form.type) {
         val valid = options.categories.any {
@@ -171,9 +176,7 @@ fun TransactionDetailsStep(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !isSaving,
-                label = {
-                    Text("Descripción")
-                },
+                label = { Text("Motivo (opcional)") },
                 placeholder = {
                     Text(
                         if (
@@ -186,16 +189,27 @@ fun TransactionDetailsStep(
                         }
                     )
                 },
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                    onNext = { LocalFocusManager.current.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
+                ),
+                supportingText = {
+                    Text("Puedes dejarlo vacío")
+                },
             )
         } else {
             FormDropdown(
-                label = "Motivo",
-                placeholder = "Selecciona un motivo",
+                label = "Motivo (opcional)",
+                placeholder = "Sin motivo",
                 items = options.reasons,
                 selectedItem = selectedReason,
                 itemLabel = { it.label },
                 enabled = !isSaving,
+                allowEmptySelection = true,
+                emptySelectionLabel = "Sin motivo",
                 onItemSelected = { option ->
                     onFormChange(
                         form.copy(
@@ -412,6 +426,11 @@ private fun ScheduleSection(
     onFormChange:
         (CreateTransactionFormState) -> Unit
 ) {
+
+    val intervalError = form.recurrenceIntervalText.isNotBlank() && form.parsedRecurrenceInterval == null
+    val startError = form.scheduleStartDateText.isNotBlank() && form.parsedScheduleStartDate == null
+    val endError = form.scheduleEndDateText.isNotBlank() && (!form.isScheduleValid || form.parsedScheduleEndDate == null)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -510,11 +529,14 @@ private fun ScheduleSection(
                         keyboardType = KeyboardType.Number
                     ),
                     singleLine = true,
-                    isError =
-                        form.parsedRecurrenceInterval == null,
+                    isError = intervalError,
                     supportingText = {
                         Text(
-                            "Ejemplo: 1 = cada ${form.recurrenceType.periodLabel()}"
+                            if (intervalError) {
+                                "Ingresa un número mayor que cero"
+                            } else {
+                                "Ejemplo: 1 = cada ${form.recurrenceType.periodLabel()}"
+                            }
                         )
                     }
                 )
@@ -528,8 +550,12 @@ private fun ScheduleSection(
                         label = "Inicio",
                         value = form.scheduleStartDateText,
                         enabled = enabled,
-                        isError =
-                            form.parsedScheduleStartDate == null,
+                        isError = startError,
+                        supportingText = if (startError) {
+                            "Ingresa una fecha válida"
+                        } else {
+                            "Formato dd-MM-yyyy"
+                        },
                         modifier = Modifier.weight(1f),
                         onValueChange = { value ->
                             onFormChange(
@@ -544,9 +570,12 @@ private fun ScheduleSection(
                         label = "Fin",
                         value = form.scheduleEndDateText,
                         enabled = enabled,
-                        isError =
-                            form.parsedScheduleEndDate == null ||
-                                    !form.isScheduleValid,
+                        isError = endError,
+                        supportingText = when {
+                            endError && form.parsedScheduleEndDate == null -> "Ingresa una fecha válida"
+                            endError -> "La fecha fin debe ser igual o posterior al inicio"
+                            else -> "Formato dd-MM-yyyy"
+                        },
                         modifier = Modifier.weight(1f),
                         onValueChange = { value ->
                             onFormChange(
@@ -555,16 +584,6 @@ private fun ScheduleSection(
                                 )
                             )
                         }
-                    )
-                }
-
-                if (!form.isScheduleValid) {
-                    Text(
-                        text = "Revisa el intervalo y las fechas. Usa formato dd-MM-yyyy y una fecha fin igual o posterior al inicio.",
-                        style =
-                            MaterialTheme.typography.labelSmall,
-                        color =
-                            MaterialTheme.colorScheme.error
                     )
                 }
             }
@@ -579,6 +598,7 @@ private fun ScheduleDateField(
     value: String,
     enabled: Boolean,
     isError: Boolean,
+    supportingText: String? = null,
     modifier: Modifier,
     onValueChange: (String) -> Unit
 ) {
@@ -596,6 +616,7 @@ private fun ScheduleDateField(
             label = {
                 Text(label)
             },
+            supportingText = supportingText?.let { text -> { Text(text) } },
             placeholder = {
                 Text("dd-MM-yyyy")
             },

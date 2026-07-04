@@ -8,16 +8,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.finanx.data.preferences.TransactionQuickPrefs
 import com.example.finanx.ui.theme.TextGray
 
 private val moneyInputRegex =
@@ -33,6 +40,11 @@ fun TransactionAmountStep(
     val invalidAmount =
         form.amountText.isNotBlank() &&
                 !form.isFirstStepValid
+    val amountFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        amountFocusRequester.requestFocus()
+    }
 
     Column(
         modifier = Modifier
@@ -56,10 +68,11 @@ fun TransactionAmountStep(
         TransactionTypeSelector(
             selected = form.type,
             onSelected = { selectedType ->
+                val preferredCategoryId = TransactionQuickPrefs.lastCategoryId(selectedType)
                 onFormChange(
                     form.copy(
                         type = selectedType,
-                        categoryId = null
+                        categoryId = preferredCategoryId
                     )
                 )
             }
@@ -80,7 +93,9 @@ fun TransactionAmountStep(
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(amountFocusRequester),
             label = {
                 Text("Monto")
             },
@@ -91,8 +106,11 @@ fun TransactionAmountStep(
                 Text("S/ ")
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType =
-                    KeyboardType.Decimal
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { onContinue() }
             ),
             singleLine = true,
             isError = invalidAmount,

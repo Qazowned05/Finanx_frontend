@@ -5,17 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,45 +30,13 @@ import kotlin.collections.orEmpty
 
 @Composable
 fun SessionHistoryView(
-    session: ChatSessionResponse,
-    onBack: () -> Unit
+    session: ChatSessionResponse
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Header read-only
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(BrownPrimary)
-                .padding(horizontal = 8.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver",
-                    tint = TextLight
-                )
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Conversación anterior",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = TextLight,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = sessionStateLabel(session.state),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextLight.copy(alpha = 0.7f)
-                )
-            }
-        }
-
-        // Aviso read-only
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,7 +52,6 @@ fun SessionHistoryView(
             )
         }
 
-        // Historial de mensajes
         val messages = session.history.orEmpty()
         if (messages.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

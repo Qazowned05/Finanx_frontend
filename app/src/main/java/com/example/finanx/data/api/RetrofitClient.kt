@@ -1,6 +1,7 @@
 package com.example.finanx.data.api
 
 import com.example.finanx.data.auth.TokenStore
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,11 +19,31 @@ import org.openapitools.client.apis.ScheduleTransactionsApi
 import org.openapitools.client.apis.TransactionsApi
 import org.openapitools.client.apis.UsersApi
 import org.openapitools.client.infrastructure.Serializer
+import org.openapitools.client.models.BudgetScheduleRequest
+import org.openapitools.client.models.BudgetScheduleResponse
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.TransactionScheduleRequest
+import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://03e2-132-251-0-246.ngrok-free.app/"
+    private const val BASE_URL = "https://e135-132-191-2-214.ngrok-free.app/"
+
+    init {
+        Serializer.moshiBuilder
+            .add(
+            PolymorphicJsonAdapterFactory.of(ScheduleRequest::class.java, "type")
+                .withSubtype(TransactionScheduleRequest::class.java, "TRANSACTION")
+                .withSubtype(BudgetScheduleRequest::class.java, "BUDGET")
+            )
+            .add(
+                PolymorphicJsonAdapterFactory.of(ScheduleResponse::class.java, "type")
+                    .withSubtype(TransactionScheduleResponse::class.java, "TRANSACTION")
+                    .withSubtype(BudgetScheduleResponse::class.java, "BUDGET")
+            )
+    }
 
     private val moshi = Serializer.moshi
 

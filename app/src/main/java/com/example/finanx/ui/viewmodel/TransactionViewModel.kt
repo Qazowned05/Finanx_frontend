@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.model.NewTransactionCommand
 import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecord
+import com.example.finanx.data.preferences.TransactionQuickPrefs
 import com.example.finanx.data.repository.TransactionRepository
 import kotlinx.coroutines.launch
 
@@ -37,6 +38,18 @@ class TransactionViewModel(
 
     var state by mutableStateOf(TransactionUiState())
         private set
+
+    // Holds the id of the transaction currently opened in detail screen (helps restoring focus)
+    var selectedTransactionId: Long? by mutableStateOf(null)
+        private set
+
+    fun selectTransaction(id: Long?) {
+        selectedTransactionId = id
+    }
+
+    fun clearSelectedTransaction() {
+        selectedTransactionId = null
+    }
 
     private var currentUserId: Long? = null
 
@@ -96,6 +109,12 @@ class TransactionViewModel(
                     actionMessage = "Movimiento registrado"
                 )
 
+                TransactionQuickPrefs.rememberSelection(
+                    type = command.type,
+                    categoryId = command.categoryId,
+                    paymentMethod = command.paymentMethod
+                )
+
                 load(command.userId)
             } catch (exception: Exception) {
                 state = state.copy(
@@ -138,13 +157,6 @@ class TransactionViewModel(
     private fun validate(command: NewTransactionCommand) {
         require(command.amount.signum() > 0) {
             "El monto debe ser mayor que cero"
-        }
-
-        require(
-            command.reasonId != null ||
-                    !command.newReason.isNullOrBlank()
-        ) {
-            "Selecciona o escribe un motivo"
         }
     }
 }
