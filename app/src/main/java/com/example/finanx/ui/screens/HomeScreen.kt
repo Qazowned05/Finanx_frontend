@@ -53,7 +53,8 @@ fun HomeScreen(
         else -> HomeContent(
             state = state,
             onNewTransaction = onNewTransaction,
-            onOpenTransactions = onOpenTransactions
+            onOpenTransactions = onOpenTransactions,
+            onRetry = onRetry
         )
     }
 }
@@ -94,59 +95,66 @@ private fun HomeContent(
     state: HomeUiState,
     onNewTransaction: () -> Unit,
     onOpenTransactions: () -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    com.example.finanx.ui.components.RefreshableList(
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRetry,
+        modifier = modifier.fillMaxSize()
     ) {
-        item {
-            DecisionSurface(
-                userName = state.userName,
-                balance = state.primaryBalance.toPen(),
-                alert = state.primaryAlert,
-                actionLabel = state.primaryActionLabel,
-                onNewTransaction = onNewTransaction,
-                onOpenTransactions = onOpenTransactions
-            )
-        }
-
-        item {
-            TimeLineChartCard(
-                title = "Línea de tiempo de Ingresos",
-                points = state.dailyIncomePoints,
-                pointLabels = state.dailyIncomeLabels,
-                lineColor = IncomeGreen
-            )
-        }
-
-        item {
-            TimeLineChartCard(
-                title = "Línea de tiempo de Gastos",
-                points = state.dailyExpensePoints,
-                pointLabels = state.dailyExpenseLabels,
-                lineColor = ExpenseRed
-            )
-        }
-
-        item {
-            SectionTitle("Movimientos recientes")
-        }
-
-        if (state.recentTransactions.isEmpty()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             item {
-                Text(
-                    text = "Todavía no tienes movimientos.",
-                    color = TextGray
+                DecisionSurface(
+                    userName = state.userName,
+                    balance = state.primaryBalance.toPen(),
+                    alert = state.primaryAlert,
+                    actionLabel = state.primaryActionLabel,
+                    onNewTransaction = onNewTransaction,
+                    onOpenTransactions = onOpenTransactions
                 )
             }
-        } else {
-            items(
-                items = state.recentTransactions,
-                key = { transaction -> transaction.id }
-            ) { transaction ->
-                TransactionRecordItem(transaction = transaction)
+
+            item {
+                TimeLineChartCard(
+                    title = "Línea de tiempo de Ingresos",
+                    points = state.dailyIncomePoints,
+                    pointLabels = state.dailyIncomeLabels,
+                    lineColor = IncomeGreen
+                )
+            }
+
+            item {
+                TimeLineChartCard(
+                    title = "Línea de tiempo de Gastos",
+                    points = state.dailyExpensePoints,
+                    pointLabels = state.dailyExpenseLabels,
+                    lineColor = ExpenseRed
+                )
+            }
+
+            item {
+                SectionTitle("Movimientos recientes")
+            }
+
+            if (state.recentTransactions.isEmpty()) {
+                item {
+                    Text(
+                        text = "Todavía no tienes movimientos.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                items(
+                    items = state.recentTransactions,
+                    key = { transaction -> transaction.id }
+                ) { transaction ->
+                    TransactionRecordItem(transaction = transaction)
+                }
             }
         }
     }
@@ -169,33 +177,37 @@ private fun DecisionSurface(
             text = "Hola, $userName",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
             Column(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = "Balance actual",
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                 )
                 Text(
                     text = balance,
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                //TODO
-                /*Text(
-                    text = "Una vista clara para decidir rápido qué hacer después.",
-                    color = TextGray
-                )*/
+                if (alert == null) {
+                    Text(
+                        text = "Una vista clara para decidir rápido qué hacer después.",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
+                }
             }
         }
 
@@ -203,7 +215,8 @@ private fun DecisionSurface(
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -226,6 +239,12 @@ private fun DecisionSurface(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            OutlinedButton(
+                onClick = onOpenTransactions,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Ver movimientos")
+            }
             Button(
                 onClick = onNewTransaction,
                 modifier = Modifier.weight(1f)
@@ -236,13 +255,6 @@ private fun DecisionSurface(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(actionLabel)
-            }
-
-            OutlinedButton(
-                onClick = onOpenTransactions,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Ver movimientos")
             }
         }
     }

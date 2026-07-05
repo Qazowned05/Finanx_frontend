@@ -7,10 +7,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,72 +34,20 @@ fun TransactionTypeSelector(
         TransactionType.INCOME to "Ingreso"
     )
 
-    SingleChoiceSegmentedButtonRow(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        options.forEachIndexed {
-                index,
-                option ->
-
-            SegmentedButton(
-                selected = selected == option.first,
-                onClick = {
-                    onSelected(option.first)
-                },
-                shape =
-                    SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = options.size
-                    ),
-                label = {
-                    Text(option.second)
-                }
-            )
+    Row(modifier = Modifier.fillMaxWidth()) {
+        options.forEachIndexed { _, option ->
+            val isSelected = selected == option.first
+            Button(
+                onClick = { onSelected(option.first) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                    contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = with(this@Row) { Modifier.weight(1f) }
+            ) {
+                Text(option.second)
+            }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ReasonModeSelector(
-    useNewReason: Boolean,
-    enabled: Boolean,
-    onModeChange: (Boolean) -> Unit
-) {
-    SingleChoiceSegmentedButtonRow(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        SegmentedButton(
-            selected = !useNewReason,
-            onClick = {
-                onModeChange(false)
-            },
-            enabled = enabled,
-            shape =
-                SegmentedButtonDefaults.itemShape(
-                    index = 0,
-                    count = 2
-                ),
-            label = {
-                Text("Usar existente")
-            }
-        )
-
-        SegmentedButton(
-            selected = useNewReason,
-            onClick = {
-                onModeChange(true)
-            },
-            enabled = enabled,
-            shape =
-                SegmentedButtonDefaults.itemShape(
-                    index = 1,
-                    count = 2
-                ),
-            label = {
-                Text("Crear nuevo")
-            }
-        )
     }
 }
 
@@ -114,20 +64,21 @@ fun <T> FormDropdown(
     allowEmptySelection: Boolean = false,
     emptySelectionLabel: String = "",
     supportingText: String? = null,
-    isError: Boolean = false
+    isError: Boolean = false,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember {
         mutableStateOf(false)
     }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            if (enabled) {
-                expanded = !expanded
-            }
-        },
-        modifier = Modifier.fillMaxWidth()
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                if (enabled) {
+                    expanded = !expanded
+                }
+            },
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = selectedItem
@@ -224,7 +175,8 @@ fun PaymentMethodDropdown(
 fun RecurrenceTypeDropdown(
     selected: TransactionRecurrenceType,
     enabled: Boolean,
-    onSelected: (TransactionRecurrenceType) -> Unit
+    onSelected: (TransactionRecurrenceType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     FormDropdown(
         label = "Frecuencia",
@@ -237,7 +189,8 @@ fun RecurrenceTypeDropdown(
         enabled = enabled,
         onItemSelected = {
             it?.let(onSelected)
-        }
+        },
+        modifier = modifier
     )
 }
 

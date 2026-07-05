@@ -77,7 +77,7 @@ fun LineChartCard(
                 Text(
                     text = timeline.title.toString(),
                     fontWeight = FontWeight.SemiBold,
-                    color = GoldAccent,
+                    color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelMedium,
                 )
                 Spacer(Modifier.height(4.dp))

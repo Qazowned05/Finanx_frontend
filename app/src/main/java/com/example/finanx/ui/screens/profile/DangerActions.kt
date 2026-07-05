@@ -41,28 +41,14 @@ fun ResetDataScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Empezar de Cero", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-            )
-        },
-        containerColor = LightBackground
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LightBackground)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
             // Hero warning
             DangerHeroCard(
                 icon = Icons.Default.RestartAlt,
@@ -134,12 +120,11 @@ fun ResetDataScreen(
                 }
             }
 
-            TextButton(
-                onClick = onBack,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cancelar, mantener mis datos", color = TextGray)
-            }
+        TextButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cancelar, mantener mis datos", color = TextGray)
         }
     }
 
@@ -175,28 +160,14 @@ fun DeleteAccountScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Eliminar Cuenta", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-            )
-        },
-        containerColor = LightBackground
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LightBackground)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
             // Hero warning
             DangerHeroCard(
                 icon = Icons.Default.DeleteForever,
@@ -268,12 +239,11 @@ fun DeleteAccountScreen(
                 }
             }
 
-            TextButton(
-                onClick = onBack,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Cancelar, conservar mi cuenta", color = TextGray)
-            }
+        TextButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cancelar, conservar mi cuenta", color = TextGray)
         }
     }
 
@@ -411,7 +381,7 @@ private fun DangerAfterCard(
                 Icon(
                     Icons.Default.Info,
                     contentDescription = null,
-                    tint = GoldAccent,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
@@ -429,7 +399,7 @@ private fun DangerAfterCard(
                     Text(
                         text = "•",
                         fontSize = 14.sp,
-                        color = GoldAccent,
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = FontWeight.Bold
                     )
                     Text(text, fontSize = 13.sp, color = TextDark, lineHeight = 18.sp)

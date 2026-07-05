@@ -12,9 +12,10 @@ import org.openapitools.client.models.NotificationDTO
 
 data class NotificationUiState(
     val isLoading: Boolean = false,
+    override val isRefreshing: Boolean = false,
     val notifications: List<NotificationDTO> = emptyList(),
     val error: String? = null
-)
+) : com.example.finanx.ui.viewmodel.RefreshableUiState
 
 class NotificationViewModel : ViewModel() {
 
@@ -31,12 +32,13 @@ class NotificationViewModel : ViewModel() {
                 it.state == NotificationDTO.State.SENT
         }
 
-    fun fetchAll(userId: Long) {
+    fun fetchAll(userId: Long, force: Boolean = false) {
+        if (!force && (notificationState.isLoading || notificationState.notifications.isNotEmpty())) return
         viewModelScope.launch {
-            notificationState = notificationState.copy(
-                isLoading = true,
-                error = null
-            )
+            // if we already have notifications, treat this as a refresh
+            val hasData = notificationState.notifications.isNotEmpty()
+            notificationState = if (hasData) notificationState.copy(isRefreshing = true, error = null)
+            else notificationState.copy(isLoading = true, error = null)
 
             try {
                 val response = repository.getNotificationsByUser(userId)
@@ -44,18 +46,21 @@ class NotificationViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     notificationState = notificationState.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         notifications = response.body() ?: emptyList(),
                         error = null
                     )
                 } else {
                     notificationState = notificationState.copy(
                         isLoading = false,
+                        isRefreshing = false,
                         error = "Error al cargar notificaciones: ${response.code()}"
                     )
                 }
             } catch (e: Exception) {
                 notificationState = notificationState.copy(
                     isLoading = false,
+                    isRefreshing = false,
                     error = "Error de red: ${e.message}"
                 )
             }
@@ -68,7 +73,7 @@ class NotificationViewModel : ViewModel() {
                 val response = repository.discardNotification(notificationId)
 
                 if (response.isSuccessful) {
-                    fetchAll(userId)
+                    fetchAll(userId, force = true)
                 } else {
                     notificationState = notificationState.copy(
                         error = "No se pudo descartar la notificación: ${response.code()}"
@@ -94,7 +99,7 @@ class NotificationViewModel : ViewModel() {
                     }
                 }
 
-                fetchAll(userId)
+                fetchAll(userId, force = true)
             } catch (e: Exception) {
                 notificationState = notificationState.copy(
                     error = "No se pudieron limpiar las notificaciones leídas."
@@ -109,7 +114,7 @@ class NotificationViewModel : ViewModel() {
                 val response = repository.markAsRead(id)
 
                 if (response.isSuccessful) {
-                    fetchAll(userId)
+                    fetchAll(userId, force = true)
                 } else {
                     notificationState = notificationState.copy(
                         error = "No se pudo marcar como leída la notificación: ${response.code()}"

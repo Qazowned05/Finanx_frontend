@@ -51,7 +51,7 @@ fun InsightSummaryCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, if (aiGenerated) GoldAccent else BorderSoft)
+        border = BorderStroke(1.dp, if (aiGenerated) MaterialTheme.colorScheme.tertiary else BorderSoft)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -59,7 +59,7 @@ fun InsightSummaryCard(
                     Icon(
                         imageVector = Icons.Default.AutoAwesome,
                         contentDescription = null,
-                        tint = GoldAccent,
+                        tint = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(Modifier.width(6.dp))
@@ -67,7 +67,7 @@ fun InsightSummaryCard(
                 Text(
                     text = if (aiGenerated) "Insights de IA" else "Recomendaciones",
                     fontWeight = FontWeight.SemiBold,
-                    color = if (aiGenerated) GoldAccent else TextDark,
+                    color = if (aiGenerated) MaterialTheme.colorScheme.tertiary else TextDark,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Spacer(Modifier.width(8.dp))
@@ -94,7 +94,7 @@ private fun InsightRow(insight: Insight) {
         Insight.Severity.CRITICAL -> ExpenseRed to Color(0xFFFFF0EE)
         Insight.Severity.WARNING  -> Color(0xFFB45309) to Color(0xFFFFFBEB)
         Insight.Severity.INFO     -> IncomeGreen to Color(0xFFF0F7F1)
-        null                      -> GoldAccent to Color(0xFFFBF8F2)
+        null                      -> MaterialTheme.colorScheme.tertiary to Color(0xFFFBF8F2)
     }
 
     Row(

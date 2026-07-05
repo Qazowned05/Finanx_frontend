@@ -62,7 +62,8 @@ fun BudgetCard(
     iconIndex: Int,
     onCancel: () -> Unit,
     onDisable: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: () -> Unit,
+    progressModifier: Modifier = Modifier
 ) {
     BudgetCardContent(
         description = budget.description.orEmpty(),
@@ -78,7 +79,8 @@ fun BudgetCard(
         showProgress = true,
         onCancel = onCancel,
         onDisable = onDisable,
-        onEdit = onEdit
+        onEdit = onEdit,
+        progressModifier = progressModifier
     )
 }
 
@@ -123,7 +125,8 @@ private fun BudgetCardContent(
     showProgress: Boolean,
     onCancel: () -> Unit,
     onDisable: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: () -> Unit,
+    progressModifier: Modifier = Modifier
 ) {
     val accentColor = MaterialTheme.colorScheme.primary
     var showOptions by remember { mutableStateOf(false) }
@@ -213,7 +216,7 @@ private fun BudgetCardContent(
                 val progress = (progressPercentage.toFloat() / 100f).coerceIn(0f, 1f)
                 LinearProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
+                    modifier = progressModifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
                     color = healthColor,
                     trackColor = accentColor.copy(alpha = 0.12f)
                 )

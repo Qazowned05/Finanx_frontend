@@ -37,21 +37,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorialTarget
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.viewmodel.RecurringState
 import com.example.finanx.ui.viewmodel.ScheduleViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.ScheduleResponse
 import org.openapitools.client.models.TransactionScheduleResponse
@@ -72,6 +83,26 @@ fun ScheduledTransactionsScreen(
     val recurringState = viewModel.recurringState
     val focusManager = LocalFocusManager.current
     val normalizedQuery = query.trim().lowercase()
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_programaciones").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("new_schedule_button", "Programa movimientos o presupuestos que se repiten automáticamente.")
+                )
+            ) {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        }
+    }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -97,7 +128,8 @@ fun ScheduledTransactionsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onNewSchedule,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.tutorialTarget("new_schedule_button", targetBounds)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nueva programación", tint = MaterialTheme.colorScheme.onPrimary)
             }
@@ -147,45 +179,51 @@ fun ScheduledTransactionsScreen(
                             Text("No tienes programaciones activas", color = TextGray)
                         }
                     } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            contentPadding = PaddingValues(bottom = 88.dp)
+                        com.example.finanx.ui.components.RefreshableList(
+                            isRefreshing = (recurringState as? com.example.finanx.ui.viewmodel.RecurringState.Success)?.isRefreshing ?: false,
+                            onRefresh = { viewModel.fetchAll(userId, force = true) },
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            if (visibleTransactions.isNotEmpty()) {
-                                item {
-                                    Text(
-                                        "Movimientos programados",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = TextGray,
-                                        modifier = Modifier.padding(vertical = 4.dp)
-                                    )
+                            LazyColumn(
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                                contentPadding = PaddingValues(bottom = 88.dp)
+                            ) {
+                                if (visibleTransactions.isNotEmpty()) {
+                                    item {
+                                        Text(
+                                            "Movimientos programados",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = TextGray,
+                                            modifier = Modifier.padding(vertical = 4.dp)
+                                        )
+                                    }
+                                    items(visibleTransactions, key = { "tx-${it.id}" }) { ts ->
+                                        TransactionScheduleItem(
+                                            ts = ts,
+                                            onPause = { viewModel.pause(ts.id ?: 0, userId) },
+                                            onResume = { viewModel.resume(ts.id ?: 0, userId) },
+                                            onCancel = { viewModel.cancel(ts.id ?: 0, userId) }
+                                        )
+                                    }
                                 }
-                                items(visibleTransactions, key = { "tx-${it.id}" }) { ts ->
-                                    TransactionScheduleItem(
-                                        ts = ts,
-                                        onPause = { viewModel.pause(ts.id ?: 0, userId) },
-                                        onResume = { viewModel.resume(ts.id ?: 0, userId) },
-                                        onCancel = { viewModel.cancel(ts.id ?: 0, userId) }
-                                    )
-                                }
-                            }
 
-                            if (visibleBudgets.isNotEmpty()) {
-                                item {
-                                    Text(
-                                        "Presupuestos programados",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = TextGray,
-                                        modifier = Modifier.padding(vertical = 4.dp)
-                                    )
-                                }
-                                items(visibleBudgets, key = { "budget-${it.id}" }) { bs ->
-                                    BudgetScheduleItem(
-                                        bs = bs,
-                                        onPause = { viewModel.pause(bs.id ?: 0, userId) },
-                                        onResume = { viewModel.resume(bs.id ?: 0, userId) },
-                                        onCancel = { viewModel.cancel(bs.id ?: 0, userId) }
-                                    )
+                                if (visibleBudgets.isNotEmpty()) {
+                                    item {
+                                        Text(
+                                            "Presupuestos programados",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = TextGray,
+                                            modifier = Modifier.padding(vertical = 4.dp)
+                                        )
+                                    }
+                                    items(visibleBudgets, key = { "budget-${it.id}" }) { bs ->
+                                        BudgetScheduleItem(
+                                            bs = bs,
+                                            onPause = { viewModel.pause(bs.id ?: 0, userId) },
+                                            onResume = { viewModel.resume(bs.id ?: 0, userId) },
+                                            onCancel = { viewModel.cancel(bs.id ?: 0, userId) }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -193,6 +231,22 @@ fun ScheduledTransactionsScreen(
                 }
             }
         }
+    }
+
+    if (tutorialController != null) {
+        val current = tutorialController!!.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = tutorialController?.isLastStep ?: false,
+            onNext = { tutorialController?.next() },
+            onSkip = {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        )
     }
 
     if (showDatePicker) {

@@ -151,34 +151,40 @@ fun TransactionsScreen(
                 }
 
                 else -> {
-                    LazyColumn(
-                        verticalArrangement =
-                            Arrangement.spacedBy(10.dp),
-                        contentPadding =
-                            PaddingValues(bottom = 88.dp)
+                    com.example.finanx.ui.components.RefreshableList(
+                        isRefreshing = state.isRefreshing,
+                        onRefresh = onRefresh,
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        if (visibleTransactions.isEmpty()) {
-                            item {
-                                EmptyStateCard(
-                                    icon = Icons.Default.Add,
-                                    title = "Aún nada por aquí",
-                                    subtitle = "Empieza registrando tu primer movimiento.",
-                                    actionLabel = "Nuevo movimiento",
-                                    onAction = onNewTransaction
-                                )
-                            }
-                        } else {
-                            items(
-                                items = visibleTransactions,
-                                key = { it.id }
-                            ) { transaction ->
-                                TransactionRecordItem(
-                                    transaction = transaction,
-                                    modifier = Modifier.combinedClickable(
-                                        onClick = { onOpenTransactionDetails(transaction) },
-                                        onLongClick = { transactionToDelete = transaction }
+                        LazyColumn(
+                            verticalArrangement =
+                                Arrangement.spacedBy(10.dp),
+                            contentPadding =
+                                PaddingValues(bottom = 88.dp)
+                        ) {
+                            if (visibleTransactions.isEmpty()) {
+                                item {
+                                    EmptyStateCard(
+                                        icon = Icons.Default.Add,
+                                        title = "Aún nada por aquí",
+                                        subtitle = "Empieza registrando tu primer movimiento.",
+                                        actionLabel = "Nuevo movimiento",
+                                        onAction = onNewTransaction
                                     )
-                                )
+                                }
+                            } else {
+                                items(
+                                    items = visibleTransactions,
+                                    key = { it.id }
+                                ) { transaction ->
+                                    TransactionRecordItem(
+                                        transaction = transaction,
+                                        modifier = Modifier.combinedClickable(
+                                            onClick = { onOpenTransactionDetails(transaction) },
+                                            onLongClick = { transactionToDelete = transaction }
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

@@ -21,6 +21,7 @@ sealed interface TransactionSaveState {
 
 data class TransactionUiState(
     val isLoading: Boolean = false,
+    override val isRefreshing: Boolean = false,
     val transactions: List<TransactionRecord> = emptyList(),
     val formOptions: TransactionFormOptions =
         TransactionFormOptions(),
@@ -29,7 +30,31 @@ data class TransactionUiState(
     val actionMessage: String? = null,
     val saveState: TransactionSaveState =
         TransactionSaveState.Idle
+) : com.example.finanx.ui.viewmodel.RefreshableUiState
+
+enum class TransactionStep { TYPE, CATEGORY, DETAILS, SAVING_GOAL }
+
+enum class TransactionDraftField { CATEGORY, AMOUNT, PAYMENT_METHOD }
+
+data class TransactionDraftState(
+    val step: TransactionStep = TransactionStep.TYPE,
+    val type: com.example.finanx.data.model.TransactionType? = null,
+    val categoryId: Long? = null,
+    val amountText: String = "",
+    val reasonId: Long? = null,
+    val reasonText: String = "",
+    val paymentMethod: com.example.finanx.data.model.PaymentMethod? = null,
+    val savingGoalId: Long? = null,
+    val fieldErrors: Set<TransactionDraftField> = emptySet()
 )
+
+@Suppress("UNUSED_PARAMETER")
+fun TransactionDraftState.visibleSteps(hasActiveSavingGoals: Boolean): List<TransactionStep> {
+    val steps = mutableListOf(TransactionStep.TYPE, TransactionStep.CATEGORY, TransactionStep.DETAILS)
+    // Always include the optional SAVING_GOAL step for INCOME so the inline "Crear meta" path is discoverable.
+    if (this.type == com.example.finanx.data.model.TransactionType.INCOME) steps += TransactionStep.SAVING_GOAL
+    return steps
+}
 
 class TransactionViewModel(
     private val repository: TransactionRepository =
@@ -39,6 +64,62 @@ class TransactionViewModel(
     var state by mutableStateOf(TransactionUiState())
         private set
 
+    var draft by mutableStateOf(TransactionDraftState())
+        private set
+
+    // draft mutators
+    fun updateType(type: com.example.finanx.data.model.TransactionType) {
+        draft = draft.copy(
+            type = type,
+            categoryId = null,
+            savingGoalId = if (type == com.example.finanx.data.model.TransactionType.INCOME) draft.savingGoalId else null,
+            step = TransactionStep.CATEGORY
+        )
+    }
+
+    fun updateCategory(categoryId: Long) {
+        draft = draft.copy(
+            categoryId = categoryId,
+            step = TransactionStep.DETAILS,
+            fieldErrors = draft.fieldErrors - TransactionDraftField.CATEGORY
+        )
+    }
+
+    fun updateAmount(text: String) {
+        draft = draft.copy(
+            amountText = text,
+            fieldErrors = draft.fieldErrors - TransactionDraftField.AMOUNT
+        )
+    }
+
+    fun updateReason(id: Long?, text: String) {
+        draft = draft.copy(reasonId = id, reasonText = text)
+    }
+
+    fun updatePaymentMethod(method: com.example.finanx.data.model.PaymentMethod) {
+        draft = draft.copy(
+            paymentMethod = method,
+            fieldErrors = draft.fieldErrors - TransactionDraftField.PAYMENT_METHOD
+        )
+    }
+
+    fun updateSavingGoal(id: Long?) {
+        draft = draft.copy(savingGoalId = id)
+    }
+
+    fun goToStep(step: TransactionStep) {
+        draft = draft.copy(step = step)
+    }
+
+    fun resetDraft() {
+        draft = TransactionDraftState()
+    }
+
+    fun setFieldErrors(errors: Set<TransactionDraftField>) {
+        draft = draft.copy(fieldErrors = errors)
+    }
+
+    // existing implementation
     // Holds the id of the transaction currently opened in detail screen (helps restoring focus)
     var selectedTransactionId: Long? by mutableStateOf(null)
         private set
@@ -53,12 +134,17 @@ class TransactionViewModel(
 
     private var currentUserId: Long? = null
 
-    fun load(userId: Long) {
+    fun load(userId: Long, force: Boolean = false) {
+        currentUserId = userId
+        if (!force && state.transactions.isNotEmpty() && state.formOptions.categories.isNotEmpty()) return
         currentUserId = userId
 
         viewModelScope.launch {
+            // treat as a refresh if we already have transactions
+            val hasData = state.transactions.isNotEmpty()
             state = state.copy(
-                isLoading = true,
+                isLoading = !hasData,
+                isRefreshing = hasData,
                 error = null
             )
 
@@ -68,6 +154,7 @@ class TransactionViewModel(
 
                 state = state.copy(
                     isLoading = false,
+                    isRefreshing = false,
                     transactions = transactionData.transactions,
                     formOptions = transactionData.formOptions,
                     error = null
@@ -75,6 +162,7 @@ class TransactionViewModel(
             } catch (exception: Exception) {
                 state = state.copy(
                     isLoading = false,
+                    isRefreshing = false,
                     error = exception.message
                         ?: "No se pudieron cargar los movimientos"
                 )
@@ -83,7 +171,7 @@ class TransactionViewModel(
     }
 
     fun refresh() {
-        currentUserId?.let(::load)
+        currentUserId?.let { load(it, force = true) }
     }
 
     fun setQuery(query: String) {
@@ -115,7 +203,7 @@ class TransactionViewModel(
                     paymentMethod = command.paymentMethod
                 )
 
-                load(command.userId)
+                load(command.userId, force = true)
             } catch (exception: Exception) {
                 state = state.copy(
                     saveState = TransactionSaveState.Error(

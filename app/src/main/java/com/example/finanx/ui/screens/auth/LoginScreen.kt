@@ -62,7 +62,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                 Icon(
                     Icons.Default.AccountBalanceWallet,
                     contentDescription = null,
-                    tint = GoldAccent,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(36.dp)
                 )
             }

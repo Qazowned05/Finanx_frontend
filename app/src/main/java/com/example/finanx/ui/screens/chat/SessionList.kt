@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.theme.TextLight
 import org.openapitools.client.models.ChatSessionResponse
@@ -39,7 +38,9 @@ import org.openapitools.client.models.ChatSessionResponse
 fun SessionListView(
     state: com.example.finanx.ui.viewmodel.ChatUiState,
     onNewSession: () -> Unit,
-    onOpenSession: (ChatSessionResponse) -> Unit
+    onOpenSession: (ChatSessionResponse) -> Unit,
+    newSessionModifier: Modifier = Modifier,
+    finnIconModifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -50,7 +51,7 @@ fun SessionListView(
         Button(
             onClick = onNewSession,
             enabled = !state.isStartingSession,
-            modifier = Modifier
+            modifier = newSessionModifier
                 .fillMaxWidth()
                 .padding(16.dp),
             shape = RoundedCornerShape(12.dp),
@@ -58,7 +59,7 @@ fun SessionListView(
         ) {
             if (state.isStartingSession) {
                 CircularProgressIndicator(
-                    color = GoldAccent,
+                    color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(18.dp),
                     strokeWidth = 2.dp
                 )
@@ -67,8 +68,8 @@ fun SessionListView(
                 Icon(
                     Icons.Default.AutoAwesome,
                     contentDescription = null,
-                    tint = GoldAccent,
-                    modifier = Modifier.size(18.dp)
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    modifier = finnIconModifier.size(18.dp)
                 )
                 Spacer(Modifier.width(8.dp))
             }
@@ -82,7 +83,7 @@ fun SessionListView(
         // Lista de sesiones pasadas
         if (state.isLoadingSessions) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = GoldAccent)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
             }
         } else if (state.sessions.isEmpty()) {
             Box(
@@ -95,7 +96,7 @@ fun SessionListView(
                     Icon(
                         Icons.Default.AutoAwesome,
                         contentDescription = null,
-                        tint = GoldAccent,
+                        tint = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(48.dp)
                     )
                     Spacer(Modifier.height(12.dp))

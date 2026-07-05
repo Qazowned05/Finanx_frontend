@@ -84,7 +84,7 @@ fun FinanxTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Refresh,
                         contentDescription = "Actualizar",
-                        tint = GoldAccent
+                        tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
             }
@@ -93,15 +93,7 @@ fun FinanxTopAppBar(
                 Icon(
                     imageVector = Icons.Default.AutoAwesome,
                     contentDescription = "Abrir Finn",
-                    tint = GoldAccent
-                )
-            }
-
-            IconButton(onClick = { profileMenuExpanded = true }) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "Perfil",
-                    tint = TextLight
+                    tint = MaterialTheme.colorScheme.tertiary
                 )
             }
             BadgedBox(
@@ -124,9 +116,17 @@ fun FinanxTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notificaciones",
-                        tint = TextLight
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
+            }
+
+            IconButton(onClick = { profileMenuExpanded = true }) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Perfil",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
             DropdownMenu(
                 expanded = profileMenuExpanded,
@@ -149,9 +149,9 @@ fun FinanxTopAppBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = BrownPrimary,
-            titleContentColor = TextLight,
-            actionIconContentColor = TextLight
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

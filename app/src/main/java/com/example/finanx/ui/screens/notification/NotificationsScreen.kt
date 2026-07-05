@@ -97,23 +97,29 @@ fun NotificationsScreen(
         if (!state.isLoading && visibleNotifications.isEmpty()) {
             EmptyNotifications()
         } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+            com.example.finanx.ui.components.RefreshableList(
+                isRefreshing = state.isRefreshing,
+                onRefresh = { viewModel.fetchAll(userId, force = true) },
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(visibleNotifications) { notification ->
-                    NotificationItem(
-                        notification = notification,
-                        onDiscard = {
-                            notification.id?.let { notificationId ->
-                                viewModel.discardNotification(userId, notificationId)
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(visibleNotifications) { notification ->
+                        NotificationItem(
+                            notification = notification,
+                            onDiscard = {
+                                notification.id?.let { notificationId ->
+                                    viewModel.discardNotification(userId, notificationId)
+                                }
+                            },
+                            onMarkAsRead = {
+                                notification.id?.let { id ->
+                                    viewModel.markAsRead(userId, id)
+                                }
                             }
-                        },
-                        onMarkAsRead = {
-                            notification.id?.let { id ->
-                                viewModel.markAsRead(userId, id)
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

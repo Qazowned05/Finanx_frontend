@@ -42,7 +42,7 @@ fun PeriodSelectorRow(
         Icon(
             imageVector = Icons.Default.CalendarMonth,
             contentDescription = null,
-            tint = GoldAccent,
+            tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.padding(end = 2.dp)
         )
         Text(

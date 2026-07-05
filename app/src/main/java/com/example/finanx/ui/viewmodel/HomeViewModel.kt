@@ -20,6 +20,7 @@ data class HomeAlert(
 
 data class HomeUiState(
     val isLoading: Boolean = false,
+    override val isRefreshing: Boolean = false,
     val userName: String = "",
     val primaryBalance: BigDecimal = BigDecimal.ZERO,
     val primaryAlert: HomeAlert? = null,
@@ -33,7 +34,7 @@ data class HomeUiState(
     val dailyIncomeLabels: List<String> = emptyList(),
     val dailyExpensePoints: List<Float> = emptyList(),
     val dailyExpenseLabels: List<String> = emptyList()
-)
+) : com.example.finanx.ui.viewmodel.RefreshableUiState
 
 class HomeViewModel(
     private val repository: TransactionRepository =
@@ -54,11 +55,14 @@ class HomeViewModel(
         currentUserName = userName
 
         viewModelScope.launch {
-            state = state.copy(
-                isLoading = true,
-                userName = userName,
-                error = null
-            )
+                    // If we already have recent transactions, treat this as a refresh
+                val hasData = state.recentTransactions.isNotEmpty()
+                state = state.copy(
+                    isLoading = !hasData,
+                    isRefreshing = hasData,
+                    userName = userName,
+                    error = null
+                )
 
             try {
                 val data =
@@ -108,19 +112,18 @@ class HomeViewModel(
                 val primaryAlert = when {
                     balance < BigDecimal.ZERO -> HomeAlert(
                         title = "Tu saldo está en rojo",
-                        message = "Te conviene registrar un ingreso o revisar tus gastos recientes para recuperar equilibrio."
+                        message = "Registra un ingreso o revisa tus gastos recientes para recuperar el equilibrio."
                     )
-
                     monthlyExpenses > monthlyIncome -> HomeAlert(
                         title = "Este mes gastaste más de lo que ingresaste",
-                        message = "Revisa los movimientos recientes para detectar qué categoría está pesando más."
+                        message = "Revisa tus movimientos recientes para ver qué categoría pesa más."
                     )
-
                     else -> null
                 }
 
                 state = HomeUiState(
                     isLoading = false,
+                    isRefreshing = false,
                     userName = userName,
                     primaryBalance = balance,
                     primaryAlert = primaryAlert,
@@ -136,6 +139,7 @@ class HomeViewModel(
             } catch (exception: Exception) {
                 state = state.copy(
                     isLoading = false,
+                    isRefreshing = false,
                     error = exception.message
                         ?: "No se pudo cargar el inicio"
                 )

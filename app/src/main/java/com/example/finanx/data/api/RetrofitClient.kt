@@ -29,7 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://e135-132-191-2-214.ngrok-free.app/"
+    private const val BASE_URL = "https://a047-132-191-2-99.ngrok-free.app/"
 
     init {
         Serializer.moshiBuilder

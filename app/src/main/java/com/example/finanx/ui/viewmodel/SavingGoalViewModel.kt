@@ -13,10 +13,10 @@ import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.LocalDate
 
-sealed class SavingGoalState {
-    object Loading : SavingGoalState()
-    data class Success(val goals: List<SavingGoalResponse>) : SavingGoalState()
-    data class Error(val message: String) : SavingGoalState()
+sealed class SavingGoalState : com.example.finanx.ui.viewmodel.RefreshableUiState {
+    object Loading : SavingGoalState() { override val isRefreshing: Boolean = false }
+    data class Success(val goals: List<SavingGoalResponse>, override val isRefreshing: Boolean = false) : SavingGoalState()
+    data class Error(val message: String) : SavingGoalState() { override val isRefreshing: Boolean = false }
 }
 
 class SavingGoalViewModel : ViewModel() {
@@ -34,11 +34,13 @@ class SavingGoalViewModel : ViewModel() {
 
     fun fetchSavingGoals(userId: Long) {
         viewModelScope.launch {
-            savingGoalState = SavingGoalState.Loading
+            val hasData = savingGoalState is SavingGoalState.Success && (savingGoalState as SavingGoalState.Success).goals.isNotEmpty()
+            savingGoalState = if (hasData) (savingGoalState as SavingGoalState.Success).copy(isRefreshing = true)
+            else SavingGoalState.Loading
             try {
                 val response = repository.getSavingGoals(userId)
                 if (response.isSuccessful && response.body() != null) {
-                    savingGoalState = SavingGoalState.Success(response.body()!!)
+                    savingGoalState = SavingGoalState.Success(response.body()!!, isRefreshing = false)
                 } else {
                     savingGoalState = SavingGoalState.Error("Error al cargar metas: ${response.code()}")
                 }

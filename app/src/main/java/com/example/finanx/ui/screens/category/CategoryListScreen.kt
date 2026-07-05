@@ -15,17 +15,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.rememberCoroutineScope
 import com.example.finanx.ui.components.EmptyStateCard
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.CategoryViewModel
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
 import org.openapitools.client.models.CategoryResponse
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 val categoryIcons = listOf(
     Icons.Default.ShoppingCart, Icons.Default.Home, Icons.Default.DirectionsCar,
@@ -52,6 +61,26 @@ fun CategoryListScreen(
     var categoryToEdit by remember { mutableStateOf<CategoryResponse?>(null) }
     var categorySelected by remember { mutableStateOf<CategoryResponse?>(null) }
     var categoryToDisable by remember { mutableStateOf<CategoryResponse?>(null) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_categorias").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("new_category_button", "Crea una categoría para clasificar tus movimientos."),
+                    TutorialStep("category_type_toggle", "Cada categoría es de gasto o de ingreso — no se puede cambiar después de creada."),
+                    TutorialStep("category_list_item", "Toca una categoría para editar o eliminar.")
+                )
+            ) {
+                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_categorias") }
+                tutorialController = null
+            }
+        }
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val actionSuccess = viewModel.actionSuccess
@@ -68,7 +97,8 @@ fun CategoryListScreen(
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
                 containerColor = BrownPrimary,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.tutorialTarget("new_category_button", targetBounds)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
             }
@@ -95,39 +125,51 @@ fun CategoryListScreen(
                             )
                         }
                     } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        com.example.finanx.ui.components.RefreshableList(
+                            isRefreshing = (state as? com.example.finanx.ui.viewmodel.CategoryState.Success)?.isRefreshing
+                                ?: false,
+                            onRefresh = { viewModel.fetchCategories(userId, force = true) },
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
 
-                            groupedCategories.forEach { (type, categories) ->
+                                groupedCategories.forEach { (type, categories) ->
 
-                                item {
-                                    Text(
-                                        text = if (type == "INCOME") "Ingresos" else "Gastos",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = if (type == "INCOME") IncomeGreen else ExpenseRed,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
-                                                else ExpenseRed.copy(alpha = 0.08f),
-                                                RoundedCornerShape(6.dp)
-                                            )
-                                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                                    )
-                                }
+                                    item {
+                                        Text(
+                                            text = if (type == "INCOME") "Ingresos" else "Gastos",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = if (type == "INCOME") IncomeGreen else ExpenseRed,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(
+                                                    if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
+                                                    else ExpenseRed.copy(alpha = 0.08f),
+                                                    RoundedCornerShape(6.dp)
+                                                )
+                                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                                        )
+                                    }
 
-                                items(categories.size) { index ->
-                                    val category = categories[index]
-                                    CategoryCard(
-                                        category = category,
-                                        iconIndex = index % categoryIcons.size,
-                                        isSelected = categorySelected?.id == category.id,
-                                        onLongPress = { categorySelected = category },
-                                        onDismiss = { categorySelected = null }
-                                    )
+                                    items(categories.size) { index ->
+                                        val category = categories[index]
+                                        CategoryCard(
+                                            category = category,
+                                            iconIndex = index % categoryIcons.size,
+                                            isSelected = categorySelected?.id == category.id,
+                                            onLongPress = { categorySelected = category },
+                                            onDismiss = { categorySelected = null },
+                                            modifier = if (index == 0) {
+                                                Modifier.tutorialTarget("category_list_item", targetBounds)
+                                            } else {
+                                                Modifier
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -223,7 +265,22 @@ fun CategoryListScreen(
                 viewModel.createCategory(userId, name, description, selectedType)
                 showCreateDialog = false
             },
-            onDismiss = { showCreateDialog = false }
+            onDismiss = { showCreateDialog = false },
+            tutorialBounds = targetBounds
+        )
+    }
+
+    if (tutorialController != null) {
+        val current = tutorialController!!.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = tutorialController?.isLastStep ?: false,
+            onNext = { tutorialController?.next() },
+            onSkip = {
+                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_categorias") }
+                tutorialController = null
+            }
         )
     }
 
@@ -242,7 +299,8 @@ fun CategoryListScreen(
                 viewModel.updateCategory(userId, category.id!!, name, description, requestType)
                 categoryToEdit = null
             },
-            onDismiss = { categoryToEdit = null }
+            onDismiss = { categoryToEdit = null },
+            tutorialBounds = targetBounds
         )
     }
 }
@@ -253,7 +311,8 @@ fun CategoryCard(
     iconIndex: Int,
     isSelected: Boolean,
     onLongPress: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val active = category.active == true
     val accentColor = if (active) IncomeGreen else StoneGray
@@ -263,7 +322,7 @@ fun CategoryCard(
     )
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { if (isSelected) onDismiss() },
@@ -325,7 +384,8 @@ fun CategoryFormDialog(
     initialDescription: String = "",
     initialType: CategoryResponse.Type = CategoryResponse.Type.SPENT,
     onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    tutorialBounds: MutableMap<String, Rect>? = null
 ) {
     var name by remember { mutableStateOf(initialName) }
     var description by remember { mutableStateOf(initialDescription) }
@@ -344,7 +404,11 @@ fun CategoryFormDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = if (tutorialBounds != null) {
+                        Modifier.fillMaxWidth().tutorialTarget("category_type_toggle", tutorialBounds)
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

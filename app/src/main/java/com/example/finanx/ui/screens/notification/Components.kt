@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.theme.ExpenseRed
-import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.components.ErrorMessage
 import com.example.finanx.ui.theme.BrownPrimary
@@ -205,12 +204,13 @@ data class NotificationVisualStyle(
     val background: Color
 )
 
+@Composable
 fun notificationStyle(notification: NotificationDTO): NotificationVisualStyle {
     return when (notification.type) {
         NotificationDTO.Type.WARNING -> NotificationVisualStyle(
             icon = Icons.Default.Warning,
-            color = GoldAccent,
-            background = GoldAccent.copy(alpha = 0.12f)
+            color = MaterialTheme.colorScheme.tertiary,
+            background = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f)
         )
 
         NotificationDTO.Type.SUCCESS -> NotificationVisualStyle(

@@ -22,13 +22,14 @@ import retrofit2.Response
 import java.math.BigDecimal
 import java.time.LocalDate
 
-sealed class RecurringState {
-    object Loading : RecurringState()
+sealed class RecurringState : com.example.finanx.ui.viewmodel.RefreshableUiState {
+    object Loading : RecurringState() { override val isRefreshing: Boolean = false }
     data class Success(
         val transactionSchedules: List<TransactionScheduleResponse>,
-        val budgetSchedules: List<BudgetScheduleResponse>
+        val budgetSchedules: List<BudgetScheduleResponse>,
+        override val isRefreshing: Boolean = false
     ) : RecurringState()
-    data class Error(val message: String) : RecurringState()
+    data class Error(val message: String) : RecurringState() { override val isRefreshing: Boolean = false }
 }
 
 sealed class RecurringActionState {
@@ -65,16 +66,20 @@ class ScheduleViewModel(
     var formState by mutableStateOf<ScheduleFormState>(ScheduleFormState.Idle)
         private set
 
-    fun fetchAll(userId: Long, state: String = "RUNNING") {
+    fun fetchAll(userId: Long, state: String = "RUNNING", force: Boolean = false) {
+        if (!force && recurringState is RecurringState.Success) return
         viewModelScope.launch {
-            recurringState = RecurringState.Loading
+            val hasData = recurringState is RecurringState.Success && ((recurringState as RecurringState.Success).transactionSchedules.isNotEmpty() || (recurringState as RecurringState.Success).budgetSchedules.isNotEmpty())
+            recurringState = if (hasData) (recurringState as RecurringState.Success).copy(isRefreshing = true)
+            else RecurringState.Loading
             recurringState = try {
                 val txResponse = repository.getTransactionSchedulesByUserAndState(userId, state)
                 val budgetResponse = repository.getBudgetSchedulesByUserAndState(userId, state)
                 if (txResponse.isSuccessful && budgetResponse.isSuccessful) {
                     RecurringState.Success(
                         transactionSchedules = txResponse.body() ?: emptyList(),
-                        budgetSchedules = budgetResponse.body() ?: emptyList()
+                        budgetSchedules = budgetResponse.body() ?: emptyList(),
+                        isRefreshing = false
                     )
                 } else {
                     RecurringState.Error("Error al cargar recurrentes")
@@ -85,7 +90,8 @@ class ScheduleViewModel(
         }
     }
 
-    fun loadFormOptions(userId: Long) {
+    fun loadFormOptions(userId: Long, force: Boolean = false) {
+        if (!force && formState is ScheduleFormState.Ready) return
         viewModelScope.launch {
             formState = ScheduleFormState.Loading
             try {
@@ -151,7 +157,7 @@ class ScheduleViewModel(
                 val response = repository.createSchedule(request)
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success
-                    fetchAll(userId)
+                    fetchAll(userId, force = true)
                 } else {
                     actionState = RecurringActionState.Error("No se pudo crear: ${response.message()}")
                 }
@@ -199,7 +205,7 @@ class ScheduleViewModel(
                 )
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success
-                    fetchAll(userId)
+                    fetchAll(userId, force = true)
                 } else {
                     actionState = RecurringActionState.Error("No se pudo crear: ${response.message()}")
                 }
@@ -211,19 +217,19 @@ class ScheduleViewModel(
 
     fun pause(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.pauseSchedule(id).isSuccessful) fetchAll(userId) } catch (_: Exception) {}
+            try { if (repository.pauseSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
         }
     }
 
     fun resume(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.resumeSchedule(id).isSuccessful) fetchAll(userId) } catch (_: Exception) {}
+            try { if (repository.resumeSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
         }
     }
 
     fun cancel(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.cancelSchedule(id).isSuccessful) fetchAll(userId) } catch (_: Exception) {}
+            try { if (repository.cancelSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
         }
     }
 

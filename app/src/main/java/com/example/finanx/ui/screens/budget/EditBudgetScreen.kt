@@ -1,8 +1,8 @@
 package com.example.finanx.ui.screens.budget
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,7 +37,7 @@ fun EditBudgetScreen(
     var description by remember { mutableStateOf(budget.description.orEmpty()) }
     var limitAmount by remember { mutableStateOf(budget.limitAmount?.toPlainString() ?: "") }
     var alertable by remember { mutableStateOf(budget.alertable ?: true) }
-    var percentAlert by remember { mutableStateOf((budget.percentAlert ?: 80).toFloat()) }
+    var percentAlert by remember { mutableFloatStateOf((budget.percentAlert ?: 80).toFloat()) }
 
     var endDateText by remember { mutableStateOf(budget.end?.toLocalDate()?.toString().orEmpty()) }
 
@@ -63,24 +63,9 @@ fun EditBudgetScreen(
                 !parsedEnd.isBefore(LocalDate.now().plusDays(1)) &&
                 (!alertable || (parsedPercent in 0..100))
 
-    var showConfirmDiscard by remember { mutableStateOf(false) }
-
     val focusManager = LocalFocusManager.current
 
-    BackHandler(enabled = true) {
-        if (description.isNotBlank() || limitAmount.isNotBlank() || endDateText.isNotBlank()) {
-            showConfirmDiscard = true
-        } else {
-            onCancel()
-        }
-    }
-
     Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                title = { Text("Editar presupuesto") }
-            )
-        },
         content = { innerPadding ->
             Column(
                 modifier = Modifier
@@ -101,7 +86,7 @@ fun EditBudgetScreen(
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                    keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
                     )
                 )
@@ -115,7 +100,7 @@ fun EditBudgetScreen(
                         keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                    keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
                     ),
                     supportingText = { Text("Usa hasta dos decimales") },
@@ -193,8 +178,4 @@ fun EditBudgetScreen(
             }
         }
     )
-
-    if (showConfirmDiscard) {
-        AlertDialog(onDismissRequest = { showConfirmDiscard = false }, title = { Text("Descartar cambios?") }, text = { Text("Se perderá la información ingresada.") }, confirmButton = { TextButton(onClick = { showConfirmDiscard = false; onCancel() }) { Text("Descartar") } }, dismissButton = { TextButton(onClick = { showConfirmDiscard = false }) { Text("Seguir editando") } })
-    }
 }

@@ -1,6 +1,7 @@
 package com.example.finanx.ui
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
@@ -14,7 +15,9 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -59,7 +62,10 @@ import com.example.finanx.ui.screens.category.CategoryListScreen
 import com.example.finanx.ui.screens.chat.ChatScreen
 import com.example.finanx.ui.screens.notification.NotificationsScreen
 import com.example.finanx.ui.screens.profile.ProfileScreen
+import com.example.finanx.ui.screens.profile.DeleteAccountScreen
+import com.example.finanx.ui.screens.profile.ResetDataScreen
 import com.example.finanx.ui.screens.saving.SavingGoalScreen
+import com.example.finanx.ui.screens.saving.CreateSavingGoalScreen
 import com.example.finanx.ui.screens.transaction.create.CreateTransactionScreen
 import com.example.finanx.ui.screens.schedule.CreateBudgetScheduleScreen
 import com.example.finanx.ui.screens.schedule.CreateTransactionScheduleScreen
@@ -79,6 +85,7 @@ import com.example.finanx.ui.viewmodel.SavingGoalViewModel
 import com.example.finanx.ui.viewmodel.ScheduleFormState
 import com.example.finanx.ui.viewmodel.ScheduleViewModel
 import com.example.finanx.ui.viewmodel.TransactionViewModel
+import com.example.finanx.ui.viewmodel.visibleSteps
 import com.example.finanx.ui.viewmodel.UserViewModel
 import org.openapitools.client.models.UserResponse
 import kotlin.collections.contains
@@ -107,8 +114,12 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     data object Notifications :
         Screen("notifications", "Notificaciones", Icons.Default.Notifications)
     data object Profile : Screen("profile", "Perfil", Icons.Default.Person)
+    data object ProfileResetData : Screen("profile/reset-data", "Empezar de Cero", Icons.Default.RestartAlt)
+    data object ProfileDeleteAccount : Screen("profile/delete-account", "Eliminar Cuenta", Icons.Default.DeleteForever)
     data object CreateTransaction :
         Screen("create_transaction", "Nuevo movimiento", Icons.Default.Add)
+    data object CreateSavingGoal :
+        Screen("create_saving_goal", "Crear meta", Icons.Default.Savings)
     data object CreateBudget : Screen("create_budget", "Nuevo presupuesto", Icons.Default.Add)
 }
 
@@ -126,8 +137,11 @@ private val secondaryRoutes = setOf(
     Screen.Analysis.route,
     Screen.Notifications.route,
     Screen.Profile.route,
+    Screen.ProfileResetData.route,
+    Screen.ProfileDeleteAccount.route,
     Screen.Categories.route,
     Screen.CreateTransaction.route,
+    Screen.CreateSavingGoal.route,
     "transaction_detail/{id}",
     Screen.ScheduledTransactions.route,
     Screen.ScheduleChoice.route,
@@ -176,6 +190,10 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
     val showBottomBar = currentRoute in bottomBarRoutes
     val showBack = currentRoute in secondaryRoutes
 
+    val handleBack = {
+        customBackHandler?.invoke() ?: navController.popBackStack()
+    }
+
     fun navigateTo(route: String) {
         navController.navigate(route) {
             popUpTo(navController.graph.findStartDestination().id) {
@@ -206,7 +224,7 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                 title = appBarState.title,
                 subtitle = appBarState.subtitle,
                 showBack = showBack,
-                onBack = {  customBackHandler?.invoke() ?: navController.popBackStack() },
+                onBack = { handleBack() },
                 onRefresh = appBarState.onRefresh,
                 onFinn = { navController.navigate(Screen.Chat.route) },
                 onNotifications = { navController.navigate(Screen.Notifications.route) },
@@ -250,6 +268,10 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
             }
         }
     ) { innerPadding ->
+        BackHandler(enabled = showBack) {
+            handleBack()
+        }
+
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
@@ -324,7 +346,20 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                 }
                 SavingGoalScreen(
                     userId = userId,
-                    viewModel = savingGoalViewModel
+                    viewModel = savingGoalViewModel,
+                    onCreateGoal = { navController.navigate(Screen.CreateSavingGoal.route) }
+                )
+            }
+
+            composable(Screen.CreateSavingGoal.route) {
+                LaunchedEffect(Unit) {
+                    appBarState = AppBarState(title = "Crear meta", showBack = true)
+                }
+                DisposableEffect(Unit) { onDispose { customBackHandler = null } }
+                CreateSavingGoalScreen(
+                    userId = userId,
+                    viewModel = savingGoalViewModel,
+                    onSuccess = { navController.popBackStack() }
                 )
             }
 
@@ -418,7 +453,8 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                     viewModel = scheduleViewModel,
                     onSuccess = {
                         navController.popBackStack(Screen.ScheduledTransactions.route, inclusive = false)
-                    }
+                    },
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -451,23 +487,48 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                     viewModel = scheduleViewModel,
                     onSuccess = {
                         navController.popBackStack(Screen.ScheduledTransactions.route, inclusive = false)
-                    }
+                    },
+                    onBack = { navController.popBackStack() }
                 )
             }
 
             composable(Screen.CreateTransaction.route) {
-                var step by rememberSaveable { mutableIntStateOf(1) }
-
-                LaunchedEffect(step) {
-                    appBarState = AppBarState(
-                        title = "Nuevo movimiento",
-                        subtitle = "Paso $step de 2",
-                        showBack = true
-                    )
+                LaunchedEffect(Unit) {
+                    val preserveDraft = navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.remove<Boolean>("preserve_transaction_draft") == true
+                    if (!preserveDraft) {
+                        transactionViewModel.resetDraft()
+                    }
+                    // ensure form options and saving goals are loaded
                     val options = transactionViewModel.state.formOptions
+                    if (options.categories.isEmpty() && !transactionViewModel.state.isLoading) {
+                        transactionViewModel.load(userId)
+                    }
+                    savingGoalViewModel.fetchSavingGoals(userId)
+                }
+
+                LaunchedEffect(transactionViewModel.draft.step, savingGoalViewModel.savingGoalState) {
+                    val hasActiveSavingGoals = when (val s = savingGoalViewModel.savingGoalState) {
+                        is com.example.finanx.ui.viewmodel.SavingGoalState.Success -> s.goals.isNotEmpty()
+                        else -> transactionViewModel.state.formOptions.savingGoals.isNotEmpty()
+                    }
+                    val steps = transactionViewModel.draft.visibleSteps(hasActiveSavingGoals)
+                    val currentIndex = steps.indexOf(transactionViewModel.draft.step)
+                    appBarState = if (transactionViewModel.draft.step == com.example.finanx.ui.viewmodel.TransactionStep.TYPE) {
+                        AppBarState(title = "", subtitle = null, showBack = true)
+                    } else {
+                        AppBarState(
+                            title = "Nuevo movimiento",
+                            subtitle = "Paso ${if (currentIndex >= 0) currentIndex + 1 else 1} de ${steps.size}",
+                            showBack = true
+                        )
+                    }
+
                     customBackHandler = {
-                        if (step == 2) step = 1
-                        else {
+                        if (currentIndex > 0) {
+                            transactionViewModel.goToStep(steps[currentIndex - 1])
+                        } else {
                             val hasUnsaved = hasUnsavedCreateTransaction?.invoke() == true
                             if (hasUnsaved) {
                                 pendingPopAction = { navController.popBackStack() }
@@ -477,70 +538,33 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                             }
                         }
                     }
-                    if (options.categories.isEmpty() && !transactionViewModel.state.isLoading) {
-                        transactionViewModel.load(userId)
-                    }
                 }
 
                 DisposableEffect(Unit) {
                     onDispose { customBackHandler = null }
                 }
+
                 CreateTransactionScreen(
                     registerHasUnsaved = { fn -> hasUnsavedCreateTransaction = fn },
                     userId = userId,
-                    formOptions = transactionViewModel.state.formOptions,
-                    isLoading = transactionViewModel.state.isLoading,
-                    loadError = transactionViewModel.state.error,
-                    saveState = transactionViewModel.state.saveState,
-                    step = step,
-                    onStepChange = { step = it },
+                    transactionViewModel = transactionViewModel,
+                    savingGoalViewModel = savingGoalViewModel,
+                    onCreateSavingGoal = {
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("preserve_transaction_draft", true)
+                        navController.navigate(Screen.CreateSavingGoal.route)
+                    },
+                    onCreateCategory = { navController.navigate(Screen.Categories.route) },
                     onBack = { navController.popBackStack() },
-                    onRetry = { transactionViewModel.load(userId) },
-                    onSubmit = { transactionViewModel.createTransaction(it) },
                     onSaved = {
+                        transactionViewModel.resetDraft()
                         transactionViewModel.consumeSaveState()
                         homeViewModel.load(userId = userId, userName = user.displayName())
                         navController.popBackStack()
                     }
                 )
 
-                // Create budget screen (full-screen)
-                composable(Screen.CreateBudget.route) {
-                    LaunchedEffect(Unit) {
-                        appBarState = AppBarState(title = "Nuevo presupuesto", showBack = true)
-                        categoryViewModel.fetchCategories(userId)
-                    }
-                    CreateBudgetScreen(
-                        userId = userId,
-                        categoryState = categoryViewModel.categoryState,
-                        viewModel = budgetViewModel,
-                        onCancel = { navController.popBackStack() }
-                    )
-                }
-
-                composable("edit_budget/{id}") { backStackEntry ->
-                    val idArg = backStackEntry.arguments?.getString("id")?.toLongOrNull()
-                    LaunchedEffect(idArg) {
-                        appBarState = AppBarState(title = "Editar presupuesto", showBack = true)
-                        idArg?.let { budgetViewModel.fetchDetailedBudgets(userId) }
-                    }
-
-                    val detailed = budgetViewModel.budgetState
-                    val budget = (detailed as? com.example.finanx.ui.viewmodel.BudgetState.Success)?.budgets?.firstOrNull { it.id == idArg }
-
-                    if (budget != null) {
-                        EditBudgetScreen(
-                            userId = userId,
-                            budget = budget,
-                            categoryState = categoryViewModel.categoryState,
-                            viewModel = budgetViewModel,
-                            onCancel = { navController.popBackStack() }
-                        )
-                    } else {
-                        // show loading or fallback
-                        LaunchedEffect(Unit) { if (detailed is com.example.finanx.ui.viewmodel.BudgetState.Error) appBarState = AppBarState(title = "Presupuestos") }
-                    }
-                }
             }
 
 
@@ -562,7 +586,32 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                     userId = userId,
                     viewModel = userViewModel,
                     onLogout = { authViewModel.logout(activity) },
-                    onBack = { navController.popBackStack() }
+                    onOpenResetData = { navController.navigate(Screen.ProfileResetData.route) },
+                    onOpenDeleteAccount = { navController.navigate(Screen.ProfileDeleteAccount.route) }
+                )
+            }
+
+            composable(Screen.ProfileResetData.route) {
+                LaunchedEffect(Unit) {
+                    appBarState = AppBarState(title = "Empezar de Cero", showBack = true)
+                }
+                ResetDataScreen(
+                    userId = userId,
+                    viewModel = userViewModel,
+                    onBack = { navController.popBackStack() },
+                    onLogout = { authViewModel.logout(activity) }
+                )
+            }
+
+            composable(Screen.ProfileDeleteAccount.route) {
+                LaunchedEffect(Unit) {
+                    appBarState = AppBarState(title = "Eliminar Cuenta", showBack = true)
+                }
+                DeleteAccountScreen(
+                    userId = userId,
+                    viewModel = userViewModel,
+                    onBack = { navController.popBackStack() },
+                    onLogout = { authViewModel.logout(activity) }
                 )
             }
 
@@ -575,6 +624,43 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                     onBack = { navController.popBackStack() },
                     viewModel = notificationViewModel
                 )
+            }
+
+            composable(Screen.CreateBudget.route) {
+                LaunchedEffect(Unit) {
+                    appBarState = AppBarState(title = "Nuevo presupuesto", showBack = true)
+                    categoryViewModel.fetchCategories(userId)
+                }
+                CreateBudgetScreen(
+                    userId = userId,
+                    categoryState = categoryViewModel.categoryState,
+                    viewModel = budgetViewModel,
+                    onCancel = { navController.popBackStack() }
+                )
+            }
+
+            composable("edit_budget/{id}") { backStackEntry ->
+                val idArg = backStackEntry.arguments?.getString("id")?.toLongOrNull()
+                LaunchedEffect(idArg) {
+                    appBarState = AppBarState(title = "Editar presupuesto", showBack = true)
+                    idArg?.let { budgetViewModel.fetchDetailedBudgets(userId) }
+                }
+
+                val detailed = budgetViewModel.budgetState
+                val budget = (detailed as? com.example.finanx.ui.viewmodel.BudgetState.Success)?.budgets?.firstOrNull { it.id == idArg }
+
+                if (budget != null) {
+                    EditBudgetScreen(
+                        userId = userId,
+                        budget = budget,
+                        categoryState = categoryViewModel.categoryState,
+                        viewModel = budgetViewModel,
+                        onCancel = { navController.popBackStack() }
+                    )
+                } else {
+                    // show loading or fallback
+                    LaunchedEffect(Unit) { if (detailed is com.example.finanx.ui.viewmodel.BudgetState.Error) appBarState = AppBarState(title = "Presupuestos") }
+                }
             }
         }
 

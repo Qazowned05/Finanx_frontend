@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.AppBarState
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.ChatUiState
 import kotlinx.coroutines.launch
@@ -34,6 +40,7 @@ import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
 import java.time.format.DateTimeFormatter
 import com.example.finanx.ui.viewmodel.ChatViewModel
+import kotlinx.coroutines.flow.first
 
 /**
  * Pantalla principal del chatbot Finn.
@@ -49,9 +56,29 @@ fun ChatScreen(
     onAppBarState: (AppBarState) -> Unit
 ) {
     val state = viewModel.state
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    val coroutineScope = rememberCoroutineScope()
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadSessions(userId)
+    }
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_finn").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("finn_icon", "Finn es tu asistente financiero — pregúntale sobre tus gastos o pide consejos."),
+                    TutorialStep("new_session_button", "Cada conversación es independiente; puedes revisarlas después en el historial."),
+                    TutorialStep("chat_input_field", "Escríbele como lo harías con una persona.")
+                )
+            ) {
+                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_finn") }
+                tutorialController = null
+            }
+        }
     }
 
     LaunchedEffect(state.selectedSession, state.activeSession) {
@@ -80,16 +107,34 @@ fun ChatScreen(
             state = state,
             onInputChange = viewModel::onInputChange,
             onSend = { viewModel.sendMessage(userId) },
-            onClose = { viewModel.closeSession(userId) }
+            onClose = { viewModel.closeSession(userId) },
+            inputModifier = Modifier.tutorialTarget("chat_input_field", targetBounds)
         )
-        return
+    } else {
+        SessionListView(
+            state = state,
+            onNewSession = { viewModel.startSession(userId) },
+            onOpenSession = viewModel::openSession,
+            newSessionModifier = Modifier.tutorialTarget("new_session_button", targetBounds),
+            finnIconModifier = Modifier.tutorialTarget("finn_icon", targetBounds)
+        )
     }
 
-    SessionListView(
-        state = state,
-        onNewSession = { viewModel.startSession(userId) },
-        onOpenSession = viewModel::openSession
-    )
+    tutorialController?.let { controller ->
+        val current = controller.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message.orEmpty(),
+            isLastStep = controller.isLastStep,
+            onNext = { controller.next() },
+            onSkip = {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_finn")
+                }
+                tutorialController = null
+            }
+        )
+    }
 }
 
 @Composable
@@ -97,7 +142,8 @@ private fun ActiveChatView(
     state: ChatUiState,
     onInputChange: (String) -> Unit,
     onSend: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    inputModifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -125,7 +171,7 @@ private fun ActiveChatView(
             TextButton(onClick = onClose) {
                 Text(
                     text = "Cerrar sesión",
-                    color = GoldAccent,
+                    color = MaterialTheme.colorScheme.tertiary,
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -171,7 +217,8 @@ private fun ActiveChatView(
             text = state.inputText,
             isSending = state.isSending,
             onTextChange = onInputChange,
-            onSend = onSend
+            onSend = onSend,
+            modifier = inputModifier
         )
     }
 }
@@ -193,7 +240,7 @@ fun ChatBubble(message: ChatHistoryResponse) {
                 Icon(
                     Icons.Default.AutoAwesome,
                     contentDescription = null,
-                    tint = GoldAccent,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(14.dp)
                 )
             }
@@ -233,7 +280,7 @@ private fun TypingIndicator() {
             Icon(
                 Icons.Default.AutoAwesome,
                 contentDescription = null,
-                tint = GoldAccent,
+                tint = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -243,7 +290,7 @@ private fun TypingIndicator() {
             color = SurfaceWhite
         ) {
             CircularProgressIndicator(
-                color = GoldAccent,
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 10.dp)
                     .size(14.dp),
@@ -258,7 +305,8 @@ private fun ChatInputBar(
     text: String,
     isSending: Boolean,
     onTextChange: (String) -> Unit,
-    onSend: () -> Unit
+    onSend: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         shadowElevation = 8.dp,
@@ -281,14 +329,14 @@ private fun ChatInputBar(
                         style = MaterialTheme.typography.bodySmall
                     )
                 },
-                modifier = Modifier.weight(1f),
+                modifier = modifier.weight(1f),
                 shape = RoundedCornerShape(24.dp),
                 maxLines = 4,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                 keyboardActions = KeyboardActions(onSend = { onSend() }),
                 enabled = !isSending,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GoldAccent,
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
                     unfocusedBorderColor = BorderSoft
                 )
             )
@@ -307,7 +355,7 @@ private fun ChatInputBar(
                 Icon(
                     Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Enviar",
-                    tint = if (text.isNotBlank() && !isSending) GoldAccent else TextGray,
+                    tint = if (text.isNotBlank() && !isSending) MaterialTheme.colorScheme.tertiary else TextGray,
                     modifier = Modifier.size(18.dp)
                 )
             }

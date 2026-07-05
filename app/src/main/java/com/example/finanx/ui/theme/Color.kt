@@ -8,7 +8,7 @@ val Red = Color(0xFFFF0000)
 
 val BrownPrimary = Color(0xFF2B2118)
 val BrownSecondary = Color(0xFF6B4F3B)
-val GoldAccent = Color(0xFFC9A876)
+val GoldAccent = Color(0xFFC79953)
 val WarmBackground = Color(0xFFF5F1EB)
 val SurfaceWhite = Color(0xFFFFFFFF)
 val StoneGray = Color(0xFF5C5650)
@@ -22,6 +22,7 @@ val IncomeGreen = Color(0xFF3F5C44)       // Verde oliva oscuro para ingresos
 val ExpenseRed = Color(0xFF8C3B2E)        // Terracota oscuro para gastos
 val White = SurfaceWhite
 val GrayBorder = BorderSoft
+val Gold = Color(0xFFC27F0A)
 
 // Dark mode
 val BrownPrimaryDark = Color(0xFFE3DCD0)

@@ -1,727 +1,230 @@
 package com.example.finanx.ui.screens.transaction.create
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalFocusManager
+import com.example.finanx.data.model.PaymentMethod
+import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionType
-import com.example.finanx.data.model.TransactionFormOptions
-import com.example.finanx.data.model.TransactionRecurrenceType
-import com.example.finanx.data.preferences.TransactionQuickPrefs
+import com.example.finanx.ui.components.ReasonAutocomplete
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.theme.TextGray
-import com.example.finanx.ui.util.toReadableDate
-import com.example.finanx.ui.viewmodel.TransactionSaveState
-import java.time.LocalDate
-import java.util.TimeZone
+import com.example.finanx.ui.viewmodel.TransactionDraftField
+import com.example.finanx.ui.viewmodel.TransactionDraftState
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TransactionDetailsStep(
-    form: CreateTransactionFormState,
-    options: TransactionFormOptions,
-    isLoading: Boolean,
-    loadError: String?,
-    saveState: TransactionSaveState,
-    allowSchedule: Boolean,
-    lockScheduleMode: Boolean,
-    onFormChange:
-        (CreateTransactionFormState) -> Unit,
-    onRetry: () -> Unit,
-    onPrevious: () -> Unit,
-    onSave: () -> Unit
+    draft: TransactionDraftState,
+    categoryLabel: String?,
+    reasons: List<SelectOption>,
+    hasSavingGoalStep: Boolean,
+    isSaving: Boolean,
+    saveError: String?,
+    onAmountChange: (String) -> Unit,
+    onReasonChange: (Long?, String) -> Unit,
+    onPaymentChange: (PaymentMethod) -> Unit,
+    onSubmit: () -> Unit,
+    registry: MutableMap<String, Rect>,
+    modifier: Modifier = Modifier
 ) {
-    if (
-        isLoading &&
-        options.categories.isEmpty()
-    ) {
-        Box(
+    val amountFocus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    var attemptedSubmit by remember { mutableStateOf(false) }
+
+    val parsedAmount = draft.amountText.replace(",", ".").toBigDecimalOrNull()
+    val amountError = (attemptedSubmit && (parsedAmount == null || parsedAmount.signum() <= 0)) ||
+        draft.fieldErrors.contains(TransactionDraftField.AMOUNT)
+    val paymentError = (attemptedSubmit && draft.paymentMethod == null) ||
+        draft.fieldErrors.contains(TransactionDraftField.PAYMENT_METHOD)
+
+    LaunchedEffect(Unit) {
+        amountFocus.requestFocus()
+    }
+
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        DetailsSummaryCard(
+            type = draft.type,
+            categoryLabel = categoryLabel,
+            amountText = draft.amountText
+        )
+
+        OutlinedTextField(
+            value = draft.amountText,
+            onValueChange = onAmountChange,
+            label = { Text("Monto") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next
+            ),
+            enabled = !isSaving,
+            isError = amountError,
+            supportingText = {
+                Text(
+                    when {
+                        amountError && draft.amountText.isBlank() -> "Ingresa un monto"
+                        amountError -> "Ingresa un monto válido"
+                        else -> "Puedes ingresar hasta dos decimales"
+                    }
+                )
+            },
             modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .focusRequester(amountFocus)
+                .tutorialTarget("amount_field", registry)
+        )
+
+        ReasonAutocomplete(
+            text = draft.reasonText,
+            reasons = reasons,
+            enabled = !isSaving,
+            onReasonChange = onReasonChange,
+            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .tutorialTarget("reason_field", registry)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .tutorialTarget("payment_method_row", registry),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            CircularProgressIndicator()
-        }
-
-        return
-    }
-
-    if (options.categories.isEmpty()) {
-        EmptyCategoriesContent(
-            message = loadError
-                ?: "No tienes categorías disponibles.",
-            onRetry = onRetry
-        )
-
-        return
-    }
-
-    val hasExistingReasons = options.reasons.isNotEmpty()
-
-    val useNewReason = form.usesNewReason(hasExistingReasons)
-
-    val selectedCategory = options.categories.firstOrNull {
-            it.id == form.categoryId
-        }
-
-    val selectedReason = options.reasons.firstOrNull {
-            it.id == form.reasonId
-        }
-
-    val selectedGoal = options.savingGoals.firstOrNull {
-            it.id == form.savingGoalId
-    }
-
-    val isSaving = saveState is TransactionSaveState.Saving
-
-    val saveError = (saveState as? TransactionSaveState.Error)
-            ?.message
-
-    val preferredCategoryId = form.categoryId ?: TransactionQuickPrefs.lastCategoryId(form.type)
-    val filteredCategories = options.categories
-        .filter { it.type == form.type }
-        .sortedWith(compareBy({
-            if (it.id == preferredCategoryId) 0 else 1
-        }, { it.label.lowercase() }))
-
-    LaunchedEffect(form.type) {
-        val valid = options.categories.any {
-            it.id == form.categoryId && it.type == form.type
-        }
-
-        if (!valid) {
-            onFormChange(form.copy(categoryId = null))
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(20.dp),
-        verticalArrangement =
-            Arrangement.spacedBy(16.dp)
-    ) {
-        TransactionSummaryCard(
-            form = form,
-            onEdit = onPrevious,
-            enabled = !isSaving
-        )
-
-        if (hasExistingReasons) {
-            ReasonModeSelector(
-                useNewReason = useNewReason,
-                enabled = !isSaving,
-                onModeChange = { createNew ->
-                    onFormChange(
-                        form.copy(
-                            useNewReason = createNew,
-                            reasonId = null
-                        )
+            Text("Método de pago")
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                PaymentMethod.entries.forEach { method ->
+                    FilterChip(
+                        selected = draft.paymentMethod == method,
+                        onClick = { if (!isSaving) onPaymentChange(method) },
+                        label = { Text(method.toSpanishLabel()) }
                     )
                 }
-            )
-        }
-
-        if (useNewReason) {
-            OutlinedTextField(
-                value = form.newReason,
-                onValueChange = {
-                    onFormChange(
-                        form.copy(newReason = it)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isSaving,
-                label = { Text("Motivo (opcional)") },
-                placeholder = {
-                    Text(
-                        if (
-                            form.type ==
-                            TransactionType.INCOME
-                        ) {
-                            "Ejemplo: Pago de sueldo"
-                        } else {
-                            "Ejemplo: Compra semanal"
-                        }
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
-                    onNext = { LocalFocusManager.current.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
-                ),
-                supportingText = {
-                    Text("Puedes dejarlo vacío")
-                },
-            )
-        } else {
-            FormDropdown(
-                label = "Motivo (opcional)",
-                placeholder = "Sin motivo",
-                items = options.reasons,
-                selectedItem = selectedReason,
-                itemLabel = { it.label },
-                enabled = !isSaving,
-                allowEmptySelection = true,
-                emptySelectionLabel = "Sin motivo",
-                onItemSelected = { option ->
-                    onFormChange(
-                        form.copy(
-                            reasonId = option?.id
-                        )
-                    )
-                }
-            )
-        }
-
-        FormDropdown(
-            label = "Categoría",
-            placeholder = "Selecciona una categoría",
-            items = filteredCategories,
-            selectedItem = selectedCategory,
-            itemLabel = { it.label },
-            enabled = !isSaving,
-            onItemSelected = { option ->
-                onFormChange(
-                    form.copy(
-                        categoryId = option?.id
-                    )
+            }
+            if (paymentError) {
+                Text(
+                    text = "Selecciona un método de pago",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
-        )
-
-        Text(
-            text = "La categoría debe corresponder al tipo de movimiento.",
-            style =
-                MaterialTheme.typography.labelSmall,
-            color = TextGray
-        )
-
-        PaymentMethodDropdown(
-            selected = form.paymentMethod,
-            enabled = !isSaving,
-            onSelected = {
-                onFormChange(
-                    form.copy(
-                        paymentMethod = it
-                    )
-                )
-            }
-        )
-
-        if (allowSchedule) {
-            ScheduleSection(
-                form = form,
-                enabled = !isSaving,
-                locked = lockScheduleMode,
-                onFormChange = onFormChange
-            )
-        }
-
-        FormDropdown(
-            label = "Meta de ahorro",
-            placeholder = "Sin meta de ahorro",
-            items = options.savingGoals,
-            selectedItem = selectedGoal,
-            itemLabel = { it.label },
-            enabled = !isSaving && !form.isScheduled,
-            allowEmptySelection = true,
-            emptySelectionLabel =
-                "Sin meta de ahorro",
-            onItemSelected = { option ->
-                onFormChange(
-                    form.copy(
-                        savingGoalId = option?.id
-                    )
-                )
-            }
-        )
-
-        if (form.isScheduled) {
-            Text(
-                text = "Las metas de ahorro no se envían en movimientos programados porque el contrato actual de programación no expone ese campo.",
-                style = MaterialTheme.typography.labelSmall,
-                color = TextGray
-            )
         }
 
         if (saveError != null) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor =
-                        MaterialTheme.colorScheme.errorContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
                     text = saveError,
-                    modifier = Modifier.padding(14.dp),
-                    color =
-                        MaterialTheme
-                            .colorScheme
-                            .onErrorContainer
+                    modifier = Modifier.padding(12.dp),
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
 
-        Spacer(
-            modifier = Modifier.height(8.dp)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement =
-                Arrangement.spacedBy(12.dp)
-        ) {
-            OutlinedButton(
-                onClick = onPrevious,
-                enabled = !isSaving,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Atrás")
-            }
-
-            Button(
-                onClick = onSave,
-                enabled =
-                    form.isValid(
-                        hasExistingReasons
-                    ) &&
-                            !isSaving,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp)
-            ) {
-                if (isSaving) {
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        color =
-                            MaterialTheme
-                                .colorScheme
-                                .onPrimary
-                    )
-                } else {
-                    Text(
-                        if (form.isScheduled) {
-                            "Programar"
-                        } else {
-                            "Guardar"
-                        }
-                    )
+        Button(
+            onClick = {
+                attemptedSubmit = true
+                if (!amountError && !paymentError) {
+                    onSubmit()
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TransactionSummaryCard(
-    form: CreateTransactionFormState,
-    onEdit: () -> Unit,
-    enabled: Boolean
-) {
-    val isIncome =
-        form.type == TransactionType.INCOME
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Row(
+            },
+            enabled = !isSaving,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement =
-                Arrangement.SpaceBetween,
-            verticalAlignment =
-                Alignment.CenterVertically
+                .tutorialTarget("save_button", registry)
         ) {
-            Column {
-                Text(
-                    text = if (isIncome) {
-                        "Ingreso"
-                    } else {
-                        "Gasto"
-                    },
-                    color = TextGray
+            if (isSaving) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-
-                Text(
-                    text =
-                        "S/ ${form.parsedAmount?.toPlainString()}",
-                    style =
-                        MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isIncome) {
-                        IncomeGreen
-                    } else {
-                        ExpenseRed
-                    }
-                )
-            }
-
-            OutlinedButton(
-                onClick = onEdit,
-                enabled = enabled
-            ) {
-                Text("Editar")
+            } else {
+                Text(if (hasSavingGoalStep) "Siguiente" else "Guardar")
             }
         }
     }
 }
 
 @Composable
-private fun ScheduleSection(
-    form: CreateTransactionFormState,
-    enabled: Boolean,
-    locked: Boolean,
-    onFormChange:
-        (CreateTransactionFormState) -> Unit
+private fun DetailsSummaryCard(
+    type: TransactionType?,
+    categoryLabel: String?,
+    amountText: String
 ) {
-
-    val intervalError = form.recurrenceIntervalText.isNotBlank() && form.parsedRecurrenceInterval == null
-    val startError = form.scheduleStartDateText.isNotBlank() && form.parsedScheduleStartDate == null
-    val endError = form.scheduleEndDateText.isNotBlank() && (!form.isScheduleValid || form.parsedScheduleEndDate == null)
-
+    val isIncome = type == TransactionType.INCOME
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                MaterialTheme.colorScheme.surface
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement =
-                Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement =
-                    Arrangement.SpaceBetween,
-                verticalAlignment =
-                    Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = if (locked) {
-                            "Programación"
-                        } else {
-                            "Movimiento programado"
-                        },
-                        fontWeight = FontWeight.SemiBold
-                    )
-
-                    Text(
-                        text = "Para gastos o ingresos fijos con recurrencia.",
-                        style =
-                            MaterialTheme.typography.bodySmall,
-                        color = TextGray
-                    )
-                }
-
-                if (!locked) {
-                    Switch(
-                        checked = form.isScheduled,
-                        enabled = enabled,
-                        onCheckedChange = { checked ->
-                            onFormChange(
-                                form.copy(
-                                    isScheduled = checked,
-                                    savingGoalId = if (checked) {
-                                        null
-                                    } else {
-                                        form.savingGoalId
-                                    }
-                                )
-                            )
-                        }
-                    )
-                }
-            }
-
-            if (form.isScheduled) {
-                RecurrenceTypeDropdown(
-                    selected = form.recurrenceType,
-                    enabled = enabled,
-                    onSelected = { recurrence ->
-                        onFormChange(
-                            form.copy(
-                                recurrenceType = recurrence
-                            )
-                        )
-                    }
+        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = if (isIncome) "Ingreso" else "Gasto",
+                color = TextGray
+            )
+            Text(
+                text = categoryLabel ?: "Sin categoría",
+                style = MaterialTheme.typography.titleMedium
+            )
+            if (amountText.isNotBlank()) {
+                Text(
+                    text = "S/ $amountText",
+                    color = if (isIncome) IncomeGreen else ExpenseRed,
+                    style = MaterialTheme.typography.titleMedium
                 )
-
-                OutlinedTextField(
-                    value = form.recurrenceIntervalText,
-                    onValueChange = { value ->
-                        if (
-                            value.length <= 3 &&
-                            value.all(Char::isDigit)
-                        ) {
-                            onFormChange(
-                                form.copy(
-                                    recurrenceIntervalText = value
-                                )
-                            )
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = enabled,
-                    label = {
-                        Text("Cada cuántos periodos")
-                    },
-                    placeholder = {
-                        Text("1")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    singleLine = true,
-                    isError = intervalError,
-                    supportingText = {
-                        Text(
-                            if (intervalError) {
-                                "Ingresa un número mayor que cero"
-                            } else {
-                                "Ejemplo: 1 = cada ${form.recurrenceType.periodLabel()}"
-                            }
-                        )
-                    }
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement =
-                        Arrangement.spacedBy(12.dp)
-                ) {
-                    ScheduleDateField(
-                        label = "Inicio",
-                        value = form.scheduleStartDateText,
-                        enabled = enabled,
-                        isError = startError,
-                        supportingText = if (startError) {
-                            "Ingresa una fecha válida"
-                        } else {
-                            "Formato dd-MM-yyyy"
-                        },
-                        modifier = Modifier.weight(1f),
-                        onValueChange = { value ->
-                            onFormChange(
-                                form.copy(
-                                    scheduleStartDateText = value
-                                )
-                            )
-                        }
-                    )
-
-                    ScheduleDateField(
-                        label = "Fin",
-                        value = form.scheduleEndDateText,
-                        enabled = enabled,
-                        isError = endError,
-                        supportingText = when {
-                            endError && form.parsedScheduleEndDate == null -> "Ingresa una fecha válida"
-                            endError -> "La fecha fin debe ser igual o posterior al inicio"
-                            else -> "Formato dd-MM-yyyy"
-                        },
-                        modifier = Modifier.weight(1f),
-                        onValueChange = { value ->
-                            onFormChange(
-                                form.copy(
-                                    scheduleEndDateText = value
-                                )
-                            )
-                        }
-                    )
-                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ScheduleDateField(
-    label: String,
-    value: String,
-    enabled: Boolean,
-    isError: Boolean,
-    supportingText: String? = null,
-    modifier: Modifier,
-    onValueChange: (String) -> Unit
-) {
-    var showDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
-    val focusManager = LocalFocusManager.current
-
-    Box(modifier = modifier) {
-        OutlinedTextField(
-            value = value.toDisplayScheduleDate(),
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            readOnly = true,
-            label = {
-                Text(label)
-            },
-            supportingText = supportingText?.let { text -> { Text(text) } },
-            placeholder = {
-                Text("dd-MM-yyyy")
-            },
-            singleLine = true,
-            isError = isError,
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        focusManager.clearFocus()
-                        showDialog = true
-                    },
-                    enabled = enabled
-                ) {
-                    Icon(
-                        imageVector = androidx.compose.material.icons.Icons.Default.DateRange,
-                        contentDescription = "Seleccionar fecha"
-                    )
-                }
-            }
-        )
-
-        if (enabled) {
-            Surface(
-                modifier = Modifier.matchParentSize(),
-                color = androidx.compose.ui.graphics.Color.Transparent,
-                onClick = {
-                    focusManager.clearFocus()
-                    showDialog = true
-                }
-            ) {}
-        }
-    }
-
-    if (showDialog) {
-        DatePickerDialog(
-            onDismissRequest = { showDialog = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    showDialog = false
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        sdf.timeZone = TimeZone.getTimeZone("UTC")
-                        onValueChange(sdf.format(Date(millis)))
-                    }
-                }) {
-                    Text("Aceptar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text("Cancelar")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
-    }
-}
-
-private fun String.toDisplayScheduleDate(): String =
-    runCatching {
-        LocalDate.parse(this).toReadableDate()
-    }.getOrElse {
-        this
-    }
-
-private fun TransactionRecurrenceType.periodLabel():
-        String {
+private fun PaymentMethod.toSpanishLabel(): String {
     return when (this) {
-        TransactionRecurrenceType.DAILY ->
-            "día"
-
-        TransactionRecurrenceType.WEEKLY ->
-            "semana"
-
-        TransactionRecurrenceType.MONTHLY ->
-            "mes"
-
-        TransactionRecurrenceType.YEARLY ->
-            "año"
-    }
-}
-
-@Composable
-private fun EmptyCategoriesContent(
-    message: String,
-    onRetry: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment =
-            Alignment.CenterHorizontally,
-        verticalArrangement =
-            Arrangement.Center
-    ) {
-        Text(message)
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        Button(onClick = onRetry) {
-            Text("Reintentar")
-        }
+        PaymentMethod.CASH -> "Efectivo"
+        PaymentMethod.CREDIT_CARD -> "Tarjeta crédito"
+        PaymentMethod.DEBIT_CARD -> "Tarjeta débito"
+        PaymentMethod.BANK_TRANSFER -> "Transferencia"
+        PaymentMethod.YAPE -> "Yape"
+        PaymentMethod.PLIN -> "Plin"
+        PaymentMethod.OTHER -> "Otro"
     }
 }

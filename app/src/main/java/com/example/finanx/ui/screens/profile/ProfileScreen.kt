@@ -35,37 +35,14 @@ fun ProfileScreen(
     user: UserResponse,
     userId: Long,
     viewModel: UserViewModel,
-    onBack: () -> Unit,
+    onOpenResetData: () -> Unit,
+    onOpenDeleteAccount: () -> Unit,
     onLogout: () -> Unit
 ) {
     var showEditNameDialog by remember { mutableStateOf(false) }
     var showChangePasswordDialog by remember { mutableStateOf(false) }
     var showDeactivateDialog by remember { mutableStateOf(false) }
     var showDetailsSection by remember { mutableStateOf(false) }
-    var showResetDataScreen by remember { mutableStateOf(false) }
-    var showDeleteAccountScreen by remember { mutableStateOf(false) }
-
-    // Navegar a sub-screens de peligro
-    if (showResetDataScreen) {
-        ResetDataScreen(
-            userId = userId,
-            viewModel = viewModel,
-            onBack = { showResetDataScreen = false },
-            onLogout = onLogout
-        )
-        return
-    }
-
-    if (showDeleteAccountScreen) {
-        DeleteAccountScreen(
-            userId = userId,
-            viewModel = viewModel,
-            onBack = { showDeleteAccountScreen = false },
-            onLogout = onLogout
-        )
-        return
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,8 +59,8 @@ fun ProfileScreen(
         AccountDetailsSection(user, showDetailsSection, onToggle = { showDetailsSection = !showDetailsSection })
         DangerSection(
             onDeactivate = { showDeactivateDialog = true },
-            onResetData = { showResetDataScreen = true },
-            onDeleteAccount = { showDeleteAccountScreen = true }
+            onResetData = onOpenResetData,
+            onDeleteAccount = onOpenDeleteAccount
         )
     }
 

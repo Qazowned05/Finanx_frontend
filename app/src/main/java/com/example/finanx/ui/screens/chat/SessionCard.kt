@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.theme.SurfaceWhite
 import com.example.finanx.ui.theme.TextDark
 import com.example.finanx.ui.theme.TextGray
@@ -59,13 +58,13 @@ fun SessionCard(
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .background(BrownPrimary, CircleShape),
+                    .background(MaterialTheme.colorScheme.primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.AutoAwesome,
                     contentDescription = null,
-                    tint = GoldAccent,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(20.dp)
                 )
             }

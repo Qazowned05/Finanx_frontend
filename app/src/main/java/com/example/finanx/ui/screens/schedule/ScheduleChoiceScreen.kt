@@ -20,17 +20,53 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorialTarget
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScheduleChoiceScreen(
     onChooseTransaction: () -> Unit,
     onChooseBudget: () -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_programaciones").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("schedule_type_choice", "Elige qué quieres automatizar: un movimiento o un presupuesto.")
+                )
+            ) {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +85,8 @@ fun ScheduleChoiceScreen(
             title = "Movimiento",
             subtitle = "Gasto o ingreso con recurrencia fija",
             icon = Icons.Default.EventRepeat,
-            onClick = onChooseTransaction
+            onClick = onChooseTransaction,
+            modifier = Modifier.tutorialTarget("schedule_type_choice", targetBounds)
         )
 
         ChoiceCard(
@@ -59,6 +96,22 @@ fun ScheduleChoiceScreen(
             onClick = onChooseBudget
         )
     }
+
+    if (tutorialController != null) {
+        val current = tutorialController!!.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = tutorialController?.isLastStep ?: false,
+            onNext = { tutorialController?.next() },
+            onSkip = {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        )
+    }
 }
 
 @Composable
@@ -66,10 +119,11 @@ private fun ChoiceCard(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),

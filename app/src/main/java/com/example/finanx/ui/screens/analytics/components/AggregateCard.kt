@@ -44,7 +44,7 @@ fun AggregateCard(
                 Text(
                     text = aggregate.title!!,
                     style = MaterialTheme.typography.labelMedium,
-                    color = GoldAccent,
+                    color = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.height(8.dp))

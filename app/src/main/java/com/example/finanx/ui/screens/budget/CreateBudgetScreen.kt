@@ -1,8 +1,8 @@
 package com.example.finanx.ui.screens.budget
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -68,25 +68,9 @@ fun CreateBudgetScreen(
                 !parsedEnd.isBefore(parsedStart) &&
                 (!alertable || (parsedPercent in 0..100))
 
-    var showConfirmDiscard by remember { mutableStateOf(false) }
-
     val focusManager = LocalFocusManager.current
 
-    BackHandler(enabled = true) {
-        if (description.isNotBlank() || limitAmount.isNotBlank() || startDateText.isNotBlank() || endDateText.isNotBlank()) {
-            showConfirmDiscard = true
-        } else {
-            onCancel()
-        }
-    }
-
     Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                title = { Text("Nuevo presupuesto") },
-                navigationIcon = null
-            )
-        },
         content = { innerPadding ->
             Column(
                 modifier = Modifier
@@ -107,7 +91,7 @@ fun CreateBudgetScreen(
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                    keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
                     )
                 )
@@ -121,7 +105,7 @@ fun CreateBudgetScreen(
                         keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = androidx.compose.ui.text.input.KeyboardActions(
+                    keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(androidx.compose.ui.focus.FocusDirection.Down) }
                     ),
                     supportingText = { Text("Usa hasta dos decimales") },
@@ -232,8 +216,4 @@ fun CreateBudgetScreen(
             }
         }
     )
-
-    if (showConfirmDiscard) {
-        AlertDialog(onDismissRequest = { showConfirmDiscard = false }, title = { Text("Descartar cambios?") }, text = { Text("Se perderá la información ingresada.") }, confirmButton = { TextButton(onClick = { showConfirmDiscard = false; onCancel() }) { Text("Descartar") } }, dismissButton = { TextButton(onClick = { showConfirmDiscard = false }) { Text("Seguir editando") } })
-    }
 }

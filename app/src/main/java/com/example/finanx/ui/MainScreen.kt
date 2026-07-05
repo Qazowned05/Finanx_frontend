@@ -38,7 +38,7 @@ fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = GoldAccent)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
             }
         }
 

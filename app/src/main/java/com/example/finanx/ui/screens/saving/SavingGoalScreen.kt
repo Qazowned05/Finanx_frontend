@@ -13,21 +13,29 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.EmptyStateCard
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 val goalIcons = listOf(
     Icons.Default.DirectionsCar, Icons.Default.Home, Icons.Default.Flight,
@@ -47,7 +55,8 @@ private fun SavingGoalResponse.State?.toSavingGoalStateLabel(): String =
 @Composable
 fun SavingGoalScreen(
     userId: Long,
-    viewModel: SavingGoalViewModel
+    viewModel: SavingGoalViewModel,
+    onCreateGoal: () -> Unit
 ) {
     LaunchedEffect(userId) {
         viewModel.fetchSavingGoals(userId)
@@ -55,11 +64,29 @@ fun SavingGoalScreen(
 
     val state = viewModel.savingGoalState
 
-    var showCreateDialog by remember { mutableStateOf(false) }
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalToDelete by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalSelected by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalDetail by remember { mutableStateOf<SavingGoalResponse?>(null) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_metas_ahorro").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("new_goal_button", "Define cuánto quieres ahorrar y para cuándo."),
+                    TutorialStep("goal_progress_bar", "Así ves qué tan cerca estás de cada meta.")
+                )
+            ) {
+                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_metas_ahorro") }
+                tutorialController = null
+            }
+        }
+    }
 
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -75,10 +102,11 @@ fun SavingGoalScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showCreateDialog = true },
+                onClick = onCreateGoal,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.tutorialTarget("new_goal_button", targetBounds)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nueva meta")
             }
@@ -101,56 +129,65 @@ fun SavingGoalScreen(
                                 title = "Sin metas de ahorro",
                                 subtitle = "Toca + para agregar una",
                                 actionLabel = "Nueva meta",
-                                onAction = { showCreateDialog = true }
+                                onAction = onCreateGoal
                             )
                         }
                     } else {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        com.example.finanx.ui.components.RefreshableList(
+                            isRefreshing = (state as? com.example.finanx.ui.viewmodel.SavingGoalState.Success)?.isRefreshing ?: false,
+                            onRefresh = { viewModel.fetchSavingGoals(userId) },
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
                         ) {
-                            val groupedGoals = state.goals.groupBy { it.state }
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                val groupedGoals = state.goals.groupBy { it.state }
 
-                            groupedGoals.forEach { (status, goals) ->
-                                item {
-                                    Text(
-                                        text = status.toSavingGoalStateLabel(),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = when (status) {
-                                            SavingGoalResponse.State.COMPLETED -> IncomeGreen
-                                            SavingGoalResponse.State.RUNNING -> BrownPrimary
-                                            else -> StoneGray
-                                        },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                when (status) {
-                                                    SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
-                                                    SavingGoalResponse.State.RUNNING -> GoldAccent.copy(alpha = 0.08f)
-                                                    else -> StoneGray.copy(alpha = 0.08f)
-                                                },
-                                                RoundedCornerShape(6.dp)
-                                            )
-                                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                                    )
+                                groupedGoals.forEach { (status, goals) ->
+                                    item {
+                                        Text(
+                                            text = status.toSavingGoalStateLabel(),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = when (status) {
+                                                SavingGoalResponse.State.COMPLETED -> IncomeGreen
+                                                SavingGoalResponse.State.RUNNING -> BrownPrimary
+                                                else -> StoneGray
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(
+                                                    when (status) {
+                                                        SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
+                                                        SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
+                                                        else -> StoneGray.copy(alpha = 0.08f)
+                                                    },
+                                                    RoundedCornerShape(6.dp)
+                                                )
+                                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                                        )
+                                    }
+
+                                    items(goals.size) { index ->
+                                        val goal = goals[index]
+                                        SavingGoalCard(
+                                            goal = goal,
+                                            iconIndex = index % goalIcons.size,
+                                            isSelected = goalSelected?.id == goal.id,
+                                            onLongPress = { goalSelected = goal },
+                                            onDismiss = { goalSelected = null },
+                                            onClick = { goalDetail = goal },
+                                            progressModifier = if (index == 0) {
+                                                Modifier.tutorialTarget("goal_progress_bar", targetBounds)
+                                            } else {
+                                                Modifier
+                                            }
+                                        )
+                                    }
                                 }
 
-                                items(goals.size) { index ->
-                                    val goal = goals[index]
-                                    SavingGoalCard(
-                                        goal = goal,
-                                        iconIndex = index % goalIcons.size,
-                                        isSelected = goalSelected?.id == goal.id,
-                                        onLongPress = { goalSelected = goal },
-                                        onDismiss = { goalSelected = null },
-                                        onClick = { goalDetail = goal }
-                                    )
-                                }
+                                item { Spacer(modifier = Modifier.height(72.dp)) }
                             }
-
-                            item { Spacer(modifier = Modifier.height(72.dp)) }
                         }
 
                     }
@@ -164,6 +201,20 @@ fun SavingGoalScreen(
                 }
             }
         }
+    }
+
+    if (tutorialController != null) {
+        val current = tutorialController!!.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = tutorialController?.isLastStep ?: false,
+            onNext = { tutorialController?.next() },
+            onSkip = {
+                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_metas_ahorro") }
+                tutorialController = null
+            }
+        )
     }
 
     goalSelected?.let { goal ->
@@ -233,18 +284,6 @@ fun SavingGoalScreen(
         )
     }
 
-    if (showCreateDialog) {
-        SavingGoalFormDialog(
-            title = "Nueva meta de ahorro",
-            formError = viewModel.formError,
-            onConfirm = { description, amount, deadline ->
-                viewModel.createSavingGoal(userId, description, amount, deadline)
-            },
-            onDismiss = { showCreateDialog = false; viewModel.clearFormError() },
-            onSuccessDismiss = { showCreateDialog = false }
-        )
-    }
-
     goalToEdit?.let { goal ->
         SavingGoalFormDialog(
             title = "Editar meta",
@@ -292,7 +331,6 @@ fun SavingGoalScreen(
 
     LaunchedEffect(actionSuccess) {
         if (actionSuccess != null) {
-            showCreateDialog = false
             goalToEdit = null
         }
     }
@@ -315,7 +353,8 @@ fun SavingGoalCard(
     isSelected: Boolean,
     onLongPress: () -> Unit,
     onDismiss: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    progressModifier: Modifier = Modifier
 ) {
     val accentColor = BrownSecondary
 
@@ -367,7 +406,7 @@ fun SavingGoalCard(
                         .background(
                             when (goal.state) {
                                 SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.12f)
-                                SavingGoalResponse.State.RUNNING -> GoldAccent.copy(alpha = 0.18f)
+                                SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)
                                 else -> StoneGray.copy(alpha = 0.12f)
                             },
                             RoundedCornerShape(20.dp)
@@ -399,8 +438,8 @@ fun SavingGoalCard(
             val progress = (goal.progressPercentage ?: 0.0).toFloat() / 100f
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
-                color = if (isSelected) ExpenseRed else GoldAccent,
+                modifier = progressModifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
+                color = if (isSelected) ExpenseRed else MaterialTheme.colorScheme.tertiary,
                 trackColor = accentColor.copy(alpha = 0.12f)
             )
             Spacer(modifier = Modifier.height(4.dp))

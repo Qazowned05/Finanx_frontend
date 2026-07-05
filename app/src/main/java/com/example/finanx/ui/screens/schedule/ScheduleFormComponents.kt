@@ -55,7 +55,9 @@ internal fun RecurrenceSection(
     onRecurrenceTypeChange: (TransactionRecurrenceType) -> Unit,
     onIntervalChange: (String) -> Unit,
     onStartDateChange: (String) -> Unit,
-    onEndDateChange: (String) -> Unit
+    onEndDateChange: (String) -> Unit,
+    recurrenceTypeModifier: Modifier = Modifier,
+    dateFieldsModifier: Modifier = Modifier
 ) {
     val parsedInterval = intervalText.toIntOrNull()?.takeIf { it > 0 }
     val parsedStart = startDateText.toLocalDateOrNull()
@@ -78,7 +80,8 @@ internal fun RecurrenceSection(
             RecurrenceTypeDropdown(
                 selected = recurrenceType,
                 enabled = enabled,
-                onSelected = onRecurrenceTypeChange
+                onSelected = onRecurrenceTypeChange,
+                modifier = recurrenceTypeModifier
             )
 
             OutlinedTextField(
@@ -107,7 +110,7 @@ internal fun RecurrenceSection(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = dateFieldsModifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 ScheduleDateField(

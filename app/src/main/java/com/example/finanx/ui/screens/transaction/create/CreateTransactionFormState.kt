@@ -19,8 +19,6 @@ data class CreateTransactionFormState(
 
     val reasonId: Long? = null,
 
-    val useNewReason: Boolean = false,
-
     val newReason: String = "",
 
     val paymentMethod: PaymentMethod =
@@ -80,15 +78,8 @@ data class CreateTransactionFormState(
                     !endDate.isBefore(startDate)
         }
 
-    fun usesNewReason(
-        hasExistingReasons: Boolean
-    ): Boolean {
-        return useNewReason ||
-                !hasExistingReasons
-    }
-
     fun isValid(
-        hasExistingReasons: Boolean
+        hasExistingReasons: Boolean = false
     ): Boolean {
         return isFirstStepValid &&
                 categoryId != null &&
@@ -97,7 +88,7 @@ data class CreateTransactionFormState(
 
     fun toCommand(
         userId: Long,
-        hasExistingReasons: Boolean
+        hasExistingReasons: Boolean = false
     ): NewTransactionCommand? {
         val amount =
             parsedAmount ?: return null
@@ -110,7 +101,7 @@ data class CreateTransactionFormState(
         }
 
         val createReason =
-            usesNewReason(hasExistingReasons)
+            reasonId == null
 
         val startDate =
             parsedScheduleStartDate
@@ -127,11 +118,7 @@ data class CreateTransactionFormState(
             amount = amount,
             paymentMethod = paymentMethod,
             type = type,
-            reasonId = if (createReason) {
-                null
-            } else {
-                reasonId
-            },
+            reasonId = reasonId,
             newReason = if (createReason) {
                 newReason.trim().takeIf(String::isNotBlank)
             } else {
@@ -171,7 +158,6 @@ val CreateTransactionFormStateSaver:
                 form.amountText,
                 form.categoryId ?: -1L,
                 form.reasonId ?: -1L,
-                form.useNewReason,
                 form.newReason,
                 form.paymentMethod.name,
                 form.savingGoalId ?: -1L,
@@ -199,38 +185,36 @@ val CreateTransactionFormStateSaver:
                 reasonId =
                     (values[3] as Long)
                         .takeIf { it >= 0 },
-                useNewReason =
-                    values[4] as Boolean,
                 newReason =
-                    values[5] as String,
+                    values[4] as String,
                 paymentMethod = runCatching {
                     PaymentMethod.valueOf(
-                        values[6] as String
+                        values[5] as String
                     )
                 }.getOrDefault(
                     PaymentMethod.CASH
                 ),
                 savingGoalId =
-                    (values[7] as Long)
+                    (values[6] as Long)
                         .takeIf { it >= 0 },
                 isScheduled =
-                    values.getOrNull(8) as? Boolean
+                    values.getOrNull(7) as? Boolean
                         ?: false,
                 recurrenceType = runCatching {
                     TransactionRecurrenceType.valueOf(
-                        values.getOrNull(9) as String
+                        values.getOrNull(8) as String
                     )
                 }.getOrDefault(
                     TransactionRecurrenceType.MONTHLY
                 ),
                 recurrenceIntervalText =
-                    values.getOrNull(10) as? String
+                    values.getOrNull(9) as? String
                         ?: "1",
                 scheduleStartDateText =
-                    values.getOrNull(11) as? String
+                    values.getOrNull(10) as? String
                         ?: LocalDate.now().toString(),
                 scheduleEndDateText =
-                    values.getOrNull(12) as? String
+                    values.getOrNull(11) as? String
                         ?: LocalDate.now().plusYears(1).toString()
             )
         }

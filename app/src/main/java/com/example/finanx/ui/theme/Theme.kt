@@ -28,18 +28,37 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = BrownPrimary,
     onPrimary = White,
+    primaryContainer = GoldAccent,
+    onPrimaryContainer = BrownPrimary,
     secondary = BrownSecondary,
     onSecondary = White,
+    secondaryContainer = BorderSoft,
+    onSecondaryContainer = BrownPrimary,
     tertiary = GoldAccent,
     onTertiary = BrownPrimary,
+    tertiaryContainer = WarmBackground,
+    onTertiaryContainer = BrownPrimary,
     background = WarmBackground,
     onBackground = TextDark,
     surface = SurfaceWhite,
     onSurface = TextDark,
     surfaceVariant = WarmBackground,
+    onSurfaceVariant = StoneGray,
+    surfaceContainerLowest = SurfaceWhite,
+    surfaceContainerLow = WarmBackground,
+    surfaceContainer = WarmBackground,
+    surfaceContainerHigh = BorderSoft,
+    surfaceContainerHighest = BorderSoft,
     outline = BorderSoft,
+    outlineVariant = BorderSoft,
     error = ExpenseRed,
-    onError = White
+    onError = White,
+    errorContainer = ExpenseRed.copy(alpha = 0.12f),
+    onErrorContainer = ExpenseRed,
+    scrim = BrownPrimary,
+    inverseSurface = BrownPrimary,
+    inverseOnSurface = WarmBackground,
+    inversePrimary = GoldAccent
 )
 
 @Composable

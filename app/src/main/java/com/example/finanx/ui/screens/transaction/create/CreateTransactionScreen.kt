@@ -1,150 +1,383 @@
 package com.example.finanx.ui.screens.transaction.create
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.NewTransactionCommand
-import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.PaymentMethod
-import com.example.finanx.data.preferences.TransactionQuickPrefs
-import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.data.model.SelectOption
+import com.example.finanx.data.model.TransactionType
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.tutorialTarget
+import com.example.finanx.ui.viewmodel.SavingGoalState
+import com.example.finanx.ui.viewmodel.TransactionDraftField
+import com.example.finanx.ui.viewmodel.TransactionDraftState
 import com.example.finanx.ui.viewmodel.TransactionSaveState
+import com.example.finanx.ui.viewmodel.TransactionStep
+import com.example.finanx.ui.viewmodel.TransactionViewModel
+import com.example.finanx.ui.viewmodel.visibleSteps
+import com.example.finanx.ui.viewmodel.SavingGoalViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-private const val AMOUNT_STEP = 1
-private const val DETAILS_STEP = 2
-private const val TOTAL_STEPS = 2
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTransactionScreen(
     registerHasUnsaved: ((() -> Boolean) -> Unit)? = null,
     userId: Long,
-    formOptions: TransactionFormOptions,
-    isLoading: Boolean,
-    loadError: String?,
-    saveState: TransactionSaveState,
-    step: Int,
-    onStepChange: (Int) -> Unit,
-    title: String = "Nuevo movimiento",
-    initialForm: CreateTransactionFormState =
-        CreateTransactionFormState(),
-    allowSchedule: Boolean = false,
-    lockScheduleMode: Boolean = false,
+    transactionViewModel: TransactionViewModel,
+    savingGoalViewModel: SavingGoalViewModel,
+    onCreateSavingGoal: () -> Unit,
+    onCreateCategory: () -> Unit,
     onBack: () -> Unit,
-    onRetry: () -> Unit,
-    onSubmit: (NewTransactionCommand) -> Unit,
-    onSaved: () -> Unit
+    onSaved: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val rememberedPaymentMethod = TransactionQuickPrefs.lastPaymentMethod() ?: PaymentMethod.CASH
-    val preferredInitialForm = initialForm.copy(
-        paymentMethod = rememberedPaymentMethod
-    )
+    val draft = transactionViewModel.draft
+    val options = transactionViewModel.state.formOptions
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
 
-    var form by rememberSaveable(
-        preferredInitialForm.type,
-        preferredInitialForm.categoryId,
-        preferredInitialForm.paymentMethod,
-        preferredInitialForm.isScheduled,
-        stateSaver = CreateTransactionFormStateSaver
-    ) {
-        mutableStateOf(preferredInitialForm)
+    val hasActiveSavingGoals = when (val state = savingGoalViewModel.savingGoalState) {
+        is SavingGoalState.Success -> state.goals.any { it.active == true && it.state == org.openapitools.client.models.SavingGoalResponse.State.RUNNING }
+        else -> options.savingGoals.isNotEmpty()
     }
+    val isSaving = transactionViewModel.state.saveState is TransactionSaveState.Saving
+    val saveError = (transactionViewModel.state.saveState as? TransactionSaveState.Error)?.message
+    val visibleSteps = draft.visibleSteps(hasActiveSavingGoals)
 
-    val isSaving = saveState is TransactionSaveState.Saving
+    val hasUnsaved = draft.type != null ||
+        draft.categoryId != null ||
+        draft.amountText.isNotBlank() ||
+        draft.reasonId != null ||
+        draft.reasonText.isNotBlank() ||
+        draft.paymentMethod != null ||
+        draft.savingGoalId != null ||
+        draft.step != TransactionStep.TYPE
 
-    LaunchedEffect(saveState) {
-        if (saveState is TransactionSaveState.Success) { onSaved() }
-    }
+    registerHasUnsaved?.invoke { hasUnsaved }
 
-    LaunchedEffect(formOptions.categories, form.type) {
-        if (form.categoryId == null) {
-            val preferredCategoryId = TransactionQuickPrefs.lastCategoryId(form.type)
-            val categoryId = preferredCategoryId?.let { preferredId ->
-                formOptions.categories.firstOrNull { it.id == preferredId && it.type == form.type }?.id
-            } ?: formOptions.categories.firstOrNull { it.type == form.type }?.id
-
-            if (categoryId != null) {
-                form = form.copy(categoryId = categoryId)
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_transacciones").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                steps = listOf(
+                    TutorialStep("type_screen", "Elige si es un gasto o un ingreso. Así filtramos las categorías después."),
+                    TutorialStep("category_grid", "Aquí solo aparecen categorías del tipo que elegiste."),
+                    TutorialStep("amount_field", "Escribe el monto — el teclado numérico aparece solo."),
+                    TutorialStep("reason_field", "Escribe el motivo. Si coincide con uno anterior, tócalo en las sugerencias."),
+                    TutorialStep("payment_method_row", "Elige cómo pagaste."),
+                    TutorialStep("saving_goal_row", "Si este ingreso es para una meta, elígela aquí. Es opcional."),
+                    TutorialStep("save_button", "Guarda. Verás al instante cómo afecta tu presupuesto.")
+                )
+            ) {
+                scope.launch { TutorialPreferences.markCompleted(context, "tutorial_transacciones") }
+                tutorialController = null
             }
         }
     }
 
-    // register unsaved-check callback for parent navigation to use when deciding to pop
-    registerHasUnsaved?.invoke {
-        form != preferredInitialForm
+    LaunchedEffect(draft.step) {
+        if (draft.step == TransactionStep.SAVING_GOAL) {
+            savingGoalViewModel.fetchSavingGoals(userId)
+        }
     }
 
-    BackHandler(enabled = step == DETAILS_STEP && !isSaving) {
-        onStepChange(AMOUNT_STEP)
-    }
+    when (draft.step) {
+        TransactionStep.TYPE -> TypeSelectionStep(
+            onSelect = transactionViewModel::updateType,
+            modifier = modifier.tutorialTarget("type_screen", targetBounds)
+        )
 
-    when (step) {
-        AMOUNT_STEP -> {
-            TransactionAmountStep(
-                form = form,
-                onFormChange = {
-                    form = it
-                },
-                onContinue = {
-                    onStepChange(DETAILS_STEP)
+        TransactionStep.CATEGORY -> CategorySelectionStep(
+            categories = options.categories
+                .filter { it.type == draft.type }
+                .sortedBy { it.label.lowercase() },
+            onSelect = transactionViewModel::updateCategory,
+            onCreateCategory = onCreateCategory,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .tutorialTarget("category_grid", targetBounds)
+        )
+
+        TransactionStep.DETAILS -> TransactionDetailsStep(
+            draft = draft,
+            categoryLabel = options.categories.firstOrNull { it.id == draft.categoryId }?.label,
+            reasons = options.reasons,
+            hasSavingGoalStep = visibleSteps.contains(TransactionStep.SAVING_GOAL),
+            isSaving = isSaving,
+            saveError = saveError,
+            onAmountChange = transactionViewModel::updateAmount,
+            onReasonChange = transactionViewModel::updateReason,
+            onPaymentChange = transactionViewModel::updatePaymentMethod,
+            onSubmit = {
+                val submitted = submitDraft(
+                    userId = userId,
+                    draft = draft,
+                    transactionViewModel = transactionViewModel,
+                    saveNow = !visibleSteps.contains(TransactionStep.SAVING_GOAL)
+                )
+                if (submitted && visibleSteps.contains(TransactionStep.SAVING_GOAL)) {
+                    transactionViewModel.goToStep(TransactionStep.SAVING_GOAL)
                 }
+            },
+            registry = targetBounds,
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+        )
+
+        TransactionStep.SAVING_GOAL -> {
+            val goals = when (val state = savingGoalViewModel.savingGoalState) {
+                is SavingGoalState.Success -> state.goals
+                    .filter { it.active == true && it.state == org.openapitools.client.models.SavingGoalResponse.State.RUNNING }
+                    .mapNotNull { goal ->
+                        val id = goal.id ?: return@mapNotNull null
+                        SelectOption(id = id, label = goal.description.orEmpty())
+                    }
+                else -> options.savingGoals
+            }
+            SavingGoalSelectionStep(
+                savingGoals = goals,
+                selectedId = draft.savingGoalId,
+                onSelect = transactionViewModel::updateSavingGoal,
+                onCreate = onCreateSavingGoal,
+                isSaving = isSaving,
+                saveError = saveError,
+                onSave = {
+                    submitDraft(
+                        userId = userId,
+                        draft = draft,
+                        transactionViewModel = transactionViewModel,
+                        saveNow = true
+                    )
+                },
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .tutorialTarget("saving_goal_row", targetBounds),
+                registry = targetBounds
             )
         }
+    }
 
-        DETAILS_STEP -> {
-            TransactionDetailsStep(
-                form = form,
-                options = formOptions,
-                isLoading = isLoading,
-                loadError = loadError,
-                saveState = saveState,
-                allowSchedule = allowSchedule,
-                lockScheduleMode = lockScheduleMode,
-                onFormChange = {
-                    form = it
-                },
-                onRetry = onRetry,
-                onPrevious = {
-                    onStepChange(AMOUNT_STEP)
-                },
-                onSave = {
-                    form.toCommand(
-                        userId = userId,
-                        hasExistingReasons =
-                            formOptions
-                                .reasons
-                                .isNotEmpty()
-                    )?.let(onSubmit)
+    LaunchedEffect(transactionViewModel.state.saveState) {
+        if (transactionViewModel.state.saveState is TransactionSaveState.Success) {
+            onSaved()
+        }
+    }
+
+    tutorialController?.let { controller ->
+        val current = controller.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message.orEmpty(),
+            isLastStep = controller.isLastStep,
+            onNext = { controller.next() },
+            onSkip = {
+                scope.launch { TutorialPreferences.markCompleted(context, "tutorial_transacciones") }
+                tutorialController = null
+            }
+        )
+    }
+}
+
+private fun submitDraft(
+    userId: Long,
+    draft: TransactionDraftState,
+    transactionViewModel: TransactionViewModel,
+    saveNow: Boolean
+): Boolean {
+    val amount = draft.amountText.replace(",", ".").toBigDecimalOrNull()
+    val categoryId = draft.categoryId
+    val paymentMethod = draft.paymentMethod
+    val type = draft.type
+
+    val errors = buildSet {
+        if (categoryId == null) add(TransactionDraftField.CATEGORY)
+        if (amount == null || amount.signum() <= 0) add(TransactionDraftField.AMOUNT)
+        if (paymentMethod == null) add(TransactionDraftField.PAYMENT_METHOD)
+    }
+    if (errors.isNotEmpty() || type == null) {
+        transactionViewModel.setFieldErrors(errors)
+        return false
+    }
+
+    transactionViewModel.setFieldErrors(emptySet())
+    if (!saveNow) return true
+    val safeCategoryId = categoryId ?: return false
+    val safeAmount = amount ?: return false
+    val safePaymentMethod = paymentMethod ?: return false
+
+    transactionViewModel.createTransaction(
+        NewTransactionCommand(
+            userId = userId,
+            categoryId = safeCategoryId,
+            amount = safeAmount,
+            paymentMethod = safePaymentMethod,
+            type = type,
+            reasonId = draft.reasonId,
+            newReason = if (draft.reasonId == null) draft.reasonText.trim().ifBlank { null } else null,
+            savingGoalId = if (type == TransactionType.INCOME) draft.savingGoalId else null
+        )
+    )
+    return true
+}
+
+@Composable
+private fun TypeSelectionStep(
+    onSelect: (TransactionType) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(0.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .clickable { onSelect(TransactionType.SPENT) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text("GASTO", style = MaterialTheme.typography.displayMedium)
+        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .clickable { onSelect(TransactionType.INCOME) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text("INGRESO", style = MaterialTheme.typography.displayMedium)
+        }
+    }
+}
+
+@Composable
+private fun CategorySelectionStep(
+    categories: List<com.example.finanx.data.model.CategoryOption>,
+    onSelect: (Long) -> Unit,
+    onCreateCategory: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = "Selecciona una categoría",
+            style = MaterialTheme.typography.titleMedium
+        )
+        if (categories.isEmpty()) {
+            Text("No hay categorías para este tipo.")
+            Button(onClick = onCreateCategory, modifier = Modifier.fillMaxWidth()) {
+                Text("Crear categoría")
+            }
+        } else {
+            categories.forEach { category ->
+                Card(
+                    onClick = { onSelect(category.id) },
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = category.label,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
-            )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SavingGoalSelectionStep(
+    savingGoals: List<SelectOption>,
+    selectedId: Long?,
+    onSelect: (Long?) -> Unit,
+    onCreate: () -> Unit,
+    isSaving: Boolean,
+    saveError: String?,
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier,
+    registry: MutableMap<String, Rect>
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text("Meta de ahorro (opcional)")
+        SavingGoalSelectorRow(
+            goals = savingGoals,
+            selectedGoalId = selectedId,
+            onGoalSelected = onSelect,
+            onCreateGoal = onCreate,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (saveError != null) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Text(
+                    text = saveError,
+                    modifier = Modifier.padding(12.dp),
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        }
+        Button(
+            onClick = onSave,
+            enabled = !isSaving,
+            modifier = Modifier
+                .fillMaxWidth()
+                .tutorialTarget("save_button", registry),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            if (isSaving) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text("Guardar")
+            }
         }
     }
 }

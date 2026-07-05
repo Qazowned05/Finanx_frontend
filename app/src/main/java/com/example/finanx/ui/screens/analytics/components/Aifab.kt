@@ -42,8 +42,8 @@ fun AiFab(
         onClick = onClick,
         modifier = modifier.scale(scale),
         shape = RoundedCornerShape(18.dp),
-        containerColor = BrownPrimary,
-        contentColor = GoldAccent,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.tertiary,
         elevation = FloatingActionButtonDefaults.elevation(6.dp, 10.dp)
     ) {
         Row(
@@ -53,7 +53,7 @@ fun AiFab(
             Icon(
                 imageVector = Icons.Default.AutoAwesome,
                 contentDescription = "Abrir asistente IA",
-                tint = GoldAccent,
+                tint = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(Modifier.width(8.dp))

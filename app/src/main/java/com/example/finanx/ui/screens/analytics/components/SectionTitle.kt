@@ -1,7 +1,5 @@
 package com.example.finanx.ui.screens.analytics.components
 
-import com.example.finanx.ui.theme.GoldAccent
-
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,7 +13,7 @@ fun SectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        color = GoldAccent,
+        color = MaterialTheme.colorScheme.tertiary,
         style = MaterialTheme.typography.titleSmall,
         modifier = modifier.padding(top = 8.dp, bottom = 4.dp)
     )

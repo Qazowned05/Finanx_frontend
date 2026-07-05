@@ -133,7 +133,7 @@ private fun DashboardContent(
                 Spacer(Modifier.height(10.dp))
                 MetricCard(
                     title = "Balance neto", value = money(net),
-                    icon = Icons.AutoMirrored.Filled.TrendingUp, accentColor = GoldAccent,
+                    icon = Icons.AutoMirrored.Filled.TrendingUp, accentColor = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -182,7 +182,7 @@ private fun DashboardContent(
                         share = (rankItem.aggregate?.sharePercentage?.toFloat() ?: 0f) / 100f
                     )
                 }
-                HorizontalBarChartCard(title = pmRanking.title ?: "Métodos de pago", items = bars, barColor = GoldAccent)
+                HorizontalBarChartCard(title = pmRanking.title ?: "Métodos de pago", items = bars, barColor = MaterialTheme.colorScheme.tertiary)
             }
         }
 
@@ -236,7 +236,7 @@ private fun DashboardContent(
 @Composable
 private fun LoadingPanel() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(color = GoldAccent)
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary)
     }
 }
 

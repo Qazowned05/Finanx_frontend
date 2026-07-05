@@ -22,10 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -34,14 +38,21 @@ import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.ui.components.CategoryDropdown
+import com.example.finanx.ui.components.SpotlightOverlay
+import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.toCategoryOption
 import com.example.finanx.ui.components.ReasonAutocomplete
+import com.example.finanx.ui.components.tutorial.TutorialController
+import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.screens.transaction.create.PaymentMethodDropdown
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.RecurringActionState
 import com.example.finanx.ui.viewmodel.ScheduleViewModel
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionScheduleRequest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -52,7 +63,8 @@ fun CreateTransactionScheduleScreen(
     categoryState: CategoryState,
     reasons: List<SelectOption>,
     viewModel: ScheduleViewModel,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    onBack: () -> Unit
 ) {
     var transactionType by remember { mutableStateOf(TransactionScheduleRequest.TransactionType.SPENT) }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
@@ -81,6 +93,27 @@ fun CreateTransactionScheduleScreen(
     val parsedEnd = endDateText.toLocalDateOrNull()
     val datesValid = parsedStart != null && parsedEnd != null && !parsedEnd.isBefore(parsedStart)
     val hasDescription = reasonId != null || reasonText.isNotBlank()
+    val context = LocalContext.current
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(context, "tutorial_programaciones").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("recurrence_type_dropdown", "Define cada cuánto se repite: diario, semanal, mensual o anual."),
+                    TutorialStep("schedule_date_fields", "El inicio no puede ser anterior a hoy; el fin, no anterior a mañana.")
+                )
+            ) {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        }
+    }
 
     val filteredCategories = if (categoryState is CategoryState.Success) {
         categoryState.categories.mapNotNull { it.toCategoryOption() }.filter { cat ->
@@ -106,7 +139,7 @@ fun CreateTransactionScheduleScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(20.dp),
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -141,11 +174,7 @@ fun CreateTransactionScheduleScreen(
             enabled = !isLoading,
             onReasonChange = { rid, newReason ->
                 reasonId = rid
-                reasonText = if (rid != null) {
-                    reasons.firstOrNull { it.id == rid }?.label ?: reasonText
-                } else {
-                    newReason ?: ""
-                }
+                reasonText = newReason
             }
         )
 
@@ -197,7 +226,9 @@ fun CreateTransactionScheduleScreen(
             onRecurrenceTypeChange = { recurrenceType = it },
             onIntervalChange = { intervalText = it },
             onStartDateChange = { startDateText = it },
-            onEndDateChange = { endDateText = it }
+            onEndDateChange = { endDateText = it },
+            recurrenceTypeModifier = Modifier.tutorialTarget("recurrence_type_dropdown", targetBounds),
+            dateFieldsModifier = Modifier.tutorialTarget("schedule_date_fields", targetBounds)
         )
 
         if (actionState is RecurringActionState.Error) {
@@ -232,4 +263,21 @@ fun CreateTransactionScheduleScreen(
             }
         }
     }
+
+    if (tutorialController != null) {
+        val current = tutorialController!!.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = tutorialController?.isLastStep ?: false,
+            onNext = { tutorialController?.next() },
+            onSkip = {
+                coroutineScope.launch {
+                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                }
+                tutorialController = null
+            }
+        )
+    }
+
 }

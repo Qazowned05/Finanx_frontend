@@ -13,8 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import com.example.finanx.data.model.SelectOption
 
 @Composable
@@ -22,9 +26,15 @@ fun ReasonAutocomplete(
     text: String,
     reasons: List<SelectOption>,
     enabled: Boolean,
-    onReasonChange: (reasonId: Long?, newReason: String?) -> Unit,
-    modifier: Modifier = Modifier
+    onReasonChange: (reasonId: Long?, newReason: String) -> Unit,
+    modifier: Modifier = Modifier,
+    onNext: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        capitalization = KeyboardCapitalization.Sentences,
+        imeAction = ImeAction.Next
+    )
 ) {
+    val focusManager = LocalFocusManager.current
     val suggestions = remember(text, reasons) {
         if (text.isBlank()) emptyList()
         else reasons.filter { it.label.contains(text.trim(), ignoreCase = true) }
@@ -40,17 +50,20 @@ fun ReasonAutocomplete(
                 suppressDropdown = false
                 val exact = reasons.firstOrNull { it.label.equals(value.trim(), ignoreCase = true) }
                 if (exact != null) {
-                    onReasonChange(exact.id, null)
+                    onReasonChange(exact.id, exact.label)
                 } else {
-                    onReasonChange(null, value.ifBlank { null })
+                    onReasonChange(null, value)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             label = { Text("Descripción") },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
+            keyboardOptions = keyboardOptions,
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    onNext?.invoke() ?: focusManager.moveFocus(FocusDirection.Down)
+                }
             ),
             supportingText = {
                 Text("Escribe o selecciona un motivo")
@@ -67,7 +80,7 @@ fun ReasonAutocomplete(
                     text = { Text(option.label) },
                     onClick = {
                         suppressDropdown = true
-                        onReasonChange(option.id, null)
+                        onReasonChange(option.id, option.label)
                     }
                 )
             }

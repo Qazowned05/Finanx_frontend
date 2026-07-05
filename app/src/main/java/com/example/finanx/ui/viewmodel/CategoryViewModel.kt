@@ -11,10 +11,14 @@ import kotlinx.coroutines.launch
 import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
 
-sealed class CategoryState {
-    object Loading : CategoryState()
-    data class Success(val categories: List<CategoryResponse>) : CategoryState()
-    data class Error(val message: String) : CategoryState()
+sealed class CategoryState : com.example.finanx.ui.viewmodel.RefreshableUiState {
+    object Loading : CategoryState() {
+        override val isRefreshing: Boolean = false
+    }
+    data class Success(val categories: List<CategoryResponse>, override val isRefreshing: Boolean = false) : CategoryState()
+    data class Error(val message: String) : CategoryState() {
+        override val isRefreshing: Boolean = false
+    }
 }
 
 class CategoryViewModel : ViewModel() {
@@ -26,13 +30,17 @@ class CategoryViewModel : ViewModel() {
     var actionSuccess by mutableStateOf<String?>(null)
         private set
 
-    fun fetchCategories(userId: Long) {
+    fun fetchCategories(userId: Long, force: Boolean = false) {
+        if (!force && categoryState is CategoryState.Success) return
         viewModelScope.launch {
-            categoryState = CategoryState.Loading
+            val hasData = categoryState is CategoryState.Success && (categoryState as CategoryState.Success).categories.isNotEmpty()
+            categoryState = if (hasData) (categoryState as CategoryState.Success).copy(isRefreshing = true)
+            else CategoryState.Loading
+
             try {
                 val response = repository.getActiveCategories(userId)
                 if (response.isSuccessful && response.body() != null) {
-                    categoryState = CategoryState.Success(response.body()!!)
+                    categoryState = CategoryState.Success(response.body()!!, isRefreshing = false)
                 } else {
                     categoryState = CategoryState.Error("Error al cargar categorías: ${response.code()}")
                 }
@@ -54,7 +62,7 @@ class CategoryViewModel : ViewModel() {
                 val response = repository.createCategory(request)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría creada"
-                    fetchCategories(userId)
+                    fetchCategories(userId, force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al crear: ${response.code()}")
                 }
@@ -76,7 +84,7 @@ class CategoryViewModel : ViewModel() {
                 val response = repository.updateCategory(categoryId, request)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría actualizada"
-                    fetchCategories(userId)
+                    fetchCategories(userId, force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al actualizar: ${response.code()}")
                 }
@@ -92,7 +100,7 @@ class CategoryViewModel : ViewModel() {
                 val response = repository.disableCategory(categoryId)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría desactivada"
-                    fetchCategories(userId)
+                    fetchCategories(userId, force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al desactivar: ${response.code()}")
                 }
