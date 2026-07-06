@@ -5,11 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.UserRequest
 import org.openapitools.client.models.UserResponse
+import javax.inject.Inject
 
 sealed class UserProfileState {
     object Loading : UserProfileState()
@@ -24,8 +25,10 @@ sealed class UserActionState {
     data class Error(val message: String) : UserActionState()
 }
 
-class UserViewModel : ViewModel() {
-    private val repository = UserRepository(RetrofitClient.userApi)
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val repository: UserRepository
+) : ViewModel() {
 
     var profileState by mutableStateOf<UserProfileState>(UserProfileState.Loading)
         private set

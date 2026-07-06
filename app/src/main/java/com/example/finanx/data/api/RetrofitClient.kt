@@ -1,7 +1,12 @@
 package com.example.finanx.data.api
 
 import com.example.finanx.data.auth.TokenStore
+import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,29 +32,35 @@ import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
 
 object RetrofitClient {
     private const val BASE_URL = "https://9ec1-132-191-2-163.ngrok-free.app/"
 
-    init {
+    @Provides
+    @Singleton
+    fun provideMoshi(): Moshi {
         Serializer.moshiBuilder
             .add(
-            PolymorphicJsonAdapterFactory.of(ScheduleRequest::class.java, "type")
-                .withSubtype(TransactionScheduleRequest::class.java, "TRANSACTION")
-                .withSubtype(BudgetScheduleRequest::class.java, "BUDGET")
+                PolymorphicJsonAdapterFactory.of(ScheduleRequest::class.java, "type")
+                    .withSubtype(TransactionScheduleRequest::class.java, "TRANSACTION")
+                    .withSubtype(BudgetScheduleRequest::class.java, "BUDGET")
             )
             .add(
                 PolymorphicJsonAdapterFactory.of(ScheduleResponse::class.java, "type")
                     .withSubtype(TransactionScheduleResponse::class.java, "TRANSACTION")
                     .withSubtype(BudgetScheduleResponse::class.java, "BUDGET")
             )
+        return Serializer.moshi
     }
 
-    private val moshi = Serializer.moshi
-
-    private val authInterceptor = Interceptor { chain ->
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(): Interceptor = Interceptor { chain ->
         val originalRequest = chain.request()
-
         val newRequest = if (TokenStore.token.isNotEmpty()) {
             originalRequest.newBuilder()
                 .addHeader("Authorization", "Bearer ${TokenStore.token}")
@@ -57,133 +68,85 @@ object RetrofitClient {
         } else {
             originalRequest
         }
-
         chain.proceed(newRequest)
     }
 
-    private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
-    private val client = OkHttpClient.Builder()
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        authInterceptor: Interceptor,
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
-        .addInterceptor(logging)
+        .addInterceptor(loggingInterceptor)
         .build()
 
-    val authApi: AuthApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(AuthApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .client(client)
+        .build()
 
-    val budgetApi: BudgetsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(BudgetsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
 
-    val userApi: UsersApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(UsersApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideBudgetsApi(retrofit: Retrofit): BudgetsApi = retrofit.create(BudgetsApi::class.java)
 
-    val categoryApi: CategoriesApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(CategoriesApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideUsersApi(retrofit: Retrofit): UsersApi = retrofit.create(UsersApi::class.java)
 
-    val savingGoalApi: SavingsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(SavingsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideCategoriesApi(retrofit: Retrofit): CategoriesApi = retrofit.create(CategoriesApi::class.java)
 
-    val transactionApi: TransactionsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(TransactionsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideSavingsApi(retrofit: Retrofit): SavingsApi = retrofit.create(SavingsApi::class.java)
 
-    val notificationApi: NotificationsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(NotificationsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideTransactionsApi(retrofit: Retrofit): TransactionsApi = retrofit.create(
+        TransactionsApi::class.java)
 
-    val analyticsApi: AnalyticsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(AnalyticsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideNotificationsApi(retrofit: Retrofit): NotificationsApi = retrofit.create(
+        NotificationsApi::class.java)
 
-    val reasonApi: ReasonsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(ReasonsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideAnalyticsApi(retrofit: Retrofit): AnalyticsApi = retrofit.create(AnalyticsApi::class.java)
 
-    val budgetScheduleApi: ScheduleBudgetsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(ScheduleBudgetsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideReasonsApi(retrofit: Retrofit): ReasonsApi = retrofit.create(ReasonsApi::class.java)
 
-    val transactionScheduleApi: ScheduleTransactionsApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(ScheduleTransactionsApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideScheduleBudgetsApi(retrofit: Retrofit): ScheduleBudgetsApi = retrofit.create(
+        ScheduleBudgetsApi::class.java)
 
-    val scheduleApi: ScheduleApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(ScheduleApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideScheduleTransactionsApi(retrofit: Retrofit): ScheduleTransactionsApi = retrofit.create(
+        ScheduleTransactionsApi::class.java)
 
-    val chatApi: ChatBotApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(client)
-            .build()
-            .create(ChatBotApi::class.java)
-    }
+    @Provides
+    @Singleton
+    fun provideScheduleApi(retrofit: Retrofit): ScheduleApi = retrofit.create(ScheduleApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideChatBotApi(retrofit: Retrofit): ChatBotApi = retrofit.create(ChatBotApi::class.java)
 }

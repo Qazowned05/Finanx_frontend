@@ -1,15 +1,15 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.CategoriesApi
 import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class CategoryRepository(
-    private val api: CategoriesApi = RetrofitClient.categoryApi
+class CategoryRepository @Inject constructor(
+    private val api: CategoriesApi
 ) {
     suspend fun getCategoriesByActive(userId: Long, active: Boolean): Response<List<CategoryResponse>> =
         withContext(Dispatchers.IO) { api.findAllCategoriesyUserAndActive(userId, active) }

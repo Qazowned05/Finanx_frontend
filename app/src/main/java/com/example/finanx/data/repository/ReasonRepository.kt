@@ -1,15 +1,15 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.ReasonsApi
 import org.openapitools.client.models.ReasonRequest
 import org.openapitools.client.models.ReasonResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class ReasonRepository(
-    private val api: ReasonsApi = RetrofitClient.reasonApi
+class ReasonRepository @Inject constructor(
+    private val api: ReasonsApi
 ) {
     suspend fun getReasonsByUser(userId: Long): Response<List<ReasonResponse>> =
         withContext(Dispatchers.IO) { api.findAllReasonByUser(userId) }

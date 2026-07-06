@@ -5,11 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
+import javax.inject.Inject
 
 data class ChatUiState(
     // Sesión activa
@@ -29,9 +30,11 @@ data class ChatUiState(
     val error: String? = null
 )
 
-class ChatViewModel : ViewModel() {
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val repository: ChatRepository
+) : ViewModel() {
 
-    private val repository = ChatRepository(RetrofitClient.chatApi)
 
     var state by mutableStateOf(ChatUiState())
         private set

@@ -1,24 +1,21 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.ScheduleApi
 import org.openapitools.client.apis.ScheduleBudgetsApi
 import org.openapitools.client.apis.ScheduleTransactionsApi
-import org.openapitools.client.models.BudgetScheduleRequest
 import org.openapitools.client.models.BudgetScheduleResponse
-import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.ScheduleRequest
 import org.openapitools.client.models.ScheduleResponse
 import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Response
-import java.math.BigDecimal
+import javax.inject.Inject
 
-class ScheduleRepository(
-    private val api: ScheduleApi = RetrofitClient.scheduleApi,
-    private val budgetScheduleApi: ScheduleBudgetsApi = RetrofitClient.budgetScheduleApi,
-    private val transactionScheduleApi: ScheduleTransactionsApi = RetrofitClient.transactionScheduleApi
+class ScheduleRepository @Inject constructor(
+    private val api: ScheduleApi,
+    private val budgetScheduleApi: ScheduleBudgetsApi,
+    private val transactionScheduleApi: ScheduleTransactionsApi
 ) {
     suspend fun getSchedulesByUserAndState(
         userId: Long,

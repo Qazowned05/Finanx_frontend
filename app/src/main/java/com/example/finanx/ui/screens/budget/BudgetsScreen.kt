@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.platform.LocalContext
 import com.example.finanx.ui.screens.saving.goalIcons
 import com.example.finanx.ui.components.SpotlightOverlay
@@ -38,12 +37,11 @@ private enum class BudgetFilter(val label: String) {
 fun BudgetListScreen(
     userId: Long,
     viewModel: BudgetViewModel,
+    scheduleViewModel: ScheduleViewModel,
+    categoryViewModel: CategoryViewModel,
     onCreateBudget: () -> Unit,
     onEditBudget: (Long) -> Unit,
 ) {
-    val scheduleViewModel: ScheduleViewModel = viewModel()
-    val categoryViewModel: CategoryViewModel = viewModel()
-
     LaunchedEffect(userId) {
         viewModel.fetchDetailedBudgets(userId)
         viewModel.fetchBudgets(userId)

@@ -1,6 +1,5 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.AnalyticsApi
@@ -11,10 +10,11 @@ import org.openapitools.client.models.BudgetResponse
 import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.TimeBoundListBudgetResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class BudgetRepository(
-    private val api: BudgetsApi = RetrofitClient.budgetApi,
-    private val analyticsApi: AnalyticsApi = RetrofitClient.analyticsApi
+class BudgetRepository @Inject constructor(
+    private val api: BudgetsApi,
+    private val analyticsApi: AnalyticsApi
 ) {
     suspend fun getBudgets(userId: Long): Response<List<BudgetResponse>> =
         withContext(Dispatchers.IO) { api.findAllBudgetsByUser(userId) }

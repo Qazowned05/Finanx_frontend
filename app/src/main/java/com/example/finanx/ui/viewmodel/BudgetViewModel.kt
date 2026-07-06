@@ -6,11 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanx.data.repository.BudgetRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import com.example.finanx.ui.util.buildCurrentMonthPeriod
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
+import javax.inject.Inject
 
 sealed class BudgetState : com.example.finanx.ui.viewmodel.RefreshableUiState {
     object Loading : BudgetState() { override val isRefreshing: Boolean = false }
@@ -31,8 +33,10 @@ sealed class BudgetActionState {
     data class Error(val message: String) : BudgetActionState()
 }
 
-class BudgetViewModel : ViewModel() {
-    private val repository = BudgetRepository()
+@HiltViewModel
+class BudgetViewModel @Inject constructor(
+    private val repository: BudgetRepository
+) : ViewModel() {
 
     var budgetState by mutableStateOf<BudgetState>(BudgetState.Loading)
         private set

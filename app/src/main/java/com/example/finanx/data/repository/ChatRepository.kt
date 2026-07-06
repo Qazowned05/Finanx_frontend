@@ -7,8 +7,9 @@ import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
 import org.openapitools.client.models.SendMessageRequest
 import retrofit2.Response
+import javax.inject.Inject
 
-class ChatRepository(
+class ChatRepository @Inject constructor(
     private val api: ChatBotApi
 ) {
     suspend fun startSession(userId: Long): Response<ChatSessionResponse> =

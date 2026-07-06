@@ -1,15 +1,15 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.SavingsApi
 import org.openapitools.client.models.SavingGoalRequest
 import org.openapitools.client.models.SavingGoalResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class SavingGoalRepository(
-    private val api: SavingsApi = RetrofitClient.savingGoalApi
+class SavingGoalRepository @Inject constructor(
+    private val api: SavingsApi
 ) {
 
     suspend fun getSavingGoals(userId: Long): Response<List<SavingGoalResponse>> =

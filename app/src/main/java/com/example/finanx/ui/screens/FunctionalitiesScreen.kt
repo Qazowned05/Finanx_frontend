@@ -32,25 +32,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.navigation.AppDestination
+import com.example.finanx.ui.navigation.AppDestinations
 
 private data class Functionality(
     val label: String,
     val icon: ImageVector,
-    val route: String
+    val destination: AppDestination
 )
 
 private val functionalities = listOf(
-    Functionality("Análisis", Icons.Default.Analytics, "analysis"),
-    Functionality("Categorías", Icons.Default.Category, "categories"),
-    Functionality("Presupuestos", Icons.Default.AccountBalanceWallet, "budgets"),
-    Functionality("Programaciones", Icons.Default.EventRepeat, "scheduled_transactions"),
-    Functionality("Chatea con Finn", Icons.Default.AutoAwesome, "chat"),
-    Functionality("Notificaciones", Icons.Default.Notifications, "notifications"),
-    Functionality("Perfil", Icons.Default.Person, "profile")
+    Functionality("Análisis", Icons.Default.Analytics, AppDestinations.Analysis),
+    Functionality("Categorías", Icons.Default.Category, AppDestinations.Categories),
+    Functionality("Presupuestos", Icons.Default.AccountBalanceWallet, AppDestinations.Budgets),
+    Functionality("Programaciones", Icons.Default.EventRepeat, AppDestinations.ScheduledTransactions),
+    Functionality("Chatea con Finn", Icons.Default.AutoAwesome, AppDestinations.Chat),
+    Functionality("Notificaciones", Icons.Default.Notifications, AppDestinations.Notifications),
+    Functionality("Perfil", Icons.Default.Person, AppDestinations.Profile)
 )
 
 @Composable
-fun FunctionalitiesScreen(onNavigate: (String) -> Unit) {
+fun FunctionalitiesScreen(onNavigate: (AppDestination) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -58,8 +60,8 @@ fun FunctionalitiesScreen(onNavigate: (String) -> Unit) {
         contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(functionalities, key = { it.route }) { item ->
-            FunctionalityRow(item = item, onClick = { onNavigate(item.route) })
+        items(functionalities, key = { it.label }) { item ->
+            FunctionalityRow(item = item, onClick = { onNavigate(item.destination) })
         }
     }
 }

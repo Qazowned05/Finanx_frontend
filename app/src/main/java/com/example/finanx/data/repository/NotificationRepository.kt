@@ -1,14 +1,14 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.NotificationsApi
 import org.openapitools.client.models.NotificationDTO
 import retrofit2.Response
+import javax.inject.Inject
 
-class NotificationRepository(
-    private val api: NotificationsApi = RetrofitClient.notificationApi
+class NotificationRepository @Inject constructor(
+    private val api: NotificationsApi
 ) {
     suspend fun getNotificationsByUser(userId: Long): Response<List<NotificationDTO>> =
         withContext(Dispatchers.IO) { api.findAllNotificationByUser(userId) }

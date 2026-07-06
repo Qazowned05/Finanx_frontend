@@ -10,7 +10,9 @@ import com.example.finanx.data.model.TransactionFormOptions
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.preferences.TransactionQuickPrefs
 import com.example.finanx.data.repository.TransactionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface TransactionSaveState {
     data object Idle : TransactionSaveState
@@ -56,9 +58,9 @@ fun TransactionDraftState.visibleSteps(hasActiveSavingGoals: Boolean): List<Tran
     return steps
 }
 
-class TransactionViewModel(
-    private val repository: TransactionRepository =
-        TransactionRepository()
+@HiltViewModel
+class TransactionViewModel @Inject constructor(
+    private val repository: TransactionRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(TransactionUiState())

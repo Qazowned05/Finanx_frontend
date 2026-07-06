@@ -5,13 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.SavingGoalRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.SavingGoalRequest
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
 sealed class SavingGoalState : com.example.finanx.ui.viewmodel.RefreshableUiState {
     object Loading : SavingGoalState() { override val isRefreshing: Boolean = false }
@@ -19,9 +20,11 @@ sealed class SavingGoalState : com.example.finanx.ui.viewmodel.RefreshableUiStat
     data class Error(val message: String) : SavingGoalState() { override val isRefreshing: Boolean = false }
 }
 
-class SavingGoalViewModel : ViewModel() {
+@HiltViewModel
+class SavingGoalViewModel @Inject constructor(
+    private val repository: SavingGoalRepository
+) : ViewModel() {
 
-    private val repository = SavingGoalRepository(RetrofitClient.savingGoalApi)
 
     var savingGoalState by mutableStateOf<SavingGoalState>(SavingGoalState.Loading)
         private set

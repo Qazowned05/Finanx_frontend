@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.auth.TokenStore
 import com.example.finanx.data.api.parseErrorMessage
 import com.example.finanx.data.auth.GoogleAuthError
@@ -17,8 +16,10 @@ import com.example.finanx.data.auth.UserManager
 import com.example.finanx.data.auth.WEB_CLIENT_ID
 import com.example.finanx.data.repository.AuthRepository
 import com.example.finanx.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.UserResponse
+import javax.inject.Inject
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -27,9 +28,11 @@ sealed class AuthState {
     data class Error(val message: String) : AuthState()
 }
 
-class AuthViewModel : ViewModel() {
-    private val userRepository = UserRepository(RetrofitClient.userApi)
-    private val repository = AuthRepository(RetrofitClient.authApi)
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val repository: AuthRepository
+) : ViewModel() {
 
     var authState by mutableStateOf<AuthState>(AuthState.Idle)
         private set

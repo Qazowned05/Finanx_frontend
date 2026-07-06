@@ -7,8 +7,9 @@ import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.ScheduleResponse
 import org.openapitools.client.models.TransactionsDashboard
 import retrofit2.Response
+import javax.inject.Inject
 
-class AnalyticsRepository(
+class AnalyticsRepository @Inject constructor(
     private val api: AnalyticsApi
 ) {
     suspend fun getBalanceDashboard(

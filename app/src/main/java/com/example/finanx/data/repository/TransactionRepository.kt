@@ -1,6 +1,5 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.model.CategoryOption
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.NewTransactionCommand
@@ -29,123 +28,119 @@ import retrofit2.Response
 import java.io.IOException
 import java.math.BigDecimal
 import java.time.DayOfWeek
-class TransactionRepository(
-    private val transactionApi: TransactionsApi =
-        RetrofitClient.transactionApi,
-    private val categoryApi: CategoriesApi =
-        RetrofitClient.categoryApi,
-    private val reasonApi: ReasonsApi =
-        RetrofitClient.reasonApi,
-    private val savingGoalApi: SavingsApi =
-        RetrofitClient.savingGoalApi,
-    private val transactionScheduleApi: ScheduleTransactionsApi =
-        RetrofitClient.transactionScheduleApi,
-    private val scheduleApi: ScheduleApi =
-        RetrofitClient.scheduleApi
+import javax.inject.Inject
+
+class TransactionRepository @Inject constructor(
+    private val transactionApi: TransactionsApi,
+    private val categoryApi: CategoriesApi,
+    private val reasonApi: ReasonsApi,
+    private val savingGoalApi: SavingsApi,
+    private val transactionScheduleApi: ScheduleTransactionsApi,
+    private val scheduleApi: ScheduleApi
 ) {
 
     suspend fun loadTransactionData(userId: Long): TransactionData =
         withContext(Dispatchers.IO) {
             coroutineScope {
-            val transactionsDeferred = async {
-                transactionApi
-                    .findAllActiveTransactionByUser(userId)
-                    .bodyOrThrow("No se pudieron obtener los movimientos")
-            }
-
-            val categoriesDeferred = async {
-                categoryApi
-                    .findAllCategoriesByUser(userId)
-                    .bodyOrThrow("No se pudieron obtener las categorías")
-            }
-
-            val reasonsDeferred = async {
-                reasonApi
-                    .findAllReasonByUser(userId)
-                    .bodyOrThrow("No se pudieron obtener los motivos")
-            }
-
-            val goalsDeferred = async {
-                savingGoalApi
-                    .findAllActiveSavingGoalByUser(userId)
-                    .bodyOrThrow("No se pudieron obtener las metas")
-            }
-
-            val categories = categoriesDeferred.await()
-            val reasons = reasonsDeferred.await()
-            val goals = goalsDeferred.await()
-
-            val categoryNames = categories
-                .mapNotNull { category ->
-                    val id = category.id ?: return@mapNotNull null
-                    id to category.name.orEmpty()
+                val transactionsDeferred = async {
+                    transactionApi
+                        .findAllActiveTransactionByUser(userId)
+                        .bodyOrThrow("No se pudieron obtener los movimientos")
                 }
-                .toMap()
 
-            val reasonNames = reasons
-                .mapNotNull { reason ->
-                    val id = reason.id ?: return@mapNotNull null
-                    id to reason.description.orEmpty()
+                val categoriesDeferred = async {
+                    categoryApi
+                        .findAllCategoriesByUser(userId)
+                        .bodyOrThrow("No se pudieron obtener las categorías")
                 }
-                .toMap()
 
-            val savingGoalNames = goals
-                .mapNotNull { goal ->
-                    val id = goal.id ?: return@mapNotNull null
-                    id to goal.description.orEmpty()
+                val reasonsDeferred = async {
+                    reasonApi
+                        .findAllReasonByUser(userId)
+                        .bodyOrThrow("No se pudieron obtener los motivos")
                 }
-                .toMap()
 
-            val transactions = transactionsDeferred.await()
-                .mapNotNull { response ->
-                    response.toRecord(
-                        categoryNames = categoryNames,
-                        reasonNames = reasonNames,
-                        savingGoalNames = savingGoalNames
-                    )
+                val goalsDeferred = async {
+                    savingGoalApi
+                        .findAllActiveSavingGoalByUser(userId)
+                        .bodyOrThrow("No se pudieron obtener las metas")
                 }
-                .sortedByDescending { it.createdAt }
 
-            val options = TransactionFormOptions(
-                categories = categories
-                    .filter { it.active == true }
+                val categories = categoriesDeferred.await()
+                val reasons = reasonsDeferred.await()
+                val goals = goalsDeferred.await()
+
+                val categoryNames = categories
                     .mapNotNull { category ->
                         val id = category.id ?: return@mapNotNull null
-                        CategoryOption(
-                            id = id,
-                            label = category.name ?: "Categoría $id",
-                            type = TransactionType.valueOf(category.type.toString())
-                        )
+                        id to category.name.orEmpty()
                     }
-                    .sortedBy { it.label },
+                    .toMap()
 
-                reasons = reasons
-                    .filter { it.active == true }
+                val reasonNames = reasons
                     .mapNotNull { reason ->
                         val id = reason.id ?: return@mapNotNull null
-                        SelectOption(
-                            id = id,
-                            label = reason.description ?: "Motivo $id"
-                        )
+                        id to reason.description.orEmpty()
                     }
-                    .sortedBy { it.label },
+                    .toMap()
 
-                savingGoals = goals
-                    .filter { it.active == true && it.completed != true }
+                val savingGoalNames = goals
                     .mapNotNull { goal ->
                         val id = goal.id ?: return@mapNotNull null
-                        SelectOption(
-                            id = id,
-                            label = goal.description ?: "Meta $id"
+                        id to goal.description.orEmpty()
+                    }
+                    .toMap()
+
+                val transactions = transactionsDeferred.await()
+                    .mapNotNull { response ->
+                        response.toRecord(
+                            categoryNames = categoryNames,
+                            reasonNames = reasonNames,
+                            savingGoalNames = savingGoalNames
                         )
                     }
-                    .sortedBy { it.label }
-            )
+                    .sortedByDescending { it.createdAt }
 
-            TransactionData(
-                transactions = transactions,
-                formOptions = options
-            )
+                val options = TransactionFormOptions(
+                    categories = categories
+                        .filter { it.active == true }
+                        .mapNotNull { category ->
+                            val id = category.id ?: return@mapNotNull null
+                            CategoryOption(
+                                id = id,
+                                label = category.name ?: "Categoría $id",
+                                type = TransactionType.valueOf(category.type.toString())
+                            )
+                        }
+                        .sortedBy { it.label },
+
+                    reasons = reasons
+                        .filter { it.active == true }
+                        .mapNotNull { reason ->
+                            val id = reason.id ?: return@mapNotNull null
+                            SelectOption(
+                                id = id,
+                                label = reason.description ?: "Motivo $id"
+                            )
+                        }
+                        .sortedBy { it.label },
+
+                    savingGoals = goals
+                        .filter { it.active == true && it.completed != true }
+                        .mapNotNull { goal ->
+                            val id = goal.id ?: return@mapNotNull null
+                            SelectOption(
+                                id = id,
+                                label = goal.description ?: "Meta $id"
+                            )
+                        }
+                        .sortedBy { it.label }
+                )
+
+                TransactionData(
+                    transactions = transactions,
+                    formOptions = options
+                )
             }
         }
 

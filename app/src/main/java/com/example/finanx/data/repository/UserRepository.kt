@@ -1,6 +1,5 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.UsersApi
@@ -8,9 +7,10 @@ import org.openapitools.client.models.LoginResponse
 import org.openapitools.client.models.UserRequest
 import org.openapitools.client.models.UserResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class UserRepository(
-    private val api: UsersApi = RetrofitClient.userApi
+class UserRepository @Inject constructor(
+    private val api: UsersApi
 ) {
     suspend fun findById(id: Long): Response<UserResponse> =
         withContext(Dispatchers.IO) { api.findUserById(id) }

@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.NotificationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.NotificationDTO
+import javax.inject.Inject
 
 data class NotificationUiState(
     val isLoading: Boolean = false,
@@ -17,11 +18,10 @@ data class NotificationUiState(
     val error: String? = null
 ) : com.example.finanx.ui.viewmodel.RefreshableUiState
 
-class NotificationViewModel : ViewModel() {
-
-    private val repository = NotificationRepository(
-        RetrofitClient.notificationApi
-    )
+@HiltViewModel
+class NotificationViewModel @Inject constructor(
+    private val repository: NotificationRepository
+) : ViewModel() {
 
     var notificationState by mutableStateOf(NotificationUiState())
         private set
@@ -29,7 +29,7 @@ class NotificationViewModel : ViewModel() {
     val badgeCount: Int
         get() = notificationState.notifications.count {
             it.state == NotificationDTO.State.SCHEDULED ||
-                it.state == NotificationDTO.State.SENT
+                    it.state == NotificationDTO.State.SENT
         }
 
     fun fetchAll(userId: Long, force: Boolean = false) {

@@ -5,12 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.AnalyticsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.PeriodRequest
 import org.openapitools.client.models.TransactionsDashboard
 import java.time.LocalDate
+import javax.inject.Inject
 
 data class AnalyticsUiState(
     val isLoading: Boolean        = false,
@@ -21,9 +22,10 @@ data class AnalyticsUiState(
     val endDate:   LocalDate = LocalDate.now(),
 )
 
-class AnalyticsViewModel : ViewModel() {
-
-    private val repository = AnalyticsRepository(RetrofitClient.analyticsApi)
+@HiltViewModel
+class AnalyticsViewModel @Inject constructor(
+    private val repository: AnalyticsRepository
+) : ViewModel() {
 
     var state by mutableStateOf(AnalyticsUiState())
         private set

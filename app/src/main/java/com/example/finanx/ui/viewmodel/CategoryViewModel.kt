@@ -5,11 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanx.data.api.RetrofitClient
 import com.example.finanx.data.repository.CategoryRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
+import javax.inject.Inject
 
 sealed class CategoryState : com.example.finanx.ui.viewmodel.RefreshableUiState {
     object Loading : CategoryState() {
@@ -21,8 +22,10 @@ sealed class CategoryState : com.example.finanx.ui.viewmodel.RefreshableUiState 
     }
 }
 
-class CategoryViewModel : ViewModel() {
-    private val repository = CategoryRepository(RetrofitClient.categoryApi)
+@HiltViewModel
+class CategoryViewModel @Inject constructor(
+    private val repository: CategoryRepository
+) : ViewModel() {
 
     var categoryState by mutableStateOf<CategoryState>(CategoryState.Loading)
         private set

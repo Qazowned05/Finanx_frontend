@@ -13,14 +13,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.finanx.ui.screens.auth.LoginScreen
 import com.example.finanx.ui.screens.auth.RegisterScreen
 import com.example.finanx.ui.theme.GoldAccent
 import com.example.finanx.ui.viewmodel.*
 
 @Composable
-fun MainScreen(authViewModel: AuthViewModel = viewModel()) {
+fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val authState = authViewModel.authState
     var showRegister by rememberSaveable { mutableStateOf(false) }
 

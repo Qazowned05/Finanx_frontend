@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.finanx.data.auth.TokenStore
 import com.example.finanx.data.preferences.TransactionQuickPrefs
+import dagger.hilt.android.HiltAndroidApp
 
 /**
  * Application entry point.
@@ -13,6 +14,8 @@ import com.example.finanx.data.preferences.TransactionQuickPrefs
  * Registrar en AndroidManifest.xml:
  *   <application android:name=".FinanxApplication" ...>
  */
+
+@HiltAndroidApp
 class FinanxApplication : Application() {
     override fun onCreate() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

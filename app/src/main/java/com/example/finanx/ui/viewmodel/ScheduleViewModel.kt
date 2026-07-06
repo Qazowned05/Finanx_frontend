@@ -9,7 +9,7 @@ import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.repository.CategoryRepository
 import com.example.finanx.data.repository.ReasonRepository
 import com.example.finanx.data.repository.ScheduleRepository
-import com.example.finanx.data.api.RetrofitClient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleRequest
@@ -21,6 +21,7 @@ import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Response
 import java.math.BigDecimal
 import java.time.LocalDate
+import javax.inject.Inject
 
 sealed class RecurringState : com.example.finanx.ui.viewmodel.RefreshableUiState {
     object Loading : RecurringState() { override val isRefreshing: Boolean = false }
@@ -51,10 +52,11 @@ sealed class ScheduleFormState {
     data class Error(val message: String) : ScheduleFormState()
 }
 
-class ScheduleViewModel(
-    private val repository: ScheduleRepository = ScheduleRepository(),
-    private val categoryRepository: CategoryRepository = CategoryRepository(RetrofitClient.categoryApi),
-    private val reasonRepository: ReasonRepository = ReasonRepository()
+@HiltViewModel
+class ScheduleViewModel @Inject constructor(
+    private val repository: ScheduleRepository,
+    private val categoryRepository: CategoryRepository,
+    private val reasonRepository: ReasonRepository
 ) : ViewModel() {
 
     var recurringState by mutableStateOf<RecurringState>(RecurringState.Loading)

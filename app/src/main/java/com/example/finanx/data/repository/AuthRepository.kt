@@ -1,6 +1,5 @@
 package com.example.finanx.data.repository
 
-import com.example.finanx.data.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.AuthApi
@@ -9,9 +8,10 @@ import org.openapitools.client.models.LoginRequest
 import org.openapitools.client.models.LoginResponse
 import org.openapitools.client.models.UserRequest
 import retrofit2.Response
+import javax.inject.Inject
 
-class AuthRepository(
-    private val api: AuthApi = RetrofitClient.authApi
+class AuthRepository @Inject constructor(
+    private val api: AuthApi
 ) {
     suspend fun login(email: String, password: String): Response<LoginResponse> =
         withContext(Dispatchers.IO) { api.login(LoginRequest(email, password)) }

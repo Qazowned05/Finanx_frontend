@@ -9,9 +9,11 @@ import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.data.repository.TransactionRepository
 import com.example.finanx.ui.util.toReadableDate
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.YearMonth
+import javax.inject.Inject
 
 data class HomeAlert(
     val title: String,
@@ -36,9 +38,9 @@ data class HomeUiState(
     val dailyExpenseLabels: List<String> = emptyList()
 ) : com.example.finanx.ui.viewmodel.RefreshableUiState
 
-class HomeViewModel(
-    private val repository: TransactionRepository =
-        TransactionRepository()
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: TransactionRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeUiState())
@@ -55,14 +57,14 @@ class HomeViewModel(
         currentUserName = userName
 
         viewModelScope.launch {
-                    // If we already have recent transactions, treat this as a refresh
-                val hasData = state.recentTransactions.isNotEmpty()
-                state = state.copy(
-                    isLoading = !hasData,
-                    isRefreshing = hasData,
-                    userName = userName,
-                    error = null
-                )
+            // If we already have recent transactions, treat this as a refresh
+            val hasData = state.recentTransactions.isNotEmpty()
+            state = state.copy(
+                isLoading = !hasData,
+                isRefreshing = hasData,
+                userName = userName,
+                error = null
+            )
 
             try {
                 val data =
