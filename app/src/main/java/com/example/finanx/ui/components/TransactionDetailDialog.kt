@@ -17,8 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.StoneGray
 import com.example.finanx.ui.util.toLabel
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
@@ -33,7 +31,7 @@ fun TransactionDetailDialog(
         title = {
             Text(
                 text = "Detalle del movimiento",
-                color = BrownPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
         },
@@ -53,7 +51,7 @@ fun TransactionDetailDialog(
                 Text(
                     text = "Relaciones",
                     style = MaterialTheme.typography.titleSmall,
-                    color = BrownPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
 
@@ -76,34 +74,6 @@ fun TransactionDetailDialog(
             }
         }
     )
-}
-
-@Composable
-private fun DetailRow(
-    label: String,
-    value: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 1.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = StoneGray,
-            modifier = Modifier.weight(0.42f)
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(0.58f)
-        )
-    }
 }
 
 private fun TransactionType.toMovementLabel(): String =

@@ -6,20 +6,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BluePrimary
-import com.example.finanx.ui.theme.ExpenseRed
 
 @Composable
 fun FinanxConfirmDialog(
     title: String,
     message: String,
+    description: String? = null,
     confirmText: String = "Confirmar",
     dismissText: String = "Cancelar",
     isDanger: Boolean = false,
@@ -30,16 +30,26 @@ fun FinanxConfirmDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(16.dp),
         title = {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
         },
         text = {
-            Text(message, fontSize = 14.sp)
+            Column {
+                Text(message, style = MaterialTheme.typography.bodyMedium)
+                if (description != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
                     confirmText,
-                    color = if (isDanger) ExpenseRed else BluePrimary,
+                    color = if (isDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -66,7 +76,7 @@ fun FinanxEditDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(16.dp),
         title = {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
         },
         text = {
             Column {
@@ -77,7 +87,7 @@ fun FinanxEditDialog(
             TextButton(onClick = onConfirm, enabled = enabled) {
                 Text(
                     confirmText,
-                    color = if (enabled) BluePrimary else Color.Gray,
+                    color = if (enabled) MaterialTheme.colorScheme.primary else Color.Gray,
                     fontWeight = FontWeight.Bold
                 )
             }

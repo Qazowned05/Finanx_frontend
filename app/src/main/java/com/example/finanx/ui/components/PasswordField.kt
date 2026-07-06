@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BrownSecondary
+
 
 @Composable
 fun PasswordField(
@@ -37,7 +37,7 @@ fun PasswordField(
                 Icon(
                     imageVector = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                     contentDescription = if (visible) "Ocultar contraseña" else "Mostrar contraseña",
-                    tint = BrownSecondary
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         },

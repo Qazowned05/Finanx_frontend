@@ -1,13 +1,5 @@
 package com.example.finanx.ui.screens.analytics.components
 
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.ExpenseRed
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.IncomeGreen
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,9 +41,9 @@ fun InsightSummaryCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, if (aiGenerated) MaterialTheme.colorScheme.tertiary else BorderSoft)
+        border = BorderStroke(1.dp, if (aiGenerated) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -67,14 +59,14 @@ fun InsightSummaryCard(
                 Text(
                     text = if (aiGenerated) "Insights de IA" else "Recomendaciones",
                     fontWeight = FontWeight.SemiBold,
-                    color = if (aiGenerated) MaterialTheme.colorScheme.tertiary else TextDark,
+                    color = if (aiGenerated) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelMedium
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = "${insights.size}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -91,10 +83,10 @@ fun InsightSummaryCard(
 @Composable
 private fun InsightRow(insight: Insight) {
     val (dotColor, bgColor) = when (insight.severity) {
-        Insight.Severity.CRITICAL -> ExpenseRed to Color(0xFFFFF0EE)
+        Insight.Severity.CRITICAL -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
         Insight.Severity.WARNING  -> Color(0xFFB45309) to Color(0xFFFFFBEB)
-        Insight.Severity.INFO     -> IncomeGreen to Color(0xFFF0F7F1)
-        null                      -> MaterialTheme.colorScheme.tertiary to Color(0xFFFBF8F2)
+        Insight.Severity.INFO     -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.tertiaryContainer
+        null                      -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.surfaceVariant
     }
 
     Row(
@@ -116,7 +108,7 @@ private fun InsightRow(insight: Insight) {
                 Text(
                     text = insight.title.toString(),
                     fontWeight = FontWeight.SemiBold,
-                    color = TextDark,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -124,7 +116,7 @@ private fun InsightRow(insight: Insight) {
             if (!body.isNullOrBlank()) {
                 Text(
                     text = body,
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall
                 )
             }

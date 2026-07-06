@@ -23,9 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.TextLight
+
 
 /**
  * TopAppBar compartido por todas las screens a través del Scaffold principal de AppNavigation.
@@ -56,13 +54,13 @@ fun FinanxTopAppBar(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextLight
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
                 subtitle?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.labelSmall,
-                        color = TextLight.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -73,7 +71,7 @@ fun FinanxTopAppBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Regresar",
-                        tint = TextLight
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

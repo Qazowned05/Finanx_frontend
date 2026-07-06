@@ -11,15 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.PasswordField
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.BrownSecondary
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.WarmBackground
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 
@@ -44,7 +39,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = WarmBackground
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier
@@ -56,13 +51,13 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
             Box(
                 modifier = Modifier
                     .size(72.dp)
-                    .background(BrownPrimary, RoundedCornerShape(20.dp)),
+                    .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(20.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.AccountBalanceWallet,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(36.dp)
                 )
             }
@@ -72,12 +67,12 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
             Text(
                 text = "Finanx",
                 style = MaterialTheme.typography.displaySmall,
-                color = BrownPrimary
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Mis Monedas · Tu control financiero",
                 style = MaterialTheme.typography.bodyMedium,
-                color = BrownSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
@@ -102,7 +97,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
             Spacer(modifier = Modifier.height(28.dp))
 
             if (state is AuthState.Loading) {
-                CircularProgressIndicator(color = BrownPrimary)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             } else {
                 Button(
                     onClick = { attemptLogin() },
@@ -111,8 +106,8 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                         .height(54.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BrownPrimary,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
@@ -125,7 +120,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                     Text(
                         "  o  ",
                         style = MaterialTheme.typography.labelMedium,
-                        color = BrownSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     HorizontalDivider(modifier = Modifier.weight(1f))
                 }
@@ -141,13 +136,13 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                     shape = RoundedCornerShape(12.dp),
                     border = androidx.compose.foundation.BorderStroke(
                         1.dp,
-                        BrownSecondary.copy(alpha = 0.4f)
+                        MaterialTheme.colorScheme.outlineVariant
                     )
                 ) {
                     Text(
                         "Continuar con Google",
                         style = MaterialTheme.typography.labelLarge,
-                        color = BrownPrimary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -156,7 +151,7 @@ fun LoginScreen(viewModel: AuthViewModel, onNavigateToRegister: () -> Unit) {
                 TextButton(onClick = onNavigateToRegister) {
                     Text(
                         "¿No tienes cuenta? Regístrate aquí",
-                        color = BrownSecondary,
+                        color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

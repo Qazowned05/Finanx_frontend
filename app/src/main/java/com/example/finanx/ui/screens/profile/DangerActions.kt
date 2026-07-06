@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.*
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.TextDark
+import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.viewmodel.UserActionState
 import com.example.finanx.ui.viewmodel.UserViewModel
 
@@ -44,87 +45,82 @@ fun ResetDataScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-            // Hero warning
-            DangerHeroCard(
-                icon = Icons.Default.RestartAlt,
-                title = "¿Seguro que quieres empezar de cero?",
-                subtitle = "Esta acción borrará permanentemente toda tu información financiera.",
-                iconBackgroundColor = Color(0xFFFFF3E0),
-                iconTint = Color(0xFFE65100)
+        DangerHeroCard(
+            icon = Icons.Default.RestartAlt,
+            title = "¿Seguro que quieres empezar de cero?",
+            subtitle = "Esta acción borrará permanentemente toda tu información financiera.",
+            iconBackgroundColor = MaterialTheme.colorScheme.errorContainer,
+            iconTint = MaterialTheme.colorScheme.error
+        )
+
+        DangerConsequencesCard(
+            title = "Esto es lo que se eliminará",
+            items = listOf(
+                Icons.Default.SwapVert to "Todos tus movimientos e ingresos registrados",
+                Icons.Default.AccountBalanceWallet to "Tus presupuestos activos e históricos",
+                Icons.Default.Savings to "Todas tus metas de ahorro",
+                Icons.Default.Category to "Las categorías personalizadas que creaste",
+                Icons.Default.Schedule to "Tus programaciones de transacciones y presupuestos",
+                Icons.Default.Notifications to "Todas las notificaciones"
             )
+        )
 
-            // Qué se borra
-            DangerConsequencesCard(
-                title = "Esto es lo que se eliminará",
-                items = listOf(
-                    Icons.Default.SwapVert to "Todos tus movimientos e ingresos registrados",
-                    Icons.Default.AccountBalanceWallet to "Tus presupuestos activos e históricos",
-                    Icons.Default.Savings to "Todas tus metas de ahorro",
-                    Icons.Default.Category to "Las categorías personalizadas que creaste",
-                    Icons.Default.Schedule to "Tus programaciones de transacciones y presupuestos",
-                    Icons.Default.Notifications to "Todas las notificaciones"
-                )
+        DangerAfterCard(
+            title = "¿Qué pasa después?",
+            items = listOf(
+                "Tu cuenta se mantiene activa, solo se limpian los datos.",
+                "Se restaurarán las categorías por defecto para que puedas empezar de inmediato.",
+                "Por seguridad, se cerrará tu sesión automáticamente al confirmar."
             )
+        )
 
-            // Qué pasa después
-            DangerAfterCard(
-                title = "¿Qué pasa después?",
-                items = listOf(
-                    "Tu cuenta se mantiene activa, solo se limpian los datos.",
-                    "Se restaurarán las categorías por defecto para que puedas empezar de inmediato.",
-                    "Por seguridad, se cerrará tu sesión automáticamente al confirmar."
-                )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (resetState is UserActionState.Error) {
+            Text(
+                text = resetState.message,
+                color = ExpenseRed,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Error si falla
-            if (resetState is UserActionState.Error) {
-                Text(
-                    text = resetState.message,
-                    color = ExpenseRed,
-                    fontSize = 13.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+        Button(
+            onClick = { showConfirmDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            ),
+            shape = RoundedCornerShape(14.dp),
+            enabled = resetState !is UserActionState.Loading
+        ) {
+            if (resetState is UserActionState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onError,
+                    strokeWidth = 2.dp
                 )
+            } else {
+                Icon(Icons.Default.RestartAlt, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Quiero Empezar de Cero", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
             }
-
-            // CTA
-            Button(
-                onClick = { showConfirmDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE65100),
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(14.dp),
-                enabled = resetState !is UserActionState.Loading
-            ) {
-                if (resetState is UserActionState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        color = Color.White,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Icon(Icons.Default.RestartAlt, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Quiero Empezar de Cero", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                }
-            }
+        }
 
         TextButton(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cancelar, mantener mis datos", color = TextGray)
+            Text("Cancelar, mantener mis datos", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 
@@ -163,87 +159,82 @@ fun DeleteAccountScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-            // Hero warning
-            DangerHeroCard(
-                icon = Icons.Default.DeleteForever,
-                title = "Esta acción es permanente",
-                subtitle = "Tu cuenta y todos tus datos serán eliminados para siempre. No hay vuelta atrás.",
-                iconBackgroundColor = Color(0xFFFFEBEE),
-                iconTint = ExpenseRed
+        DangerHeroCard(
+            icon = Icons.Default.DeleteForever,
+            title = "Esta acción es permanente",
+            subtitle = "Tu cuenta y todos tus datos serán eliminados para siempre. No hay vuelta atrás.",
+            iconBackgroundColor = MaterialTheme.colorScheme.errorContainer,
+            iconTint = ExpenseRed
+        )
+
+        DangerConsequencesCard(
+            title = "Se eliminará de forma definitiva",
+            items = listOf(
+                Icons.Default.Person to "Tu cuenta y credenciales de acceso",
+                Icons.Default.SwapVert to "Todos tus movimientos e historial financiero",
+                Icons.Default.AccountBalanceWallet to "Presupuestos y metas de ahorro",
+                Icons.Default.Category to "Todas tus categorías personalizadas",
+                Icons.Default.Schedule to "Programaciones y automatizaciones",
+                Icons.Default.Notifications to "Notificaciones y configuraciones"
             )
+        )
 
-            // Qué se borra
-            DangerConsequencesCard(
-                title = "Se eliminará de forma definitiva",
-                items = listOf(
-                    Icons.Default.Person to "Tu cuenta y credenciales de acceso",
-                    Icons.Default.SwapVert to "Todos tus movimientos e historial financiero",
-                    Icons.Default.AccountBalanceWallet to "Presupuestos y metas de ahorro",
-                    Icons.Default.Category to "Todas tus categorías personalizadas",
-                    Icons.Default.Schedule to "Programaciones y automatizaciones",
-                    Icons.Default.Notifications to "Notificaciones y configuraciones"
-                )
+        DangerAfterCard(
+            title = "Antes de continuar, ten en cuenta que...",
+            items = listOf(
+                "No podrás recuperar tu cuenta ni tus datos una vez eliminados.",
+                "Tampoco podrás usar el mismo correo electrónico para registrarte de nuevo.",
+                "Se cerrará tu sesión inmediatamente al confirmar."
             )
+        )
 
-            // Qué pasa después
-            DangerAfterCard(
-                title = "Antes de continuar, ten en cuenta que...",
-                items = listOf(
-                    "No podrás recuperar tu cuenta ni tus datos una vez eliminados.",
-                    "Tampoco podrás usar el mismo correo electrónico para registrarte de nuevo.",
-                    "Se cerrará tu sesión inmediatamente al confirmar."
-                )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (deleteState is UserActionState.Error) {
+            Text(
+                text = deleteState.message,
+                color = ExpenseRed,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Error si falla
-            if (deleteState is UserActionState.Error) {
-                Text(
-                    text = deleteState.message,
-                    color = ExpenseRed,
-                    fontSize = 13.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+        Button(
+            onClick = { showConfirmDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ExpenseRed,
+                contentColor = MaterialTheme.colorScheme.onError
+            ),
+            shape = RoundedCornerShape(14.dp),
+            enabled = deleteState !is UserActionState.Loading
+        ) {
+            if (deleteState is UserActionState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onError,
+                    strokeWidth = 2.dp
                 )
+            } else {
+                Icon(Icons.Default.DeleteForever, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Eliminar mi cuenta", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
             }
-
-            // CTA
-            Button(
-                onClick = { showConfirmDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ExpenseRed,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(14.dp),
-                enabled = deleteState !is UserActionState.Loading
-            ) {
-                if (deleteState is UserActionState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        color = Color.White,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Icon(Icons.Default.DeleteForever, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Eliminar mi cuenta", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                }
-            }
+        }
 
         TextButton(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cancelar, conservar mi cuenta", color = TextGray)
+            Text("Cancelar, conservar mi cuenta", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 
@@ -271,7 +262,7 @@ private fun DangerHeroCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -297,15 +288,15 @@ private fun DangerHeroCard(
             }
             Text(
                 text = title,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = TextDark,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = subtitle,
-                fontSize = 14.sp,
-                color = TextGray,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -319,7 +310,7 @@ private fun DangerConsequencesCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -331,9 +322,9 @@ private fun DangerConsequencesCard(
         ) {
             Text(
                 text = title,
-                fontSize = 13.sp,
+                style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
             items.forEach { (icon, text) ->
@@ -350,7 +341,7 @@ private fun DangerConsequencesCard(
                         tint = ExpenseRed.copy(alpha = 0.7f),
                         modifier = Modifier.size(18.dp)
                     )
-                    Text(text, fontSize = 14.sp, color = TextDark)
+                    Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         }
@@ -364,7 +355,7 @@ private fun DangerAfterCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8F0)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -381,14 +372,14 @@ private fun DangerAfterCard(
                 Icon(
                     Icons.Default.Info,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
                     text = title,
-                    fontSize = 13.sp,
+                    style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
             items.forEachIndexed { _, text ->
@@ -398,11 +389,11 @@ private fun DangerAfterCard(
                 ) {
                     Text(
                         text = "•",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.tertiary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(text, fontSize = 13.sp, color = TextDark, lineHeight = 18.sp)
+                    Text(text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
                 }
             }
         }
@@ -429,10 +420,10 @@ private fun DangerConfirmDialog(
             )
         },
         title = {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 17.sp, textAlign = TextAlign.Center)
+            Text(title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
         },
         text = {
-            Text(message, fontSize = 14.sp, color = TextGray, textAlign = TextAlign.Center)
+            Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         },
         confirmButton = {
             Button(
@@ -445,7 +436,7 @@ private fun DangerConfirmDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", color = TextGray)
+                Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     )

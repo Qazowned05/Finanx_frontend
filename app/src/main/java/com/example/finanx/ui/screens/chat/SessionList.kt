@@ -28,9 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.TextGray
-import com.example.finanx.ui.theme.TextLight
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.IncomeGreen
 import org.openapitools.client.models.ChatSessionResponse
 
 
@@ -55,7 +54,7 @@ fun SessionListView(
                 .fillMaxWidth()
                 .padding(16.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             if (state.isStartingSession) {
                 CircularProgressIndicator(
@@ -75,7 +74,7 @@ fun SessionListView(
             }
             Text(
                 text = if (state.isStartingSession) "Iniciando…" else "Nueva conversación con Finn",
-                color = TextLight,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -102,12 +101,12 @@ fun SessionListView(
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = "Aún no tienes conversaciones con Finn.",
-                        color = TextGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
                         text = "Inicia una nueva para analizar tus finanzas.",
-                        color = TextGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -116,7 +115,7 @@ fun SessionListView(
             Text(
                 text = "Conversaciones anteriores",
                 style = MaterialTheme.typography.labelMedium,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
             LazyColumn(

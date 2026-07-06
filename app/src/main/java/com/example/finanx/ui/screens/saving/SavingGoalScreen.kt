@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.components.DetailRow
 import com.example.finanx.ui.components.EmptyStateCard
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
@@ -115,7 +116,7 @@ fun SavingGoalScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when (state) {
                 is SavingGoalState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
                 }
                 is SavingGoalState.Success -> {
                     if (state.goals.isEmpty()) {
@@ -151,8 +152,8 @@ fun SavingGoalScreen(
                                             style = MaterialTheme.typography.titleMedium,
                                             color = when (status) {
                                                 SavingGoalResponse.State.COMPLETED -> IncomeGreen
-                                                SavingGoalResponse.State.RUNNING -> BrownPrimary
-                                                else -> StoneGray
+                                                SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.primary
+                                                else -> MaterialTheme.colorScheme.onSurfaceVariant
                                             },
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -160,7 +161,7 @@ fun SavingGoalScreen(
                                                     when (status) {
                                                         SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
                                                         SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
-                                                        else -> StoneGray.copy(alpha = 0.08f)
+                                                        else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f)
                                                     },
                                                     RoundedCornerShape(6.dp)
                                                 )
@@ -220,8 +221,8 @@ fun SavingGoalScreen(
     goalSelected?.let { goal ->
         AlertDialog(
             onDismissRequest = { goalSelected = null },
-            title = { Text(goal.description.orEmpty(), color = BrownPrimary) },
-            text = { Text("¿Qué deseas hacer con esta meta?", color = StoneGray) },
+            title = { Text(goal.description.orEmpty(), color = MaterialTheme.colorScheme.primary) },
+            text = { Text("¿Qué deseas hacer con esta meta?", color = MaterialTheme.colorScheme.onSurfaceVariant) },
             confirmButton = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
@@ -275,7 +276,7 @@ fun SavingGoalScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = ExpenseRed)
                 ) {
-                    Text("Sí, eliminar", color = Color.White)
+                    Text("Sí, eliminar", color = MaterialTheme.colorScheme.onError)
                 }
             },
             dismissButton = {
@@ -301,7 +302,7 @@ fun SavingGoalScreen(
     goalDetail?.let { goal ->
         AlertDialog(
             onDismissRequest = { goalDetail = null },
-            title = { Text("Detalles de la meta", color = BrownPrimary) },
+            title = { Text("Detalles de la meta", color = MaterialTheme.colorScheme.primary) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     DetailRow(Icons.Default.Description, "Descripción", goal.description.orEmpty())
@@ -321,7 +322,7 @@ fun SavingGoalScreen(
             },
             confirmButton = {
                 TextButton(onClick = { goalDetail = null }) {
-                    Text("Cerrar", color = BrownSecondary)
+                    Text("Cerrar", color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         )
@@ -335,15 +336,6 @@ fun SavingGoalScreen(
         }
     }
 }
-@Composable
-fun DetailRow(icon: ImageVector, label: String, value: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, contentDescription = null, tint = BrownSecondary, modifier = Modifier.size(18.dp))
-        Spacer(modifier = Modifier.width(8.dp))
-        Text("$label: $value", color = TextDark, style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -356,7 +348,7 @@ fun SavingGoalCard(
     onClick: () -> Unit,
     progressModifier: Modifier = Modifier
 ) {
-    val accentColor = BrownSecondary
+    val accentColor = MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = Modifier
@@ -379,7 +371,7 @@ fun SavingGoalCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(42.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(accentColor.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
@@ -407,7 +399,7 @@ fun SavingGoalCard(
                             when (goal.state) {
                                 SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.12f)
                                 SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)
-                                else -> StoneGray.copy(alpha = 0.12f)
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
                             },
                             RoundedCornerShape(20.dp)
                         )
@@ -418,8 +410,8 @@ fun SavingGoalCard(
                         style = MaterialTheme.typography.labelSmall,
                         color = when (goal.state) {
                             SavingGoalResponse.State.COMPLETED -> IncomeGreen
-                            SavingGoalResponse.State.RUNNING -> BrownPrimary
-                            else -> StoneGray
+                            SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
                     )
                 }
@@ -429,9 +421,9 @@ fun SavingGoalCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Acumulado: S/ ${goal.accumulated ?: BigDecimal.ZERO}", color = StoneGray, style = MaterialTheme.typography.labelMedium)
+                Text("Acumulado: S/ ${goal.accumulated ?: BigDecimal.ZERO}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
                 goal.deadline?.let {
-                    Text("Hasta: ${it.toLocalDate()}", color = StoneGray, style = MaterialTheme.typography.labelMedium)
+                    Text("Hasta: ${it.toLocalDate()}", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -446,7 +438,7 @@ fun SavingGoalCard(
             Text(
                 "${goal.progressPercentage?.toInt() ?: 0}% completado",
                 style = MaterialTheme.typography.labelMedium,
-                color = if (isSelected) ExpenseRed else BrownPrimary
+                color = if (isSelected) ExpenseRed else MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -498,7 +490,7 @@ fun SavingGoalFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(title, color = BrownPrimary) },
+        title = { Text(title, color = MaterialTheme.colorScheme.primary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -546,13 +538,13 @@ fun SavingGoalFormDialog(
                         amountError = parsedAmount == null
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Guardar", color = Color.White)
+                Text("Guardar", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar", color = StoneGray) }
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     )
 }

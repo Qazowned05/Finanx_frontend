@@ -9,12 +9,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SectionTitle(text: String, modifier: Modifier = Modifier) {
+fun SectionTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+    isDanger: Boolean = false
+) {
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.tertiary,
-        style = MaterialTheme.typography.titleSmall,
+        color = if (isDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.tertiary,
+        style = MaterialTheme.typography.titleMedium,
         modifier = modifier.padding(top = 8.dp, bottom = 4.dp)
     )
 }

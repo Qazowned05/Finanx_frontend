@@ -248,8 +248,8 @@ private fun ErrorPanel(message: String, onRetry: () -> Unit) {
             Spacer(Modifier.height(12.dp))
             Text(message, color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.bodyMedium)
             Spacer(Modifier.height(12.dp))
-            Button(onClick = onRetry, colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)) {
-                Text("Reintentar", color = TextLight)
+            Button(onClick = onRetry, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+                Text("Reintentar", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }

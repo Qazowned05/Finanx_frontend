@@ -18,10 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextGray
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -67,9 +63,9 @@ fun LineChartCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, BorderSoft),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
@@ -87,7 +83,7 @@ fun LineChartCard(
                 Text(
                     text = "${agg.occurrenceCount ?: 0} movimientos  ·  " +
                             "Prom. S/ ${"%.2f".format(agg.averageAmount ?: 0.toBigDecimal())}",
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.labelSmall,
                 )
                 Spacer(Modifier.height(8.dp))

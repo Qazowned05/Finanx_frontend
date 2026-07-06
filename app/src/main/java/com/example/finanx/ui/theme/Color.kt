@@ -30,7 +30,8 @@ val DarkBackground = Color(0xFF1C1712)
 val DarkSurface = Color(0xFF2A231D)
 val DarkOnSurface = Color(0xFFEDE7DE)
 
-// Alias retrocompatibles (pantallas antiguas que aún referencian colores "Blue*")
-val BluePrimary = BrownPrimary
-val BlueSecondary = BrownSecondary
+// Danger semantic colors
+val DangerRed = ExpenseRed
+val DangerBg = ExpenseRed.copy(alpha = 0.12f)
+
 val LightBackground = WarmBackground

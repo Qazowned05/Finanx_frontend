@@ -19,7 +19,7 @@ import com.example.finanx.ui.screens.saving.goalIcons
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.tutorialTarget
-import com.example.finanx.ui.theme.*
+
 import com.example.finanx.ui.viewmodel.*
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetResponse
@@ -105,8 +105,8 @@ fun BudgetListScreen(
             val filters = BudgetFilter.entries
             TabRow(
                 selectedTabIndex = filters.indexOf(selectedFilter),
-                containerColor = WarmBackground,
-                contentColor = BrownPrimary
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 filters.forEach { filter ->
                     Tab(
@@ -139,7 +139,7 @@ fun BudgetListScreen(
                         is BudgetState.Loading -> {
                             CircularProgressIndicator(
                                 modifier = Modifier.align(Alignment.Center),
-                                color = BrownPrimary
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
 
@@ -162,7 +162,7 @@ fun BudgetListScreen(
                                     text = if (search.isEmpty()) "No tienes presupuestos activos"
                                     else "No se encontraron resultados",
                                     modifier = Modifier.align(Alignment.Center),
-                                    color = StoneGray
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             } else {
                                 com.example.finanx.ui.components.RefreshableList(
@@ -224,7 +224,7 @@ fun BudgetListScreen(
                         is SimpleBudgetState.Loading -> {
                             CircularProgressIndicator(
                                 modifier = Modifier.align(Alignment.Center),
-                                color = BrownPrimary
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
 
@@ -247,7 +247,7 @@ fun BudgetListScreen(
                                     text = if (search.isEmpty()) "No tienes presupuestos cancelados"
                                     else "No se encontraron resultados",
                                     modifier = Modifier.align(Alignment.Center),
-                                    color = StoneGray
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             } else {
                                 LazyColumn(

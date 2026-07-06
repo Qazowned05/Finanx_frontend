@@ -1,30 +1,21 @@
 package com.example.finanx.ui.screens.profile
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.components.FinanxConfirmDialog
 import com.example.finanx.ui.components.FinanxEditDialog
+import com.example.finanx.ui.screens.analytics.components.SectionTitle
 import com.example.finanx.ui.theme.*
-import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.viewmodel.UserActionState
 import com.example.finanx.ui.viewmodel.UserViewModel
 import org.openapitools.client.models.UserResponse
@@ -144,7 +135,7 @@ private fun DangerSection(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -153,70 +144,59 @@ private fun DangerSection(
             Surface(
                 onClick = onDeactivate,
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.VisibilityOff, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.VisibilityOff, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Deshabilitar Cuenta", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = ExpenseRed)
-                        Text("Desactivar mi cuenta temporalmente", fontSize = 13.sp, color = TextGray)
+                        Text("Deshabilitar Cuenta", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.error)
+                        Text("Desactivar mi cuenta temporalmente", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = ExpenseRed)
+                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = GrayBorder)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
             Surface(
                 onClick = onResetData,
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.RestartAlt, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.RestartAlt, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Empezar de Cero", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = ExpenseRed)
-                        Text("Borrar todos mis datos y reiniciar", fontSize = 13.sp, color = TextGray)
+                        Text("Empezar de Cero", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.error)
+                        Text("Borrar todos mis datos y reiniciar", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = ExpenseRed)
+                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = GrayBorder)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
             Surface(
                 onClick = onDeleteAccount,
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.DeleteForever, contentDescription = null, tint = ExpenseRed, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.DeleteForever, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Eliminar mi Cuenta", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = ExpenseRed)
-                        Text("Borrar cuenta y datos de forma permanente", fontSize = 13.sp, color = TextGray)
+                        Text("Eliminar mi Cuenta", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.error)
+                        Text("Borrar cuenta y datos de forma permanente", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = ExpenseRed)
+                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                 }
             }
         }
     }
-}
-
-@Composable
-private fun SectionTitle(title: String, isDanger: Boolean = false) {
-    Text(
-        text = title,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Bold,
-        color = if (isDanger) ExpenseRed else TextGray,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
 }

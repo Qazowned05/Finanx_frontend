@@ -28,12 +28,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
-
 data class DonutSlice(val label: String, val share: Float, val color: Color)
 
 @Composable
@@ -47,9 +41,9 @@ fun DonutChartCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, BorderSoft)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -65,7 +59,6 @@ fun DonutChartCard(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Donut
                 Box(contentAlignment = Alignment.Center) {
                     Canvas(modifier = Modifier.size(120.dp)) {
                         var startAngle = -90f
@@ -86,7 +79,6 @@ fun DonutChartCard(
 
                 Spacer(Modifier.width(24.dp))
 
-                // Legend
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     slices.forEach { slice ->
                         LegendRow(slice)
@@ -109,7 +101,7 @@ private fun LegendRow(slice: DonutSlice) {
         Text(
             text = "${slice.label}  ${(slice.share * 100).toInt()}%",
             style = MaterialTheme.typography.bodySmall,
-            color = TextDark
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

@@ -20,8 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.GrayBorder
-import com.example.finanx.ui.theme.TextGray
+
 import kotlin.math.roundToInt
 
 @Composable
@@ -56,12 +55,14 @@ fun TimeLineChartCard(
                     modifier = Modifier.fillMaxWidth().height(160.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Sin datos suficientes", color = TextGray)
+                    Text(text = "Sin datos suficientes", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 val surfaceColor = MaterialTheme.colorScheme.surface
                 val tooltipContainerColor = MaterialTheme.colorScheme.inverseSurface
                 val tooltipTextColor = MaterialTheme.colorScheme.inverseOnSurface
+                val gridColor = MaterialTheme.colorScheme.outlineVariant
+                val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,7 +95,7 @@ fun TimeLineChartCard(
                     repeat(4) { index ->
                         val y = plotHeight * (index + 1) / 5
                         drawLine(
-                            color = GrayBorder,
+                            color = gridColor,
                             start = Offset(0f, y),
                             end = Offset(width, y),
                             strokeWidth = 1.dp.toPx()
@@ -209,7 +210,7 @@ fun TimeLineChartCard(
                             val textLayoutResult = textMeasurer.measure(
                                 text = label,
                                 style = TextStyle(
-                                    color = TextGray,
+                                    color = labelColor,
                                     fontSize = 11.sp
                                 )
                             )

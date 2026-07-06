@@ -22,9 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.TextLight
 
 @Composable
 fun AiFab(
@@ -61,7 +58,7 @@ fun AiFab(
                 text = if (isAiLoading) "Analizando…" else "Analizar con IA",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = TextLight
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,10 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.finanx.ui.components.FinanxEditDialog
-import com.example.finanx.ui.theme.BluePrimary
-import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.viewmodel.UserActionState
 import org.openapitools.client.models.UserResponse
 
@@ -52,7 +50,7 @@ fun EditNameDialog(
         enabled = newName.isNotBlank() && state !is UserActionState.Loading,
         content = {
             if (state is UserActionState.Error) {
-                Text(state.message, color = ExpenseRed, fontSize = 14.sp)
+                Text(state.message, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -68,7 +66,7 @@ fun EditNameDialog(
 
             if (state is UserActionState.Loading) {
                 Spacer(modifier = Modifier.height(12.dp))
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = BluePrimary)
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.primary)
             }
         }
     )

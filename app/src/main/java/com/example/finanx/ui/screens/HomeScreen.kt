@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.ErrorMessage
 import com.example.finanx.ui.components.TimeLineChartCard
 import com.example.finanx.ui.components.TransactionRecordItem
+import com.example.finanx.ui.screens.analytics.components.SectionTitle
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
-import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.viewmodel.HomeAlert
 import com.example.finanx.ui.viewmodel.HomeUiState
@@ -260,11 +260,3 @@ private fun DecisionSurface(
     }
 }
 
-@Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold
-    )
-}

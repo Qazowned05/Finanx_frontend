@@ -17,13 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.StoneGray
-import com.example.finanx.ui.theme.TextGray
-import com.example.finanx.ui.theme.TextLight
 import org.openapitools.client.models.ChatSessionResponse
 import kotlin.collections.orEmpty
 
@@ -42,12 +36,12 @@ fun SessionHistoryView(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             shape = RoundedCornerShape(8.dp),
-            color = BorderSoft
+            color = MaterialTheme.colorScheme.outlineVariant
         ) {
             Text(
                 text = "Esta sesión está cerrada. Solo puedes visualizar el historial.",
                 style = MaterialTheme.typography.labelSmall,
-                color = StoneGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
         }
@@ -55,7 +49,7 @@ fun SessionHistoryView(
         val messages = session.history.orEmpty()
         if (messages.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Sin mensajes en esta sesión.", color = TextGray)
+                Text("Sin mensajes en esta sesión.", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
             LazyColumn(

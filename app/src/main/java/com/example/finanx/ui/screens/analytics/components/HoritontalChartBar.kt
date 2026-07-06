@@ -1,14 +1,7 @@
 package com.example.finanx.ui.screens.analytics.components
 
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,7 +29,7 @@ import java.util.Locale
 data class BarItem(
     val label: String,
     val value: BigDecimal,
-    val share: Float,      // 0..1
+    val share: Float,
     val badge: String? = null
 )
 
@@ -52,9 +45,9 @@ fun HorizontalBarChartCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, BorderSoft)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -85,7 +78,7 @@ private fun BarRow(item: BarItem, barColor: Color) {
                 text = item.label,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Medium,
-                color = TextDark,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
@@ -94,7 +87,7 @@ private fun BarRow(item: BarItem, barColor: Color) {
                 text = money(item.value),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold,
-                color = TextDark
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
         Spacer(Modifier.height(4.dp))
@@ -106,13 +99,13 @@ private fun BarRow(item: BarItem, barColor: Color) {
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp)),
                 color = barColor,
-                trackColor = BorderSoft
+                trackColor = MaterialTheme.colorScheme.outlineVariant
             )
             if (item.badge != null) {
                 Text(
                     text = item.badge,
                     style = MaterialTheme.typography.labelSmall,
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 6.dp)
                 )
             }

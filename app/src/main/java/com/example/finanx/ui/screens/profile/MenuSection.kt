@@ -10,12 +10,11 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.screens.analytics.components.SectionTitle
-import com.example.finanx.ui.theme.GrayBorder
 import org.openapitools.client.models.UserResponse
 
 
@@ -27,7 +26,7 @@ fun ProfileMenuSection(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -39,7 +38,7 @@ fun ProfileMenuSection(
                 subtitle = user.name ?: "",
                 onClick = onEditName
             )
-            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = GrayBorder)
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
             ProfileMenuItem(
                 icon = Icons.Default.Lock,
                 title = "Cambiar Contraseña",

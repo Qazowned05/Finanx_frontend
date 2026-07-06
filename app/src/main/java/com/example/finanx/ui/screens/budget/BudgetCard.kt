@@ -157,7 +157,7 @@ private fun BudgetCardContent(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(42.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(accentColor.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center

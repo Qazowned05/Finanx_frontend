@@ -16,11 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
 
 @Composable
 fun MetricCard(
@@ -33,9 +28,9 @@ fun MetricCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, BorderSoft)
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Icon(
@@ -46,7 +41,7 @@ fun MetricCard(
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = title,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelSmall
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -54,7 +49,7 @@ fun MetricCard(
                 text = value,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
-                color = TextDark
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

@@ -6,20 +6,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.PasswordField
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.BrownSecondary
-import com.example.finanx.ui.theme.WarmBackground
 import com.example.finanx.ui.viewmodel.AuthState
 import com.example.finanx.ui.viewmodel.AuthViewModel
 
@@ -58,7 +53,7 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = WarmBackground
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier
@@ -67,7 +62,7 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                 .padding(top = 8.dp, bottom = 24.dp)
         ) {
             IconButton(onClick = onBackToLogin) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = BrownPrimary)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.primary)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -75,12 +70,12 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
             Text(
                 text = "Crear cuenta",
                 style = MaterialTheme.typography.headlineMedium,
-                color = BrownPrimary
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Empieza a organizar tus finanzas",
                 style = MaterialTheme.typography.bodyMedium,
-                color = BrownSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
@@ -140,7 +135,7 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
 
             if (state is AuthState.Loading) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = BrownPrimary)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
@@ -148,8 +143,8 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = BrownPrimary,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Text("Registrarse", style = MaterialTheme.typography.labelLarge)
@@ -161,13 +156,13 @@ fun RegisterScreen(viewModel: AuthViewModel, onBackToLogin: () -> Unit) {
                     onClick = { if (activity != null) viewModel.loginWithGoogle(activity) },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(12.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, BrownSecondary.copy(alpha = 0.4f))
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                 ) {
-                    Text("Registrarse con Google", style = MaterialTheme.typography.labelLarge, color = BrownPrimary)
+                    Text("Registrarse con Google", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                 }
 
                 TextButton(onClick = onBackToLogin, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Text("¿Ya tienes cuenta? Inicia sesión", color = BrownSecondary)
+                    Text("¿Ya tienes cuenta? Inicia sesión", color = MaterialTheme.colorScheme.primary)
                 }
             }
 

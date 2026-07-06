@@ -28,7 +28,7 @@ import com.example.finanx.data.model.TransactionType
 import com.example.finanx.data.model.TransactionRecord
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
-import com.example.finanx.ui.theme.TextGray
+
 import com.example.finanx.ui.util.toLabel
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
@@ -91,7 +91,7 @@ fun TransactionRecordItem(
                 Text(
                     text = transaction.categoryName,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Text(
@@ -101,7 +101,7 @@ fun TransactionRecordItem(
                         append(transaction.createdAt.toReadableDate())
                     },
                     style = MaterialTheme.typography.labelSmall,
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 

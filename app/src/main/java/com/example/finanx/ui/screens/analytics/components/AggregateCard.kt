@@ -17,11 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
 import org.openapitools.client.models.Aggregate
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -35,9 +30,9 @@ fun AggregateCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = SurfaceWhite),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(0.dp),
-        border = BorderStroke(1.dp, BorderSoft)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             if (!aggregate.title.isNullOrBlank()) {
@@ -75,8 +70,8 @@ fun AggregateCard(
 @Composable
 private fun AggStat(label: String, value: String) {
     Column {
-        Text(label, style = MaterialTheme.typography.labelSmall, color = TextGray)
-        Text(value, fontWeight = FontWeight.Bold, color = TextDark,
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodySmall)
     }
 }

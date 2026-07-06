@@ -234,7 +234,7 @@ fun ChatBubble(message: ChatHistoryResponse) {
             Box(
                 modifier = Modifier
                     .size(28.dp)
-                    .background(BrownPrimary, CircleShape),
+                    .background(MaterialTheme.colorScheme.primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -254,13 +254,13 @@ fun ChatBubble(message: ChatHistoryResponse) {
                 bottomStart = 16.dp,
                 bottomEnd = 16.dp
             ),
-            color = if (isUser) BrownPrimary else SurfaceWhite,
+            color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer,
             shadowElevation = 1.dp,
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
             Text(
                 text = message.message ?: "",
-                color = if (isUser) TextLight else TextDark,
+                color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
@@ -274,7 +274,7 @@ private fun TypingIndicator() {
         Box(
             modifier = Modifier
                 .size(28.dp)
-                .background(BrownPrimary, CircleShape),
+                .background(MaterialTheme.colorScheme.primary, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -287,7 +287,7 @@ private fun TypingIndicator() {
         Spacer(Modifier.width(6.dp))
         Surface(
             shape = RoundedCornerShape(4.dp, 16.dp, 16.dp, 16.dp),
-            color = SurfaceWhite
+            color = MaterialTheme.colorScheme.surfaceContainer
         ) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.tertiary,
@@ -310,7 +310,7 @@ private fun ChatInputBar(
 ) {
     Surface(
         shadowElevation = 8.dp,
-        color = SurfaceWhite
+        color = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Row(
             modifier = Modifier
@@ -325,7 +325,7 @@ private fun ChatInputBar(
                 placeholder = {
                     Text(
                         "Escribe tu mensaje…",
-                        color = TextGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
                 },
@@ -337,7 +337,7 @@ private fun ChatInputBar(
                 enabled = !isSending,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = BorderSoft
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                 )
             )
             Spacer(Modifier.width(8.dp))
@@ -345,17 +345,17 @@ private fun ChatInputBar(
                 onClick = onSend,
                 enabled = text.isNotBlank() && !isSending,
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(42.dp)
                     .background(
-                        if (text.isNotBlank() && !isSending) BrownPrimary
-                        else BorderSoft,
+                        if (text.isNotBlank() && !isSending) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outlineVariant,
                         CircleShape
                     )
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Enviar",
-                    tint = if (text.isNotBlank() && !isSending) MaterialTheme.colorScheme.tertiary else TextGray,
+                    tint = if (text.isNotBlank() && !isSending) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -368,9 +368,9 @@ private fun ChatInputBar(
 fun SessionStateBadge(state: ChatSessionResponse.State?) {
     val (label, color) = when (state) {
         ChatSessionResponse.State.ACTIVE -> "Activa" to IncomeGreen
-        ChatSessionResponse.State.CLOSED -> "Cerrada" to TextGray
+        ChatSessionResponse.State.CLOSED -> "Cerrada" to MaterialTheme.colorScheme.onSurfaceVariant
         ChatSessionResponse.State.EXPIRED -> "Expirada" to ExpenseRed
-        null -> "—" to TextGray
+        null -> "—" to MaterialTheme.colorScheme.onSurfaceVariant
     }
     Surface(
         shape = RoundedCornerShape(20.dp),

@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanx.ui.theme.BluePrimary
 
 @Composable
 fun FinanxPrimaryButton(
@@ -26,7 +25,7 @@ fun FinanxPrimaryButton(
         onClick = onClick,
         modifier = modifier.fillMaxWidth().height(56.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = BluePrimary),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
         enabled = enabled
     ) {
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -62,8 +61,8 @@ fun FinanxDangerButton(
         modifier = modifier.fillMaxWidth().height(56.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFE53E3E),
-            contentColor = Color.White
+            containerColor = MaterialTheme.colorScheme.error,
+            contentColor = MaterialTheme.colorScheme.onError
         ),
         enabled = enabled
     ) {

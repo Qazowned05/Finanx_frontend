@@ -16,10 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BorderSoft
-import com.example.finanx.ui.theme.GoldAccent
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextGray
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -48,7 +44,7 @@ fun PeriodSelectorRow(
         Text(
             text = "${start.format(fmt)} – ${end.format(fmt)}",
             style = MaterialTheme.typography.bodySmall,
-            color = TextGray
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         chips.forEach { (days, label) ->
             PeriodChip(label = label, onClick = { onQuickSelect(days) })
@@ -60,14 +56,14 @@ fun PeriodSelectorRow(
 private fun PeriodChip(label: String, onClick: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = SurfaceWhite,
-        border = BorderStroke(1.dp, BorderSoft),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.clickable(onClick = onClick)
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = TextGray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
         )
     }

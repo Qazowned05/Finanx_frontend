@@ -26,10 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.finanx.ui.theme.BrownPrimary
-import com.example.finanx.ui.theme.SurfaceWhite
-import com.example.finanx.ui.theme.TextDark
-import com.example.finanx.ui.theme.TextGray
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.IncomeGreen
 import org.openapitools.client.models.ChatSessionResponse
 import java.time.format.DateTimeFormatter
 
@@ -47,7 +45,7 @@ fun SessionCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        color = SurfaceWhite,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 1.dp,
         tonalElevation = 1.dp
     ) {
@@ -57,7 +55,7 @@ fun SessionCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(42.dp)
                     .background(MaterialTheme.colorScheme.primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -79,7 +77,7 @@ fun SessionCard(
                         text = session.createdAt?.format(formatter) ?: "Sin fecha",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = TextDark
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     SessionStateBadge(state = session.state)
                 }
@@ -87,7 +85,7 @@ fun SessionCard(
                 Text(
                     text = lastMessage?.message ?: "Sin mensajes",
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

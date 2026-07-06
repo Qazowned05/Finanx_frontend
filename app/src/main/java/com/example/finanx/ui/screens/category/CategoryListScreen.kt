@@ -96,18 +96,18 @@ fun CategoryListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = BrownPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.tutorialTarget("new_category_button", targetBounds)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = Color.White)
+                Icon(Icons.Default.Add, contentDescription = "Nueva categoría", tint = MaterialTheme.colorScheme.onPrimary)
             }
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             when (state) {
                 is CategoryState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = BrownPrimary)
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
                 }
                 is CategoryState.Success -> {
                     if (state.categories.isEmpty()) {
@@ -188,8 +188,8 @@ fun CategoryListScreen(
     categorySelected?.let { category ->
         AlertDialog(
             onDismissRequest = { categorySelected = null },
-            title = { Text(category.name.orEmpty(), fontWeight = FontWeight.Bold, color = BrownPrimary) },
-            text = { Text("¿Qué deseas hacer con esta categoría?", color = StoneGray) },
+            title = { Text(category.name.orEmpty(), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
+            text = { Text("¿Qué deseas hacer con esta categoría?", color = MaterialTheme.colorScheme.onSurfaceVariant) },
             confirmButton = {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
@@ -208,7 +208,7 @@ fun CategoryListScreen(
                             categoryToEdit = category
                             categorySelected = null
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -217,7 +217,7 @@ fun CategoryListScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { categorySelected = null }) { Text("Cancelar", color = StoneGray) }
+                TextButton(onClick = { categorySelected = null }) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         )
     }
@@ -225,7 +225,7 @@ fun CategoryListScreen(
     categoryToDisable?.let { category ->
         AlertDialog(
             onDismissRequest = { categoryToDisable = null },
-            containerColor = SurfaceWhite,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             title = {
                 Text(
                     "¿Eliminar esta categoría?",
@@ -238,7 +238,7 @@ fun CategoryListScreen(
                     "Estás a punto de eliminar \"${category.name.orEmpty()}\". " +
                             "Las transacciones existentes no se verán afectadas, pero esta categoría " +
                             "ya no estará disponible para nuevos registros.",
-                    color = StoneGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             confirmButton = {
@@ -249,11 +249,11 @@ fun CategoryListScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = ExpenseRed)
                 ) {
-                    Text("Sí, eliminar", color = Color.White)
+                    Text("Sí, eliminar", color = MaterialTheme.colorScheme.onError)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { categoryToDisable = null }) { Text("Cancelar", color = StoneGray) }
+                TextButton(onClick = { categoryToDisable = null }) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         )
     }
@@ -315,9 +315,9 @@ fun CategoryCard(
     modifier: Modifier = Modifier
 ) {
     val active = category.active == true
-    val accentColor = if (active) IncomeGreen else StoneGray
+    val accentColor = if (active) IncomeGreen else MaterialTheme.colorScheme.onSurfaceVariant
     val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) ExpenseRed.copy(alpha = 0.08f) else SurfaceWhite,
+        targetValue = if (isSelected) ExpenseRed.copy(alpha = 0.08f) else MaterialTheme.colorScheme.surfaceContainer,
         label = ""
     )
 
@@ -356,13 +356,13 @@ fun CategoryCard(
                     category.name.orEmpty(),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
-                    color = if (isSelected) ExpenseRed else BrownSecondary
+                    color = if (isSelected) ExpenseRed else MaterialTheme.colorScheme.onSurface
                 )
                 if (!category.description.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         category.description!!,
-                        color = StoneGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp
                     )
                 }
@@ -371,7 +371,7 @@ fun CategoryCard(
                 modifier = Modifier
                     .size(8.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(if (active) IncomeGreen else StoneGray)
+                    .background(if (active) IncomeGreen else MaterialTheme.colorScheme.onSurfaceVariant)
             )
         }
     }
@@ -400,7 +400,7 @@ fun CategoryFormDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(title, fontWeight = FontWeight.Bold, color = BrownPrimary) },
+        title = { Text(title, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
@@ -446,13 +446,13 @@ fun CategoryFormDialog(
         confirmButton = {
             Button(
                 onClick = { if (name.isNotBlank()) onConfirm(name, description, type) },
-                colors = ButtonDefaults.buttonColors(containerColor = BrownPrimary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Guardar", color = Color.White)
+                Text("Guardar", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar", color = StoneGray) }
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     )
 }
