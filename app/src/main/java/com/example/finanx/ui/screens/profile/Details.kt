@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.DetailRow
+import com.example.finanx.ui.components.FinanxCard
 import com.example.finanx.ui.util.toReadableDate
 import org.openapitools.client.models.UserResponse
 
@@ -35,11 +35,11 @@ fun AccountDetailsSection(
     expanded: Boolean,
     onToggle: () -> Unit
 ) {
-    Card(
+    FinanxCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(2.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = null
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Surface(

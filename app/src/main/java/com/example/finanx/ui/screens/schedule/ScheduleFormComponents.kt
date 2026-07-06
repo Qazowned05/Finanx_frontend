@@ -1,6 +1,5 @@
 package com.example.finanx.ui.screens.schedule
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +36,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecurrenceType
+import com.example.finanx.ui.components.FinanxCard
 import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.screens.transaction.create.RecurrenceTypeDropdown
 import com.example.finanx.ui.util.toReadableDate
@@ -75,12 +73,7 @@ internal fun RecurrenceSection(
     val endError = endDateText.isNotEmpty() && (!datesValid || parsedEnd == null)
     val isWeekly = recurrenceType == TransactionRecurrenceType.WEEKLY
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-    ) {
+    FinanxCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)

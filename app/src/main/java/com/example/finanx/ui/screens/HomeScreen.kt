@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.ErrorMessage
+import com.example.finanx.ui.components.FinanxCard
 import com.example.finanx.ui.components.TimeLineChartCard
 import com.example.finanx.ui.components.TransactionRecordItem
 import com.example.finanx.ui.screens.analytics.components.SectionTitle
@@ -180,11 +180,11 @@ private fun DecisionSurface(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Card(
+        FinanxCard(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            border = null
         ) {
             Column(
                 modifier = Modifier
@@ -212,11 +212,11 @@ private fun DecisionSurface(
         }
 
         if (alert != null) {
-            Card(
+            FinanxCard(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                border = null
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
