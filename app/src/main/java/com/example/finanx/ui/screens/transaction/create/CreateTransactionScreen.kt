@@ -1,58 +1,85 @@
 package com.example.finanx.ui.screens.transaction.create
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.TrendingDown
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.finanx.data.model.CategoryOption
 import com.example.finanx.data.model.NewTransactionCommand
 import com.example.finanx.data.model.PaymentMethod
 import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionType
-import com.example.finanx.ui.components.SpotlightOverlay
-import com.example.finanx.ui.components.TutorialPreferences
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
-import com.example.finanx.ui.components.tutorialTarget
+import com.example.finanx.data.preferences.TransactionQuickPrefs
+import com.example.finanx.ui.components.FinanxOutlinedTextField
+import com.example.finanx.ui.components.ReasonAutocomplete
+import com.example.finanx.ui.theme.ExpenseRed
+import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.TransactionDraftField
 import com.example.finanx.ui.viewmodel.TransactionDraftState
 import com.example.finanx.ui.viewmodel.TransactionSaveState
-import com.example.finanx.ui.viewmodel.TransactionStep
 import com.example.finanx.ui.viewmodel.TransactionViewModel
-import com.example.finanx.ui.viewmodel.visibleSteps
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateTransactionScreen(
     registerHasUnsaved: ((() -> Boolean) -> Unit)? = null,
@@ -61,16 +88,12 @@ fun CreateTransactionScreen(
     savingGoalViewModel: SavingGoalViewModel,
     onCreateSavingGoal: () -> Unit,
     onCreateCategory: () -> Unit,
-    onBack: () -> Unit,
     onSaved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val draft = transactionViewModel.draft
     val options = transactionViewModel.state.formOptions
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
-    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+    val scrollState = rememberScrollState()
 
     val hasActiveSavingGoals = when (val state = savingGoalViewModel.savingGoalState) {
         is SavingGoalState.Success -> state.goals.any { it.active == true && it.state == org.openapitools.client.models.SavingGoalResponse.State.RUNNING }
@@ -78,7 +101,8 @@ fun CreateTransactionScreen(
     }
     val isSaving = transactionViewModel.state.saveState is TransactionSaveState.Saving
     val saveError = (transactionViewModel.state.saveState as? TransactionSaveState.Error)?.message
-    val visibleSteps = draft.visibleSteps(hasActiveSavingGoals)
+
+    var attemptedSubmit by remember { mutableStateOf(false) }
 
     val hasUnsaved = draft.type != null ||
         draft.categoryId != null ||
@@ -86,101 +110,155 @@ fun CreateTransactionScreen(
         draft.reasonId != null ||
         draft.reasonText.isNotBlank() ||
         draft.paymentMethod != null ||
-        draft.savingGoalId != null ||
-        draft.step != TransactionStep.TYPE
+        draft.savingGoalId != null
 
     registerHasUnsaved?.invoke { hasUnsaved }
 
-    LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_transacciones").first()
-        if (!completed) {
-            tutorialController = TutorialController(
-                steps = listOf(
-                    TutorialStep("type_screen", "Elige si es un gasto o un ingreso. Así filtramos las categorías después."),
-                    TutorialStep("category_grid", "Aquí solo aparecen categorías del tipo que elegiste."),
-                    TutorialStep("amount_field", "Escribe el monto — el teclado numérico aparece solo."),
-                    TutorialStep("reason_field", "Escribe el motivo. Si coincide con uno anterior, tócalo en las sugerencias."),
-                    TutorialStep("payment_method_row", "Elige cómo pagaste."),
-                    TutorialStep("saving_goal_row", "Si este ingreso es para una meta, elígela aquí. Es opcional."),
-                    TutorialStep("save_button", "Guarda. Verás al instante cómo afecta tu presupuesto.")
-                )
-            ) {
-                scope.launch { TutorialPreferences.markCompleted(context, "tutorial_transacciones") }
-                tutorialController = null
-            }
-        }
-    }
-
-    LaunchedEffect(draft.step) {
-        if (draft.step == TransactionStep.SAVING_GOAL) {
-            savingGoalViewModel.fetchSavingGoals(userId)
-        }
-    }
-
-    when (draft.step) {
-        TransactionStep.TYPE -> TypeSelectionStep(
-            onSelect = transactionViewModel::updateType,
-            modifier = modifier.tutorialTarget("type_screen", targetBounds)
-        )
-
-        TransactionStep.CATEGORY -> CategorySelectionStep(
-            categories = options.categories
-                .filter { it.type == draft.type }
-                .sortedBy { it.label.lowercase() },
-            onSelect = transactionViewModel::updateCategory,
-            onCreateCategory = onCreateCategory,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .tutorialTarget("category_grid", targetBounds)
-        )
-
-        TransactionStep.DETAILS -> TransactionDetailsStep(
-            draft = draft,
-            categoryLabel = options.categories.firstOrNull { it.id == draft.categoryId }?.label,
-            reasons = options.reasons,
-            hasSavingGoalStep = visibleSteps.contains(TransactionStep.SAVING_GOAL),
-            isSaving = isSaving,
-            saveError = saveError,
-            onAmountChange = transactionViewModel::updateAmount,
-            onReasonChange = transactionViewModel::updateReason,
-            onPaymentChange = transactionViewModel::updatePaymentMethod,
-            onSubmit = {
-                val submitted = submitDraft(
-                    userId = userId,
-                    draft = draft,
-                    transactionViewModel = transactionViewModel,
-                    saveNow = !visibleSteps.contains(TransactionStep.SAVING_GOAL)
-                )
-                if (submitted && visibleSteps.contains(TransactionStep.SAVING_GOAL)) {
-                    transactionViewModel.goToStep(TransactionStep.SAVING_GOAL)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        TypeSelectorCompact(
+            selected = draft.type,
+            onSelect = { type ->
+                attemptedSubmit = false
+                transactionViewModel.updateType(type)
+                val prefCatId = TransactionQuickPrefs.lastCategoryId(type)
+                if (prefCatId != null && options.categories.any { it.id == prefCatId }) {
+                    transactionViewModel.updateCategory(prefCatId)
                 }
-            },
-            registry = targetBounds,
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+            }
         )
 
-        TransactionStep.SAVING_GOAL -> {
-            val goals = when (val state = savingGoalViewModel.savingGoalState) {
-                is SavingGoalState.Success -> state.goals
-                    .filter { it.active == true && it.state == org.openapitools.client.models.SavingGoalResponse.State.RUNNING }
-                    .mapNotNull { goal ->
-                        val id = goal.id ?: return@mapNotNull null
-                        SelectOption(id = id, label = goal.description.orEmpty())
+        if (draft.type != null) {
+            val filteredCategories = options.categories
+                .filter { it.type == draft.type }
+                .sortedBy { it.label.lowercase() }
+
+            CategorySelectionGrid(
+                categories = filteredCategories,
+                selectedId = draft.categoryId,
+                onSelect = { id ->
+                    attemptedSubmit = false
+                    transactionViewModel.updateCategory(id)
+                },
+                onCreateCategory = onCreateCategory
+            )
+        }
+
+        if (draft.categoryId != null) {
+            val categoryLabel = options.categories.firstOrNull { it.id == draft.categoryId }?.label
+
+            DetailsSummaryCard(
+                type = draft.type,
+                categoryLabel = categoryLabel,
+                amountText = draft.amountText
+            )
+
+            val parsedAmount = draft.amountText.replace(",", ".").toBigDecimalOrNull()
+            val amountError = (attemptedSubmit && (parsedAmount == null || parsedAmount.signum() <= 0)) ||
+                draft.fieldErrors.contains(TransactionDraftField.AMOUNT)
+            val paymentError = (attemptedSubmit && draft.paymentMethod == null) ||
+                draft.fieldErrors.contains(TransactionDraftField.PAYMENT_METHOD)
+
+            FinanxOutlinedTextField(
+                value = draft.amountText,
+                onValueChange = transactionViewModel::updateAmount,
+                label = "Monto",
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Next
+                ),
+                enabled = !isSaving,
+                isError = amountError,
+                supportingText = when {
+                    amountError && draft.amountText.isBlank() -> "Ingresa un monto"
+                    amountError -> "Ingresa un monto válido"
+                    else -> "Puedes ingresar hasta dos decimales"
+                }
+            )
+
+            ReasonAutocomplete(
+                text = draft.reasonText,
+                reasons = options.reasons,
+                enabled = !isSaving,
+                onReasonChange = transactionViewModel::updateReason,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    imeAction = ImeAction.Next
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Método de pago",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PaymentMethod.entries.forEach { method ->
+                        FilterChip(
+                            selected = draft.paymentMethod == method,
+                            onClick = {
+                                if (!isSaving) {
+                                    transactionViewModel.updatePaymentMethod(method)
+                                }
+                            },
+                            label = { Text(method.toSpanishLabel()) }
+                        )
                     }
-                else -> options.savingGoals
+                }
+                if (paymentError) {
+                    Text(
+                        text = "Selecciona un método de pago",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
-            SavingGoalSelectionStep(
-                savingGoals = goals,
-                selectedId = draft.savingGoalId,
-                onSelect = transactionViewModel::updateSavingGoal,
-                onCreate = onCreateSavingGoal,
-                isSaving = isSaving,
-                saveError = saveError,
-                onSave = {
+
+            if (saveError != null) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Text(
+                        text = saveError,
+                        modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
+
+            if (draft.type == TransactionType.INCOME && hasActiveSavingGoals) {
+                Text(
+                    text = "Meta de ahorro (opcional)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                SavingGoalInlineRow(
+                    goals = options.savingGoals,
+                    selectedId = draft.savingGoalId,
+                    onSelect = transactionViewModel::updateSavingGoal,
+                    onCreate = onCreateSavingGoal
+                )
+            }
+
+            Button(
+                onClick = {
+                    attemptedSubmit = true
                     submitDraft(
                         userId = userId,
                         draft = draft,
@@ -188,12 +266,25 @@ fun CreateTransactionScreen(
                         saveNow = true
                     )
                 },
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .tutorialTarget("saving_goal_row", targetBounds),
-                registry = targetBounds
-            )
+                enabled = !isSaving,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                if (isSaving) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text(
+                        text = "Guardar",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
@@ -202,21 +293,347 @@ fun CreateTransactionScreen(
             onSaved()
         }
     }
+}
 
-    tutorialController?.let { controller ->
-        val current = controller.currentStep
-        SpotlightOverlay(
-            targetBounds = current?.let { targetBounds[it.targetKey] },
-            message = current?.message.orEmpty(),
-            isLastStep = controller.isLastStep,
-            onNext = { controller.next() },
-            onSkip = {
-                scope.launch { TutorialPreferences.markCompleted(context, "tutorial_transacciones") }
-                tutorialController = null
-            }
+// --- Type Selector with Icons (#3) ---
+
+@Composable
+private fun TypeSelectorCompact(
+    selected: TransactionType?,
+    onSelect: (TransactionType) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        TypeOption(
+            type = TransactionType.SPENT,
+            label = "Gasto",
+            icon = Icons.Default.TrendingDown,
+            isSelected = selected == TransactionType.SPENT,
+            selectedContainer = MaterialTheme.colorScheme.errorContainer,
+            selectedContent = MaterialTheme.colorScheme.onErrorContainer,
+            onClick = { onSelect(TransactionType.SPENT) }
+        )
+        TypeOption(
+            type = TransactionType.INCOME,
+            label = "Ingreso",
+            icon = Icons.Default.TrendingUp,
+            isSelected = selected == TransactionType.INCOME,
+            selectedContainer = MaterialTheme.colorScheme.primaryContainer,
+            selectedContent = MaterialTheme.colorScheme.onPrimaryContainer,
+            onClick = { onSelect(TransactionType.INCOME) }
         )
     }
 }
+
+@Composable
+private fun RowScope.TypeOption(
+    type: TransactionType,
+    label: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    selectedContainer: Color,
+    selectedContent: Color,
+    onClick: () -> Unit
+) {
+    val containerColor = if (isSelected) selectedContainer else MaterialTheme.colorScheme.surfaceVariant
+    val contentColor = if (isSelected) selectedContent else MaterialTheme.colorScheme.onSurfaceVariant
+
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        color = containerColor,
+        modifier = Modifier.weight(1f)
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = contentColor,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = contentColor
+            )
+        }
+    }
+}
+
+// --- Category Grid Visual (#4) ---
+
+private val categoryColorPalette = listOf(
+    Color(0xFF5B8A72),
+    Color(0xFFC17F4E),
+    Color(0xFF6B8E9E),
+    Color(0xFFB8737A),
+    Color(0xFF7B9E6B),
+    Color(0xFFA67C52),
+    Color(0xFF7A8FA6),
+    Color(0xFFC48793),
+    Color(0xFF8FAD6B),
+    Color(0xFFB58A6E)
+)
+
+private fun categoryColor(id: Long): Color =
+    categoryColorPalette[(id % categoryColorPalette.size).toInt()]
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CategorySelectionGrid(
+    categories: List<CategoryOption>,
+    selectedId: Long?,
+    onSelect: (Long) -> Unit,
+    onCreateCategory: () -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = "Selecciona una categoría",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
+        )
+
+        if (categories.isEmpty()) {
+            Text(
+                text = "No hay categorías para este tipo.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Button(
+                onClick = onCreateCategory,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Crear categoría")
+            }
+        } else {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                categories.forEach { category ->
+                    val isSelected = selectedId == category.id
+                    val color = categoryColor(category.id)
+                    val bgColor = if (isSelected) color.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface
+                    val borderColor = if (isSelected) color else MaterialTheme.colorScheme.outlineVariant
+
+                    Surface(
+                        onClick = { onSelect(category.id) },
+                        shape = RoundedCornerShape(12.dp),
+                        color = bgColor,
+                        border = BorderStroke(
+                            width = if (isSelected) 1.5.dp else 1.dp,
+                            color = borderColor
+                        ),
+                        modifier = Modifier.width(80.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(color),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = category.label.take(1).uppercase(),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp
+                                )
+                            }
+                            Text(
+                                text = category.label,
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center,
+                                color = if (isSelected) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                Surface(
+                    onClick = onCreateCategory,
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant
+                    ),
+                    modifier = Modifier.width(80.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Crear categoría",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Text(
+                            text = "Nueva",
+                            style = MaterialTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// --- Summary Card ---
+
+@Composable
+private fun DetailsSummaryCard(
+    type: TransactionType?,
+    categoryLabel: String?,
+    amountText: String
+) {
+    val isIncome = type == TransactionType.INCOME
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = if (isIncome) "Ingreso" else "Gasto",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = categoryLabel ?: "Sin categoría",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            if (amountText.isNotBlank()) {
+                Text(
+                    text = "S/ $amountText",
+                    color = if (isIncome) IncomeGreen else ExpenseRed,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+// --- Inline Saving Goal Row ---
+
+@Composable
+private fun SavingGoalInlineRow(
+    goals: List<SelectOption>,
+    selectedId: Long?,
+    onSelect: (Long?) -> Unit,
+    onCreate: () -> Unit
+) {
+    val cardWidth = 90.dp
+    val cardHeight = 100.dp
+
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(goals) { goal ->
+            val selected = selectedId == goal.id
+            val borderColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+            val containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+            Card(
+                modifier = Modifier
+                    .size(width = cardWidth, height = cardHeight)
+                    .clickable(onClick = {
+                        if (selected) onSelect(null) else onSelect(goal.id)
+                    }),
+                colors = CardDefaults.cardColors(containerColor = containerColor),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                border = BorderStroke(if (selected) 2.dp else 1.dp, borderColor)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Savings,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp),
+                        tint = if (selected) MaterialTheme.colorScheme.primary else Color.Unspecified
+                    )
+                    Text(
+                        text = goal.label,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            }
+        }
+
+        item {
+            val primaryColor = MaterialTheme.colorScheme.primary
+            Card(
+                modifier = Modifier
+                    .size(width = cardWidth, height = cardHeight)
+                    .clickable(onClick = onCreate)
+                    .drawBehind {
+                        val stroke = Stroke(
+                            width = 2.dp.toPx(),
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 6f), 0f)
+                        )
+                        drawRect(color = primaryColor, style = stroke)
+                    },
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Crear meta",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Crear meta",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+    }
+}
+
+// --- Submit Logic ---
 
 private fun submitDraft(
     userId: Long,
@@ -260,124 +677,14 @@ private fun submitDraft(
     return true
 }
 
-@Composable
-private fun TypeSelectionStep(
-    onSelect: (TransactionType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.spacedBy(0.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .clickable { onSelect(TransactionType.SPENT) },
-            contentAlignment = Alignment.Center
-        ) {
-            Text("GASTO", style = MaterialTheme.typography.displayMedium)
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .clickable { onSelect(TransactionType.INCOME) },
-            contentAlignment = Alignment.Center
-        ) {
-            Text("INGRESO", style = MaterialTheme.typography.displayMedium)
-        }
-    }
-}
-
-@Composable
-private fun CategorySelectionStep(
-    categories: List<com.example.finanx.data.model.CategoryOption>,
-    onSelect: (Long) -> Unit,
-    onCreateCategory: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "Selecciona una categoría",
-            style = MaterialTheme.typography.titleMedium
-        )
-        if (categories.isEmpty()) {
-            Text("No hay categorías para este tipo.")
-            Button(onClick = onCreateCategory, modifier = Modifier.fillMaxWidth()) {
-                Text("Crear categoría")
-            }
-        } else {
-            categories.forEach { category ->
-                Card(
-                    onClick = { onSelect(category.id) },
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = category.label,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SavingGoalSelectionStep(
-    savingGoals: List<SelectOption>,
-    selectedId: Long?,
-    onSelect: (Long?) -> Unit,
-    onCreate: () -> Unit,
-    isSaving: Boolean,
-    saveError: String?,
-    onSave: () -> Unit,
-    modifier: Modifier = Modifier,
-    registry: MutableMap<String, Rect>
-) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("Meta de ahorro (opcional)")
-        SavingGoalSelectorRow(
-            goals = savingGoals,
-            selectedGoalId = selectedId,
-            onGoalSelected = onSelect,
-            onCreateGoal = onCreate,
-            modifier = Modifier.fillMaxWidth()
-        )
-        if (saveError != null) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
-            ) {
-                Text(
-                    text = saveError,
-                    modifier = Modifier.padding(12.dp),
-                    color = MaterialTheme.colorScheme.onErrorContainer
-                )
-            }
-        }
-        Button(
-            onClick = onSave,
-            enabled = !isSaving,
-            modifier = Modifier
-                .fillMaxWidth()
-                .tutorialTarget("save_button", registry),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            if (isSaving) {
-                CircularProgressIndicator(
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            } else {
-                Text("Guardar")
-            }
-        }
+private fun PaymentMethod.toSpanishLabel(): String {
+    return when (this) {
+        PaymentMethod.CASH -> "Efectivo"
+        PaymentMethod.CREDIT_CARD -> "Tarjeta crédito"
+        PaymentMethod.DEBIT_CARD -> "Tarjeta débito"
+        PaymentMethod.BANK_TRANSFER -> "Transferencia"
+        PaymentMethod.YAPE -> "Yape"
+        PaymentMethod.PLIN -> "Plin"
+        PaymentMethod.OTHER -> "Otro"
     }
 }

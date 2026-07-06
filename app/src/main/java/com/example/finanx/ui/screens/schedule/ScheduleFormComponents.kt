@@ -1,5 +1,6 @@
 package com.example.finanx.ui.screens.schedule
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecurrenceType
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.screens.transaction.create.RecurrenceTypeDropdown
 import com.example.finanx.ui.util.toReadableDate
 import org.openapitools.client.models.RecurrenceRuleRequest
@@ -76,7 +77,9 @@ internal fun RecurrenceSection(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -91,28 +94,23 @@ internal fun RecurrenceSection(
                 modifier = recurrenceTypeModifier
             )
 
-            OutlinedTextField(
+            FinanxOutlinedTextField(
                 value = intervalText,
                 onValueChange = { v ->
                     if (v.length <= 3 && v.all(Char::isDigit)) onIntervalChange(v)
                 },
-                modifier = Modifier.fillMaxWidth(),
                 enabled = enabled,
-                label = { Text("Cada cuántos periodos") },
+                label = "Cada cuántos periodos",
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
                 ),
                 isError = intervalError,
-                supportingText = {
-                    Text(
-                        if (intervalError) {
-                            "Ingresa un número mayor que cero"
-                        } else {
-                            "Ejemplo: 1 = cada periodo"
-                        }
-                    )
+                supportingText = if (intervalError) {
+                    "Ingresa un número mayor que cero"
+                } else {
+                    "Ejemplo: 1 = cada periodo"
                 }
             )
 
@@ -186,15 +184,14 @@ fun ScheduleDateField(
     val focusManager = LocalFocusManager.current
 
     Box(modifier = modifier) {
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = value.toDisplayDate(),
             onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             readOnly = true,
-            label = { Text(label) },
-            supportingText = supportingText?.let { text -> { Text(text) } },
-            placeholder = { Text("dd-MM-yyyy") },
+            label = label,
+            supportingText = supportingText,
+            placeholder = "dd-MM-yyyy",
             singleLine = true,
             isError = isError,
             keyboardOptions = KeyboardOptions(

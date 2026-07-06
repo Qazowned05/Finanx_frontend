@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +37,7 @@ import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.ui.components.CategoryDropdown
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.toCategoryOption
@@ -179,25 +179,20 @@ fun CreateTransactionScheduleScreen(
             }
         )
 
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = amountText,
             onValueChange = { amountText = it.replace(",", ".") },
-            modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
-            label = { Text("Monto (S/)") },
+            label = "Monto (S/)",
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next
             ),
-            supportingText = {
-                Text(
-                    when {
-                        amountText.isBlank() -> "Ingresa un monto"
-                        parsedAmount == null -> "Ingresa un monto válido"
-                        else -> "Puedes ingresar hasta dos decimales"
-                    }
-                )
+            supportingText = when {
+                amountText.isBlank() -> "Ingresa un monto"
+                parsedAmount == null -> "Ingresa un monto válido"
+                else -> "Puedes ingresar hasta dos decimales"
             },
             isError = amountText.isNotBlank() && (parsedAmount == null || parsedAmount.signum() <= 0)
         )

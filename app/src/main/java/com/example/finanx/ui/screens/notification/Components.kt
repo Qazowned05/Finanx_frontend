@@ -55,7 +55,7 @@ fun NotificationItem(
     val style = notificationStyle(notification)
     val isRead = notification.state == NotificationDTO.State.READ
 
-    val cardContainer = if (isRead) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface
+    val cardContainer = MaterialTheme.colorScheme.surface
     val cardElevation = if (isRead) 0.dp else 2.dp
     val cardBorder = if (isRead) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null
     val titleColor = if (isRead) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface

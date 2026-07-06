@@ -9,7 +9,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.tutorial.TutorialController
@@ -87,46 +87,39 @@ fun CreateSavingGoalScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("Nombre de la meta") },
+            label = "Nombre de la meta",
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Next
             ),
             isError = attemptedSave && description.isBlank(),
-            supportingText = {
-                if (attemptedSave && description.isBlank()) {
-                    Text("Ingresa un nombre para la meta")
-                }
+            supportingText = if (attemptedSave && description.isBlank()) {
+                "Ingresa un nombre para la meta"
+            } else {
+                null
             }
         )
 
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = amountText,
             onValueChange = { amountText = it },
-            label = { Text("Monto objetivo") },
+            label = "Monto objetivo",
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next
             ),
             isError = attemptedSave && (parsedAmount == null || parsedAmount.signum() <= 0),
-            supportingText = {
-                Text(
-                    when {
-                        attemptedSave && amountText.isBlank() -> "Ingresa un monto"
-                        attemptedSave && (parsedAmount == null || parsedAmount.signum() <= 0) -> "Ingresa un monto válido"
-                        else -> "Puedes ingresar hasta dos decimales"
-                    }
-                )
+            supportingText = when {
+                attemptedSave && amountText.isBlank() -> "Ingresa un monto"
+                attemptedSave && (parsedAmount == null || parsedAmount.signum() <= 0) -> "Ingresa un monto válido"
+                else -> "Puedes ingresar hasta dos decimales"
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .tutorialTarget("goal_amount_field", targetBounds)
+            modifier = Modifier.tutorialTarget("goal_amount_field", targetBounds)
         )
 
         ScheduleDateField(

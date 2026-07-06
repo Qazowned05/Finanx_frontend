@@ -17,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.data.model.TransactionType
 import com.example.finanx.ui.components.CategoryDropdown
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.toCategoryOption
@@ -144,40 +144,32 @@ fun CreateBudgetScheduleScreen(
             onCategorySelected = { selectedCategoryId = it }
         )
 
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
-            label = { Text("Descripción") },
+            label = "Descripción",
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             ),
-            supportingText = {
-                Text("Describe el presupuesto que quieres controlar")
-            }
+            supportingText = "Describe el presupuesto que quieres controlar"
         )
 
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = limitText,
             onValueChange = { limitText = it.replace(",", ".") },
-            modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
-            label = { Text("Límite (S/)") },
+            label = "Límite (S/)",
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next
             ),
-            supportingText = {
-                Text(
-                    when {
-                        limitText.isBlank() -> "Ingresa un monto"
-                        parsedLimit == null -> "Ingresa un monto válido"
-                        else -> "Puedes ingresar hasta dos decimales"
-                    }
-                )
+            supportingText = when {
+                limitText.isBlank() -> "Ingresa un monto"
+                parsedLimit == null -> "Ingresa un monto válido"
+                else -> "Puedes ingresar hasta dos decimales"
             },
             isError = limitText.isNotBlank() && (parsedLimit == null || parsedLimit.signum() <= 0)
         )

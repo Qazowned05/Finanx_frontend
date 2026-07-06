@@ -6,7 +6,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.finanx.data.model.TransactionType
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.data.model.PaymentMethod
 import com.example.finanx.data.model.TransactionRecurrenceType
 
@@ -80,7 +80,7 @@ fun <T> FormDropdown(
             },
         modifier = modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = selectedItem
                 ?.let(itemLabel)
                 ?: if (allowEmptySelection) {
@@ -89,21 +89,13 @@ fun <T> FormDropdown(
                     ""
                 },
             onValueChange = {},
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
+            modifier = Modifier.menuAnchor(),
             readOnly = true,
             enabled = enabled,
-            label = {
-                Text(label)
-            },
-            supportingText = supportingText?.let { text ->
-                { Text(text) }
-            },
+            label = label,
+            supportingText = supportingText,
             isError = isError,
-            placeholder = {
-                Text(placeholder)
-            },
+            placeholder = placeholder,
             trailingIcon = {
                 ExposedDropdownMenuDefaults
                     .TrailingIcon(

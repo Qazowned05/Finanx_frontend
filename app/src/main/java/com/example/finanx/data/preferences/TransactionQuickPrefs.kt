@@ -11,6 +11,7 @@ import com.example.finanx.data.model.TransactionType
 object TransactionQuickPrefs {
 
     private const val PREFS_FILE = "finanx_transaction_quick_prefs"
+    private const val KEY_LAST_TYPE = "last_type"
     private const val KEY_LAST_PAYMENT_METHOD = "last_payment_method"
     private const val KEY_LAST_CATEGORY_SPENT = "last_category_spent"
     private const val KEY_LAST_CATEGORY_INCOME = "last_category_income"
@@ -37,9 +38,15 @@ object TransactionQuickPrefs {
         paymentMethod: PaymentMethod
     ) {
         prefs.edit {
+            putString(KEY_LAST_TYPE, type.name)
             putLong(categoryKey(type), categoryId)
             putString(KEY_LAST_PAYMENT_METHOD, paymentMethod.name)
         }
+    }
+
+    fun lastTransactionType(): TransactionType? {
+        val value = prefs.getString(KEY_LAST_TYPE, null) ?: return null
+        return runCatching { TransactionType.valueOf(value) }.getOrNull()
     }
 
     fun lastCategoryId(type: TransactionType): Long? {

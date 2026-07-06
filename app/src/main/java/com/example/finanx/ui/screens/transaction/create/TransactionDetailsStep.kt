@@ -13,7 +13,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.PaymentMethod
 import com.example.finanx.data.model.SelectOption
 import com.example.finanx.data.model.TransactionType
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.components.ReasonAutocomplete
 import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.ExpenseRed
@@ -79,10 +79,10 @@ fun TransactionDetailsStep(
             amountText = draft.amountText
         )
 
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = draft.amountText,
             onValueChange = onAmountChange,
-            label = { Text("Monto") },
+            label = "Monto",
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
@@ -90,17 +90,12 @@ fun TransactionDetailsStep(
             ),
             enabled = !isSaving,
             isError = amountError,
-            supportingText = {
-                Text(
-                    when {
-                        amountError && draft.amountText.isBlank() -> "Ingresa un monto"
-                        amountError -> "Ingresa un monto válido"
-                        else -> "Puedes ingresar hasta dos decimales"
-                    }
-                )
+            supportingText = when {
+                amountError && draft.amountText.isBlank() -> "Ingresa un monto"
+                amountError -> "Ingresa un monto válido"
+                else -> "Puedes ingresar hasta dos decimales"
             },
             modifier = Modifier
-                .fillMaxWidth()
                 .focusRequester(amountFocus)
                 .tutorialTarget("amount_field", registry)
         )

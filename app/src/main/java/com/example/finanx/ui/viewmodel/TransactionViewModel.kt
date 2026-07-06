@@ -117,6 +117,17 @@ class TransactionViewModel @Inject constructor(
         draft = TransactionDraftState()
     }
 
+    fun initDefaultsFromPrefs() {
+        val lastType = TransactionQuickPrefs.lastTransactionType() ?: return
+        val lastCategoryId = TransactionQuickPrefs.lastCategoryId(lastType)
+        val lastPaymentMethod = TransactionQuickPrefs.lastPaymentMethod()
+        draft = draft.copy(
+            type = lastType,
+            categoryId = lastCategoryId,
+            paymentMethod = lastPaymentMethod
+        )
+    }
+
     fun setFieldErrors(errors: Set<TransactionDraftField>) {
         draft = draft.copy(fieldErrors = errors)
     }

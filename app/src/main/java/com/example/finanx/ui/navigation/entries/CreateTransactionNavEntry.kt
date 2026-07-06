@@ -18,10 +18,8 @@ import com.example.finanx.ui.navigation.rememberUnsavedChangesBackHandler
 import com.example.finanx.ui.screens.transaction.create.CreateTransactionScreen
 import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
-import com.example.finanx.ui.viewmodel.TransactionStep
 import com.example.finanx.ui.viewmodel.TransactionViewModel
 import com.example.finanx.ui.viewmodel.HomeViewModel
-import com.example.finanx.ui.viewmodel.visibleSteps
 
 /**
  * Wizard de creación de movimiento. Es uno de los flujos "clave" migrados a
@@ -45,6 +43,7 @@ fun EntryProviderScope<NavKey>.createTransactionEntries(
         LaunchedEffect(Unit) {
             if (!shouldPreserveDraft()) {
                 transactionViewModel.resetDraft()
+                transactionViewModel.initDefaultsFromPrefs()
             }
             val options = transactionViewModel.state.formOptions
             if (options.categories.isEmpty() && !transactionViewModel.state.isLoading) {
@@ -53,38 +52,17 @@ fun EntryProviderScope<NavKey>.createTransactionEntries(
             savingGoalViewModel.fetchSavingGoals(userId)
         }
 
-        val draft = transactionViewModel.draft
-        val hasActiveSavingGoals = when (val s = savingGoalViewModel.savingGoalState) {
-            is SavingGoalState.Success -> s.goals.isNotEmpty()
-            else -> transactionViewModel.state.formOptions.savingGoals.isNotEmpty()
-        }
-        val steps = draft.visibleSteps(hasActiveSavingGoals)
-        val currentIndex = steps.indexOf(draft.step)
-
         val backHandler = rememberUnsavedChangesBackHandler(
             hasUnsavedChanges = { hasUnsavedChanges?.invoke() == true },
-            onStepBack = {
-                if (currentIndex > 0) {
-                    transactionViewModel.goToStep(steps[currentIndex - 1])
-                    true
-                } else {
-                    false
-                }
-            },
             onLeave = { backStack.pop() }
         )
 
         SetTopBar(
-            if (draft.step == TransactionStep.TYPE) {
-                TopBarConfig(title = "", subtitle = null, showBack = true, onBack = backHandler.requestBack)
-            } else {
-                TopBarConfig(
-                    title = "Nuevo movimiento",
-                    subtitle = "Paso ${if (currentIndex >= 0) currentIndex + 1 else 1} de ${steps.size}",
-                    showBack = true,
-                    onBack = backHandler.requestBack
-                )
-            }
+            TopBarConfig(
+                title = "Nuevo movimiento",
+                showBack = true,
+                onBack = backHandler.requestBack
+            )
         )
 
         CreateTransactionScreen(
@@ -97,7 +75,6 @@ fun EntryProviderScope<NavKey>.createTransactionEntries(
                 backStack.push(AppDestinations.CreateSavingGoal)
             },
             onCreateCategory = { backStack.push(AppDestinations.Categories) },
-            onBack = backHandler.requestBack,
             onSaved = {
                 transactionViewModel.resetDraft()
                 transactionViewModel.consumeSaveState()

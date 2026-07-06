@@ -2,6 +2,7 @@ package com.example.finanx.ui.screens.category
 
 import android.app.Activity
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.finanx.ui.components.EmptyStateCard
+import com.example.finanx.ui.components.FinanxOutlinedTextField
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.tutorialTarget
@@ -330,7 +332,8 @@ fun CategoryCard(
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(if (isSelected) 6.dp else 2.dp)
+        elevation = CardDefaults.cardElevation(if (isSelected) 6.dp else 2.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -428,18 +431,16 @@ fun CategoryFormDialog(
                     }
                 }
 
-                OutlinedTextField(
+                FinanxOutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth(),
+                    label = "Nombre",
                     singleLine = true
                 )
-                OutlinedTextField(
+                FinanxOutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descripción") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = "Descripción"
                 )
             }
         },

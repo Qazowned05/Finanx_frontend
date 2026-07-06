@@ -1,11 +1,9 @@
 package com.example.finanx.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +42,7 @@ fun ReasonAutocomplete(
     val showDropdown = suggestions.isNotEmpty() && !suppressDropdown
 
     Box(modifier = modifier) {
-        OutlinedTextField(
+        FinanxOutlinedTextField(
             value = text,
             onValueChange = { value ->
                 suppressDropdown = false
@@ -55,19 +53,11 @@ fun ReasonAutocomplete(
                     onReasonChange(null, value)
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            label = { Text("Descripción") },
+            label = "Descripción",
             singleLine = true,
             keyboardOptions = keyboardOptions,
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    onNext?.invoke() ?: focusManager.moveFocus(FocusDirection.Down)
-                }
-            ),
-            supportingText = {
-                Text("Escribe o selecciona un motivo")
-            }
+            supportingText = "Escribe o selecciona un motivo"
         )
 
         DropdownMenu(
