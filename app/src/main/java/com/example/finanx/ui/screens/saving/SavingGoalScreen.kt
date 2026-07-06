@@ -363,7 +363,7 @@ fun SavingGoalCard(
             containerColor = if (isSelected) {
                 ExpenseRed.copy(alpha = 0.08f)
             } else {
-                MaterialTheme.colorScheme.surfaceContainer
+                MaterialTheme.colorScheme.surface
             }
         ),
         elevation = CardDefaults.cardElevation(0.dp),

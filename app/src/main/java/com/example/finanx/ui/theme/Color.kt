@@ -14,6 +14,8 @@ val SurfaceWhite = Color(0xFFFFFFFF)
 val StoneGray = Color(0xFF5C5650)
 val BorderSoft = Color(0xFFE3DCD0)
 
+var Black = Color(0xFF000000)
+
 val TextDark = Color(0xFF2B2118)
 val TextGray = StoneGray
 val TextLight = Color(0xFFFFFFFF)

@@ -5,8 +5,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.finanx.ui.theme.Black
 
 @Composable
 fun SectionTitle(
@@ -17,7 +19,7 @@ fun SectionTitle(
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        color = if (isDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.tertiary,
+        color = if (isDanger) MaterialTheme.colorScheme.error else Color.Black,
         style = MaterialTheme.typography.titleMedium,
         modifier = modifier.padding(top = 8.dp, bottom = 4.dp)
     )

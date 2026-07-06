@@ -1,7 +1,9 @@
 package com.example.finanx.ui.screens.notification
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,12 +33,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
@@ -54,6 +61,7 @@ fun NotificationItem(
 ) {
     val style = notificationStyle(notification)
     val isRead = notification.state == NotificationDTO.State.READ
+    var expanded by remember { mutableStateOf(false) }
 
     val cardContainer = MaterialTheme.colorScheme.surface
     val cardElevation = if (isRead) 0.dp else 2.dp
@@ -63,7 +71,11 @@ fun NotificationItem(
     val iconBackground = if (isRead) MaterialTheme.colorScheme.outline.copy(alpha = 0.3f) else style.background
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (!expanded) Modifier.height(80.dp) else Modifier)
+            .animateContentSize()
+            .clickable { expanded = !expanded },
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = cardContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = cardElevation),
@@ -95,61 +107,80 @@ fun NotificationItem(
                     .weight(1f)
                     .padding(start = 12.dp, end = 4.dp)
             ) {
-                Text(
-                    text = notification.message ?: "Sin mensaje",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = titleColor
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    AssistChip(
-                        onClick = {},
-                        label = {
-                            Text(
-                                text = notificationStateText(notification.state),
-                                color = if (isRead) MaterialTheme.colorScheme.onSurfaceVariant else style.color,
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Schedule,
-                                contentDescription = null,
-                                tint = if (isRead) MaterialTheme.colorScheme.onSurfaceVariant else style.color,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
+                if (expanded) {
+                    Text(
+                        text = notification.message ?: "Sin mensaje",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = titleColor
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    if (!isRead) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         AssistChip(
-                            onClick = onMarkAsRead,
+                            onClick = {},
                             label = {
                                 Text(
-                                    text = "Marcar leído",
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    text = notificationStateText(notification.state),
+                                    color = if (isRead) MaterialTheme.colorScheme.onSurfaceVariant else style.color,
                                     style = MaterialTheme.typography.labelMedium
                                 )
                             },
-                            colors = AssistChipDefaults.assistChipColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = if (isRead) Icons.Default.CheckCircle else Icons.Default.Schedule,
+                                    contentDescription = null,
+                                    tint = if (isRead) MaterialTheme.colorScheme.onSurfaceVariant else style.color,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
                         )
                     }
+                } else {
+                    Text(
+                        text = notification.message ?: "Sin mensaje",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = titleColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    Text(
+                        text = "Ver más",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
 
-            IconButton(onClick = onDiscard) {
-                Icon(
-                    imageVector = Icons.Default.DeleteOutline,
-                    contentDescription = "Descartar notificación",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(
+                    onClick = onDiscard,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DeleteOutline,
+                        contentDescription = "Descartar notificación",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                if (!isRead) {
+                    IconButton(
+                        onClick = onMarkAsRead,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Marcar leído",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             }
         }
     }

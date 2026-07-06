@@ -196,7 +196,7 @@ fun BudgetListScreen(
                                                         budget.id?.let { id -> onEditBudget(id) }
                                                     }
                                                 },
-                                                progressModifier = if (index == 0) {
+                                                modifier = if (index == 0) {
                                                     Modifier.tutorialTarget("budget_progress_bar", targetBounds)
                                                 } else {
                                                     Modifier
