@@ -73,6 +73,7 @@ fun CreateTransactionScheduleScreen(
     var amountText by remember { mutableStateOf("") }
     var paymentMethod by remember { mutableStateOf(TransactionScheduleRequest.PaymentMethod.CASH) }
     var recurrenceType by remember { mutableStateOf(TransactionRecurrenceType.MONTHLY) }
+    var selectedDayOfWeek by remember { mutableStateOf<RecurrenceRuleRequest.DayOfWeek?>(null) }
     var intervalText by remember { mutableStateOf("1") }
     var startDateText by remember { mutableStateOf(LocalDate.now().toString()) }
     var endDateText by remember { mutableStateOf(LocalDate.now().plusYears(1).toString()) }
@@ -130,7 +131,7 @@ fun CreateTransactionScheduleScreen(
     // register unsaved-check callback for parent navigation
     registerHasUnsaved?.invoke {
         selectedCategoryId != null || reasonId != null || reasonText.isNotBlank() || amountText.isNotBlank() ||
-                paymentMethod != TransactionScheduleRequest.PaymentMethod.CASH || recurrenceType != TransactionRecurrenceType.MONTHLY ||
+                paymentMethod != TransactionScheduleRequest.PaymentMethod.CASH || recurrenceType != TransactionRecurrenceType.MONTHLY || selectedDayOfWeek != null ||
                 intervalText != "1" || startDateText != LocalDate.now().toString() || endDateText != LocalDate.now().plusYears(1).toString() ||
                 transactionType != TransactionScheduleRequest.TransactionType.SPENT
     }
@@ -223,10 +224,12 @@ fun CreateTransactionScheduleScreen(
             startDateText = startDateText,
             endDateText = endDateText,
             enabled = !isLoading,
-            onRecurrenceTypeChange = { recurrenceType = it },
+            selectedDayOfWeek = selectedDayOfWeek,
+            onRecurrenceTypeChange = { recurrenceType = it; if (it != TransactionRecurrenceType.WEEKLY) selectedDayOfWeek = null },
             onIntervalChange = { intervalText = it },
             onStartDateChange = { startDateText = it },
             onEndDateChange = { endDateText = it },
+            onDayOfWeekChange = { selectedDayOfWeek = it },
             recurrenceTypeModifier = Modifier.tutorialTarget("recurrence_type_dropdown", targetBounds),
             dateFieldsModifier = Modifier.tutorialTarget("schedule_date_fields", targetBounds)
         )
@@ -250,7 +253,8 @@ fun CreateTransactionScheduleScreen(
                     recurrenceType = RecurrenceRuleRequest.RecurrenceType.valueOf(recurrenceType.name),
                     interval = parsedInterval ?: 1,
                     start = parsedStart ?: LocalDate.now(),
-                    end = parsedEnd ?: LocalDate.now().plusYears(1)
+                    end = parsedEnd ?: LocalDate.now().plusYears(1),
+                    dayOfWeek = selectedDayOfWeek
                 )
             },
             enabled = canCreate,

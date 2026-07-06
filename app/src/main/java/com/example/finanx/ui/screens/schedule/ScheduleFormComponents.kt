@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -32,12 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecurrenceType
 import com.example.finanx.ui.screens.transaction.create.RecurrenceTypeDropdown
 import com.example.finanx.ui.util.toReadableDate
+import org.openapitools.client.models.RecurrenceRuleRequest
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -52,10 +56,12 @@ internal fun RecurrenceSection(
     startDateText: String,
     endDateText: String,
     enabled: Boolean,
+    selectedDayOfWeek: RecurrenceRuleRequest.DayOfWeek?,
     onRecurrenceTypeChange: (TransactionRecurrenceType) -> Unit,
     onIntervalChange: (String) -> Unit,
     onStartDateChange: (String) -> Unit,
     onEndDateChange: (String) -> Unit,
+    onDayOfWeekChange: (RecurrenceRuleRequest.DayOfWeek?) -> Unit,
     recurrenceTypeModifier: Modifier = Modifier,
     dateFieldsModifier: Modifier = Modifier
 ) {
@@ -66,6 +72,7 @@ internal fun RecurrenceSection(
     val intervalError = intervalText.isNotEmpty() && parsedInterval == null
     val startError = startDateText.isNotEmpty() && parsedStart == null
     val endError = endDateText.isNotEmpty() && (!datesValid || parsedEnd == null)
+    val isWeekly = recurrenceType == TransactionRecurrenceType.WEEKLY
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -108,6 +115,14 @@ internal fun RecurrenceSection(
                     )
                 }
             )
+
+            if (isWeekly) {
+                DayOfWeekSelector(
+                    selected = selectedDayOfWeek,
+                    enabled = enabled,
+                    onSelected = onDayOfWeekChange
+                )
+            }
 
             Row(
                 modifier = dateFieldsModifier.fillMaxWidth(),
@@ -229,3 +244,62 @@ private fun String.toDisplayDate(): String =
 
 internal fun String.toLocalDateOrNull(): LocalDate? =
     runCatching { LocalDate.parse(trim()) }.getOrNull()
+
+private val dayOfWeekLabels = mapOf(
+    RecurrenceRuleRequest.DayOfWeek.MONDAY to "LUN",
+    RecurrenceRuleRequest.DayOfWeek.TUESDAY to "MAR",
+    RecurrenceRuleRequest.DayOfWeek.WEDNESDAY to "MIÉ",
+    RecurrenceRuleRequest.DayOfWeek.THURSDAY to "JUE",
+    RecurrenceRuleRequest.DayOfWeek.FRIDAY to "VIE",
+    RecurrenceRuleRequest.DayOfWeek.SATURDAY to "SÁB",
+    RecurrenceRuleRequest.DayOfWeek.SUNDAY to "DOM"
+)
+
+@Composable
+internal fun DayOfWeekSelector(
+    selected: RecurrenceRuleRequest.DayOfWeek?,
+    enabled: Boolean,
+    onSelected: (RecurrenceRuleRequest.DayOfWeek?) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = "Día de la semana",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            RecurrenceRuleRequest.DayOfWeek.entries.forEach { day ->
+                val isSelected = selected == day
+                val containerColor = if (isSelected)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.surfaceVariant
+                val contentColor = if (isSelected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = containerColor,
+                    modifier = Modifier
+                        .weight(1f)
+                        .then(if (enabled) Modifier.clickable { onSelected(day) } else Modifier)
+                ) {
+                    Text(
+                        text = dayOfWeekLabels[day] ?: day.name,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                        color = contentColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp)
+                    )
+                }
+            }
+        }
+    }
+}

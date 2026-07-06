@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.finanx.data.model.TransactionRecurrenceType
+import com.example.finanx.data.model.TransactionType
 import com.example.finanx.ui.components.CategoryDropdown
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
@@ -68,6 +69,7 @@ fun CreateBudgetScheduleScreen(
     var alertable by remember { mutableStateOf(true) }
     var percentAlertText by remember { mutableStateOf("80") }
     var recurrenceType by remember { mutableStateOf(TransactionRecurrenceType.MONTHLY) }
+    var selectedDayOfWeek by remember { mutableStateOf<RecurrenceRuleRequest.DayOfWeek?>(null) }
     var intervalText by remember { mutableStateOf("1") }
     var startDateText by remember { mutableStateOf(LocalDate.now().toString()) }
     var endDateText by remember { mutableStateOf(LocalDate.now().plusYears(1).toString()) }
@@ -111,18 +113,20 @@ fun CreateBudgetScheduleScreen(
     }
 
     val categories = if (categoryState is CategoryState.Success) {
-        categoryState.categories.mapNotNull { it.toCategoryOption() }
+        categoryState.categories
+            .mapNotNull { it.toCategoryOption() }
+            .filter { it.type == TransactionType.SPENT }
     } else emptyList()
 
     val canCreate = selectedCategoryId != null && description.isNotBlank() &&
             parsedLimit != null && parsedLimit.signum() > 0 &&
             parsedInterval != null && datesValid && !isLoading &&
-            (!alertable || (parsedPercent in 0..100))
+            (!alertable || (parsedPercent in 50..100))
 
     // register unsaved-check callback for parent navigation
     registerHasUnsaved?.invoke {
         selectedCategoryId != null || description.isNotBlank() || limitText.isNotBlank() ||
-                alertable || percentAlertText != "80" || recurrenceType != TransactionRecurrenceType.MONTHLY ||
+                alertable || percentAlertText != "80" || recurrenceType != TransactionRecurrenceType.MONTHLY || selectedDayOfWeek != null ||
                 intervalText != "1" || startDateText != LocalDate.now().toString() || endDateText != LocalDate.now().plusYears(1).toString()
     }
 
@@ -194,8 +198,8 @@ fun CreateBudgetScheduleScreen(
                 Slider(
                     value = percentAlert.toFloat(),
                     onValueChange = { v -> percentAlertText = v.toInt().toString() },
-                    valueRange = 0f..100f,
-                    steps = 19
+                    valueRange = 50f..100f,
+                    steps = 9
                 )
             }
         }
@@ -206,10 +210,12 @@ fun CreateBudgetScheduleScreen(
             startDateText = startDateText,
             endDateText = endDateText,
             enabled = !isLoading,
-            onRecurrenceTypeChange = { recurrenceType = it },
+            selectedDayOfWeek = selectedDayOfWeek,
+            onRecurrenceTypeChange = { recurrenceType = it; if (it != TransactionRecurrenceType.WEEKLY) selectedDayOfWeek = null },
             onIntervalChange = { intervalText = it },
             onStartDateChange = { startDateText = it },
             onEndDateChange = { endDateText = it },
+            onDayOfWeekChange = { selectedDayOfWeek = it },
             recurrenceTypeModifier = Modifier.tutorialTarget("recurrence_type_dropdown", targetBounds),
             dateFieldsModifier = Modifier.tutorialTarget("schedule_date_fields", targetBounds)
         )
@@ -232,7 +238,8 @@ fun CreateBudgetScheduleScreen(
                     recurrenceType = RecurrenceRuleRequest.RecurrenceType.valueOf(recurrenceType.name),
                     interval = parsedInterval ?: 1,
                     start = parsedStart ?: LocalDate.now(),
-                    end = parsedEnd ?: LocalDate.now().plusYears(1)
+                    end = parsedEnd ?: LocalDate.now().plusYears(1),
+                    dayOfWeek = selectedDayOfWeek
                 )
             },
             enabled = canCreate,
