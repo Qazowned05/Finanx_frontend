@@ -22,28 +22,67 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.ErrorMessage
 import com.example.finanx.ui.components.FinanxCard
+import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TimeLineChartCard
 import com.example.finanx.ui.components.TransactionRecordItem
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialPreferences
+import com.example.finanx.ui.components.TutorialStep
+import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.screens.analytics.components.SectionTitle
 import com.example.finanx.ui.theme.ExpenseRed
 import com.example.finanx.ui.theme.IncomeGreen
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.viewmodel.HomeAlert
 import com.example.finanx.ui.viewmodel.HomeUiState
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
+    userId: Long,
     state: HomeUiState,
     onNewTransaction: () -> Unit,
     onOpenTransactions: () -> Unit,
     onRetry: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val targetBounds = remember { mutableStateMapOf<String, Rect>() }
+    var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
+
+    LaunchedEffect(Unit) {
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_home").first()
+        if (!completed) {
+            tutorialController = TutorialController(
+                listOf(
+                    TutorialStep("home_overview", "Bienvenido a tu panel financiero. Aquí ves tu saldo disponible, tus últimos movimientos y un resumen de tus finanzas."),
+                    TutorialStep("home_add_button", "Toca el botón + para registrar un nuevo ingreso o gasto.")
+                )
+            ) {
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_home") }
+                tutorialController = null
+            }
+        }
+    }
+
     when {
         state.isLoading -> LoadingContent()
         state.error != null -> ErrorContent(
@@ -54,7 +93,32 @@ fun HomeScreen(
             state = state,
             onNewTransaction = onNewTransaction,
             onOpenTransactions = onOpenTransactions,
-            onRetry = onRetry
+            onRetry = onRetry,
+            targetBounds = targetBounds
+        )
+    }
+
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
+    tutorialController?.let { controller ->
+        val current = controller.currentStep
+        SpotlightOverlay(
+            targetBounds = current?.let { targetBounds[it.targetKey] },
+            message = current?.message ?: "",
+            isLastStep = controller.isLastStep,
+            showNextButton = !(current?.isAutoGated ?: false),
+            onNext = { controller.next() },
+            onSkip = {
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_home") }
+                tutorialController = null
+            }
         )
     }
 }
@@ -96,6 +160,7 @@ private fun HomeContent(
     onNewTransaction: () -> Unit,
     onOpenTransactions: () -> Unit,
     onRetry: () -> Unit,
+    targetBounds: MutableMap<String, Rect> = mutableMapOf(),
     modifier: Modifier = Modifier
 ) {
     com.example.finanx.ui.components.RefreshableList(
@@ -115,7 +180,8 @@ private fun HomeContent(
                     alert = state.primaryAlert,
                     actionLabel = state.primaryActionLabel,
                     onNewTransaction = onNewTransaction,
-                    onOpenTransactions = onOpenTransactions
+                    onOpenTransactions = onOpenTransactions,
+                    targetBounds = targetBounds
                 )
             }
 
@@ -167,7 +233,8 @@ private fun DecisionSurface(
     alert: HomeAlert?,
     actionLabel: String,
     onNewTransaction: () -> Unit,
-    onOpenTransactions: () -> Unit
+    onOpenTransactions: () -> Unit,
+    targetBounds: MutableMap<String, Rect> = mutableMapOf()
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -247,7 +314,9 @@ private fun DecisionSurface(
             }
             Button(
                 onClick = onNewTransaction,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .tutorialTarget("home_add_button", targetBounds)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

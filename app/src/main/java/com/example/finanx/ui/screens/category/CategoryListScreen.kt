@@ -32,9 +32,12 @@ import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.CategoryState
 import com.example.finanx.ui.viewmodel.CategoryViewModel
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialStep
 import org.openapitools.client.models.CategoryResponse
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -69,16 +72,15 @@ fun CategoryListScreen(
     var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
 
     LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_categorias").first()
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_categorias").first()
         if (!completed) {
             tutorialController = TutorialController(
                 listOf(
-                    TutorialStep("new_category_button", "Crea una categoría para clasificar tus movimientos."),
-                    TutorialStep("category_type_toggle", "Cada categoría es de gasto o de ingreso — no se puede cambiar después de creada."),
-                    TutorialStep("category_list_item", "Toca una categoría para editar o eliminar.")
+                    TutorialStep("cat_overview", "Aquí puedes crear y organizar tus categorías de gastos e ingresos. Cada transacción debe pertenecer a una categoría."),
+                    TutorialStep("new_category_button", "Toca el botón + para crear tu primera categoría.") { showCreateDialog }
                 )
             ) {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_categorias") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_categorias") }
                 tutorialController = null
             }
         }
@@ -164,12 +166,7 @@ fun CategoryListScreen(
                                             iconIndex = index % categoryIcons.size,
                                             isSelected = categorySelected?.id == category.id,
                                             onLongPress = { categorySelected = category },
-                                            onDismiss = { categorySelected = null },
-                                            modifier = if (index == 0) {
-                                                Modifier.tutorialTarget("category_list_item", targetBounds)
-                                            } else {
-                                                Modifier
-                                            }
+                                            onDismiss = { categorySelected = null }
                                         )
                                     }
                                 }
@@ -267,20 +264,29 @@ fun CategoryListScreen(
                 viewModel.createCategory(userId, name, description, selectedType)
                 showCreateDialog = false
             },
-            onDismiss = { showCreateDialog = false },
-            tutorialBounds = targetBounds
+            onDismiss = { showCreateDialog = false }
         )
     }
 
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
     if (tutorialController != null) {
-        val current = tutorialController!!.currentStep
+        val current = tutorialController?.currentStep
         SpotlightOverlay(
             targetBounds = current?.let { targetBounds[it.targetKey] },
             message = current?.message ?: "",
             isLastStep = tutorialController?.isLastStep ?: false,
+            showNextButton = !(current?.isAutoGated ?: false),
             onNext = { tutorialController?.next() },
             onSkip = {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_categorias") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_categorias") }
                 tutorialController = null
             }
         )
@@ -301,8 +307,7 @@ fun CategoryListScreen(
                 viewModel.updateCategory(userId, category.id!!, name, description, requestType)
                 categoryToEdit = null
             },
-            onDismiss = { categoryToEdit = null },
-            tutorialBounds = targetBounds
+            onDismiss = { categoryToEdit = null }
         )
     }
 }
@@ -387,8 +392,7 @@ fun CategoryFormDialog(
     initialDescription: String = "",
     initialType: CategoryResponse.Type = CategoryResponse.Type.SPENT,
     onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
-    onDismiss: () -> Unit,
-    tutorialBounds: MutableMap<String, Rect>? = null
+    onDismiss: () -> Unit
 ) {
     var name by remember { mutableStateOf(initialName) }
     var description by remember { mutableStateOf(initialDescription) }
@@ -407,11 +411,7 @@ fun CategoryFormDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
-                    modifier = if (tutorialBounds != null) {
-                        Modifier.fillMaxWidth().tutorialTarget("category_type_toggle", tutorialBounds)
-                    } else {
-                        Modifier.fillMaxWidth()
-                    },
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

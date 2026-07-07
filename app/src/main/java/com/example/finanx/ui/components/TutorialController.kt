@@ -1,4 +1,4 @@
-package com.example.finanx.ui.components.tutorial
+package com.example.finanx.ui.components
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,8 +6,12 @@ import androidx.compose.runtime.setValue
 
 data class TutorialStep(
     val targetKey: String,
-    val message: String
-)
+    val message: String,
+    private val autoAdvanceCondition: (() -> Boolean)? = null
+) {
+    fun canAdvance(): Boolean = autoAdvanceCondition?.invoke() ?: true
+    val isAutoGated: Boolean get() = autoAdvanceCondition != null
+}
 
 class TutorialController(
     private val steps: List<TutorialStep>,
@@ -22,6 +26,7 @@ class TutorialController(
         get() = currentIndex >= steps.lastIndex
 
     fun next() {
+        if (!(currentStep?.canAdvance() ?: true)) return
         if (currentIndex >= steps.lastIndex) { onFinished(); return }
         currentIndex++
     }

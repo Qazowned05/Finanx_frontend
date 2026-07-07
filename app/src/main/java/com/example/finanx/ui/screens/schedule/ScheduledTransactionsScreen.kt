@@ -42,6 +42,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.Modifier
@@ -52,14 +53,17 @@ import com.example.finanx.ui.components.FinanxCard
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
 import com.example.finanx.ui.components.tutorialTarget
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialStep
 import com.example.finanx.ui.theme.TextGray
 import com.example.finanx.ui.util.toPen
 import com.example.finanx.ui.util.toReadableDate
 import com.example.finanx.ui.util.toSearchDate
 import com.example.finanx.ui.viewmodel.RecurringState
 import com.example.finanx.ui.viewmodel.ScheduleViewModel
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleResponse
@@ -88,15 +92,16 @@ fun ScheduledTransactionsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_programaciones").first()
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_programaciones").first()
         if (!completed) {
             tutorialController = TutorialController(
                 listOf(
-                    TutorialStep("new_schedule_button", "Programa movimientos o presupuestos que se repiten automáticamente.")
+                    TutorialStep("schedule_overview", "Aquí puedes programar movimientos y presupuestos que se repiten automáticamente: diario, semanal, mensual o anual."),
+                    TutorialStep("new_schedule_button", "Toca el botón + para crear tu primera programación.")
                 )
             ) {
                 coroutineScope.launch {
-                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                    TutorialPreferences.markCompleted(userId, "tutorial_programaciones")
                 }
                 tutorialController = null
             }
@@ -232,16 +237,26 @@ fun ScheduledTransactionsScreen(
         }
     }
 
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
     if (tutorialController != null) {
-        val current = tutorialController!!.currentStep
+        val current = tutorialController?.currentStep
         SpotlightOverlay(
             targetBounds = current?.let { targetBounds[it.targetKey] },
             message = current?.message ?: "",
             isLastStep = tutorialController?.isLastStep ?: false,
+            showNextButton = !(current?.isAutoGated ?: false),
             onNext = { tutorialController?.next() },
             onSkip = {
                 coroutineScope.launch {
-                    TutorialPreferences.markCompleted(context, "tutorial_programaciones")
+                    TutorialPreferences.markCompleted(userId, "tutorial_programaciones")
                 }
                 tutorialController = null
             }

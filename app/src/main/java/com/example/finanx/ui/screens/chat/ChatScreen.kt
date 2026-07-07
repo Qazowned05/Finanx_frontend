@@ -30,17 +30,20 @@ import androidx.compose.ui.unit.dp
 import com.example.finanx.ui.components.AppBarState
 import com.example.finanx.ui.components.SpotlightOverlay
 import com.example.finanx.ui.components.TutorialPreferences
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialStep
 import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.ChatUiState
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
 import java.time.format.DateTimeFormatter
 import com.example.finanx.ui.viewmodel.ChatViewModel
-import kotlinx.coroutines.flow.first
 
 /**
  * Pantalla principal del chatbot Finn.
@@ -66,21 +69,21 @@ fun ChatScreen(
     }
 
     LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_finn").first()
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_finn").first()
         if (!completed) {
             tutorialController = TutorialController(
                 listOf(
                     TutorialStep("finn_icon", "Finn es tu asistente financiero — pregúntale sobre tus gastos o pide consejos."),
-                    TutorialStep("new_session_button", "Cada conversación es independiente; puedes revisarlas después en el historial."),
-                    TutorialStep("chat_input_field", "Escríbele como lo harías con una persona.")
+                    TutorialStep("new_session_button", "Cada conversación es independiente; puedes revisarlas después en el historial.") { state.activeSession != null },
+                    TutorialStep("chat_input_field", "Escríbele como lo harías con una persona.") { state.activeSession != null }
                 )
             ) {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_finn") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_finn") }
                 tutorialController = null
             }
         }
     }
-
+ 
     LaunchedEffect(state.selectedSession, state.activeSession) {
         onAppBarState(
             when {
@@ -120,16 +123,26 @@ fun ChatScreen(
         )
     }
 
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
     tutorialController?.let { controller ->
         val current = controller.currentStep
         SpotlightOverlay(
             targetBounds = current?.let { targetBounds[it.targetKey] },
             message = current?.message.orEmpty(),
             isLastStep = controller.isLastStep,
+            showNextButton = !(current?.isAutoGated ?: false),
             onNext = { controller.next() },
             onSkip = {
                 coroutineScope.launch {
-                    TutorialPreferences.markCompleted(context, "tutorial_finn")
+                    TutorialPreferences.markCompleted(userId, "tutorial_finn")
                 }
                 tutorialController = null
             }

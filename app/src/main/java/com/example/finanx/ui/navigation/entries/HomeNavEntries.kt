@@ -27,6 +27,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
         }
 
         HomeScreen(
+            userId = userId,
             state = homeViewModel.state,
             onNewTransaction = { backStack.push(AppDestinations.CreateTransaction) },
             onOpenTransactions = { backStack.navigateToTab(AppDestinations.Transactions) },

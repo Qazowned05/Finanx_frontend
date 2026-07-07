@@ -22,8 +22,11 @@ import com.example.finanx.ui.components.tutorialTarget
 import com.example.finanx.ui.viewmodel.*
 import org.openapitools.client.models.BudgetExecutionResponse
 import org.openapitools.client.models.BudgetResponse
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialStep
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -58,16 +61,15 @@ fun BudgetListScreen(
     var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
 
     LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_presupuestos").first()
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_presupuestos").first()
         if (!completed) {
             tutorialController = TutorialController(
                 listOf(
-                    TutorialStep("new_budget_button", "Crea un límite de gasto mensual para una categoría."),
-                    TutorialStep("budget_progress_bar", "Así ves cuánto llevas gastado del límite."),
-                    TutorialStep("budget_alert_switch", "Actívalo para recibir un aviso cuando te acerques al límite.")
+                    TutorialStep("budget_overview", "Los presupuestos te permiten establecer límites de gasto mensual por categoría y recibir alertas cuando te acerques al límite."),
+                    TutorialStep("new_budget_button", "Toca el botón + para crear tu primer presupuesto.")
                 )
             ) {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_presupuestos") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_presupuestos") }
                 tutorialController = null
             }
         }
@@ -118,8 +120,7 @@ fun BudgetListScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                    .tutorialTarget("budget_alert_switch", targetBounds),
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -195,11 +196,6 @@ fun BudgetListScreen(
                                                     ) {
                                                         budget.id?.let { id -> onEditBudget(id) }
                                                     }
-                                                },
-                                                modifier = if (index == 0) {
-                                                    Modifier.tutorialTarget("budget_progress_bar", targetBounds)
-                                                } else {
-                                                    Modifier
                                                 }
                                             )
                                         }
@@ -280,15 +276,25 @@ fun BudgetListScreen(
         }
     }
 
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
     if (tutorialController != null) {
-        val current = tutorialController!!.currentStep
+        val current = tutorialController?.currentStep
         SpotlightOverlay(
             targetBounds = current?.let { targetBounds[it.targetKey] },
             message = current?.message ?: "",
             isLastStep = tutorialController?.isLastStep ?: false,
+            showNextButton = !(current?.isAutoGated ?: false),
             onNext = { tutorialController?.next() },
             onSkip = {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_presupuestos") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_presupuestos") }
                 tutorialController = null
             }
         )

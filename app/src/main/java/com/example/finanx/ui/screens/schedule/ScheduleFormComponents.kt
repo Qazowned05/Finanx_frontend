@@ -61,8 +61,7 @@ internal fun RecurrenceSection(
     onStartDateChange: (String) -> Unit,
     onEndDateChange: (String) -> Unit,
     onDayOfWeekChange: (RecurrenceRuleRequest.DayOfWeek?) -> Unit,
-    recurrenceTypeModifier: Modifier = Modifier,
-    dateFieldsModifier: Modifier = Modifier
+
 ) {
     val parsedInterval = intervalText.toIntOrNull()?.takeIf { it > 0 }
     val parsedStart = startDateText.toLocalDateOrNull()
@@ -84,7 +83,7 @@ internal fun RecurrenceSection(
                 selected = recurrenceType,
                 enabled = enabled,
                 onSelected = onRecurrenceTypeChange,
-                modifier = recurrenceTypeModifier
+                modifier = Modifier
             )
 
             FinanxOutlinedTextField(
@@ -116,7 +115,7 @@ internal fun RecurrenceSection(
             }
 
             Row(
-                modifier = dateFieldsModifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 ScheduleDateField(

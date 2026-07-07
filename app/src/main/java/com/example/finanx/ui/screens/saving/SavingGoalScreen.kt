@@ -29,13 +29,16 @@ import com.example.finanx.ui.theme.*
 import com.example.finanx.ui.viewmodel.AuthViewModel
 import com.example.finanx.ui.viewmodel.SavingGoalState
 import com.example.finanx.ui.viewmodel.SavingGoalViewModel
-import com.example.finanx.ui.components.tutorial.TutorialController
-import com.example.finanx.ui.components.tutorial.TutorialStep
+import com.example.finanx.ui.components.TutorialController
+import com.example.finanx.ui.components.TutorialStep
 import org.openapitools.client.models.SavingGoalResponse
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -76,15 +79,15 @@ fun SavingGoalScreen(
     var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
 
     LaunchedEffect(Unit) {
-        val completed = TutorialPreferences.isCompleted(context, "tutorial_metas_ahorro").first()
+        val completed = TutorialPreferences.isCompleted(userId, "tutorial_metas_ahorro").first()
         if (!completed) {
             tutorialController = TutorialController(
                 listOf(
-                    TutorialStep("new_goal_button", "Define cuánto quieres ahorrar y para cuándo."),
-                    TutorialStep("goal_progress_bar", "Así ves qué tan cerca estás de cada meta.")
+                    TutorialStep("goal_overview", "Define metas de ahorro con un monto objetivo y una fecha límite. Haz seguimiento a tu progreso."),
+                    TutorialStep("new_goal_button", "Toca el botón + para crear tu primera meta de ahorro.")
                 )
             ) {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_metas_ahorro") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_metas_ahorro") }
                 tutorialController = null
             }
         }
@@ -178,12 +181,7 @@ fun SavingGoalScreen(
                                             isSelected = goalSelected?.id == goal.id,
                                             onLongPress = { goalSelected = goal },
                                             onDismiss = { goalSelected = null },
-                                            onClick = { goalDetail = goal },
-                                            progressModifier = if (index == 0) {
-                                                Modifier.tutorialTarget("goal_progress_bar", targetBounds)
-                                            } else {
-                                                Modifier
-                                            }
+                                            onClick = { goalDetail = goal }
                                         )
                                     }
                                 }
@@ -205,15 +203,25 @@ fun SavingGoalScreen(
         }
     }
 
+    LaunchedEffect(tutorialController, tutorialController?.currentIndex) {
+        if (tutorialController == null) return@LaunchedEffect
+        snapshotFlow { tutorialController?.currentStep?.canAdvance() ?: false }
+            .drop(1)
+            .distinctUntilChanged()
+            .filter { it }
+            .collect { tutorialController?.next() }
+    }
+
     if (tutorialController != null) {
-        val current = tutorialController!!.currentStep
+        val current = tutorialController?.currentStep
         SpotlightOverlay(
             targetBounds = current?.let { targetBounds[it.targetKey] },
             message = current?.message ?: "",
             isLastStep = tutorialController?.isLastStep ?: false,
+            showNextButton = !(current?.isAutoGated ?: false),
             onNext = { tutorialController?.next() },
             onSkip = {
-                coroutineScope.launch { TutorialPreferences.markCompleted(context, "tutorial_metas_ahorro") }
+                coroutineScope.launch { TutorialPreferences.markCompleted(userId, "tutorial_metas_ahorro") }
                 tutorialController = null
             }
         )
@@ -346,8 +354,7 @@ fun SavingGoalCard(
     isSelected: Boolean,
     onLongPress: () -> Unit,
     onDismiss: () -> Unit,
-    onClick: () -> Unit,
-    progressModifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     val accentColor = MaterialTheme.colorScheme.onSurface
 
@@ -432,7 +439,7 @@ fun SavingGoalCard(
             val progress = (goal.progressPercentage ?: 0.0).toFloat() / 100f
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
-                modifier = progressModifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
                 color = if (isSelected) ExpenseRed else MaterialTheme.colorScheme.tertiary,
                 trackColor = accentColor.copy(alpha = 0.12f)
             )
