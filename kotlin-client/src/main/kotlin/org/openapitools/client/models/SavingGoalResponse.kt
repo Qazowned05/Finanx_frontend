@@ -34,6 +34,7 @@ import java.io.Serializable
  * @param id Identificador unico de la meta de ahorro
  * @param description Descripcion de la meta de ahorro
  * @param targetAmount Monto objetivo de la meta de ahorro
+ * @param currencyCode Codigo de moneda de la meta
  * @param accumulated Monto acumulado hasta el momento
  * @param deadline Fecha limite para alcanzar la meta
  * @param createdAt Fecha y hora de creacion de la meta
@@ -65,6 +66,10 @@ data class SavingGoalResponse (
     /* Monto objetivo de la meta de ahorro */
     @Json(name = "targetAmount")
     val targetAmount: java.math.BigDecimal? = null,
+
+    /* Codigo de moneda de la meta */
+    @Json(name = "currencyCode")
+    val currencyCode: kotlin.String? = null,
 
     /* Monto acumulado hasta el momento */
     @Json(name = "accumulated")

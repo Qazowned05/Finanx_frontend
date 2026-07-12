@@ -39,6 +39,7 @@ import java.io.Serializable
  * @param alertable Indica si el presupuesto debe generar alertas
  * @param percentAlert Porcentaje de alerta respecto al limite definido
  * @param limitAmount Monto limite del presupuesto
+ * @param currencyCode Codigo de moneda del presupuesto
  * @param description Descripcion del presupuesto
  * @param state Estado actual del presupuesto
  * @param health Salud del presupuesto segun su ejecucion
@@ -82,6 +83,10 @@ data class BudgetResponse (
     /* Monto limite del presupuesto */
     @Json(name = "limitAmount")
     val limitAmount: java.math.BigDecimal? = null,
+
+    /* Codigo de moneda del presupuesto */
+    @Json(name = "currencyCode")
+    val currencyCode: kotlin.String? = null,
 
     /* Descripcion del presupuesto */
     @Json(name = "description")

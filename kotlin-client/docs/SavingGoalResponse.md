@@ -7,6 +7,7 @@
 | **id** | **kotlin.Long** | Identificador unico de la meta de ahorro |  [optional] |
 | **description** | **kotlin.String** | Descripcion de la meta de ahorro |  [optional] |
 | **targetAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto objetivo de la meta de ahorro |  [optional] |
+| **currencyCode** | **kotlin.String** | Codigo de moneda de la meta |  [optional] |
 | **accumulated** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto acumulado hasta el momento |  [optional] |
 | **deadline** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha limite para alcanzar la meta |  [optional] |
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion de la meta |  [optional] |

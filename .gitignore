@@ -18,3 +18,4 @@ local.properties
 /kotlin-client/gradlew
 /kotlin-client/gradlew.bat
 .devcontainer
+/doc/

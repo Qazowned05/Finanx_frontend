@@ -35,8 +35,7 @@ import java.io.Serializable
  * @param lastname Apellidos del usuario
  * @param email Correo electronico del usuario
  * @param username Nombre de usuario unico
- * @param password ContraseÃ±a del usuario
- * @param timeZone Zona horaria preferida del usuario
+ * @param password Contrasena del usuario
  */
 
 
@@ -58,34 +57,15 @@ data class UserRequest (
     @Json(name = "username")
     val username: kotlin.String,
 
-    /* ContraseÃ±a del usuario */
+    /* Contrasena del usuario */
     @Json(name = "password")
-    val password: kotlin.String,
-
-    /* Zona horaria preferida del usuario */
-    @Json(name = "timeZone")
-    val timeZone: UserRequest.TimeZone
+    val password: kotlin.String
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Zona horaria preferida del usuario
-     *
-     * Values: AMERICA_LIMA,AMERICA_BOGOTA,AMERICA_MEXICO_CITY,AMERICA_SANTIAGO,AMERICA_BUENOS_AIRES,AMERICA_NEW_YORK,AMERICA_LOS_ANGELES
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TimeZone(val value: kotlin.String) {
-        @Json(name = "AMERICA_LIMA") AMERICA_LIMA("AMERICA_LIMA"),
-        @Json(name = "AMERICA_BOGOTA") AMERICA_BOGOTA("AMERICA_BOGOTA"),
-        @Json(name = "AMERICA_MEXICO_CITY") AMERICA_MEXICO_CITY("AMERICA_MEXICO_CITY"),
-        @Json(name = "AMERICA_SANTIAGO") AMERICA_SANTIAGO("AMERICA_SANTIAGO"),
-        @Json(name = "AMERICA_BUENOS_AIRES") AMERICA_BUENOS_AIRES("AMERICA_BUENOS_AIRES"),
-        @Json(name = "AMERICA_NEW_YORK") AMERICA_NEW_YORK("AMERICA_NEW_YORK"),
-        @Json(name = "AMERICA_LOS_ANGELES") AMERICA_LOS_ANGELES("AMERICA_LOS_ANGELES");
-    }
 
 }
 

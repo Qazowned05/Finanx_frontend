@@ -15,6 +15,7 @@
 | **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago de la transaccion |  |
 | **transactionType** | [**inline**](#TransactionType) | Tipo de transaccion (ingreso o gasto) |  |
 | **recurrenceRule** | [**RecurrenceRuleRequest**](RecurrenceRuleRequest.md) | Regla de recurrencia que define la periodicidad de la programacion |  [optional] |
+| **walletId** | **kotlin.Long** | Identificador de la billetera (null &#x3D; usar la principal) |  [optional] |
 | **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion |  [optional] |
 
 

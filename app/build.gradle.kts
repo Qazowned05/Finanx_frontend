@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 
@@ -15,11 +16,11 @@ val googleClientId: String = gradleLocalProperties(
     providers).getProperty("GOOGLE_WEB_CLIENT_ID")
 
 android {
-    namespace = "com.example.finanx"
+    namespace = "com.elias.mismonedas"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.finanx"
+        applicationId = "com.elias.mismonedas"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
@@ -93,6 +94,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.hilt.android)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
     implementation(libs.retrofit.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)
@@ -100,6 +105,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

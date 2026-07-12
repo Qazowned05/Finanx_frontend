@@ -20,6 +20,8 @@
 | **percentAlert** | **kotlin.Int** | Porcentaje de alerta respecto al limite del presupuesto |  [optional] |
 | **limitAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto limite del presupuesto |  [optional] |
 | **description** | **kotlin.String** | Descripcion del presupuesto |  [optional] |
+| **walletId** | **kotlin.Long** | Identificador de la billetera |  [optional] |
+| **walletCurrency** | **kotlin.String** | Moneda de la billetera |  [optional] |
 | **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion |  [optional] |
 | **reasonDesc** | **kotlin.String** | Descripcion del motivo asociado a la transaccion |  [optional] |
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion programada |  [optional] |

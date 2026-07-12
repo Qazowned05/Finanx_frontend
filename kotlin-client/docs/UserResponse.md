@@ -15,7 +15,7 @@
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion del usuario |  [optional] |
 | **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que el usuario fue deshabilitado, si aplica |  [optional] |
 | **fullName** | **kotlin.String** | Nombre completo del usuario en formato concatenado |  [optional] |
-| **timeZone** | [**inline**](#TimeZone) | Zona horaria preferida del usuario |  [optional] |
+| **preferences** | [**UserPreferencesResponse**](UserPreferencesResponse.md) | Preferencias del usuario |  [optional] |
 
 
 <a id="Role"></a>
@@ -30,13 +30,6 @@
 | Name | Value |
 | ---- | ----- |
 | state | ENABLED, BLOCKED, DISABLED |
-
-
-<a id="TimeZone"></a>
-## Enum: timeZone
-| Name | Value |
-| ---- | ----- |
-| timeZone | AMERICA_LIMA, AMERICA_BOGOTA, AMERICA_MEXICO_CITY, AMERICA_SANTIAGO, AMERICA_BUENOS_AIRES, AMERICA_NEW_YORK, AMERICA_LOS_ANGELES |
 
 
 

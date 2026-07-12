@@ -12,6 +12,7 @@
 | **alertable** | **kotlin.Boolean** | Indica si el presupuesto debe generar alertas |  [optional] |
 | **percentAlert** | **kotlin.Int** | Porcentaje de alerta respecto al limite definido |  [optional] |
 | **limitAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto limite del presupuesto |  [optional] |
+| **currencyCode** | **kotlin.String** | Codigo de moneda del presupuesto |  [optional] |
 | **description** | **kotlin.String** | Descripcion del presupuesto |  [optional] |
 | **state** | [**inline**](#State) | Estado actual del presupuesto |  [optional] |
 | **health** | [**inline**](#Health) | Salud del presupuesto segun su ejecucion |  [optional] |

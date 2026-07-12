@@ -32,13 +32,17 @@ import java.io.Serializable
  * Respuesta que representa una transaccion registrada en el sistema
  *
  * @param id Identificador unico de la transaccion
- * @param userId Identificador unico del usuario asociado a la transaccion
+ * @param walletId Identificador unico de la billetera asociada a la transaccion
+ * @param walletCurrency Moneda de la billetera
+ * @param walletPrimary Indica si la billetera es principal
  * @param categoryId Identificador unico de la categoria asociada a la transaccion
  * @param categoryName Nombre de la categoria asociada a la transaccion
  * @param reasonId Identificador del motivo asociado a la transaccion, si aplica
  * @param reasonDescription Descripcion del motivo asociado a la transaccion
  * @param savingGoalId Identificador de la meta de ahorro asociada, si aplica
  * @param scheduleId Identificador de la programacion asociada, si aplica
+ * @param receiptId Identificador del recibo asociado, si aplica
+ * @param receiptImageId Identificador de la imagen del recibo asociado, si aplica
  * @param amount Monto de la transaccion
  * @param paymentMethod Metodo de pago utilizado en la transaccion
  * @param type Tipo de transaccion (ingreso o gasto)
@@ -54,9 +58,17 @@ data class TransactionResponse (
     @Json(name = "id")
     val id: kotlin.Long? = null,
 
-    /* Identificador unico del usuario asociado a la transaccion */
-    @Json(name = "userId")
-    val userId: kotlin.Long? = null,
+    /* Identificador unico de la billetera asociada a la transaccion */
+    @Json(name = "walletId")
+    val walletId: kotlin.Long? = null,
+
+    /* Moneda de la billetera */
+    @Json(name = "walletCurrency")
+    val walletCurrency: kotlin.String? = null,
+
+    /* Indica si la billetera es principal */
+    @Json(name = "walletPrimary")
+    val walletPrimary: kotlin.Boolean? = null,
 
     /* Identificador unico de la categoria asociada a la transaccion */
     @Json(name = "categoryId")
@@ -81,6 +93,14 @@ data class TransactionResponse (
     /* Identificador de la programacion asociada, si aplica */
     @Json(name = "scheduleId")
     val scheduleId: kotlin.Long? = null,
+
+    /* Identificador del recibo asociado, si aplica */
+    @Json(name = "receiptId")
+    val receiptId: kotlin.Long? = null,
+
+    /* Identificador de la imagen del recibo asociado, si aplica */
+    @Json(name = "receiptImageId")
+    val receiptImageId: kotlin.Long? = null,
 
     /* Monto de la transaccion */
     @Json(name = "amount")

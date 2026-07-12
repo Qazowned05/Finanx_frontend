@@ -5,13 +5,17 @@
 | Name | Type | Description | Notes |
 | ------------ | ------------- | ------------- | ------------- |
 | **id** | **kotlin.Long** | Identificador unico de la transaccion |  [optional] |
-| **userId** | **kotlin.Long** | Identificador unico del usuario asociado a la transaccion |  [optional] |
+| **walletId** | **kotlin.Long** | Identificador unico de la billetera asociada a la transaccion |  [optional] |
+| **walletCurrency** | **kotlin.String** | Moneda de la billetera |  [optional] |
+| **walletPrimary** | **kotlin.Boolean** | Indica si la billetera es principal |  [optional] |
 | **categoryId** | **kotlin.Long** | Identificador unico de la categoria asociada a la transaccion |  [optional] |
 | **categoryName** | **kotlin.String** | Nombre de la categoria asociada a la transaccion |  [optional] |
 | **reasonId** | **kotlin.Long** | Identificador del motivo asociado a la transaccion, si aplica |  [optional] |
 | **reasonDescription** | **kotlin.String** | Descripcion del motivo asociado a la transaccion |  [optional] |
 | **savingGoalId** | **kotlin.Long** | Identificador de la meta de ahorro asociada, si aplica |  [optional] |
 | **scheduleId** | **kotlin.Long** | Identificador de la programacion asociada, si aplica |  [optional] |
+| **receiptId** | **kotlin.Long** | Identificador del recibo asociado, si aplica |  [optional] |
+| **receiptImageId** | **kotlin.Long** | Identificador de la imagen del recibo asociado, si aplica |  [optional] |
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion |  [optional] |
 | **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago utilizado en la transaccion |  [optional] |
 | **type** | [**inline**](#Type) | Tipo de transaccion (ingreso o gasto) |  [optional] |

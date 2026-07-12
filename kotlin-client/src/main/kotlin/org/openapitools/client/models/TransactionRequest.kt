@@ -31,7 +31,7 @@ import java.io.Serializable
 /**
  * Solicitud para registrar una transaccion asociada a un usuario, categoria y opcionalmente a un motivo o meta de ahorro
  *
- * @param userId Identificador unico del usuario asociado a la transaccion
+ * @param walletId Identificador unico de la billetera asociada a la transaccion
  * @param categoryId Identificador unico de la categoria asociada a la transaccion
  * @param amount Monto de la transaccion (debe ser mayor a 0)
  * @param paymentMethod Metodo de pago utilizado en la transaccion
@@ -39,14 +39,16 @@ import java.io.Serializable
  * @param reasonId Identificador del motivo asociado a la transaccion, si aplica
  * @param description Descripcion de la transaccion
  * @param savingGoalId Identificador de la meta de ahorro asociada, si aplica
+ * @param receiptId Identificador del recibo escaneado vÃ­a OCR, si aplica
+ * @param convertCurrency Si true y receiptId presente, convierte el monto del recibo (currencyGuess) a la moneda del wallet usando el exchange service
  */
 
 
 data class TransactionRequest (
 
-    /* Identificador unico del usuario asociado a la transaccion */
-    @Json(name = "userId")
-    val userId: kotlin.Long,
+    /* Identificador unico de la billetera asociada a la transaccion */
+    @Json(name = "walletId")
+    val walletId: kotlin.Long,
 
     /* Identificador unico de la categoria asociada a la transaccion */
     @Json(name = "categoryId")
@@ -74,7 +76,15 @@ data class TransactionRequest (
 
     /* Identificador de la meta de ahorro asociada, si aplica */
     @Json(name = "savingGoalId")
-    val savingGoalId: kotlin.Long? = null
+    val savingGoalId: kotlin.Long? = null,
+
+    /* Identificador del recibo escaneado vÃ­a OCR, si aplica */
+    @Json(name = "receiptId")
+    val receiptId: kotlin.Long? = null,
+
+    /* Si true y receiptId presente, convierte el monto del recibo (currencyGuess) a la moneda del wallet usando el exchange service */
+    @Json(name = "convertCurrency")
+    val convertCurrency: kotlin.Boolean? = false
 
 ) : Serializable {
     companion object {

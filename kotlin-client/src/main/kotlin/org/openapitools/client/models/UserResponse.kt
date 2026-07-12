@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.UserPreferencesResponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -42,7 +43,7 @@ import java.io.Serializable
  * @param createdAt Fecha y hora de creacion del usuario
  * @param disabledAt Fecha y hora en que el usuario fue deshabilitado, si aplica
  * @param fullName Nombre completo del usuario en formato concatenado
- * @param timeZone Zona horaria preferida del usuario
+ * @param preferences Preferencias del usuario
  */
 
 
@@ -92,9 +93,9 @@ data class UserResponse (
     @Json(name = "fullName")
     val fullName: kotlin.String? = null,
 
-    /* Zona horaria preferida del usuario */
-    @Json(name = "timeZone")
-    val timeZone: UserResponse.TimeZone? = null
+    /* Preferencias del usuario */
+    @Json(name = "preferences")
+    val preferences: UserPreferencesResponse? = null
 
 ) : Serializable {
     companion object {
@@ -121,21 +122,6 @@ data class UserResponse (
         @Json(name = "ENABLED") ENABLED("ENABLED"),
         @Json(name = "BLOCKED") BLOCKED("BLOCKED"),
         @Json(name = "DISABLED") DISABLED("DISABLED");
-    }
-    /**
-     * Zona horaria preferida del usuario
-     *
-     * Values: AMERICA_LIMA,AMERICA_BOGOTA,AMERICA_MEXICO_CITY,AMERICA_SANTIAGO,AMERICA_BUENOS_AIRES,AMERICA_NEW_YORK,AMERICA_LOS_ANGELES
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TimeZone(val value: kotlin.String) {
-        @Json(name = "AMERICA_LIMA") AMERICA_LIMA("AMERICA_LIMA"),
-        @Json(name = "AMERICA_BOGOTA") AMERICA_BOGOTA("AMERICA_BOGOTA"),
-        @Json(name = "AMERICA_MEXICO_CITY") AMERICA_MEXICO_CITY("AMERICA_MEXICO_CITY"),
-        @Json(name = "AMERICA_SANTIAGO") AMERICA_SANTIAGO("AMERICA_SANTIAGO"),
-        @Json(name = "AMERICA_BUENOS_AIRES") AMERICA_BUENOS_AIRES("AMERICA_BUENOS_AIRES"),
-        @Json(name = "AMERICA_NEW_YORK") AMERICA_NEW_YORK("AMERICA_NEW_YORK"),
-        @Json(name = "AMERICA_LOS_ANGELES") AMERICA_LOS_ANGELES("AMERICA_LOS_ANGELES");
     }
 
 }

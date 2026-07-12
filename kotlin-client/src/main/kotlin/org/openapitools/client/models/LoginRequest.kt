@@ -29,10 +29,10 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * Solicitud de login interno con email y contraseÃ±a
+ * Solicitud de login interno con email y contrasena
  *
  * @param email Correo electronico del usuario
- * @param password ContraseÃ±a del usuario
+ * @param password Contrasena del usuario
  */
 
 
@@ -42,7 +42,7 @@ data class LoginRequest (
     @Json(name = "email")
     val email: kotlin.String,
 
-    /* ContraseÃ±a del usuario */
+    /* Contrasena del usuario */
     @Json(name = "password")
     val password: kotlin.String
 

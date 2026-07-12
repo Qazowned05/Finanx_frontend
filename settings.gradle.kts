@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Finanx"
+rootProject.name = "MisMonedas"
 include(":app", ":kotlin-client")

@@ -34,6 +34,8 @@ import java.io.Serializable
  * @param id Identificador unico de la notificacion
  * @param userId Identificador del usuario asociado a la notificacion
  * @param userEmail Correo electronico del usuario
+ * @param emailNotifications Indica si el usuario tiene habilitadas las notificaciones por email
+ * @param fcmTokens Tokens FCM del usuario para notificaciones push
  * @param type Tipo de notificacion
  * @param message Mensaje de la notificacion
  * @param createdAt Fecha y hora de creacion de la notificacion
@@ -63,6 +65,14 @@ data class NotificationDTO (
     /* Correo electronico del usuario */
     @Json(name = "userEmail")
     val userEmail: kotlin.String? = null,
+
+    /* Indica si el usuario tiene habilitadas las notificaciones por email */
+    @Json(name = "emailNotifications")
+    val emailNotifications: kotlin.Boolean? = null,
+
+    /* Tokens FCM del usuario para notificaciones push */
+    @Json(name = "fcmTokens")
+    val fcmTokens: kotlin.collections.List<kotlin.String>? = null,
 
     /* Tipo de notificacion */
     @Json(name = "type")

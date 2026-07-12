@@ -33,6 +33,7 @@ import java.io.Serializable
  *
  * @param id Identificador unico de la categoria
  * @param name Nombre de la categoria
+ * @param type Tipo de la categoria
  */
 
 
@@ -44,13 +45,27 @@ data class CategorySummary (
 
     /* Nombre de la categoria */
     @Json(name = "name")
-    val name: kotlin.String? = null
+    val name: kotlin.String? = null,
+
+    /* Tipo de la categoria */
+    @Json(name = "type")
+    val type: CategorySummary.Type? = null
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
+    /**
+     * Tipo de la categoria
+     *
+     * Values: SPENT,INCOME
+     */
+    @JsonClass(generateAdapter = false)
+    enum class Type(val value: kotlin.String) {
+        @Json(name = "SPENT") SPENT("SPENT"),
+        @Json(name = "INCOME") INCOME("INCOME");
+    }
 
 }
 

@@ -40,6 +40,7 @@ import java.io.Serializable
  * @param paymentMethod Metodo de pago de la transaccion
  * @param transactionType Tipo de transaccion (ingreso o gasto)
  * @param recurrenceRule Regla de recurrencia que define la periodicidad de la programacion
+ * @param walletId Identificador de la billetera (null = usar la principal)
  * @param reasonId Identificador del motivo asociado a la transaccion
  * @param description Descripcion de la transaccion programada
  */
@@ -73,6 +74,10 @@ data class TransactionScheduleRequest (
     /* Regla de recurrencia que define la periodicidad de la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null,
+
+    /* Identificador de la billetera (null = usar la principal) */
+    @Json(name = "walletId")
+    val walletId: kotlin.Long? = null,
 
     /* Identificador del motivo asociado a la transaccion */
     @Json(name = "reasonId")

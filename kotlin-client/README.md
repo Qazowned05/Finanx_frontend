@@ -72,17 +72,29 @@ All URIs are relative to *http://localhost:8080*
 | *ChatBotApi* | [**findSessionByUUID**](docs/ChatBotApi.md#findsessionbyuuid) | **GET** users/{userId}/chat/sessions/uuid/{uuid} | Obtener sesion por UUID |
 | *ChatBotApi* | [**sendMessage**](docs/ChatBotApi.md#sendmessage) | **POST** users/{userId}/chat/sessions/{sessionId}/messages | Enviar mensaje al chatbot |
 | *ChatBotApi* | [**startSession**](docs/ChatBotApi.md#startsession) | **POST** users/{userId}/chat/sessions | Iniciar sesion de chat |
+| *FCMTokensApi* | [**listFcmTokens**](docs/FCMTokensApi.md#listfcmtokens) | **GET** users/{userId}/fcm-tokens | Listar tokens FCM del usuario |
+| *FCMTokensApi* | [**registerFcmToken**](docs/FCMTokensApi.md#registerfcmtoken) | **POST** users/{userId}/fcm-tokens | Registrar token FCM |
+| *FCMTokensApi* | [**removeFcmToken**](docs/FCMTokensApi.md#removefcmtoken) | **DELETE** users/{userId}/fcm-tokens/{tokenId} | Eliminar token FCM |
+| *ImagesApi* | [**downloadImage**](docs/ImagesApi.md#downloadimage) | **GET** images/{imageId} | Descargar imagen |
 | *NotificationsApi* | [**discardNotification**](docs/NotificationsApi.md#discardnotification) | **POST** notifications/discard | Descartar notificacion |
 | *NotificationsApi* | [**findAllNotificationByUser**](docs/NotificationsApi.md#findallnotificationbyuser) | **GET** notifications/user/{idUser} | Listar notificaciones por usuario |
 | *NotificationsApi* | [**findAllNotificationsByUserAndState**](docs/NotificationsApi.md#findallnotificationsbyuserandstate) | **GET** notifications/user/{idUser}/{state} | Listar por estado |
 | *NotificationsApi* | [**findNotificationById**](docs/NotificationsApi.md#findnotificationbyid) | **GET** notifications/{id} | Buscar notificacion |
 | *NotificationsApi* | [**markAsRead**](docs/NotificationsApi.md#markasread) | **POST** notifications/mark-as-read | Marcar como leida |
 | *NotificationsApi* | [**purgeNotifications**](docs/NotificationsApi.md#purgenotifications) | **POST** notifications/user/{userId}/purge-older-than | Eliminar notificaciones antiguas |
+| *PaymentsApi* | [**createPayment**](docs/PaymentsApi.md#createpayment) | **POST** payments | Create payment |
+| *PaymentsApi* | [**findAllPaymentsBySubscription**](docs/PaymentsApi.md#findallpaymentsbysubscription) | **GET** payments/subscription/{subscriptionId} | List payments by subscription |
+| *PaymentsApi* | [**findAllPaymentsByUser**](docs/PaymentsApi.md#findallpaymentsbyuser) | **GET** payments/user/{userId} | List payments by user |
+| *PaymentsApi* | [**findPaymentById**](docs/PaymentsApi.md#findpaymentbyid) | **GET** payments/{id} | Find payment |
+| *PaymentsApi* | [**refundPayment**](docs/PaymentsApi.md#refundpayment) | **POST** payments/{id}/refund | Refund payment |
 | *ReasonsApi* | [**createReason**](docs/ReasonsApi.md#createreason) | **POST** reasons | Crear razon |
 | *ReasonsApi* | [**disableReason**](docs/ReasonsApi.md#disablereason) | **POST** reasons/{id}/disable | Deshabilitar razon |
 | *ReasonsApi* | [**findAllReasonByUser**](docs/ReasonsApi.md#findallreasonbyuser) | **GET** reasons/user/{idUser} | Listar razones por usuario |
 | *ReasonsApi* | [**findReasonById**](docs/ReasonsApi.md#findreasonbyid) | **GET** reasons/{id} | Buscar razon |
 | *ReasonsApi* | [**updateReason**](docs/ReasonsApi.md#updatereason) | **PUT** reasons/{id} | Actualizar razon |
+| *ReceiptsApi* | [**getScanResult**](docs/ReceiptsApi.md#getscanresult) | **GET** receipts/{receiptId} | Obtener resultado de escaneo |
+| *ReceiptsApi* | [**improveScan**](docs/ReceiptsApi.md#improvescan) | **POST** receipts/{receiptId}/improve | Mejorar parseo con IA |
+| *ReceiptsApi* | [**scanReceipt**](docs/ReceiptsApi.md#scanreceipt) | **POST** receipts/scan | Escanear recibo con OCR |
 | *SavingsApi* | [**cancelSavingGoal**](docs/SavingsApi.md#cancelsavinggoal) | **POST** savings/{id}/cancel | Cancelar meta |
 | *SavingsApi* | [**createSavingGoal**](docs/SavingsApi.md#createsavinggoal) | **POST** savings | Crear meta |
 | *SavingsApi* | [**disableSavingGoal**](docs/SavingsApi.md#disablesavinggoal) | **POST** savings/{id}/disable | Deshabilitar meta |
@@ -98,6 +110,12 @@ All URIs are relative to *http://localhost:8080*
 | *ScheduleApi* | [**updateSchedule**](docs/ScheduleApi.md#updateschedule) | **PUT** schedule/{id} | Actualizar programacion |
 | *ScheduleBudgetsApi* | [**findAllBudgetScheduleByUserAndState**](docs/ScheduleBudgetsApi.md#findallbudgetschedulebyuserandstate) | **GET** schedule/budgets/user/{idUser}/{state} | Listar programaciones de presupuestos |
 | *ScheduleTransactionsApi* | [**findAllTScheduleByUserAndState**](docs/ScheduleTransactionsApi.md#findalltschedulebyuserandstate) | **GET** schedule/transactions/user/{idUser}/{state} | Listar programaciones de transacciones |
+| *SubscriptionsApi* | [**activateSubscription**](docs/SubscriptionsApi.md#activatesubscription) | **POST** subscriptions/{id}/activate | Activate subscription |
+| *SubscriptionsApi* | [**cancelSubscription**](docs/SubscriptionsApi.md#cancelsubscription) | **POST** subscriptions/{id}/cancel | Cancel subscription |
+| *SubscriptionsApi* | [**createSubscription**](docs/SubscriptionsApi.md#createsubscription) | **POST** subscriptions | Create subscription |
+| *SubscriptionsApi* | [**findAllSubscriptionsByUser**](docs/SubscriptionsApi.md#findallsubscriptionsbyuser) | **GET** subscriptions/user/{userId} | List subscriptions by user |
+| *SubscriptionsApi* | [**findSubscriptionById**](docs/SubscriptionsApi.md#findsubscriptionbyid) | **GET** subscriptions/{id} | Find subscription |
+| *SubscriptionsApi* | [**renewSubscription**](docs/SubscriptionsApi.md#renewsubscription) | **POST** subscriptions/{id}/renew | Renew subscription |
 | *TransactionsApi* | [**createTransaction**](docs/TransactionsApi.md#createtransaction) | **POST** transactions | Crear transaccion |
 | *TransactionsApi* | [**findAllActiveTransactionByUser**](docs/TransactionsApi.md#findallactivetransactionbyuser) | **GET** transactions/user/{userId}/active | Listar transacciones activas |
 | *TransactionsApi* | [**findAllTransactionByCategoryAndDateBetween**](docs/TransactionsApi.md#findalltransactionbycategoryanddatebetween) | **GET** transactions/user/{userId}/category/{categoryId}/between | Filtrar por categoria y fecha |
@@ -106,6 +124,9 @@ All URIs are relative to *http://localhost:8080*
 | *TransactionsApi* | [**findTransactionById**](docs/TransactionsApi.md#findtransactionbyid) | **GET** transactions/{id} | Buscar transaccion |
 | *TransactionsApi* | [**transactionDelete**](docs/TransactionsApi.md#transactiondelete) | **DELETE** transactions/{id} | Eliminar transaccion |
 | *TransactionsApi* | [**updateTransaction**](docs/TransactionsApi.md#updatetransaction) | **PUT** transactions/{id} | Actualizar transaccion |
+| *UserPreferencesApi* | [**createUserPreferences**](docs/UserPreferencesApi.md#createuserpreferences) | **POST** users/{userId}/preferences | Crear preferencias del usuario |
+| *UserPreferencesApi* | [**getUserPreferences**](docs/UserPreferencesApi.md#getuserpreferences) | **GET** users/{userId}/preferences | Obtener preferencias del usuario |
+| *UserPreferencesApi* | [**updateUserPreferences**](docs/UserPreferencesApi.md#updateuserpreferences) | **PUT** users/{userId}/preferences | Actualizar preferencias del usuario |
 | *UsersApi* | [**blockUser**](docs/UsersApi.md#blockuser) | **POST** users/{id}/block | Bloquear usuario |
 | *UsersApi* | [**deleteUser**](docs/UsersApi.md#deleteuser) | **DELETE** users/{id}/delete | Eliminar usuario |
 | *UsersApi* | [**disableUser**](docs/UsersApi.md#disableuser) | **POST** users/{id}/disable | Deshabilitar usuario |
@@ -117,6 +138,12 @@ All URIs are relative to *http://localhost:8080*
 | *UsersApi* | [**resetUserData**](docs/UsersApi.md#resetuserdata) | **POST** users/{id}/reset-data | Resetear datos de usuario |
 | *UsersApi* | [**searchUserByName**](docs/UsersApi.md#searchuserbyname) | **GET** users/search | Buscar usuarios por nombre |
 | *UsersApi* | [**updateUser**](docs/UsersApi.md#updateuser) | **PUT** users/{id} | Actualizar datos de usuario |
+| *WalletsApi* | [**create**](docs/WalletsApi.md#create) | **POST** users/{userId}/wallets | Crear billetera |
+| *WalletsApi* | [**disable**](docs/WalletsApi.md#disable) | **DELETE** users/{userId}/wallets/{id} | Deshabilitar billetera |
+| *WalletsApi* | [**findAllByUser**](docs/WalletsApi.md#findallbyuser) | **GET** users/{userId}/wallets | Listar billeteras de un usuario |
+| *WalletsApi* | [**findById**](docs/WalletsApi.md#findbyid) | **GET** users/{userId}/wallets/{id} | Obtener billetera por ID |
+| *WalletsApi* | [**update**](docs/WalletsApi.md#update) | **PUT** users/{userId}/wallets/{id} | Actualizar billetera |
+| *WebhooksApi* | [**receiveWebhook**](docs/WebhooksApi.md#receivewebhook) | **POST** webhooks/{provider} | Receive provider webhook |
 
 
 <a id="documentation-for-models"></a>
@@ -145,6 +172,7 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.ChatSessionResponse](docs/ChatSessionResponse.md)
  - [org.openapitools.client.models.CreateScheduleRequest](docs/CreateScheduleRequest.md)
  - [org.openapitools.client.models.DashboardResponse](docs/DashboardResponse.md)
+ - [org.openapitools.client.models.FcmTokenResponse](docs/FcmTokenResponse.md)
  - [org.openapitools.client.models.GetBudgetsDashboard200Response](docs/GetBudgetsDashboard200Response.md)
  - [org.openapitools.client.models.GoogleLoginRequest](docs/GoogleLoginRequest.md)
  - [org.openapitools.client.models.Insight](docs/Insight.md)
@@ -152,6 +180,8 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.LoginRequest](docs/LoginRequest.md)
  - [org.openapitools.client.models.LoginResponse](docs/LoginResponse.md)
  - [org.openapitools.client.models.NotificationDTO](docs/NotificationDTO.md)
+ - [org.openapitools.client.models.PaymentRequest](docs/PaymentRequest.md)
+ - [org.openapitools.client.models.PaymentResponse](docs/PaymentResponse.md)
  - [org.openapitools.client.models.PeriodRequest](docs/PeriodRequest.md)
  - [org.openapitools.client.models.PeriodResponse](docs/PeriodResponse.md)
  - [org.openapitools.client.models.RankingCategoryResponse](docs/RankingCategoryResponse.md)
@@ -169,8 +199,10 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.ReasonRequest](docs/ReasonRequest.md)
  - [org.openapitools.client.models.ReasonResponse](docs/ReasonResponse.md)
  - [org.openapitools.client.models.ReasonSummary](docs/ReasonSummary.md)
+ - [org.openapitools.client.models.ReceiptResponse](docs/ReceiptResponse.md)
  - [org.openapitools.client.models.RecurrenceRuleRequest](docs/RecurrenceRuleRequest.md)
  - [org.openapitools.client.models.RecurrenceRuleResponse](docs/RecurrenceRuleResponse.md)
+ - [org.openapitools.client.models.RegisterFcmTokenRequest](docs/RegisterFcmTokenRequest.md)
  - [org.openapitools.client.models.SavingGoalRequest](docs/SavingGoalRequest.md)
  - [org.openapitools.client.models.SavingGoalResponse](docs/SavingGoalResponse.md)
  - [org.openapitools.client.models.SavingGoalsDashboard](docs/SavingGoalsDashboard.md)
@@ -178,6 +210,8 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.ScheduleResponse](docs/ScheduleResponse.md)
  - [org.openapitools.client.models.ScheduledProjection](docs/ScheduledProjection.md)
  - [org.openapitools.client.models.SendMessageRequest](docs/SendMessageRequest.md)
+ - [org.openapitools.client.models.SubscriptionRequest](docs/SubscriptionRequest.md)
+ - [org.openapitools.client.models.SubscriptionResponse](docs/SubscriptionResponse.md)
  - [org.openapitools.client.models.TSchedulesDashboard](docs/TSchedulesDashboard.md)
  - [org.openapitools.client.models.TimeBoundListBudgetResponse](docs/TimeBoundListBudgetResponse.md)
  - [org.openapitools.client.models.TimeLineBudgetExecutionResponse](docs/TimeLineBudgetExecutionResponse.md)
@@ -195,8 +229,12 @@ All URIs are relative to *http://localhost:8080*
  - [org.openapitools.client.models.TransactionsDashboard](docs/TransactionsDashboard.md)
  - [org.openapitools.client.models.UpdateSchedule200Response](docs/UpdateSchedule200Response.md)
  - [org.openapitools.client.models.UpdateScheduleRequest](docs/UpdateScheduleRequest.md)
+ - [org.openapitools.client.models.UserPreferencesRequest](docs/UserPreferencesRequest.md)
+ - [org.openapitools.client.models.UserPreferencesResponse](docs/UserPreferencesResponse.md)
  - [org.openapitools.client.models.UserRequest](docs/UserRequest.md)
  - [org.openapitools.client.models.UserResponse](docs/UserResponse.md)
+ - [org.openapitools.client.models.WalletRequest](docs/WalletRequest.md)
+ - [org.openapitools.client.models.WalletResponse](docs/WalletResponse.md)
 
 
 <a id="documentation-for-authorization"></a>

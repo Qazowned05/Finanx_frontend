@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1046750224529",
+    "project_id": "mis-monedas-9a83a",
+    "storage_bucket": "mis-monedas-9a83a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046750224529:android:1d3f4e6d0b50a6bdf99f30",
+        "android_client_info": {
+          "package_name": "com.elias.mismonedas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAWabIy5YQF5ZXw5MctW9yRi0tmO3kn_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

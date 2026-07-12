@@ -7,6 +7,8 @@
 | **id** | **kotlin.Long** | Identificador unico de la notificacion |  [optional] |
 | **userId** | **kotlin.Long** | Identificador del usuario asociado a la notificacion |  [optional] |
 | **userEmail** | **kotlin.String** | Correo electronico del usuario |  [optional] |
+| **emailNotifications** | **kotlin.Boolean** | Indica si el usuario tiene habilitadas las notificaciones por email |  [optional] |
+| **fcmTokens** | **kotlin.collections.List&lt;kotlin.String&gt;** | Tokens FCM del usuario para notificaciones push |  [optional] |
 | **type** | [**inline**](#Type) | Tipo de notificacion |  [optional] |
 | **message** | **kotlin.String** | Mensaje de la notificacion |  [optional] |
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion de la notificacion |  [optional] |

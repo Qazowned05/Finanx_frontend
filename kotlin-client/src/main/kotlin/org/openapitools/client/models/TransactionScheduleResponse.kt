@@ -45,6 +45,8 @@ import java.io.Serializable
  * @param active Indica si la programacion esta activa
  * @param state Estado actual de la programacion
  * @param recurrenceRule Regla de recurrencia asociada a la programacion
+ * @param walletId Identificador de la billetera
+ * @param walletCurrency Moneda de la billetera
  * @param reasonId Identificador del motivo asociado a la transaccion
  * @param reasonDesc Descripcion del motivo asociado a la transaccion
  * @param amount Monto de la transaccion programada
@@ -101,6 +103,14 @@ data class TransactionScheduleResponse (
     /* Regla de recurrencia asociada a la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleResponse? = null,
+
+    /* Identificador de la billetera */
+    @Json(name = "walletId")
+    val walletId: kotlin.Long? = null,
+
+    /* Moneda de la billetera */
+    @Json(name = "walletCurrency")
+    val walletCurrency: kotlin.String? = null,
 
     /* Identificador del motivo asociado a la transaccion */
     @Json(name = "reasonId")
