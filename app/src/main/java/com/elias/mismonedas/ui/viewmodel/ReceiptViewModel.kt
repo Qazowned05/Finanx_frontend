@@ -81,11 +81,11 @@ class ReceiptViewModel @Inject constructor(
     var receiptImageLoading by mutableStateOf(false)
         private set
 
-    fun loadReceiptImage(receiptId: Long, userId: Long) {
+    fun loadReceiptImage(imageId: Long) {
         if (receiptImageBytes != null || receiptImageLoading) return
         viewModelScope.launch {
             receiptImageLoading = true
-            repository.getImage(receiptId, userId).fold(
+            repository.getImage(imageId).fold(
                 onSuccess = { receiptImageBytes = it },
                 onFailure = { receiptImageBytes = null }
             )

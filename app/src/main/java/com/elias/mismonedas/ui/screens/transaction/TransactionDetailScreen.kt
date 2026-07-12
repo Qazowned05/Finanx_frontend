@@ -60,7 +60,6 @@ fun TransactionDetailScreen(
     transactionId: Long?,
     viewModel: TransactionViewModel,
     receiptViewModel: ReceiptViewModel,
-    userId: Long,
     onBack: () -> Unit
 ) {
     val tx = transactionId?.let { id -> viewModel.state.transactions.find { it.id == id } }
@@ -68,10 +67,9 @@ fun TransactionDetailScreen(
     val imageId = tx?.receiptImageId
     val hasReceiptImage = imageId != null && imageId > 0L
 
-    LaunchedEffect(tx?.receiptId) {
-        val receiptId = tx?.receiptId
-        if (receiptId != null && receiptId > 0L) {
-            receiptViewModel.loadReceiptImage(receiptId, userId)
+    LaunchedEffect(imageId) {
+        if (imageId != null && imageId > 0L) {
+            receiptViewModel.loadReceiptImage(imageId)
         }
     }
 

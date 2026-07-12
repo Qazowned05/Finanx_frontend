@@ -54,7 +54,6 @@ fun EntryProviderScope<NavKey>.transactionsEntries(
             transactionId = key.id,
             viewModel = transactionViewModel,
             receiptViewModel = receiptViewModel,
-            userId = userId,
             onBack = { backStack.pop() }
         )
     }

@@ -17,6 +17,7 @@ import org.openapitools.client.apis.BudgetsApi
 import org.openapitools.client.apis.CategoriesApi
 import org.openapitools.client.apis.ChatBotApi
 import org.openapitools.client.apis.FCMTokensApi
+import org.openapitools.client.apis.ImagesApi
 import org.openapitools.client.apis.NotificationsApi
 import org.openapitools.client.apis.WebhooksApi
 import org.openapitools.client.apis.PaymentsApi
@@ -191,6 +192,11 @@ object RetrofitClient {
     @Singleton
     fun provideReceiptsApi(retrofit: Retrofit): ReceiptsApi =
         retrofit.create(ReceiptsApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideImagesApi(retrofit: Retrofit): ImagesApi =
+        retrofit.create(ImagesApi::class.java)
 
     @Provides
     @Singleton

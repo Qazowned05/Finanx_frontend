@@ -7,13 +7,15 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.openapitools.client.apis.ImagesApi
 import org.openapitools.client.apis.ReceiptsApi
 import org.openapitools.client.models.ReceiptResponse
 import java.io.IOException
 import javax.inject.Inject
 
 class ReceiptRepository @Inject constructor(
-    private val api: ReceiptsApi
+    private val api: ReceiptsApi,
+    private val imagesApi: ImagesApi
 ) {
     suspend fun scan(userId: Long, imageUri: Uri, context: Context): Result<ReceiptResponse> =
         withContext(Dispatchers.IO) {
@@ -70,10 +72,10 @@ class ReceiptRepository @Inject constructor(
             }
         }
 
-    suspend fun getImage(receiptId: Long, userId: Long): Result<ByteArray> =
+    suspend fun getImage(imageId: Long): Result<ByteArray> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.getReceiptImage(receiptId, userId)
+                val response = imagesApi.downloadImage(imageId)
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
                     Result.success(body)
