@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elias.mismonedas.data.repository.ReceiptRepository
+import android.util.Log
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.ReceiptResponse
@@ -82,12 +83,22 @@ class ReceiptViewModel @Inject constructor(
         private set
 
     fun loadReceiptImage(imageId: Long) {
-        if (receiptImageBytes != null || receiptImageLoading) return
+        if (receiptImageBytes != null || receiptImageLoading) {
+            Log.d("ReceiptVM", "loadReceiptImage skipped: bytes=${receiptImageBytes?.size}, loading=$receiptImageLoading")
+            return
+        }
         viewModelScope.launch {
             receiptImageLoading = true
+            Log.d("ReceiptVM", "loadReceiptImage loading imageId=$imageId")
             repository.getImage(imageId).fold(
-                onSuccess = { receiptImageBytes = it },
-                onFailure = { receiptImageBytes = null }
+                onSuccess = {
+                    Log.d("ReceiptVM", "loadReceiptImage success: ${it.size} bytes")
+                    receiptImageBytes = it
+                },
+                onFailure = {
+                    Log.e("ReceiptVM", "loadReceiptImage failure: ${it.message}")
+                    receiptImageBytes = null
+                }
             )
             receiptImageLoading = false
         }

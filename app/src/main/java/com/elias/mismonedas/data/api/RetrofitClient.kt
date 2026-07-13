@@ -41,6 +41,7 @@ import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import javax.inject.Singleton
 
@@ -48,7 +49,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 
 object RetrofitClient {
-    private const val BASE_URL = "https://0818-132-191-2-99.ngrok-free.app/"
+    private const val BASE_URL = "https://2530-132-251-1-222.ngrok-free.app/"
 
     @Provides
     @Singleton
@@ -109,6 +110,7 @@ object RetrofitClient {
     @Singleton
     fun provideRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
+        .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .client(client)
         .build()

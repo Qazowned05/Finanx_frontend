@@ -1,5 +1,6 @@
 package com.elias.mismonedas.ui.screens.transaction
 
+import android.util.Log
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -169,6 +170,8 @@ fun TransactionDetailScreen(
             val imageBytes by remember { derivedStateOf { receiptViewModel.receiptImageBytes } }
             val isLoading by remember { derivedStateOf { receiptViewModel.receiptImageLoading } }
 
+            Log.d("TxDetail", "imageId=$imageId, isLoading=$isLoading, imageBytes=${imageBytes?.size}")
+
             FinanxCard {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -203,7 +206,10 @@ fun TransactionDetailScreen(
                         }
                         imageBytes != null -> {
                             val bitmap = remember(imageBytes) {
-                                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes!!.size)
+                                Log.d("TxDetail", "Decoding bitmap: ${imageBytes!!.size} bytes")
+                                val bmp = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes!!.size)
+                                Log.d("TxDetail", "Bitmap result: $bmp (${bmp?.width}x${bmp?.height})")
+                                bmp
                             }
                             if (bitmap != null) {
                                 Image(

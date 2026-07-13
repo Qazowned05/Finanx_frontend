@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.scalars)
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)
     ksp(libs.hilt.compiler)

@@ -4,6 +4,7 @@ import org.openapitools.client.infrastructure.CollectionFormats.*
 import retrofit2.http.*
 import retrofit2.Response
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import com.squareup.moshi.Json
 
 
@@ -17,9 +18,9 @@ interface ImagesApi {
      *  - 404: Imagen no encontrada
      *
      * @param imageId ID de la imagen
-     * @return [kotlin.ByteArray]
+     * @return [ResponseBody]
      */
     @GET("images/{imageId}")
-    suspend fun downloadImage(@Path("imageId") imageId: kotlin.Long): Response<kotlin.ByteArray>
+    suspend fun downloadImage(@Path("imageId") imageId: kotlin.Long): Response<ResponseBody>
 
 }

@@ -222,8 +222,17 @@ class AuthViewModel @Inject constructor(
     fun checkRegistrationStatus(userId: Long) {
         viewModelScope.launch {
             val completed = TutorialPreferences.isRegistrationCompleted(userId).first()
-            registrationStep = if (completed) RegistrationStep.Completed
-                               else RegistrationStep.Pending
+            if (completed) {
+                registrationStep = RegistrationStep.Completed
+            } else {
+                val result = preferencesRepository.getPreferences(userId)
+                if (result.isSuccess) {
+                    TutorialPreferences.markRegistrationCompleted(userId)
+                    registrationStep = RegistrationStep.Completed
+                } else {
+                    registrationStep = RegistrationStep.Pending
+                }
+            }
         }
     }
 

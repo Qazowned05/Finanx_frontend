@@ -78,7 +78,7 @@ class ReceiptRepository @Inject constructor(
                 val response = imagesApi.downloadImage(imageId)
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
-                    Result.success(body)
+                    Result.success(body.bytes())
                 } else {
                     Result.failure(IOException("No se pudo cargar la imagen del recibo"))
                 }
