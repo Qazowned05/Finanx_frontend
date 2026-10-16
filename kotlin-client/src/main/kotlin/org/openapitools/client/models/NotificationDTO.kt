@@ -23,6 +23,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.BudgetState
+import org.openapitools.client.models.NotificationState
+import org.openapitools.client.models.NotificationType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -36,17 +39,17 @@ import java.io.Serializable
  * @param userEmail Correo electronico del usuario
  * @param emailNotifications Indica si el usuario tiene habilitadas las notificaciones por email
  * @param fcmTokens Tokens FCM del usuario para notificaciones push
- * @param type Tipo de notificacion
+ * @param type 
  * @param message Mensaje de la notificacion
  * @param createdAt Fecha y hora de creacion de la notificacion
  * @param disabledAt Fecha y hora en que la notificacion fue deshabilitada, si aplica
  * @param scheduledAt Fecha y hora programada para enviar la notificacion
  * @param sentAt Fecha y hora en que la notificacion fue enviada
- * @param state Estado actual de la notificacion
+ * @param state 
  * @param scheduleId Identificador de la programacion asociada
  * @param budgetId Identificador del presupuesto asociado
  * @param budgetDescription Descripcion del presupuesto asociado
- * @param budgetState Estado del presupuesto asociado
+ * @param budgetState 
  * @param savingGoalId Identificador de la meta de ahorro asociada
  * @param savingGoalDescription Descripcion de la meta de ahorro asociada
  */
@@ -74,9 +77,8 @@ data class NotificationDTO (
     @Json(name = "fcmTokens")
     val fcmTokens: kotlin.collections.List<kotlin.String>? = null,
 
-    /* Tipo de notificacion */
     @Json(name = "type")
-    val type: NotificationDTO.Type? = null,
+    val type: NotificationType? = null,
 
     /* Mensaje de la notificacion */
     @Json(name = "message")
@@ -98,9 +100,8 @@ data class NotificationDTO (
     @Json(name = "sentAt")
     val sentAt: java.time.LocalDateTime? = null,
 
-    /* Estado actual de la notificacion */
     @Json(name = "state")
-    val state: NotificationDTO.State? = null,
+    val state: NotificationState? = null,
 
     /* Identificador de la programacion asociada */
     @Json(name = "scheduleId")
@@ -114,9 +115,8 @@ data class NotificationDTO (
     @Json(name = "budgetDescription")
     val budgetDescription: kotlin.String? = null,
 
-    /* Estado del presupuesto asociado */
     @Json(name = "budgetState")
-    val budgetState: NotificationDTO.BudgetState? = null,
+    val budgetState: BudgetState? = null,
 
     /* Identificador de la meta de ahorro asociada */
     @Json(name = "savingGoalId")
@@ -131,42 +131,6 @@ data class NotificationDTO (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Tipo de notificacion
-     *
-     * Values: WARNING,SUCCESS,ERROR,INFO
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Type(val value: kotlin.String) {
-        @Json(name = "WARNING") WARNING("WARNING"),
-        @Json(name = "SUCCESS") SUCCESS("SUCCESS"),
-        @Json(name = "ERROR") ERROR("ERROR"),
-        @Json(name = "INFO") INFO("INFO");
-    }
-    /**
-     * Estado actual de la notificacion
-     *
-     * Values: SCHEDULED,SENT,READ,DISCARD
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "SCHEDULED") SCHEDULED("SCHEDULED"),
-        @Json(name = "SENT") SENT("SENT"),
-        @Json(name = "READ") READ("READ"),
-        @Json(name = "DISCARD") DISCARD("DISCARD");
-    }
-    /**
-     * Estado del presupuesto asociado
-     *
-     * Values: ACTIVE,CANCELLED,DISABLED,FINALIZED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class BudgetState(val value: kotlin.String) {
-        @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "DISABLED") DISABLED("DISABLED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED");
-    }
 
 }
 

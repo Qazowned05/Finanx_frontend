@@ -4,14 +4,11 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**createTransaction**](TransactionsApi.md#createTransaction) | **POST** transactions | Crear transaccion |
-| [**findAllActiveTransactionByUser**](TransactionsApi.md#findAllActiveTransactionByUser) | **GET** transactions/user/{userId}/active | Listar transacciones activas |
-| [**findAllTransactionByCategoryAndDateBetween**](TransactionsApi.md#findAllTransactionByCategoryAndDateBetween) | **GET** transactions/user/{userId}/category/{categoryId}/between | Filtrar por categoria y fecha |
-| [**findAllTransactionByUser**](TransactionsApi.md#findAllTransactionByUser) | **GET** transactions/user/{userId} | Listar transacciones por usuario |
-| [**findAllTransactionsByUserBetween**](TransactionsApi.md#findAllTransactionsByUserBetween) | **GET** transactions/user/{userId}/between | Listar transacciones por rango |
-| [**findTransactionById**](TransactionsApi.md#findTransactionById) | **GET** transactions/{id} | Buscar transaccion |
-| [**transactionDelete**](TransactionsApi.md#transactionDelete) | **DELETE** transactions/{id} | Eliminar transaccion |
-| [**updateTransaction**](TransactionsApi.md#updateTransaction) | **PUT** transactions/{id} | Actualizar transaccion |
+| [**createTransaction**](TransactionsApi.md#createTransaction) | **POST** api/v1/transactions | Crear transaccion |
+| [**findTransactionById**](TransactionsApi.md#findTransactionById) | **GET** api/v1/transactions/{id} | Buscar transaccion |
+| [**listTransactions**](TransactionsApi.md#listTransactions) | **GET** api/v1/transactions | Listar transacciones del usuario |
+| [**transactionDelete**](TransactionsApi.md#transactionDelete) | **DELETE** api/v1/transactions/{id} | Eliminar transaccion |
+| [**updateTransaction**](TransactionsApi.md#updateTransaction) | **PUT** api/v1/transactions/{id} | Actualizar transaccion |
 
 
 
@@ -54,172 +51,6 @@ No authorization required
  - **Accept**: */*
 
 
-Listar transacciones activas
-
-Obtiene todas las transacciones activas de un usuario.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(TransactionsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | ID usuario
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionResponse> = webService.findAllActiveTransactionByUser(userId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**| ID usuario | |
-
-### Return type
-
-[**kotlin.collections.List&lt;TransactionResponse&gt;**](TransactionResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Filtrar por categoria y fecha
-
-Obtiene transacciones por categoria y rango de fechas.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(TransactionsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
-val categoryId : kotlin.Long = 789 // kotlin.Long | 
-val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionResponse> = webService.findAllTransactionByCategoryAndDateBetween(userId, categoryId, from, to)
-}
-```
-
-### Parameters
-| **userId** | **kotlin.Long**|  | |
-| **categoryId** | **kotlin.Long**|  | |
-| **from** | **java.time.LocalDate**|  | |
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **to** | **java.time.LocalDate**|  | |
-
-### Return type
-
-[**kotlin.collections.List&lt;TransactionResponse&gt;**](TransactionResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Listar transacciones por usuario
-
-Obtiene todas las transacciones de un usuario.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(TransactionsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionResponse> = webService.findAllTransactionByUser(userId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**|  | |
-
-### Return type
-
-[**kotlin.collections.List&lt;TransactionResponse&gt;**](TransactionResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Listar transacciones por rango
-
-Obtiene transacciones en un rango de fechas.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(TransactionsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
-val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionResponse> = webService.findAllTransactionsByUserBetween(userId, from, to)
-}
-```
-
-### Parameters
-| **userId** | **kotlin.Long**|  | |
-| **from** | **java.time.LocalDate**|  | |
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **to** | **java.time.LocalDate**|  | |
-
-### Return type
-
-[**kotlin.collections.List&lt;TransactionResponse&gt;**](TransactionResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
 Buscar transaccion
 
 Obtiene una transaccion por ID.
@@ -248,6 +79,61 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**TransactionResponse**](TransactionResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+Listar transacciones del usuario
+
+Lista paginada del usuario autenticado. Admite filtros por active, type, walletId, categoryId y rango from/to; el orden usa sort estándar.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(TransactionsApi::class.java)
+val active : kotlin.Boolean = true // kotlin.Boolean | 
+val type : TransactionType =  // TransactionType | 
+val walletId : kotlin.Long = 789 // kotlin.Long | 
+val categoryId : kotlin.Long = 789 // kotlin.Long | 
+val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponseTransactionResponse = webService.listTransactions(active, type, walletId, categoryId, from, to, page, size, sort)
+}
+```
+
+### Parameters
+| **active** | **kotlin.Boolean**|  | [optional] |
+| **type** | [**TransactionType**](.md)|  | [optional] [enum: SPENT, INCOME] |
+| **walletId** | **kotlin.Long**|  | [optional] |
+| **categoryId** | **kotlin.Long**|  | [optional] |
+| **from** | **java.time.LocalDate**|  | [optional] |
+| **to** | **java.time.LocalDate**|  | [optional] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
+
+### Return type
+
+[**PageResponseTransactionResponse**](PageResponseTransactionResponse.md)
 
 ### Authorization
 

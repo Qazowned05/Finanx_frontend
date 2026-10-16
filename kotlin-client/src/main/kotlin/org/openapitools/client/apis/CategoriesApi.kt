@@ -8,24 +8,26 @@ import com.squareup.moshi.Json
 
 import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.PageResponseCategoryResponse
+import org.openapitools.client.models.TransactionType
 
 interface CategoriesApi {
     /**
-     * POST categories
+     * POST api/v1/categories
      * Crear categoria
      * Crea una nueva categoria.
      * Responses:
-     *  - 201: Categoria creada
+     *  - 201: Creada
      *  - 400: Datos invalidos
      *
      * @param categoryRequest 
      * @return [CategoryResponse]
      */
-    @POST("categories")
+    @POST("api/v1/categories")
     suspend fun createCategory(@Body categoryRequest: CategoryRequest): Response<CategoryResponse>
 
     /**
-     * POST categories/{id}/disable
+     * POST api/v1/categories/{id}/disable
      * Deshabilitar categoria
      * Deshabilita una categoria.
      * Responses:
@@ -35,39 +37,11 @@ interface CategoriesApi {
      * @param id ID de la categoria
      * @return [Unit]
      */
-    @POST("categories/{id}/disable")
+    @POST("api/v1/categories/{id}/disable")
     suspend fun disableCategory(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET categories/user/{idUser}
-     * Listar categorias por usuario
-     * Obtiene todas las categorias asociadas a un usuario.
-     * Responses:
-     *  - 200: Listado obtenido
-     *  - 404: Usuario no encontrado
-     *
-     * @param idUser ID del usuario
-     * @return [kotlin.collections.List<CategoryResponse>]
-     */
-    @GET("categories/user/{idUser}")
-    suspend fun findAllCategoriesByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<CategoryResponse>>
-
-    /**
-     * GET categories/user/{idUser}/{active}
-     * Listar categorias por usuario y estado
-     * Obtiene categorias filtradas por estado activo/inactivo.
-     * Responses:
-     *  - 200: Listado obtenido
-     *
-     * @param idUser ID del usuario
-     * @param active Estado activo
-     * @return [kotlin.collections.List<CategoryResponse>]
-     */
-    @GET("categories/user/{idUser}/{active}")
-    suspend fun findAllCategoriesyUserAndActive(@Path("idUser") idUser: kotlin.Long, @Path("active") active: kotlin.Boolean): Response<kotlin.collections.List<CategoryResponse>>
-
-    /**
-     * GET categories/{id}
+     * GET api/v1/categories/{id}
      * Buscar categoria por ID
      * Obtiene una categoria especifica.
      * Responses:
@@ -77,11 +51,30 @@ interface CategoriesApi {
      * @param id ID de la categoria
      * @return [CategoryResponse]
      */
-    @GET("categories/{id}")
+    @GET("api/v1/categories/{id}")
     suspend fun findCategoryById(@Path("id") id: kotlin.Long): Response<CategoryResponse>
 
     /**
-     * PUT categories/{id}
+     * GET api/v1/categories
+     * Listar categorias del usuario
+     * Lista paginada del usuario autenticado con filtros opcionales active, type y search.
+     * Responses:
+     *  - 200: Listado obtenido
+     *  - 404: Usuario no encontrado
+     *
+     * @param active  (optional)
+     * @param type  (optional)
+     * @param search  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("name,ASC"))
+     * @return [PageResponseCategoryResponse]
+     */
+    @GET("api/v1/categories")
+    suspend fun listCategories(@Query("active") active: kotlin.Boolean? = null, @Query("type") type: TransactionType? = null, @Query("search") search: kotlin.String? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("name,ASC")): Response<PageResponseCategoryResponse>
+
+    /**
+     * PUT api/v1/categories/{id}
      * Actualizar categoria
      * Actualiza una categoria existente.
      * Responses:
@@ -93,7 +86,7 @@ interface CategoriesApi {
      * @param categoryRequest 
      * @return [CategoryResponse]
      */
-    @PUT("categories/{id}")
+    @PUT("api/v1/categories/{id}")
     suspend fun updateCategory(@Path("id") id: kotlin.Long, @Body categoryRequest: CategoryRequest): Response<CategoryResponse>
 
 }

@@ -23,7 +23,11 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.Insight
+import org.openapitools.client.models.InsightSeverity
 
 class InsightTest : ShouldSpec() {
     init {
@@ -36,19 +40,19 @@ class InsightTest : ShouldSpec() {
             //modelInstance.severity shouldBe ("TODO")
         }
 
-        // to test the property `title`
+        // to test the property `title` - Titulo breve
         should("test title") {
             // uncomment below to test the property
             //modelInstance.title shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion detallada
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `action`
+        // to test the property `action` - Accion recomendada
         should("test action") {
             // uncomment below to test the property
             //modelInstance.action shouldBe ("TODO")

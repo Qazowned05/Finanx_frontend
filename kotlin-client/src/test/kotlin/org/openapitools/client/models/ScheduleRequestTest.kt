@@ -23,20 +23,24 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.RecurrenceRuleRequest
 
 class ScheduleRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of ScheduleRequest
         //val modelInstance = ScheduleRequest()
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador unico del usuario asociado a la programacion
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `categoryId` - Identificador unico de la categoria asociada a la programacion
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")

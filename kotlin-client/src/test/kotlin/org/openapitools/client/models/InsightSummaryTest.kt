@@ -23,20 +23,24 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.InsightSummary
+import org.openapitools.client.models.Insight
 
 class InsightSummaryTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of InsightSummary
         //val modelInstance = InsightSummary()
 
-        // to test the property `insights`
+        // to test the property `insights` - Lista de insights
         should("test insights") {
             // uncomment below to test the property
             //modelInstance.insights shouldBe ("TODO")
         }
 
-        // to test the property `insightsCount`
+        // to test the property `insightsCount` - Numero total de insights
         should("test insightsCount") {
             // uncomment below to test the property
             //modelInstance.insightsCount shouldBe ("TODO")

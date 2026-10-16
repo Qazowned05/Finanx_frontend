@@ -32,14 +32,13 @@ import java.io.Serializable
 /**
  * Respuesta de login que contiene el usuario autenticado y el token JWT
  *
- * @param user Informacion del usuario autenticado
+ * @param user 
  * @param token Token JWT generado tras la autenticacion
  */
 
 
 data class LoginResponse (
 
-    /* Informacion del usuario autenticado */
     @Json(name = "user")
     val user: UserResponse? = null,
 

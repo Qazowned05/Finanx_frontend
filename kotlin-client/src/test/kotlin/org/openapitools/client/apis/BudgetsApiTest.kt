@@ -23,7 +23,15 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.BudgetsApi
+import org.openapitools.client.models.BudgetHealth
+import org.openapitools.client.models.BudgetRequest
+import org.openapitools.client.models.BudgetResponse
+import org.openapitools.client.models.BudgetState
+import org.openapitools.client.models.PageResponseBudgetResponse
 
 class BudgetsApiTest : ShouldSpec() {
     init {
@@ -52,37 +60,26 @@ class BudgetsApiTest : ShouldSpec() {
             //apiInstance.disableBudget(id)
         }
 
-        // to test findAllBudgetsByPeriodAndHealth
-        should("test findAllBudgetsByPeriodAndHealth") {
-            // uncomment below to test findAllBudgetsByPeriodAndHealth
-            //val health : kotlin.String = health_example // kotlin.String | 
-            //val periodRequest : PeriodRequest =  // PeriodRequest | 
-            //val result : TimeBoundListBudgetResponse = apiInstance.findAllBudgetsByPeriodAndHealth(health, periodRequest)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllBudgetsByUser
-        should("test findAllBudgetsByUser") {
-            // uncomment below to test findAllBudgetsByUser
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllBudgetsByUser(idUser)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllBudgetsByUserAndState
-        should("test findAllBudgetsByUserAndState") {
-            // uncomment below to test findAllBudgetsByUserAndState
-            //val idUser : kotlin.Long = 789 // kotlin.Long | 
-            //val state : kotlin.String = state_example // kotlin.String | 
-            //val result : kotlin.collections.List<BudgetResponse> = apiInstance.findAllBudgetsByUserAndState(idUser, state)
-            //result shouldBe ("TODO")
-        }
-
         // to test findBudgetById
         should("test findBudgetById") {
             // uncomment below to test findBudgetById
             //val id : kotlin.Long = 789 // kotlin.Long | 
             //val result : BudgetResponse = apiInstance.findBudgetById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listBudgets
+        should("test listBudgets") {
+            // uncomment below to test listBudgets
+            //val active : kotlin.Boolean = true // kotlin.Boolean | 
+            //val state : BudgetState =  // BudgetState | 
+            //val health : BudgetHealth =  // BudgetHealth | 
+            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseBudgetResponse = apiInstance.listBudgets(active, state, health, from, to, page, size, sort)
             //result shouldBe ("TODO")
         }
 

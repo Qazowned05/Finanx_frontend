@@ -23,7 +23,13 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.DashboardResponse
+import org.openapitools.client.models.Aggregate
+import org.openapitools.client.models.InsightSummary
+import org.openapitools.client.models.PeriodResponse
 
 class DashboardResponseTest : ShouldSpec() {
     init {
@@ -42,13 +48,13 @@ class DashboardResponseTest : ShouldSpec() {
             //modelInstance.periodResponse shouldBe ("TODO")
         }
 
-        // to test the property `title`
+        // to test the property `title` - Titulo descriptivo del dashboard
         should("test title") {
             // uncomment below to test the property
             //modelInstance.title shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion del dashboard
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")

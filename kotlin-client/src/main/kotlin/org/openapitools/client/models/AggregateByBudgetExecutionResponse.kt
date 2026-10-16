@@ -31,7 +31,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Lista de agregados por categoria de ejecucion presupuestal
  *
  * @param aggregate 
  * @param factor 

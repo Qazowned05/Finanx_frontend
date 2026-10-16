@@ -23,56 +23,59 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.BudgetRequest
 
 class BudgetRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of BudgetRequest
         //val modelInstance = BudgetRequest()
 
-        // to test the property `alertable`
+        // to test the property `alertable` - Indica si el presupuesto debe generar alertas
         should("test alertable") {
             // uncomment below to test the property
             //modelInstance.alertable shouldBe ("TODO")
         }
 
-        // to test the property `limitAmount`
+        // to test the property `limitAmount` - Monto limite del presupuesto
         should("test limitAmount") {
             // uncomment below to test the property
             //modelInstance.limitAmount shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion del presupuesto
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador del usuario propietario del presupuesto
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `categoryId` - Identificador de la categoria asociada al presupuesto
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
-        // to test the property `start`
+        // to test the property `start` - Fecha de inicio del presupuesto
         should("test start") {
             // uncomment below to test the property
             //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `end`
+        // to test the property `end` - Fecha de fin del presupuesto
         should("test end") {
             // uncomment below to test the property
             //modelInstance.end shouldBe ("TODO")
         }
 
-        // to test the property `percentAlert`
+        // to test the property `percentAlert` - Porcentaje de alerta respecto al limite definido
         should("test percentAlert") {
             // uncomment below to test the property
             //modelInstance.percentAlert shouldBe ("TODO")

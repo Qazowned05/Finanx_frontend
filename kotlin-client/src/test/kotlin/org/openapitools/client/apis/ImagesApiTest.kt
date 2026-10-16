@@ -37,8 +37,7 @@ class ImagesApiTest : ShouldSpec() {
         should("test downloadImage") {
             // uncomment below to test downloadImage
             //val imageId : kotlin.Long = 789 // kotlin.Long | ID de la imagen
-            //val result : kotlin.ByteArray = apiInstance.downloadImage(imageId)
-            //result shouldBe ("TODO")
+            //apiInstance.downloadImage(imageId)
         }
 
     }

@@ -4,9 +4,9 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**createUserPreferences**](UserPreferencesApi.md#createUserPreferences) | **POST** users/{userId}/preferences | Crear preferencias del usuario |
-| [**getUserPreferences**](UserPreferencesApi.md#getUserPreferences) | **GET** users/{userId}/preferences | Obtener preferencias del usuario |
-| [**updateUserPreferences**](UserPreferencesApi.md#updateUserPreferences) | **PUT** users/{userId}/preferences | Actualizar preferencias del usuario |
+| [**createUserPreferences**](UserPreferencesApi.md#createUserPreferences) | **POST** api/v1/users/me/preferences | Crear preferencias del usuario |
+| [**getUserPreferences**](UserPreferencesApi.md#getUserPreferences) | **GET** api/v1/users/me/preferences | Obtener preferencias del usuario |
+| [**updateUserPreferences**](UserPreferencesApi.md#updateUserPreferences) | **PUT** api/v1/users/me/preferences | Actualizar preferencias del usuario |
 
 
 
@@ -21,16 +21,14 @@ Crear preferencias del usuario
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(UserPreferencesApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val userPreferencesRequest : UserPreferencesRequest =  // UserPreferencesRequest | 
 
 launch(Dispatchers.IO) {
-    val result : UserPreferencesResponse = webService.createUserPreferences(userId, userPreferencesRequest)
+    val result : UserPreferencesResponse = webService.createUserPreferences(userPreferencesRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userPreferencesRequest** | [**UserPreferencesRequest**](UserPreferencesRequest.md)|  | |
@@ -60,17 +58,14 @@ Obtener preferencias del usuario
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(UserPreferencesApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : UserPreferencesResponse = webService.getUserPreferences(userId)
+    val result : UserPreferencesResponse = webService.getUserPreferences()
 }
 ```
 
 ### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**|  | |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -97,16 +92,14 @@ Actualizar preferencias del usuario
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(UserPreferencesApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val userPreferencesRequest : UserPreferencesRequest =  // UserPreferencesRequest | 
 
 launch(Dispatchers.IO) {
-    val result : UserPreferencesResponse = webService.updateUserPreferences(userId, userPreferencesRequest)
+    val result : UserPreferencesResponse = webService.updateUserPreferences(userPreferencesRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userPreferencesRequest** | [**UserPreferencesRequest**](UserPreferencesRequest.md)|  | |

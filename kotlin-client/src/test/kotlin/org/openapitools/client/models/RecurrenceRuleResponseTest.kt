@@ -23,14 +23,19 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.RecurrenceRuleResponse
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.RecurrenceType
 
 class RecurrenceRuleResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of RecurrenceRuleResponse
         //val modelInstance = RecurrenceRuleResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la regla de recurrencia
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
@@ -42,7 +47,7 @@ class RecurrenceRuleResponseTest : ShouldSpec() {
             //modelInstance.recurrenceType shouldBe ("TODO")
         }
 
-        // to test the property `interval`
+        // to test the property `interval` - Intervalo de repeticion segun el tipo de recurrencia
         should("test interval") {
             // uncomment below to test the property
             //modelInstance.interval shouldBe ("TODO")
@@ -54,19 +59,19 @@ class RecurrenceRuleResponseTest : ShouldSpec() {
             //modelInstance.dayOfWeek shouldBe ("TODO")
         }
 
-        // to test the property `start`
+        // to test the property `start` - Fecha y hora de inicio de la recurrencia
         should("test start") {
             // uncomment below to test the property
             //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `end`
+        // to test the property `end` - Fecha y hora de fin de la recurrencia
         should("test end") {
             // uncomment below to test the property
             //modelInstance.end shouldBe ("TODO")
         }
 
-        // to test the property `durationDays`
+        // to test the property `durationDays` - Duracion total del periodo de recurrencia en dias
         should("test durationDays") {
             // uncomment below to test the property
             //modelInstance.durationDays shouldBe ("TODO")

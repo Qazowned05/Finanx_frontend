@@ -13,7 +13,7 @@ import org.openapitools.client.models.UserRequest
 
 interface AuthApi {
     /**
-     * POST auth/register
+     * POST api/v1/auth/register
      * Registro
      * Registro de nuevo usuario.
      * Responses:
@@ -23,11 +23,11 @@ interface AuthApi {
      * @param userRequest 
      * @return [LoginResponse]
      */
-    @POST("auth/register")
+    @POST("api/v1/auth/register")
     suspend fun authRegister(@Body userRequest: UserRequest): Response<LoginResponse>
 
     /**
-     * POST auth/google
+     * POST api/v1/auth/google
      * Login con Google
      * Autenticacion mediante Google.
      * Responses:
@@ -37,11 +37,11 @@ interface AuthApi {
      * @param googleLoginRequest 
      * @return [LoginResponse]
      */
-    @POST("auth/google")
+    @POST("api/v1/auth/google")
     suspend fun authWithGoogle(@Body googleLoginRequest: GoogleLoginRequest): Response<LoginResponse>
 
     /**
-     * POST auth/login
+     * POST api/v1/auth/login
      * Login
      * Autenticacion de usuario.
      * Responses:
@@ -51,7 +51,7 @@ interface AuthApi {
      * @param loginRequest 
      * @return [LoginResponse]
      */
-    @POST("auth/login")
+    @POST("api/v1/auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
 }

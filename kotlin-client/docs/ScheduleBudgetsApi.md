@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**findAllBudgetScheduleByUserAndState**](ScheduleBudgetsApi.md#findAllBudgetScheduleByUserAndState) | **GET** schedule/budgets/user/{idUser}/{state} | Listar programaciones de presupuestos |
+| [**listBudgetSchedules**](ScheduleBudgetsApi.md#listBudgetSchedules) | **GET** api/v1/schedule/budgets | Listar programaciones de presupuestos |
 
 
 
 Listar programaciones de presupuestos
 
-Obtiene programaciones de presupuestos por usuario y estado.
+Lista programaciones de presupuestos activas y paginadas con filtro opcional state.
 
 ### Example
 ```kotlin
@@ -21,23 +21,27 @@ Obtiene programaciones de presupuestos por usuario y estado.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleBudgetsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-val state : kotlin.String = state_example // kotlin.String | Estado
+val state : ScheduleState =  // ScheduleState | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetScheduleResponse> = webService.findAllBudgetScheduleByUserAndState(idUser, state)
+    val result : PageResponseBudgetScheduleResponse = webService.listBudgetSchedules(state, page, size, sort)
 }
 ```
 
 ### Parameters
-| **idUser** | **kotlin.Long**| ID usuario | |
+| **state** | [**ScheduleState**](.md)|  | [optional] [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**| Estado | [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;nextRunAt,ASC&quot;)] |
 
 ### Return type
 
-[**kotlin.collections.List&lt;BudgetScheduleResponse&gt;**](BudgetScheduleResponse.md)
+[**PageResponseBudgetScheduleResponse**](PageResponseBudgetScheduleResponse.md)
 
 ### Authorization
 

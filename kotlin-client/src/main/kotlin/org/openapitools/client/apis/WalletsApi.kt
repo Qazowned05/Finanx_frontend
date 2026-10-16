@@ -6,78 +6,77 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
+import org.openapitools.client.models.PageResponseWalletResponse
 import org.openapitools.client.models.WalletRequest
 import org.openapitools.client.models.WalletResponse
 
 interface WalletsApi {
     /**
-     * POST users/{userId}/wallets
+     * POST api/v1/wallets
      * Crear billetera
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param walletRequest 
      * @return [WalletResponse]
      */
-    @POST("users/{userId}/wallets")
-    suspend fun create(@Path("userId") userId: kotlin.Long, @Body walletRequest: WalletRequest): Response<WalletResponse>
+    @POST("api/v1/wallets")
+    suspend fun create(@Body walletRequest: WalletRequest): Response<WalletResponse>
 
     /**
-     * DELETE users/{userId}/wallets/{id}
+     * DELETE api/v1/wallets/{id}
      * Deshabilitar billetera
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param id 
      * @return [Unit]
      */
-    @DELETE("users/{userId}/wallets/{id}")
-    suspend fun disable(@Path("userId") userId: kotlin.Long, @Path("id") id: kotlin.Long): Response<Unit>
+    @DELETE("api/v1/wallets/{id}")
+    suspend fun disable(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET users/{userId}/wallets
-     * Listar billeteras de un usuario
-     * 
-     * Responses:
-     *  - 200: OK
-     *
-     * @param userId 
-     * @return [kotlin.collections.List<WalletResponse>]
-     */
-    @GET("users/{userId}/wallets")
-    suspend fun findAllByUser(@Path("userId") userId: kotlin.Long): Response<kotlin.collections.List<WalletResponse>>
-
-    /**
-     * GET users/{userId}/wallets/{id}
+     * GET api/v1/wallets/{id}
      * Obtener billetera por ID
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param id 
      * @return [WalletResponse]
      */
-    @GET("users/{userId}/wallets/{id}")
-    suspend fun findById(@Path("userId") userId: kotlin.Long, @Path("id") id: kotlin.Long): Response<WalletResponse>
+    @GET("api/v1/wallets/{id}")
+    suspend fun findById(@Path("id") id: kotlin.Long): Response<WalletResponse>
 
     /**
-     * PUT users/{userId}/wallets/{id}
+     * GET api/v1/wallets
+     * Listar billeteras del usuario autenticado
+     * Lista paginada con page, size y sort estándar.
+     * Responses:
+     *  - 200: OK
+     *
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("id,ASC"))
+     * @return [PageResponseWalletResponse]
+     */
+    @GET("api/v1/wallets")
+    suspend fun listWallets(@Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("id,ASC")): Response<PageResponseWalletResponse>
+
+    /**
+     * PUT api/v1/wallets/{id}
      * Actualizar billetera
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param id 
      * @param walletRequest 
      * @return [WalletResponse]
      */
-    @PUT("users/{userId}/wallets/{id}")
-    suspend fun update(@Path("userId") userId: kotlin.Long, @Path("id") id: kotlin.Long, @Body walletRequest: WalletRequest): Response<WalletResponse>
+    @PUT("api/v1/wallets/{id}")
+    suspend fun update(@Path("id") id: kotlin.Long, @Body walletRequest: WalletRequest): Response<WalletResponse>
 
 }

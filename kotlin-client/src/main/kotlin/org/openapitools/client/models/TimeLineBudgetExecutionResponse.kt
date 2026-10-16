@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Linea de tiempo de la evolucion de ejecucion de presupuestos
  *
  * @param periodResponse 
  * @param title 

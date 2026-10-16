@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.BillingCycle
+import org.openapitools.client.models.SubscriptionPlan
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -32,8 +34,8 @@ import java.io.Serializable
  * Subscription data
  *
  * @param userId Id of the subscribing user
- * @param plan Subscription plan
- * @param billingCycle Billing cycle
+ * @param plan 
+ * @param billingCycle 
  * @param amount Amount charged per billing cycle
  * @param currency ISO currency code
  * @param autoRenew Whether the subscription renews automatically
@@ -46,13 +48,11 @@ data class SubscriptionRequest (
     @Json(name = "userId")
     val userId: kotlin.Long,
 
-    /* Subscription plan */
     @Json(name = "plan")
-    val plan: SubscriptionRequest.Plan,
+    val plan: SubscriptionPlan,
 
-    /* Billing cycle */
     @Json(name = "billingCycle")
-    val billingCycle: SubscriptionRequest.BillingCycle,
+    val billingCycle: BillingCycle,
 
     /* Amount charged per billing cycle */
     @Json(name = "amount")
@@ -71,27 +71,6 @@ data class SubscriptionRequest (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Subscription plan
-     *
-     * Values: FREE,PREMIUM_TRIAL,PREMIUM
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Plan(val value: kotlin.String) {
-        @Json(name = "FREE") FREE("FREE"),
-        @Json(name = "PREMIUM_TRIAL") PREMIUM_TRIAL("PREMIUM_TRIAL"),
-        @Json(name = "PREMIUM") PREMIUM("PREMIUM");
-    }
-    /**
-     * Billing cycle
-     *
-     * Values: MONTHLY,ANNUAL
-     */
-    @JsonClass(generateAdapter = false)
-    enum class BillingCycle(val value: kotlin.String) {
-        @Json(name = "MONTHLY") MONTHLY("MONTHLY"),
-        @Json(name = "ANNUAL") ANNUAL("ANNUAL");
-    }
 
 }
 

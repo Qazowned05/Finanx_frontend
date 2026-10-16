@@ -27,8 +27,10 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.PaymentsApi
+import org.openapitools.client.models.PageResponsePaymentResponse
 import org.openapitools.client.models.PaymentRequest
 import org.openapitools.client.models.PaymentResponse
+import org.openapitools.client.models.PaymentState
 
 class PaymentsApiTest : ShouldSpec() {
     init {
@@ -43,27 +45,25 @@ class PaymentsApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test findAllPaymentsBySubscription
-        should("test findAllPaymentsBySubscription") {
-            // uncomment below to test findAllPaymentsBySubscription
-            //val subscriptionId : kotlin.Long = 789 // kotlin.Long | Subscription id
-            //val result : kotlin.collections.List<PaymentResponse> = apiInstance.findAllPaymentsBySubscription(subscriptionId)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllPaymentsByUser
-        should("test findAllPaymentsByUser") {
-            // uncomment below to test findAllPaymentsByUser
-            //val userId : kotlin.Long = 789 // kotlin.Long | User id
-            //val result : kotlin.collections.List<PaymentResponse> = apiInstance.findAllPaymentsByUser(userId)
-            //result shouldBe ("TODO")
-        }
-
         // to test findPaymentById
         should("test findPaymentById") {
             // uncomment below to test findPaymentById
             //val id : kotlin.Long = 789 // kotlin.Long | Payment id
             //val result : PaymentResponse = apiInstance.findPaymentById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listPayments
+        should("test listPayments") {
+            // uncomment below to test listPayments
+            //val state : PaymentState =  // PaymentState | 
+            //val subscriptionId : kotlin.Long = 789 // kotlin.Long | 
+            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponsePaymentResponse = apiInstance.listPayments(state, subscriptionId, from, to, page, size, sort)
             //result shouldBe ("TODO")
         }
 

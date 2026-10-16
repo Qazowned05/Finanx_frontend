@@ -23,32 +23,35 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.SavingGoalRequest
 
 class SavingGoalRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of SavingGoalRequest
         //val modelInstance = SavingGoalRequest()
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion de la meta de ahorro
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `targetAmount`
+        // to test the property `targetAmount` - Monto objetivo de la meta de ahorro
         should("test targetAmount") {
             // uncomment below to test the property
             //modelInstance.targetAmount shouldBe ("TODO")
         }
 
-        // to test the property `deadline`
+        // to test the property `deadline` - Fecha limite para alcanzar la meta (formato yyyy-MM-dd)
         should("test deadline") {
             // uncomment below to test the property
             //modelInstance.deadline shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador unico del usuario asociado a la meta
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")

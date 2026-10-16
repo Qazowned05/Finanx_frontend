@@ -23,14 +23,17 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.GoogleLoginRequest
 
 class GoogleLoginRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of GoogleLoginRequest
         //val modelInstance = GoogleLoginRequest()
 
-        // to test the property `idToken`
+        // to test the property `idToken` - ID Token JWT emitido por Google tras la autenticacion
         should("test idToken") {
             // uncomment below to test the property
             //modelInstance.idToken shouldBe ("TODO")

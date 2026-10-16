@@ -27,6 +27,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.ChatHistoryResponse
+import org.openapitools.client.models.ChatRole
 
 class ChatHistoryResponseTest : ShouldSpec() {
     init {
@@ -45,7 +46,7 @@ class ChatHistoryResponseTest : ShouldSpec() {
             //modelInstance.turnNumber shouldBe ("TODO")
         }
 
-        // to test the property `role` - Rol del mensaje
+        // to test the property `role`
         should("test role") {
             // uncomment below to test the property
             //modelInstance.role shouldBe ("TODO")

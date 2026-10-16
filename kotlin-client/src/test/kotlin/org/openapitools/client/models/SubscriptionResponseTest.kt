@@ -27,6 +27,9 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.SubscriptionResponse
+import org.openapitools.client.models.BillingCycle
+import org.openapitools.client.models.SubscriptionPlan
+import org.openapitools.client.models.SubscriptionState
 
 class SubscriptionResponseTest : ShouldSpec() {
     init {
@@ -45,19 +48,19 @@ class SubscriptionResponseTest : ShouldSpec() {
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `plan` - Subscription plan
+        // to test the property `plan`
         should("test plan") {
             // uncomment below to test the property
             //modelInstance.plan shouldBe ("TODO")
         }
 
-        // to test the property `billingCycle` - Billing cycle
+        // to test the property `billingCycle`
         should("test billingCycle") {
             // uncomment below to test the property
             //modelInstance.billingCycle shouldBe ("TODO")
         }
 
-        // to test the property `state` - Current subscription state
+        // to test the property `state`
         should("test state") {
             // uncomment below to test the property
             //modelInstance.state shouldBe ("TODO")

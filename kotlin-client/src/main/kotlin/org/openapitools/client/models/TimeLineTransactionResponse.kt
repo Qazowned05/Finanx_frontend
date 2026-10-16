@@ -32,7 +32,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Linea de tiempo de ingresos diarios
  *
  * @param periodResponse 
  * @param title 

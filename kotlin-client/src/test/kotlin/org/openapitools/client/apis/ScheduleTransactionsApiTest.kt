@@ -23,19 +23,26 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.ScheduleTransactionsApi
+import org.openapitools.client.models.PageResponseTransactionScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 class ScheduleTransactionsApiTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of ScheduleTransactionsApi
         //val apiInstance = ScheduleTransactionsApi()
 
-        // to test findAllTScheduleByUserAndState
-        should("test findAllTScheduleByUserAndState") {
-            // uncomment below to test findAllTScheduleByUserAndState
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val state : kotlin.String = state_example // kotlin.String | Estado
-            //val result : kotlin.collections.List<TransactionScheduleResponse> = apiInstance.findAllTScheduleByUserAndState(idUser, state)
+        // to test listTransactionSchedules
+        should("test listTransactionSchedules") {
+            // uncomment below to test listTransactionSchedules
+            //val state : ScheduleState =  // ScheduleState | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseTransactionScheduleResponse = apiInstance.listTransactionSchedules(state, page, size, sort)
             //result shouldBe ("TODO")
         }
 

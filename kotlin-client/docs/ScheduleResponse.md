@@ -14,15 +14,8 @@
 | **lastRunAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de la ultima ejecucion realizada |  [optional] |
 | **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que la programacion fue deshabilitada, si aplica |  [optional] |
 | **active** | **kotlin.Boolean** | Indica si la programacion esta activa |  [optional] |
-| **state** | [**inline**](#State) | Estado actual de la programacion |  [optional] |
-| **recurrenceRule** | [**RecurrenceRuleResponse**](RecurrenceRuleResponse.md) | Regla de recurrencia asociada a la programacion |  [optional] |
-
-
-<a id="State"></a>
-## Enum: state
-| Name | Value |
-| ---- | ----- |
-| state | RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR |
+| **state** | [**ScheduleState**](ScheduleState.md) |  |  [optional] |
+| **recurrenceRule** | [**RecurrenceRuleResponse**](RecurrenceRuleResponse.md) |  |  [optional] |
 
 
 

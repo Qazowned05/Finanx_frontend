@@ -23,44 +23,54 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.TransactionType
 
 class CategoryResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of CategoryResponse
         //val modelInstance = CategoryResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la categoria
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `name`
+        // to test the property `name` - Nombre de la categoria
         should("test name") {
             // uncomment below to test the property
             //modelInstance.name shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion detallada de la categoria
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `active`
+        // to test the property `type`
+        should("test type") {
+            // uncomment below to test the property
+            //modelInstance.type shouldBe ("TODO")
+        }
+
+        // to test the property `active` - Indica si la categoria esta activa
         should("test active") {
             // uncomment below to test the property
             //modelInstance.active shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion de la categoria
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que la categoria fue deshabilitada, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")

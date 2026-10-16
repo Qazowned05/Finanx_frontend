@@ -23,23 +23,33 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.CategorySummary
+import org.openapitools.client.models.TransactionType
 
 class CategorySummaryTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of CategorySummary
         //val modelInstance = CategorySummary()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la categoria
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `name`
+        // to test the property `name` - Nombre de la categoria
         should("test name") {
             // uncomment below to test the property
             //modelInstance.name shouldBe ("TODO")
+        }
+
+        // to test the property `type`
+        should("test type") {
+            // uncomment below to test the property
+            //modelInstance.type shouldBe ("TODO")
         }
 
     }

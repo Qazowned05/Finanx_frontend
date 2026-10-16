@@ -11,44 +11,41 @@ import org.openapitools.client.models.UserPreferencesResponse
 
 interface UserPreferencesApi {
     /**
-     * POST users/{userId}/preferences
+     * POST api/v1/users/me/preferences
      * Crear preferencias del usuario
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param userPreferencesRequest 
      * @return [UserPreferencesResponse]
      */
-    @POST("users/{userId}/preferences")
-    suspend fun createUserPreferences(@Path("userId") userId: kotlin.Long, @Body userPreferencesRequest: UserPreferencesRequest): Response<UserPreferencesResponse>
+    @POST("api/v1/users/me/preferences")
+    suspend fun createUserPreferences(@Body userPreferencesRequest: UserPreferencesRequest): Response<UserPreferencesResponse>
 
     /**
-     * GET users/{userId}/preferences
+     * GET api/v1/users/me/preferences
      * Obtener preferencias del usuario
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @return [UserPreferencesResponse]
      */
-    @GET("users/{userId}/preferences")
-    suspend fun getUserPreferences(@Path("userId") userId: kotlin.Long): Response<UserPreferencesResponse>
+    @GET("api/v1/users/me/preferences")
+    suspend fun getUserPreferences(): Response<UserPreferencesResponse>
 
     /**
-     * PUT users/{userId}/preferences
+     * PUT api/v1/users/me/preferences
      * Actualizar preferencias del usuario
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param userPreferencesRequest 
      * @return [UserPreferencesResponse]
      */
-    @PUT("users/{userId}/preferences")
-    suspend fun updateUserPreferences(@Path("userId") userId: kotlin.Long, @Body userPreferencesRequest: UserPreferencesRequest): Response<UserPreferencesResponse>
+    @PUT("api/v1/users/me/preferences")
+    suspend fun updateUserPreferences(@Body userPreferencesRequest: UserPreferencesRequest): Response<UserPreferencesResponse>
 
 }

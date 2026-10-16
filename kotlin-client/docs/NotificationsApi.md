@@ -4,12 +4,11 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**discardNotification**](NotificationsApi.md#discardNotification) | **POST** notifications/discard | Descartar notificacion |
-| [**findAllNotificationByUser**](NotificationsApi.md#findAllNotificationByUser) | **GET** notifications/user/{idUser} | Listar notificaciones por usuario |
-| [**findAllNotificationsByUserAndState**](NotificationsApi.md#findAllNotificationsByUserAndState) | **GET** notifications/user/{idUser}/{state} | Listar por estado |
-| [**findNotificationById**](NotificationsApi.md#findNotificationById) | **GET** notifications/{id} | Buscar notificacion |
-| [**markAsRead**](NotificationsApi.md#markAsRead) | **POST** notifications/mark-as-read | Marcar como leida |
-| [**purgeNotifications**](NotificationsApi.md#purgeNotifications) | **POST** notifications/user/{userId}/purge-older-than | Eliminar notificaciones antiguas |
+| [**discardNotification**](NotificationsApi.md#discardNotification) | **POST** api/v1/notifications/discard | Descartar notificacion |
+| [**findNotificationById**](NotificationsApi.md#findNotificationById) | **GET** api/v1/notifications/{id} | Buscar notificacion |
+| [**listNotifications**](NotificationsApi.md#listNotifications) | **GET** api/v1/notifications | Listar notificaciones del usuario |
+| [**markAsRead**](NotificationsApi.md#markAsRead) | **POST** api/v1/notifications/mark-as-read | Marcar como leida |
+| [**purgeNotifications**](NotificationsApi.md#purgeNotifications) | **POST** api/v1/notifications/purge-older-than | Eliminar notificaciones antiguas |
 
 
 
@@ -52,86 +51,6 @@ No authorization required
  - **Accept**: Not defined
 
 
-Listar notificaciones por usuario
-
-Obtiene todas las notificaciones de un usuario.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(NotificationsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<NotificationDTO> = webService.findAllNotificationByUser(idUser)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **idUser** | **kotlin.Long**| ID usuario | |
-
-### Return type
-
-[**kotlin.collections.List&lt;NotificationDTO&gt;**](NotificationDTO.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Listar por estado
-
-Obtiene notificaciones filtradas por estado.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(NotificationsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-val state : kotlin.String = state_example // kotlin.String | Estado
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<NotificationDTO> = webService.findAllNotificationsByUserAndState(idUser, state)
-}
-```
-
-### Parameters
-| **idUser** | **kotlin.Long**| ID usuario | |
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**| Estado | [enum: SCHEDULED, SENT, READ, DISCARD] |
-
-### Return type
-
-[**kotlin.collections.List&lt;NotificationDTO&gt;**](NotificationDTO.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
 Buscar notificacion
 
 Obtiene una notificacion por ID.
@@ -160,6 +79,53 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**NotificationDTO**](NotificationDTO.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+Listar notificaciones del usuario
+
+Lista paginada de notificaciones del usuario autenticado con filtros opcionales state y search.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(NotificationsApi::class.java)
+val state : NotificationState =  // NotificationState | 
+val search : kotlin.String = search_example // kotlin.String | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponseNotificationDTO = webService.listNotifications(state, search, page, size, sort)
+}
+```
+
+### Parameters
+| **state** | [**NotificationState**](.md)|  | [optional] [enum: SCHEDULED, SENT, READ, DISCARD] |
+| **search** | **kotlin.String**|  | [optional] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
+
+### Return type
+
+[**PageResponseNotificationDTO**](PageResponseNotificationDTO.md)
 
 ### Authorization
 
@@ -223,16 +189,14 @@ Elimina notificaciones anteriores a una fecha.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(NotificationsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | ID usuario
 val dateTime : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | Fecha limite
 
 launch(Dispatchers.IO) {
-    webService.purgeNotifications(userId, dateTime)
+    webService.purgeNotifications(dateTime)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**| ID usuario | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **dateTime** | **java.time.LocalDateTime**| Fecha limite | |

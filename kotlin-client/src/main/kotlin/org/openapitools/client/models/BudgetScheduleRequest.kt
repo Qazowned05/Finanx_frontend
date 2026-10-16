@@ -40,7 +40,7 @@ import java.io.Serializable
  * @param percentAlert Porcentaje de alerta respecto al limite del presupuesto
  * @param limitAmount Monto limite del presupuesto
  * @param description Descripcion del presupuesto
- * @param recurrenceRule Regla de recurrencia que define la periodicidad de la programacion
+ * @param recurrenceRule 
  */
 
 
@@ -73,7 +73,6 @@ data class BudgetScheduleRequest (
     @Json(name = "description")
     val description: kotlin.String,
 
-    /* Regla de recurrencia que define la periodicidad de la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null
 

@@ -41,20 +41,20 @@ import java.io.Serializable
  * Dashboard de transacciones con rankings y lineas de tiempo de ingresos y gastos
  *
  * @param type 
- * @param periodResponse Periodo de referencia del dashboard
+ * @param periodResponse 
  * @param title Titulo descriptivo del dashboard
  * @param createdAt Fecha y hora de creacion del dashboard
- * @param insightSummary Resumen de insights generados para el periodo
- * @param aggregate Agregado general con metricas calculadas
+ * @param insightSummary 
+ * @param aggregate 
  * @param balance Balance del periodo
- * @param summaryByCategory Ranking de categorias con metricas resumidas
- * @param summaryByPaymentMethod Ranking de metodos de pago con metricas resumidas
- * @param summaryByType Ranking por tipo de transaccion con metricas resumidas
- * @param dailyExpenses Linea de tiempo de gastos diarios
- * @param dailyIncome Linea de tiempo de ingresos diarios
- * @param topCategories Ranking de las categorias principales
- * @param topSpentReasons Ranking de los principales motivos de gasto
- * @param topIncomeReasons Ranking de los principales motivos de ingreso
+ * @param summaryByCategory 
+ * @param summaryByPaymentMethod 
+ * @param summaryByType 
+ * @param dailyExpenses 
+ * @param dailyIncome 
+ * @param topCategories 
+ * @param topSpentReasons 
+ * @param topIncomeReasons 
  */
 
 
@@ -63,7 +63,6 @@ data class TransactionsDashboard (
     @Json(name = "type")
     override val type: kotlin.String,
 
-    /* Periodo de referencia del dashboard */
     @Json(name = "periodResponse")
     override val periodResponse: PeriodResponse? = null,
 
@@ -75,11 +74,9 @@ data class TransactionsDashboard (
     @Json(name = "createdAt")
     override val createdAt: java.time.LocalDateTime? = null,
 
-    /* Resumen de insights generados para el periodo */
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
 
-    /* Agregado general con metricas calculadas */
     @Json(name = "aggregate")
     override val aggregate: Aggregate? = null,
 
@@ -87,35 +84,27 @@ data class TransactionsDashboard (
     @Json(name = "balance")
     val balance: java.math.BigDecimal? = null,
 
-    /* Ranking de categorias con metricas resumidas */
     @Json(name = "summaryByCategory")
     val summaryByCategory: RankingCategorySummary? = null,
 
-    /* Ranking de metodos de pago con metricas resumidas */
     @Json(name = "summaryByPaymentMethod")
     val summaryByPaymentMethod: RankingPaymentMethod? = null,
 
-    /* Ranking por tipo de transaccion con metricas resumidas */
     @Json(name = "summaryByType")
     val summaryByType: RankingTransactionType? = null,
 
-    /* Linea de tiempo de gastos diarios */
     @Json(name = "dailyExpenses")
     val dailyExpenses: TimeLineTransactionResponse? = null,
 
-    /* Linea de tiempo de ingresos diarios */
     @Json(name = "dailyIncome")
     val dailyIncome: TimeLineTransactionResponse? = null,
 
-    /* Ranking de las categorias principales */
     @Json(name = "topCategories")
     val topCategories: RankingCategorySummary? = null,
 
-    /* Ranking de los principales motivos de gasto */
     @Json(name = "topSpentReasons")
     val topSpentReasons: RankingReasonSummary? = null,
 
-    /* Ranking de los principales motivos de ingreso */
     @Json(name = "topIncomeReasons")
     val topIncomeReasons: RankingReasonSummary? = null
 

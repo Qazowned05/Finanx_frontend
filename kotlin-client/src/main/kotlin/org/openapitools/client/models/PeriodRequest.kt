@@ -33,7 +33,6 @@ import java.io.Serializable
  *
  * @param start Fecha de inicio del periodo (formato yyyy-MM-dd)
  * @param end Fecha de fin del periodo (formato yyyy-MM-dd)
- * @param userId Identificador unico del usuario asociado al periodo
  */
 
 
@@ -45,11 +44,7 @@ data class PeriodRequest (
 
     /* Fecha de fin del periodo (formato yyyy-MM-dd) */
     @Json(name = "end")
-    val end: java.time.LocalDate,
-
-    /* Identificador unico del usuario asociado al periodo */
-    @Json(name = "userId")
-    val userId: kotlin.Long
+    val end: java.time.LocalDate
 
 ) : Serializable {
     companion object {

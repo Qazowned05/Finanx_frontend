@@ -6,34 +6,24 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
-import org.openapitools.client.models.TransactionScheduleResponse
+import org.openapitools.client.models.PageResponseTransactionScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 interface ScheduleTransactionsApi {
-
     /**
-    * enum for parameter state
-    */
-    enum class StateFindAllTScheduleByUserAndState(val value: kotlin.String) {
-        @Json(name = "RUNNING") RUNNING("RUNNING"),
-        @Json(name = "PAUSED") PAUSED("PAUSED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "CREATED") CREATED("CREATED"),
-        @Json(name = "ERROR") ERROR("ERROR")
-    }
-
-    /**
-     * GET schedule/transactions/user/{idUser}/{state}
+     * GET api/v1/schedule/transactions
      * Listar programaciones de transacciones
-     * Obtiene programaciones de transacciones por usuario y estado.
+     * Lista programaciones de transacciones activas y paginadas con filtro opcional state.
      * Responses:
      *  - 200: Listado obtenido
      *
-     * @param idUser ID usuario
-     * @param state Estado
-     * @return [kotlin.collections.List<TransactionScheduleResponse>]
+     * @param state  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("nextRunAt,ASC"))
+     * @return [PageResponseTransactionScheduleResponse]
      */
-    @GET("schedule/transactions/user/{idUser}/{state}")
-    suspend fun findAllTScheduleByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<TransactionScheduleResponse>>
+    @GET("api/v1/schedule/transactions")
+    suspend fun listTransactionSchedules(@Query("state") state: ScheduleState? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("nextRunAt,ASC")): Response<PageResponseTransactionScheduleResponse>
 
 }

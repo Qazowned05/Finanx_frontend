@@ -27,6 +27,9 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.ReceiptResponse
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.ReceiptScanStatus
+import org.openapitools.client.models.TransactionType
 
 class ReceiptResponseTest : ShouldSpec() {
     init {
@@ -39,22 +42,64 @@ class ReceiptResponseTest : ShouldSpec() {
             //modelInstance.receiptId shouldBe ("TODO")
         }
 
+        // to test the property `status`
+        should("test status") {
+            // uncomment below to test the property
+            //modelInstance.status shouldBe ("TODO")
+        }
+
+        // to test the property `errorMessage` - Mensaje de error si el escaneo falló (nullable)
+        should("test errorMessage") {
+            // uncomment below to test the property
+            //modelInstance.errorMessage shouldBe ("TODO")
+        }
+
+        // to test the property `imageId` - ID de la imagen asociada (nullable si no tiene imagen)
+        should("test imageId") {
+            // uncomment below to test the property
+            //modelInstance.imageId shouldBe ("TODO")
+        }
+
         // to test the property `detectedAmount` - Monto total detectado
         should("test detectedAmount") {
             // uncomment below to test the property
             //modelInstance.detectedAmount shouldBe ("TODO")
         }
 
-        // to test the property `detectedDate` - Fecha detectada en el recibo
+        // to test the property `detectedDate` - Fecha detectada en el recibo (nullable)
         should("test detectedDate") {
             // uncomment below to test the property
             //modelInstance.detectedDate shouldBe ("TODO")
         }
 
-        // to test the property `detectedMerchant` - Nombre del comercio detectado
-        should("test detectedMerchant") {
+        // to test the property `description` - Descripción/nombre del comercio detectado
+        should("test description") {
             // uncomment below to test the property
-            //modelInstance.detectedMerchant shouldBe ("TODO")
+            //modelInstance.description shouldBe ("TODO")
+        }
+
+        // to test the property `paymentMethod`
+        should("test paymentMethod") {
+            // uncomment below to test the property
+            //modelInstance.paymentMethod shouldBe ("TODO")
+        }
+
+        // to test the property `transactionType`
+        should("test transactionType") {
+            // uncomment below to test the property
+            //modelInstance.transactionType shouldBe ("TODO")
+        }
+
+        // to test the property `detectedCategoryId` - ID de la categoría detectada (nullable)
+        should("test detectedCategoryId") {
+            // uncomment below to test the property
+            //modelInstance.detectedCategoryId shouldBe ("TODO")
+        }
+
+        // to test the property `rawOcrText` - Texto OCR crudo extraído de la imagen
+        should("test rawOcrText") {
+            // uncomment below to test the property
+            //modelInstance.rawOcrText shouldBe ("TODO")
         }
 
         // to test the property `currencyGuess` - Moneda detectada (no resuelta contra Wallet)

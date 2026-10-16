@@ -38,17 +38,23 @@ class ReceiptsApiTest : ShouldSpec() {
         should("test getScanResult") {
             // uncomment below to test getScanResult
             //val receiptId : kotlin.Long = 789 // kotlin.Long | 
-            //val userId : kotlin.Long = 789 // kotlin.Long | ID del usuario
-            //val result : ReceiptResponse = apiInstance.getScanResult(receiptId, userId)
+            //val result : ReceiptResponse = apiInstance.getScanResult(receiptId)
+            //result shouldBe ("TODO")
+        }
+
+        // to test improveScan
+        should("test improveScan") {
+            // uncomment below to test improveScan
+            //val receiptId : kotlin.Long = 789 // kotlin.Long | ID del recibo
+            //val result : ReceiptResponse = apiInstance.improveScan(receiptId)
             //result shouldBe ("TODO")
         }
 
         // to test scanReceipt
         should("test scanReceipt") {
             // uncomment below to test scanReceipt
-            //val userId : kotlin.Long = 789 // kotlin.Long | ID del usuario
             //val image : java.io.File = BINARY_DATA_HERE // java.io.File | Imagen del recibo (max 5MB)
-            //val result : ReceiptResponse = apiInstance.scanReceipt(userId, image)
+            //val result : ReceiptResponse = apiInstance.scanReceipt(image)
             //result shouldBe ("TODO")
         }
 

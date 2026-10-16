@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.RecurrenceType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -32,9 +34,9 @@ import java.io.Serializable
  * Respuesta que representa una regla de recurrencia aplicada a transacciones o presupuestos
  *
  * @param id Identificador unico de la regla de recurrencia
- * @param recurrenceType Tipo de recurrencia (diaria, semanal, mensual, anual)
+ * @param recurrenceType 
  * @param interval Intervalo de repeticion segun el tipo de recurrencia
- * @param dayOfWeek Dia especifico de la semana en que aplica la recurrencia (solo relevante si recurrenceType = WEEKLY)
+ * @param dayOfWeek 
  * @param start Fecha y hora de inicio de la recurrencia
  * @param end Fecha y hora de fin de la recurrencia
  * @param durationDays Duracion total del periodo de recurrencia en dias
@@ -47,17 +49,15 @@ data class RecurrenceRuleResponse (
     @Json(name = "id")
     val id: kotlin.Long? = null,
 
-    /* Tipo de recurrencia (diaria, semanal, mensual, anual) */
     @Json(name = "recurrenceType")
-    val recurrenceType: RecurrenceRuleResponse.RecurrenceType? = null,
+    val recurrenceType: RecurrenceType? = null,
 
     /* Intervalo de repeticion segun el tipo de recurrencia */
     @Json(name = "interval")
     val interval: kotlin.Int? = null,
 
-    /* Dia especifico de la semana en que aplica la recurrencia (solo relevante si recurrenceType = WEEKLY) */
     @Json(name = "dayOfWeek")
-    val dayOfWeek: RecurrenceRuleResponse.DayOfWeek? = null,
+    val dayOfWeek: DayOfWeek? = null,
 
     /* Fecha y hora de inicio de la recurrencia */
     @Json(name = "start")
@@ -76,34 +76,6 @@ data class RecurrenceRuleResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Tipo de recurrencia (diaria, semanal, mensual, anual)
-     *
-     * Values: NONE,DAILY,WEEKLY,MONTHLY,YEARLY
-     */
-    @JsonClass(generateAdapter = false)
-    enum class RecurrenceType(val value: kotlin.String) {
-        @Json(name = "NONE") NONE("NONE"),
-        @Json(name = "DAILY") DAILY("DAILY"),
-        @Json(name = "WEEKLY") WEEKLY("WEEKLY"),
-        @Json(name = "MONTHLY") MONTHLY("MONTHLY"),
-        @Json(name = "YEARLY") YEARLY("YEARLY");
-    }
-    /**
-     * Dia especifico de la semana en que aplica la recurrencia (solo relevante si recurrenceType = WEEKLY)
-     *
-     * Values: MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY
-     */
-    @JsonClass(generateAdapter = false)
-    enum class DayOfWeek(val value: kotlin.String) {
-        @Json(name = "MONDAY") MONDAY("MONDAY"),
-        @Json(name = "TUESDAY") TUESDAY("TUESDAY"),
-        @Json(name = "WEDNESDAY") WEDNESDAY("WEDNESDAY"),
-        @Json(name = "THURSDAY") THURSDAY("THURSDAY"),
-        @Json(name = "FRIDAY") FRIDAY("FRIDAY"),
-        @Json(name = "SATURDAY") SATURDAY("SATURDAY"),
-        @Json(name = "SUNDAY") SUNDAY("SUNDAY");
-    }
 
 }
 

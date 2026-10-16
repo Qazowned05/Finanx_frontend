@@ -24,13 +24,14 @@
 package org.openapitools.client.models
 
 import org.openapitools.client.models.Aggregate
+import org.openapitools.client.models.BudgetHealth
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Lista de agregados por estado de salud del presupuesto
  *
  * @param aggregate 
  * @param factor 
@@ -45,7 +46,7 @@ data class AggregateByBudgetHealth (
     val aggregate: Aggregate? = null,
 
     @Json(name = "factor")
-    val factor: AggregateByBudgetHealth.Factor? = null,
+    val factor: BudgetHealth? = null,
 
     @Json(name = "factorName")
     val factorName: kotlin.String? = null,
@@ -58,18 +59,6 @@ data class AggregateByBudgetHealth (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * 
-     *
-     * Values: OK,NEAR_LIMIT,EXCEEDED,INACTIVE
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Factor(val value: kotlin.String) {
-        @Json(name = "OK") OK("OK"),
-        @Json(name = "NEAR_LIMIT") NEAR_LIMIT("NEAR_LIMIT"),
-        @Json(name = "EXCEEDED") EXCEEDED("EXCEEDED"),
-        @Json(name = "INACTIVE") INACTIVE("INACTIVE");
-    }
 
 }
 

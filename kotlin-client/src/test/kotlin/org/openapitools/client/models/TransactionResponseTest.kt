@@ -23,62 +23,91 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.TransactionType
 
 class TransactionResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of TransactionResponse
         //val modelInstance = TransactionResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la transaccion
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `userId`
-        should("test userId") {
+        // to test the property `walletId` - Identificador unico de la billetera asociada a la transaccion
+        should("test walletId") {
             // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
+            //modelInstance.walletId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `walletCurrency` - Moneda de la billetera
+        should("test walletCurrency") {
+            // uncomment below to test the property
+            //modelInstance.walletCurrency shouldBe ("TODO")
+        }
+
+        // to test the property `walletPrimary` - Indica si la billetera es principal
+        should("test walletPrimary") {
+            // uncomment below to test the property
+            //modelInstance.walletPrimary shouldBe ("TODO")
+        }
+
+        // to test the property `categoryId` - Identificador unico de la categoria asociada a la transaccion
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
+        // to test the property `categoryName` - Nombre de la categoria asociada a la transaccion
         should("test categoryName") {
             // uncomment below to test the property
             //modelInstance.categoryName shouldBe ("TODO")
         }
 
-        // to test the property `reasonId`
+        // to test the property `reasonId` - Identificador del motivo asociado a la transaccion, si aplica
         should("test reasonId") {
             // uncomment below to test the property
             //modelInstance.reasonId shouldBe ("TODO")
         }
 
-        // to test the property `reasonDescription`
+        // to test the property `reasonDescription` - Descripcion del motivo asociado a la transaccion
         should("test reasonDescription") {
             // uncomment below to test the property
             //modelInstance.reasonDescription shouldBe ("TODO")
         }
 
-        // to test the property `savingGoalId`
+        // to test the property `savingGoalId` - Identificador de la meta de ahorro asociada, si aplica
         should("test savingGoalId") {
             // uncomment below to test the property
             //modelInstance.savingGoalId shouldBe ("TODO")
         }
 
-        // to test the property `scheduleId`
+        // to test the property `scheduleId` - Identificador de la programacion asociada, si aplica
         should("test scheduleId") {
             // uncomment below to test the property
             //modelInstance.scheduleId shouldBe ("TODO")
         }
 
-        // to test the property `amount`
+        // to test the property `receiptId` - Identificador del recibo asociado, si aplica
+        should("test receiptId") {
+            // uncomment below to test the property
+            //modelInstance.receiptId shouldBe ("TODO")
+        }
+
+        // to test the property `receiptImageId` - Identificador de la imagen del recibo asociado, si aplica
+        should("test receiptImageId") {
+            // uncomment below to test the property
+            //modelInstance.receiptImageId shouldBe ("TODO")
+        }
+
+        // to test the property `amount` - Monto de la transaccion
         should("test amount") {
             // uncomment below to test the property
             //modelInstance.amount shouldBe ("TODO")
@@ -96,19 +125,19 @@ class TransactionResponseTest : ShouldSpec() {
             //modelInstance.type shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion de la transaccion
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que la transaccion fue deshabilitada, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `active`
+        // to test the property `active` - Indica si la transaccion esta activa
         should("test active") {
             // uncomment below to test the property
             //modelInstance.active shouldBe ("TODO")

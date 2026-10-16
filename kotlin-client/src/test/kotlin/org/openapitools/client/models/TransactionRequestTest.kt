@@ -23,26 +23,31 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.TransactionType
 
 class TransactionRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of TransactionRequest
         //val modelInstance = TransactionRequest()
 
-        // to test the property `userId`
-        should("test userId") {
+        // to test the property `walletId` - Identificador unico de la billetera asociada a la transaccion
+        should("test walletId") {
             // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
+            //modelInstance.walletId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `categoryId` - Identificador unico de la categoria asociada a la transaccion
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
-        // to test the property `amount`
+        // to test the property `amount` - Monto de la transaccion (debe ser mayor a 0)
         should("test amount") {
             // uncomment below to test the property
             //modelInstance.amount shouldBe ("TODO")
@@ -60,22 +65,34 @@ class TransactionRequestTest : ShouldSpec() {
             //modelInstance.type shouldBe ("TODO")
         }
 
-        // to test the property `reasonId`
+        // to test the property `reasonId` - Identificador del motivo asociado a la transaccion, si aplica
         should("test reasonId") {
             // uncomment below to test the property
             //modelInstance.reasonId shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion de la transaccion
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `savingGoalId`
+        // to test the property `savingGoalId` - Identificador de la meta de ahorro asociada, si aplica
         should("test savingGoalId") {
             // uncomment below to test the property
             //modelInstance.savingGoalId shouldBe ("TODO")
+        }
+
+        // to test the property `receiptId` - Identificador del recibo escaneado vía OCR, si aplica
+        should("test receiptId") {
+            // uncomment below to test the property
+            //modelInstance.receiptId shouldBe ("TODO")
+        }
+
+        // to test the property `convertCurrency` - Si true y receiptId presente, convierte el monto del recibo (currencyGuess) a la moneda del wallet usando el exchange service
+        should("test convertCurrency") {
+            // uncomment below to test the property
+            //modelInstance.convertCurrency shouldBe ("TODO")
         }
 
     }

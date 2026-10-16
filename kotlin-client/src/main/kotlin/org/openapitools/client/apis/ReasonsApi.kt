@@ -6,12 +6,13 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
+import org.openapitools.client.models.PageResponseReasonResponse
 import org.openapitools.client.models.ReasonRequest
 import org.openapitools.client.models.ReasonResponse
 
 interface ReasonsApi {
     /**
-     * POST reasons
+     * POST api/v1/reasons
      * Crear razon
      * Crea una nueva razon.
      * Responses:
@@ -21,11 +22,11 @@ interface ReasonsApi {
      * @param reasonRequest 
      * @return [ReasonResponse]
      */
-    @POST("reasons")
+    @POST("api/v1/reasons")
     suspend fun createReason(@Body reasonRequest: ReasonRequest): Response<ReasonResponse>
 
     /**
-     * POST reasons/{id}/disable
+     * POST api/v1/reasons/{id}/disable
      * Deshabilitar razon
      * Deshabilita una razon.
      * Responses:
@@ -35,25 +36,11 @@ interface ReasonsApi {
      * @param id ID de la razon
      * @return [Unit]
      */
-    @POST("reasons/{id}/disable")
+    @POST("api/v1/reasons/{id}/disable")
     suspend fun disableReason(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * GET reasons/user/{idUser}
-     * Listar razones por usuario
-     * Obtiene todas las razones asociadas a un usuario.
-     * Responses:
-     *  - 200: Listado obtenido
-     *  - 404: Usuario no encontrado
-     *
-     * @param idUser ID del usuario
-     * @return [kotlin.collections.List<ReasonResponse>]
-     */
-    @GET("reasons/user/{idUser}")
-    suspend fun findAllReasonByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<ReasonResponse>>
-
-    /**
-     * GET reasons/{id}
+     * GET api/v1/reasons/{id}
      * Buscar razon
      * Obtiene una razon por ID.
      * Responses:
@@ -63,11 +50,29 @@ interface ReasonsApi {
      * @param id ID de la razon
      * @return [ReasonResponse]
      */
-    @GET("reasons/{id}")
+    @GET("api/v1/reasons/{id}")
     suspend fun findReasonById(@Path("id") id: kotlin.Long): Response<ReasonResponse>
 
     /**
-     * PUT reasons/{id}
+     * GET api/v1/reasons
+     * Listar razones del usuario
+     * Lista paginada de razones del usuario autenticado con filtros active y search; active&#x3D;true por defecto.
+     * Responses:
+     *  - 200: Listado obtenido
+     *  - 404: Usuario no encontrado
+     *
+     * @param active  (optional, default to true)
+     * @param search  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("description,ASC"))
+     * @return [PageResponseReasonResponse]
+     */
+    @GET("api/v1/reasons")
+    suspend fun listReasons(@Query("active") active: kotlin.Boolean? = true, @Query("search") search: kotlin.String? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("description,ASC")): Response<PageResponseReasonResponse>
+
+    /**
+     * PUT api/v1/reasons/{id}
      * Actualizar razon
      * Actualiza una razon existente.
      * Responses:
@@ -79,7 +84,7 @@ interface ReasonsApi {
      * @param reasonRequest 
      * @return [ReasonResponse]
      */
-    @PUT("reasons/{id}")
+    @PUT("api/v1/reasons/{id}")
     suspend fun updateReason(@Path("id") id: kotlin.Long, @Body reasonRequest: ReasonRequest): Response<ReasonResponse>
 
 }

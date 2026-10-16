@@ -23,6 +23,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.ReceiptScanStatus
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -32,14 +35,16 @@ import java.io.Serializable
  * Resultado del escaneo OCR de un recibo
  *
  * @param receiptId Identificador del recibo escaneado
+ * @param status 
+ * @param errorMessage Mensaje de error si el escaneo falló (nullable)
  * @param imageId ID de la imagen asociada (nullable si no tiene imagen)
  * @param detectedAmount Monto total detectado
  * @param detectedDate Fecha detectada en el recibo (nullable)
- * @param description DescripciÃ³n/nombre del comercio detectado
- * @param paymentMethod MÃ©todo de pago detectado
- * @param transactionType Tipo de transacciÃ³n detectado
- * @param detectedCategoryId ID de la categorÃ­a detectada (nullable)
- * @param rawOcrText Texto OCR crudo extraÃ­do de la imagen
+ * @param description Descripción/nombre del comercio detectado
+ * @param paymentMethod 
+ * @param transactionType 
+ * @param detectedCategoryId ID de la categoría detectada (nullable)
+ * @param rawOcrText Texto OCR crudo extraído de la imagen
  * @param currencyGuess Moneda detectada (no resuelta contra Wallet)
  * @param confidenceScore Nivel de confianza del parseo
  * @param parserEngineUsed Motor usado para el parseo (REGEX o GEMINI)
@@ -51,6 +56,13 @@ data class ReceiptResponse (
     /* Identificador del recibo escaneado */
     @Json(name = "receiptId")
     val receiptId: kotlin.Long? = null,
+
+    @Json(name = "status")
+    val status: ReceiptScanStatus? = null,
+
+    /* Mensaje de error si el escaneo falló (nullable) */
+    @Json(name = "errorMessage")
+    val errorMessage: kotlin.String? = null,
 
     /* ID de la imagen asociada (nullable si no tiene imagen) */
     @Json(name = "imageId")
@@ -64,23 +76,21 @@ data class ReceiptResponse (
     @Json(name = "detectedDate")
     val detectedDate: java.time.LocalDate? = null,
 
-    /* DescripciÃ³n/nombre del comercio detectado */
+    /* Descripción/nombre del comercio detectado */
     @Json(name = "description")
     val description: kotlin.String? = null,
 
-    /* MÃ©todo de pago detectado */
     @Json(name = "paymentMethod")
-    val paymentMethod: ReceiptResponse.PaymentMethod? = null,
+    val paymentMethod: PaymentMethod? = null,
 
-    /* Tipo de transacciÃ³n detectado */
     @Json(name = "transactionType")
-    val transactionType: ReceiptResponse.TransactionType? = null,
+    val transactionType: TransactionType? = null,
 
-    /* ID de la categorÃ­a detectada (nullable) */
+    /* ID de la categoría detectada (nullable) */
     @Json(name = "detectedCategoryId")
     val detectedCategoryId: kotlin.Long? = null,
 
-    /* Texto OCR crudo extraÃ­do de la imagen */
+    /* Texto OCR crudo extraído de la imagen */
     @Json(name = "rawOcrText")
     val rawOcrText: kotlin.String? = null,
 
@@ -101,31 +111,6 @@ data class ReceiptResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * MÃ©todo de pago detectado
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class PaymentMethod(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Tipo de transacciÃ³n detectado
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TransactionType(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

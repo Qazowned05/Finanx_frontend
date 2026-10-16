@@ -23,44 +23,47 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.Aggregate
 
 class AggregateTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of Aggregate
         //val modelInstance = Aggregate()
 
-        // to test the property `title`
+        // to test the property `title` - Titulo o nombre del agregado
         should("test title") {
             // uncomment below to test the property
             //modelInstance.title shouldBe ("TODO")
         }
 
-        // to test the property `totalAmount`
+        // to test the property `totalAmount` - Monto total acumulado
         should("test totalAmount") {
             // uncomment below to test the property
             //modelInstance.totalAmount shouldBe ("TODO")
         }
 
-        // to test the property `averageAmount`
+        // to test the property `averageAmount` - Monto promedio calculado
         should("test averageAmount") {
             // uncomment below to test the property
             //modelInstance.averageAmount shouldBe ("TODO")
         }
 
-        // to test the property `occurrenceCount`
+        // to test the property `occurrenceCount` - Numero de ocurrencias consideradas
         should("test occurrenceCount") {
             // uncomment below to test the property
             //modelInstance.occurrenceCount shouldBe ("TODO")
         }
 
-        // to test the property `max`
+        // to test the property `max` - Valor maximo encontrado
         should("test max") {
             // uncomment below to test the property
             //modelInstance.max shouldBe ("TODO")
         }
 
-        // to test the property `min`
+        // to test the property `min` - Valor minimo encontrado
         should("test min") {
             // uncomment below to test the property
             //modelInstance.min shouldBe ("TODO")

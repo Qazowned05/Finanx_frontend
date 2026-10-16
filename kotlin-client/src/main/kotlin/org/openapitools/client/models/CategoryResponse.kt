@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -34,7 +35,7 @@ import java.io.Serializable
  * @param id Identificador unico de la categoria
  * @param name Nombre de la categoria
  * @param description Descripcion detallada de la categoria
- * @param type Tipo de transaccion asociado a la categoria
+ * @param type 
  * @param active Indica si la categoria esta activa
  * @param createdAt Fecha y hora de creacion de la categoria
  * @param disabledAt Fecha y hora en que la categoria fue deshabilitada, si aplica
@@ -55,9 +56,8 @@ data class CategoryResponse (
     @Json(name = "description")
     val description: kotlin.String? = null,
 
-    /* Tipo de transaccion asociado a la categoria */
     @Json(name = "type")
-    val type: CategoryResponse.Type? = null,
+    val type: TransactionType? = null,
 
     /* Indica si la categoria esta activa */
     @Json(name = "active")
@@ -76,16 +76,6 @@ data class CategoryResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Tipo de transaccion asociado a la categoria
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Type(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

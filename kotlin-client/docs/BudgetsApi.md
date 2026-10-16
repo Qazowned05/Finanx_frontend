@@ -4,14 +4,12 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancelBudget**](BudgetsApi.md#cancelBudget) | **POST** budgets/{id}/cancel | Cancelar presupuesto |
-| [**createBudget**](BudgetsApi.md#createBudget) | **POST** budgets | Crear presupuesto |
-| [**disableBudget**](BudgetsApi.md#disableBudget) | **POST** budgets/{id}/disable | Deshabilitar presupuesto |
-| [**findAllBudgetsByPeriodAndHealth**](BudgetsApi.md#findAllBudgetsByPeriodAndHealth) | **POST** budgets/{health} | Filtrar por salud |
-| [**findAllBudgetsByUser**](BudgetsApi.md#findAllBudgetsByUser) | **GET** budgets/user/{idUser} | Listar presupuestos por usuario |
-| [**findAllBudgetsByUserAndState**](BudgetsApi.md#findAllBudgetsByUserAndState) | **GET** budgets/user/{idUser}/{state} | Listar por usuario y estado |
-| [**findBudgetById**](BudgetsApi.md#findBudgetById) | **GET** budgets/{id} | Buscar presupuesto |
-| [**updateBudget**](BudgetsApi.md#updateBudget) | **PUT** budgets/{id} | Actualizar presupuesto |
+| [**cancelBudget**](BudgetsApi.md#cancelBudget) | **POST** api/v1/budgets/{id}/cancel | Cancelar presupuesto |
+| [**createBudget**](BudgetsApi.md#createBudget) | **POST** api/v1/budgets | Crear presupuesto |
+| [**disableBudget**](BudgetsApi.md#disableBudget) | **POST** api/v1/budgets/{id}/disable | Deshabilitar presupuesto |
+| [**findBudgetById**](BudgetsApi.md#findBudgetById) | **GET** api/v1/budgets/{id} | Buscar presupuesto |
+| [**listBudgets**](BudgetsApi.md#listBudgets) | **GET** api/v1/budgets | Listar presupuestos por usuario |
+| [**updateBudget**](BudgetsApi.md#updateBudget) | **PUT** api/v1/budgets/{id} | Actualizar presupuesto |
 
 
 
@@ -132,127 +130,6 @@ No authorization required
  - **Accept**: Not defined
 
 
-Filtrar por salud
-
-Filtra presupuestos por health.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(BudgetsApi::class.java)
-val health : kotlin.String = health_example // kotlin.String | 
-val periodRequest : PeriodRequest =  // PeriodRequest | 
-
-launch(Dispatchers.IO) {
-    val result : TimeBoundListBudgetResponse = webService.findAllBudgetsByPeriodAndHealth(health, periodRequest)
-}
-```
-
-### Parameters
-| **health** | **kotlin.String**|  | [enum: OK, NEAR_LIMIT, EXCEEDED, INACTIVE] |
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
-
-### Return type
-
-[**TimeBoundListBudgetResponse**](TimeBoundListBudgetResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: */*
-
-
-Listar presupuestos por usuario
-
-Obtiene todos los presupuestos de un usuario.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(BudgetsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetResponse> = webService.findAllBudgetsByUser(idUser)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **idUser** | **kotlin.Long**| ID usuario | |
-
-### Return type
-
-[**kotlin.collections.List&lt;BudgetResponse&gt;**](BudgetResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Listar por usuario y estado
-
-Obtiene presupuestos filtrados por estado.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(BudgetsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | 
-val state : kotlin.String = state_example // kotlin.String | 
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetResponse> = webService.findAllBudgetsByUserAndState(idUser, state)
-}
-```
-
-### Parameters
-| **idUser** | **kotlin.Long**|  | |
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**|  | [enum: ACTIVE, CANCELLED, DISABLED, FINALIZED] |
-
-### Return type
-
-[**kotlin.collections.List&lt;BudgetResponse&gt;**](BudgetResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
 Buscar presupuesto
 
 Obtiene un presupuesto por ID.
@@ -281,6 +158,59 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**BudgetResponse**](BudgetResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+Listar presupuestos por usuario
+
+Lista paginada del usuario autenticado. Admite filtros active, state, health y rango from/to; active&#x3D;true por defecto.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(BudgetsApi::class.java)
+val active : kotlin.Boolean = true // kotlin.Boolean | 
+val state : BudgetState =  // BudgetState | 
+val health : BudgetHealth =  // BudgetHealth | 
+val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponseBudgetResponse = webService.listBudgets(active, state, health, from, to, page, size, sort)
+}
+```
+
+### Parameters
+| **active** | **kotlin.Boolean**|  | [optional] [default to true] |
+| **state** | [**BudgetState**](.md)|  | [optional] [enum: ACTIVE, CANCELLED, DISABLED, FINALIZED] |
+| **health** | [**BudgetHealth**](.md)|  | [optional] [enum: OK, NEAR_LIMIT, EXCEEDED, INACTIVE] |
+| **from** | **java.time.LocalDate**|  | [optional] |
+| **to** | **java.time.LocalDate**|  | [optional] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;end,ASC&quot;)] |
+
+### Return type
+
+[**PageResponseBudgetResponse**](PageResponseBudgetResponse.md)
 
 ### Authorization
 

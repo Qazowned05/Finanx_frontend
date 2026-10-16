@@ -17,25 +17,11 @@
 | **receiptId** | **kotlin.Long** | Identificador del recibo asociado, si aplica |  [optional] |
 | **receiptImageId** | **kotlin.Long** | Identificador de la imagen del recibo asociado, si aplica |  [optional] |
 | **amount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto de la transaccion |  [optional] |
-| **paymentMethod** | [**inline**](#PaymentMethod) | Metodo de pago utilizado en la transaccion |  [optional] |
-| **type** | [**inline**](#Type) | Tipo de transaccion (ingreso o gasto) |  [optional] |
+| **paymentMethod** | [**PaymentMethod**](PaymentMethod.md) |  |  [optional] |
+| **type** | [**TransactionType**](TransactionType.md) |  |  [optional] |
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion de la transaccion |  [optional] |
 | **disabledAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora en que la transaccion fue deshabilitada, si aplica |  [optional] |
 | **active** | **kotlin.Boolean** | Indica si la transaccion esta activa |  [optional] |
-
-
-<a id="PaymentMethod"></a>
-## Enum: paymentMethod
-| Name | Value |
-| ---- | ----- |
-| paymentMethod | CASH, CREDIT_CARD, DEBIT_CARD, BANK_TRANSFER, YAPE, PLIN, OTHER |
-
-
-<a id="Type"></a>
-## Enum: type
-| Name | Value |
-| ---- | ----- |
-| type | SPENT, INCOME |
 
 
 

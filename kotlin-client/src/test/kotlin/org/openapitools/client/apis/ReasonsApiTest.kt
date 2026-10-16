@@ -23,7 +23,13 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.ReasonsApi
+import org.openapitools.client.models.PageResponseReasonResponse
+import org.openapitools.client.models.ReasonRequest
+import org.openapitools.client.models.ReasonResponse
 
 class ReasonsApiTest : ShouldSpec() {
     init {
@@ -41,30 +47,34 @@ class ReasonsApiTest : ShouldSpec() {
         // to test disableReason
         should("test disableReason") {
             // uncomment below to test disableReason
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razon
             //apiInstance.disableReason(id)
-        }
-
-        // to test findAllReasonByUser
-        should("test findAllReasonByUser") {
-            // uncomment below to test findAllReasonByUser
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID del usuario
-            //val result : kotlin.collections.List<ReasonResponse> = apiInstance.findAllReasonByUser(idUser)
-            //result shouldBe ("TODO")
         }
 
         // to test findReasonById
         should("test findReasonById") {
             // uncomment below to test findReasonById
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razon
             //val result : ReasonResponse = apiInstance.findReasonById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listReasons
+        should("test listReasons") {
+            // uncomment below to test listReasons
+            //val active : kotlin.Boolean = true // kotlin.Boolean | 
+            //val search : kotlin.String = search_example // kotlin.String | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseReasonResponse = apiInstance.listReasons(active, search, page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test updateReason
         should("test updateReason") {
             // uncomment below to test updateReason
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la razon
             //val reasonRequest : ReasonRequest =  // ReasonRequest | 
             //val result : ReasonResponse = apiInstance.updateReason(id, reasonRequest)
             //result shouldBe ("TODO")

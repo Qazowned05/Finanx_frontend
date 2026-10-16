@@ -23,29 +23,47 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.NotificationDTO
+import org.openapitools.client.models.BudgetState
+import org.openapitools.client.models.NotificationState
+import org.openapitools.client.models.NotificationType
 
 class NotificationDTOTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of NotificationDTO
         //val modelInstance = NotificationDTO()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la notificacion
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador del usuario asociado a la notificacion
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `userEmail`
+        // to test the property `userEmail` - Correo electronico del usuario
         should("test userEmail") {
             // uncomment below to test the property
             //modelInstance.userEmail shouldBe ("TODO")
+        }
+
+        // to test the property `emailNotifications` - Indica si el usuario tiene habilitadas las notificaciones por email
+        should("test emailNotifications") {
+            // uncomment below to test the property
+            //modelInstance.emailNotifications shouldBe ("TODO")
+        }
+
+        // to test the property `fcmTokens` - Tokens FCM del usuario para notificaciones push
+        should("test fcmTokens") {
+            // uncomment below to test the property
+            //modelInstance.fcmTokens shouldBe ("TODO")
         }
 
         // to test the property `type`
@@ -54,31 +72,31 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.type shouldBe ("TODO")
         }
 
-        // to test the property `message`
+        // to test the property `message` - Mensaje de la notificacion
         should("test message") {
             // uncomment below to test the property
             //modelInstance.message shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion de la notificacion
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que la notificacion fue deshabilitada, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `scheduledAt`
+        // to test the property `scheduledAt` - Fecha y hora programada para enviar la notificacion
         should("test scheduledAt") {
             // uncomment below to test the property
             //modelInstance.scheduledAt shouldBe ("TODO")
         }
 
-        // to test the property `sentAt`
+        // to test the property `sentAt` - Fecha y hora en que la notificacion fue enviada
         should("test sentAt") {
             // uncomment below to test the property
             //modelInstance.sentAt shouldBe ("TODO")
@@ -90,19 +108,19 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.state shouldBe ("TODO")
         }
 
-        // to test the property `scheduleId`
+        // to test the property `scheduleId` - Identificador de la programacion asociada
         should("test scheduleId") {
             // uncomment below to test the property
             //modelInstance.scheduleId shouldBe ("TODO")
         }
 
-        // to test the property `budgetId`
+        // to test the property `budgetId` - Identificador del presupuesto asociado
         should("test budgetId") {
             // uncomment below to test the property
             //modelInstance.budgetId shouldBe ("TODO")
         }
 
-        // to test the property `budgetDescription`
+        // to test the property `budgetDescription` - Descripcion del presupuesto asociado
         should("test budgetDescription") {
             // uncomment below to test the property
             //modelInstance.budgetDescription shouldBe ("TODO")
@@ -114,13 +132,13 @@ class NotificationDTOTest : ShouldSpec() {
             //modelInstance.budgetState shouldBe ("TODO")
         }
 
-        // to test the property `savingGoalId`
+        // to test the property `savingGoalId` - Identificador de la meta de ahorro asociada
         should("test savingGoalId") {
             // uncomment below to test the property
             //modelInstance.savingGoalId shouldBe ("TODO")
         }
 
-        // to test the property `savingGoalDescription`
+        // to test the property `savingGoalDescription` - Descripcion de la meta de ahorro asociada
         should("test savingGoalDescription") {
             // uncomment below to test the property
             //modelInstance.savingGoalDescription shouldBe ("TODO")

@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -34,12 +36,12 @@ import java.io.Serializable
  * @param walletId Identificador unico de la billetera asociada a la transaccion
  * @param categoryId Identificador unico de la categoria asociada a la transaccion
  * @param amount Monto de la transaccion (debe ser mayor a 0)
- * @param paymentMethod Metodo de pago utilizado en la transaccion
- * @param type Tipo de transaccion (ingreso o gasto)
+ * @param paymentMethod 
+ * @param type 
  * @param reasonId Identificador del motivo asociado a la transaccion, si aplica
  * @param description Descripcion de la transaccion
  * @param savingGoalId Identificador de la meta de ahorro asociada, si aplica
- * @param receiptId Identificador del recibo escaneado vÃ­a OCR, si aplica
+ * @param receiptId Identificador del recibo escaneado vía OCR, si aplica
  * @param convertCurrency Si true y receiptId presente, convierte el monto del recibo (currencyGuess) a la moneda del wallet usando el exchange service
  */
 
@@ -58,13 +60,11 @@ data class TransactionRequest (
     @Json(name = "amount")
     val amount: java.math.BigDecimal,
 
-    /* Metodo de pago utilizado en la transaccion */
     @Json(name = "paymentMethod")
-    val paymentMethod: TransactionRequest.PaymentMethod,
+    val paymentMethod: PaymentMethod,
 
-    /* Tipo de transaccion (ingreso o gasto) */
     @Json(name = "type")
-    val type: TransactionRequest.Type,
+    val type: TransactionType,
 
     /* Identificador del motivo asociado a la transaccion, si aplica */
     @Json(name = "reasonId")
@@ -78,7 +78,7 @@ data class TransactionRequest (
     @Json(name = "savingGoalId")
     val savingGoalId: kotlin.Long? = null,
 
-    /* Identificador del recibo escaneado vÃ­a OCR, si aplica */
+    /* Identificador del recibo escaneado vía OCR, si aplica */
     @Json(name = "receiptId")
     val receiptId: kotlin.Long? = null,
 
@@ -91,31 +91,6 @@ data class TransactionRequest (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Metodo de pago utilizado en la transaccion
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class PaymentMethod(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Tipo de transaccion (ingreso o gasto)
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Type(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

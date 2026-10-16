@@ -24,6 +24,7 @@
 package org.openapitools.client.models
 
 import org.openapitools.client.models.Aggregate
+import org.openapitools.client.models.PaymentMethod
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -45,7 +46,7 @@ data class AggregateByPaymentMethod (
     val aggregate: Aggregate? = null,
 
     @Json(name = "factor")
-    val factor: AggregateByPaymentMethod.Factor? = null,
+    val factor: PaymentMethod? = null,
 
     @Json(name = "factorName")
     val factorName: kotlin.String? = null,
@@ -58,21 +59,6 @@ data class AggregateByPaymentMethod (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * 
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Factor(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
 
 }
 

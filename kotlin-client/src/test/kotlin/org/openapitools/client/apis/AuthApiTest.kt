@@ -23,7 +23,14 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.AuthApi
+import org.openapitools.client.models.GoogleLoginRequest
+import org.openapitools.client.models.LoginRequest
+import org.openapitools.client.models.LoginResponse
+import org.openapitools.client.models.UserRequest
 
 class AuthApiTest : ShouldSpec() {
     init {

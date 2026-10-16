@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -44,8 +46,8 @@ import java.io.Serializable
  * @param receiptId Identificador del recibo asociado, si aplica
  * @param receiptImageId Identificador de la imagen del recibo asociado, si aplica
  * @param amount Monto de la transaccion
- * @param paymentMethod Metodo de pago utilizado en la transaccion
- * @param type Tipo de transaccion (ingreso o gasto)
+ * @param paymentMethod 
+ * @param type 
  * @param createdAt Fecha y hora de creacion de la transaccion
  * @param disabledAt Fecha y hora en que la transaccion fue deshabilitada, si aplica
  * @param active Indica si la transaccion esta activa
@@ -106,13 +108,11 @@ data class TransactionResponse (
     @Json(name = "amount")
     val amount: java.math.BigDecimal? = null,
 
-    /* Metodo de pago utilizado en la transaccion */
     @Json(name = "paymentMethod")
-    val paymentMethod: TransactionResponse.PaymentMethod? = null,
+    val paymentMethod: PaymentMethod? = null,
 
-    /* Tipo de transaccion (ingreso o gasto) */
     @Json(name = "type")
-    val type: TransactionResponse.Type? = null,
+    val type: TransactionType? = null,
 
     /* Fecha y hora de creacion de la transaccion */
     @Json(name = "createdAt")
@@ -131,31 +131,6 @@ data class TransactionResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Metodo de pago utilizado en la transaccion
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class PaymentMethod(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Tipo de transaccion (ingreso o gasto)
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Type(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

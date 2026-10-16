@@ -23,7 +23,14 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.SavingsApi
+import org.openapitools.client.models.PageResponseSavingGoalResponse
+import org.openapitools.client.models.SavingGoalRequest
+import org.openapitools.client.models.SavingGoalResponse
+import org.openapitools.client.models.SavingGoalState
 
 class SavingsApiTest : ShouldSpec() {
     init {
@@ -52,19 +59,23 @@ class SavingsApiTest : ShouldSpec() {
             //apiInstance.disableSavingGoal(id)
         }
 
-        // to test findAllActiveSavingGoalByUser
-        should("test findAllActiveSavingGoalByUser") {
-            // uncomment below to test findAllActiveSavingGoalByUser
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val result : kotlin.collections.List<SavingGoalResponse> = apiInstance.findAllActiveSavingGoalByUser(idUser)
-            //result shouldBe ("TODO")
-        }
-
         // to test findSavingGoalById
         should("test findSavingGoalById") {
             // uncomment below to test findSavingGoalById
             //val id : kotlin.Long = 789 // kotlin.Long | ID meta
             //val result : SavingGoalResponse = apiInstance.findSavingGoalById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listSavingGoals
+        should("test listSavingGoals") {
+            // uncomment below to test listSavingGoals
+            //val active : kotlin.Boolean = true // kotlin.Boolean | 
+            //val state : SavingGoalState =  // SavingGoalState | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseSavingGoalResponse = apiInstance.listSavingGoals(active, state, page, size, sort)
             //result shouldBe ("TODO")
         }
 

@@ -23,20 +23,23 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.ReasonSummary
 
 class ReasonSummaryTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of ReasonSummary
         //val modelInstance = ReasonSummary()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico del motivo
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion breve del motivo
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")

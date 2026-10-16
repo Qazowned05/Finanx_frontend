@@ -4,11 +4,11 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**create**](WalletsApi.md#create) | **POST** users/{userId}/wallets | Crear billetera |
-| [**disable**](WalletsApi.md#disable) | **DELETE** users/{userId}/wallets/{id} | Deshabilitar billetera |
-| [**findAllByUser**](WalletsApi.md#findAllByUser) | **GET** users/{userId}/wallets | Listar billeteras de un usuario |
-| [**findById**](WalletsApi.md#findById) | **GET** users/{userId}/wallets/{id} | Obtener billetera por ID |
-| [**update**](WalletsApi.md#update) | **PUT** users/{userId}/wallets/{id} | Actualizar billetera |
+| [**create**](WalletsApi.md#create) | **POST** api/v1/wallets | Crear billetera |
+| [**disable**](WalletsApi.md#disable) | **DELETE** api/v1/wallets/{id} | Deshabilitar billetera |
+| [**findById**](WalletsApi.md#findById) | **GET** api/v1/wallets/{id} | Obtener billetera por ID |
+| [**listWallets**](WalletsApi.md#listWallets) | **GET** api/v1/wallets | Listar billeteras del usuario autenticado |
+| [**update**](WalletsApi.md#update) | **PUT** api/v1/wallets/{id} | Actualizar billetera |
 
 
 
@@ -23,16 +23,14 @@ Crear billetera
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(WalletsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val walletRequest : WalletRequest =  // WalletRequest | 
 
 launch(Dispatchers.IO) {
-    val result : WalletResponse = webService.create(userId, walletRequest)
+    val result : WalletResponse = webService.create(walletRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **walletRequest** | [**WalletRequest**](WalletRequest.md)|  | |
@@ -62,16 +60,14 @@ Deshabilitar billetera
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(WalletsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.disable(userId, id)
+    webService.disable(id)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **kotlin.Long**|  | |
@@ -90,43 +86,6 @@ No authorization required
  - **Accept**: Not defined
 
 
-Listar billeteras de un usuario
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(WalletsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<WalletResponse> = webService.findAllByUser(userId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**|  | |
-
-### Return type
-
-[**kotlin.collections.List&lt;WalletResponse&gt;**](WalletResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
 Obtener billetera por ID
 
 ### Example
@@ -138,16 +97,14 @@ Obtener billetera por ID
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(WalletsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val id : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    val result : WalletResponse = webService.findById(userId, id)
+    val result : WalletResponse = webService.findById(id)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **kotlin.Long**|  | |
@@ -155,6 +112,49 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**WalletResponse**](WalletResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+Listar billeteras del usuario autenticado
+
+Lista paginada con page, size y sort estándar.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(WalletsApi::class.java)
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponseWalletResponse = webService.listWallets(page, size, sort)
+}
+```
+
+### Parameters
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;id,ASC&quot;)] |
+
+### Return type
+
+[**PageResponseWalletResponse**](PageResponseWalletResponse.md)
 
 ### Authorization
 
@@ -177,17 +177,15 @@ Actualizar billetera
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(WalletsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val id : kotlin.Long = 789 // kotlin.Long | 
 val walletRequest : WalletRequest =  // WalletRequest | 
 
 launch(Dispatchers.IO) {
-    val result : WalletResponse = webService.update(userId, id, walletRequest)
+    val result : WalletResponse = webService.update(id, walletRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | **id** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |

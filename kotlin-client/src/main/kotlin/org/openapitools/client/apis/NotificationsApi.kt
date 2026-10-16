@@ -7,10 +7,12 @@ import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
 import org.openapitools.client.models.NotificationDTO
+import org.openapitools.client.models.NotificationState
+import org.openapitools.client.models.PageResponseNotificationDTO
 
 interface NotificationsApi {
     /**
-     * POST notifications/discard
+     * POST api/v1/notifications/discard
      * Descartar notificacion
      * Marca una notificacion como descartada.
      * Responses:
@@ -20,50 +22,11 @@ interface NotificationsApi {
      * @param body 
      * @return [Unit]
      */
-    @POST("notifications/discard")
+    @POST("api/v1/notifications/discard")
     suspend fun discardNotification(@Body body: kotlin.Long): Response<Unit>
 
     /**
-     * GET notifications/user/{idUser}
-     * Listar notificaciones por usuario
-     * Obtiene todas las notificaciones de un usuario.
-     * Responses:
-     *  - 200: Listado obtenido
-     *  - 404: Usuario no encontrado
-     *
-     * @param idUser ID usuario
-     * @return [kotlin.collections.List<NotificationDTO>]
-     */
-    @GET("notifications/user/{idUser}")
-    suspend fun findAllNotificationByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<NotificationDTO>>
-
-
-    /**
-    * enum for parameter state
-    */
-    enum class StateFindAllNotificationsByUserAndState(val value: kotlin.String) {
-        @Json(name = "SCHEDULED") SCHEDULED("SCHEDULED"),
-        @Json(name = "SENT") SENT("SENT"),
-        @Json(name = "READ") READ("READ"),
-        @Json(name = "DISCARD") DISCARD("DISCARD")
-    }
-
-    /**
-     * GET notifications/user/{idUser}/{state}
-     * Listar por estado
-     * Obtiene notificaciones filtradas por estado.
-     * Responses:
-     *  - 200: Listado obtenido
-     *
-     * @param idUser ID usuario
-     * @param state Estado
-     * @return [kotlin.collections.List<NotificationDTO>]
-     */
-    @GET("notifications/user/{idUser}/{state}")
-    suspend fun findAllNotificationsByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<NotificationDTO>>
-
-    /**
-     * GET notifications/{id}
+     * GET api/v1/notifications/{id}
      * Buscar notificacion
      * Obtiene una notificacion por ID.
      * Responses:
@@ -73,11 +36,29 @@ interface NotificationsApi {
      * @param id ID notificacion
      * @return [NotificationDTO]
      */
-    @GET("notifications/{id}")
+    @GET("api/v1/notifications/{id}")
     suspend fun findNotificationById(@Path("id") id: kotlin.Long): Response<NotificationDTO>
 
     /**
-     * POST notifications/mark-as-read
+     * GET api/v1/notifications
+     * Listar notificaciones del usuario
+     * Lista paginada de notificaciones del usuario autenticado con filtros opcionales state y search.
+     * Responses:
+     *  - 200: Listado obtenido
+     *  - 404: Usuario no encontrado
+     *
+     * @param state  (optional)
+     * @param search  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("createdAt,DESC"))
+     * @return [PageResponseNotificationDTO]
+     */
+    @GET("api/v1/notifications")
+    suspend fun listNotifications(@Query("state") state: NotificationState? = null, @Query("search") search: kotlin.String? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("createdAt,DESC")): Response<PageResponseNotificationDTO>
+
+    /**
+     * POST api/v1/notifications/mark-as-read
      * Marcar como leida
      * Marca una notificacion como leida.
      * Responses:
@@ -87,21 +68,20 @@ interface NotificationsApi {
      * @param body 
      * @return [Unit]
      */
-    @POST("notifications/mark-as-read")
+    @POST("api/v1/notifications/mark-as-read")
     suspend fun markAsRead(@Body body: kotlin.Long): Response<Unit>
 
     /**
-     * POST notifications/user/{userId}/purge-older-than
+     * POST api/v1/notifications/purge-older-than
      * Eliminar notificaciones antiguas
      * Elimina notificaciones anteriores a una fecha.
      * Responses:
      *  - 204: Eliminadas
      *
-     * @param userId ID usuario
      * @param dateTime Fecha limite
      * @return [Unit]
      */
-    @POST("notifications/user/{userId}/purge-older-than")
-    suspend fun purgeNotifications(@Path("userId") userId: kotlin.Long, @Query("dateTime") dateTime: java.time.LocalDateTime): Response<Unit>
+    @POST("api/v1/notifications/purge-older-than")
+    suspend fun purgeNotifications(@Query("dateTime") dateTime: java.time.LocalDateTime): Response<Unit>
 
 }

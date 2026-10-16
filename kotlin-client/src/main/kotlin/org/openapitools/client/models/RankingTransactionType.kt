@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Ranking por tipo de transaccion con metricas resumidas
  *
  * @param count 
  * @param title 

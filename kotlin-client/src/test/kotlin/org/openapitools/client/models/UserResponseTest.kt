@@ -23,38 +23,44 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.UserResponse
+import org.openapitools.client.models.Role
+import org.openapitools.client.models.UserPreferencesResponse
+import org.openapitools.client.models.UserState
 
 class UserResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of UserResponse
         //val modelInstance = UserResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico del usuario
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `name`
+        // to test the property `name` - Nombres del usuario
         should("test name") {
             // uncomment below to test the property
             //modelInstance.name shouldBe ("TODO")
         }
 
-        // to test the property `lastname`
+        // to test the property `lastname` - Apellidos del usuario
         should("test lastname") {
             // uncomment below to test the property
             //modelInstance.lastname shouldBe ("TODO")
         }
 
-        // to test the property `email`
+        // to test the property `email` - Correo electronico del usuario
         should("test email") {
             // uncomment below to test the property
             //modelInstance.email shouldBe ("TODO")
         }
 
-        // to test the property `username`
+        // to test the property `username` - Nombre de usuario unico
         should("test username") {
             // uncomment below to test the property
             //modelInstance.username shouldBe ("TODO")
@@ -72,34 +78,34 @@ class UserResponseTest : ShouldSpec() {
             //modelInstance.state shouldBe ("TODO")
         }
 
-        // to test the property `moneyBalance`
+        // to test the property `moneyBalance` - Balance monetario del usuario
         should("test moneyBalance") {
             // uncomment below to test the property
             //modelInstance.moneyBalance shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion del usuario
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que el usuario fue deshabilitado, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `fullName`
+        // to test the property `fullName` - Nombre completo del usuario en formato concatenado
         should("test fullName") {
             // uncomment below to test the property
             //modelInstance.fullName shouldBe ("TODO")
         }
 
-        // to test the property `timeZone`
-        should("test timeZone") {
+        // to test the property `preferences`
+        should("test preferences") {
             // uncomment below to test the property
-            //modelInstance.timeZone shouldBe ("TODO")
+            //modelInstance.preferences shouldBe ("TODO")
         }
 
     }

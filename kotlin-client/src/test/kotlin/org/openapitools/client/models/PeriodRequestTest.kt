@@ -23,29 +23,26 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.PeriodRequest
 
 class PeriodRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of PeriodRequest
         //val modelInstance = PeriodRequest()
 
-        // to test the property `start`
+        // to test the property `start` - Fecha de inicio del periodo (formato yyyy-MM-dd)
         should("test start") {
             // uncomment below to test the property
             //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `end`
+        // to test the property `end` - Fecha de fin del periodo (formato yyyy-MM-dd)
         should("test end") {
             // uncomment below to test the property
             //modelInstance.end shouldBe ("TODO")
-        }
-
-        // to test the property `userId`
-        should("test userId") {
-            // uncomment below to test the property
-            //modelInstance.userId shouldBe ("TODO")
         }
 
     }

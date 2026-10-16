@@ -24,6 +24,7 @@
 package org.openapitools.client.models
 
 import org.openapitools.client.models.Aggregate
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -45,7 +46,7 @@ data class AggregateByTransactionType (
     val aggregate: Aggregate? = null,
 
     @Json(name = "factor")
-    val factor: AggregateByTransactionType.Factor? = null,
+    val factor: TransactionType? = null,
 
     @Json(name = "factorName")
     val factorName: kotlin.String? = null,
@@ -58,16 +59,6 @@ data class AggregateByTransactionType (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * 
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Factor(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

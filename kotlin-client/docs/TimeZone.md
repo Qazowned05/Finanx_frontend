@@ -1,0 +1,56 @@
+
+# TimeZone
+
+## Enum
+
+
+    * `AMERICA_LIMA` (value: `"AMERICA_LIMA"`)
+
+    * `AMERICA_BOGOTA` (value: `"AMERICA_BOGOTA"`)
+
+    * `AMERICA_QUITO` (value: `"AMERICA_QUITO"`)
+
+    * `AMERICA_CARACAS` (value: `"AMERICA_CARACAS"`)
+
+    * `AMERICA_LA_PAZ` (value: `"AMERICA_LA_PAZ"`)
+
+    * `AMERICA_ASUNCION` (value: `"AMERICA_ASUNCION"`)
+
+    * `AMERICA_MONTEVIDEO` (value: `"AMERICA_MONTEVIDEO"`)
+
+    * `AMERICA_SANTIAGO` (value: `"AMERICA_SANTIAGO"`)
+
+    * `AMERICA_BUENOS_AIRES` (value: `"AMERICA_BUENOS_AIRES"`)
+
+    * `AMERICA_GUATEMALA` (value: `"AMERICA_GUATEMALA"`)
+
+    * `AMERICA_COSTA_RICA` (value: `"AMERICA_COSTA_RICA"`)
+
+    * `AMERICA_TEGUCIGALPA` (value: `"AMERICA_TEGUCIGALPA"`)
+
+    * `AMERICA_EL_SALVADOR` (value: `"AMERICA_EL_SALVADOR"`)
+
+    * `AMERICA_MANAGUA` (value: `"AMERICA_MANAGUA"`)
+
+    * `AMERICA_PANAMA` (value: `"AMERICA_PANAMA"`)
+
+    * `AMERICA_HAVANA` (value: `"AMERICA_HAVANA"`)
+
+    * `AMERICA_SANTO_DOMINGO` (value: `"AMERICA_SANTO_DOMINGO"`)
+
+    * `AMERICA_PUERTO_RICO` (value: `"AMERICA_PUERTO_RICO"`)
+
+    * `AMERICA_MEXICO_CITY` (value: `"AMERICA_MEXICO_CITY"`)
+
+    * `EUROPE_MADRID` (value: `"EUROPE_MADRID"`)
+
+    * `AFRICA_CEUTA` (value: `"AFRICA_CEUTA"`)
+
+    * `ATLANTIC_CANARY` (value: `"ATLANTIC_CANARY"`)
+
+    * `AMERICA_NEW_YORK` (value: `"AMERICA_NEW_YORK"`)
+
+    * `AMERICA_LOS_ANGELES` (value: `"AMERICA_LOS_ANGELES"`)
+
+
+

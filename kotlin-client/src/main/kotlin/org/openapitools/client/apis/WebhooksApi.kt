@@ -6,27 +6,16 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
+import org.openapitools.client.models.PaymentProvider
 
 interface WebhooksApi {
-
-    /**
-    * enum for parameter provider
-    */
-    enum class ProviderReceiveWebhook(val value: kotlin.String) {
-        @Json(name = "MERCADO_PAGO") MERCADO_PAGO("MERCADO_PAGO"),
-        @Json(name = "CULQI") CULQI("CULQI"),
-        @Json(name = "STRIPE") STRIPE("STRIPE"),
-        @Json(name = "MANUAL_TRANSFER") MANUAL_TRANSFER("MANUAL_TRANSFER")
-    }
-
     /**
      * POST webhooks/{provider}
      * Receive provider webhook
      * Receives an inbound webhook notification from a payment provider.
      * Responses:
-     *  - 200: Accepted
+     *  - 200: Accepted (duplicates are idempotent)
      *  - 401: Invalid signature
-     *  - 409: Duplicate event
      *
      * @param provider Payment provider
      * @param body 
@@ -34,6 +23,6 @@ interface WebhooksApi {
      * @return [Unit]
      */
     @POST("webhooks/{provider}")
-    suspend fun receiveWebhook(@Path("provider") provider: kotlin.String, @Body body: kotlin.String, @Header("X-Signature") xSignature: kotlin.String? = null): Response<Unit>
+    suspend fun receiveWebhook(@Path("provider") provider: PaymentProvider, @Body body: kotlin.String, @Header("X-Signature") xSignature: kotlin.String? = null): Response<Unit>
 
 }

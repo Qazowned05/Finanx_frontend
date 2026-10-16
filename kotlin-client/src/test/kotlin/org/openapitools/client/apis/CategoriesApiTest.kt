@@ -23,7 +23,14 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.CategoriesApi
+import org.openapitools.client.models.CategoryRequest
+import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.PageResponseCategoryResponse
+import org.openapitools.client.models.TransactionType
 
 class CategoriesApiTest : ShouldSpec() {
     init {
@@ -41,39 +48,35 @@ class CategoriesApiTest : ShouldSpec() {
         // to test disableCategory
         should("test disableCategory") {
             // uncomment below to test disableCategory
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categorÃ­a
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categoria
             //apiInstance.disableCategory(id)
-        }
-
-        // to test findAllCategoriesByUser
-        should("test findAllCategoriesByUser") {
-            // uncomment below to test findAllCategoriesByUser
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID del usuario
-            //val result : kotlin.collections.List<CategoryResponse> = apiInstance.findAllCategoriesByUser(idUser)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllCategoriesyUserAndActive
-        should("test findAllCategoriesyUserAndActive") {
-            // uncomment below to test findAllCategoriesyUserAndActive
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID del usuario
-            //val active : kotlin.Boolean = true // kotlin.Boolean | Estado activo
-            //val result : kotlin.collections.List<CategoryResponse> = apiInstance.findAllCategoriesyUserAndActive(idUser, active)
-            //result shouldBe ("TODO")
         }
 
         // to test findCategoryById
         should("test findCategoryById") {
             // uncomment below to test findCategoryById
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categorÃ­a
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categoria
             //val result : CategoryResponse = apiInstance.findCategoryById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listCategories
+        should("test listCategories") {
+            // uncomment below to test listCategories
+            //val active : kotlin.Boolean = true // kotlin.Boolean | 
+            //val type : TransactionType =  // TransactionType | 
+            //val search : kotlin.String = search_example // kotlin.String | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseCategoryResponse = apiInstance.listCategories(active, type, search, page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test updateCategory
         should("test updateCategory") {
             // uncomment below to test updateCategory
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categorÃ­a
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la categoria
             //val categoryRequest : CategoryRequest =  // CategoryRequest | 
             //val result : CategoryResponse = apiInstance.updateCategory(id, categoryRequest)
             //result shouldBe ("TODO")

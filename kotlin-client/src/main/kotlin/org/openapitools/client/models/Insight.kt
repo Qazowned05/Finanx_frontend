@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.InsightSeverity
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -31,7 +32,7 @@ import java.io.Serializable
 /**
  * Objeto que representa un insight con severidad, titulo, descripcion y accion recomendada
  *
- * @param severity Nivel de severidad
+ * @param severity 
  * @param title Titulo breve
  * @param description Descripcion detallada
  * @param action Accion recomendada
@@ -40,9 +41,8 @@ import java.io.Serializable
 
 data class Insight (
 
-    /* Nivel de severidad */
     @Json(name = "severity")
-    val severity: Insight.Severity? = null,
+    val severity: InsightSeverity? = null,
 
     /* Titulo breve */
     @Json(name = "title")
@@ -61,17 +61,6 @@ data class Insight (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Nivel de severidad
-     *
-     * Values: INFO,WARNING,CRITICAL
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Severity(val value: kotlin.String) {
-        @Json(name = "INFO") INFO("INFO"),
-        @Json(name = "WARNING") WARNING("WARNING"),
-        @Json(name = "CRITICAL") CRITICAL("CRITICAL");
-    }
 
 }
 

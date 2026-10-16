@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Ranking de categorias con mayor saldo restante
  *
  * @param count 
  * @param title 

@@ -6,34 +6,24 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
-import org.openapitools.client.models.BudgetScheduleResponse
+import org.openapitools.client.models.PageResponseBudgetScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 interface ScheduleBudgetsApi {
-
     /**
-    * enum for parameter state
-    */
-    enum class StateFindAllBudgetScheduleByUserAndState(val value: kotlin.String) {
-        @Json(name = "RUNNING") RUNNING("RUNNING"),
-        @Json(name = "PAUSED") PAUSED("PAUSED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "CREATED") CREATED("CREATED"),
-        @Json(name = "ERROR") ERROR("ERROR")
-    }
-
-    /**
-     * GET schedule/budgets/user/{idUser}/{state}
+     * GET api/v1/schedule/budgets
      * Listar programaciones de presupuestos
-     * Obtiene programaciones de presupuestos por usuario y estado.
+     * Lista programaciones de presupuestos activas y paginadas con filtro opcional state.
      * Responses:
      *  - 200: Listado obtenido
      *
-     * @param idUser ID usuario
-     * @param state Estado
-     * @return [kotlin.collections.List<BudgetScheduleResponse>]
+     * @param state  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("nextRunAt,ASC"))
+     * @return [PageResponseBudgetScheduleResponse]
      */
-    @GET("schedule/budgets/user/{idUser}/{state}")
-    suspend fun findAllBudgetScheduleByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<BudgetScheduleResponse>>
+    @GET("api/v1/schedule/budgets")
+    suspend fun listBudgetSchedules(@Query("state") state: ScheduleState? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("nextRunAt,ASC")): Response<PageResponseBudgetScheduleResponse>
 
 }

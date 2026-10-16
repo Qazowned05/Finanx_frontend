@@ -4,13 +4,15 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**listFcmTokens**](FCMTokensApi.md#listFcmTokens) | **GET** users/{userId}/fcm-tokens | Listar tokens FCM del usuario |
-| [**registerFcmToken**](FCMTokensApi.md#registerFcmToken) | **POST** users/{userId}/fcm-tokens | Registrar token FCM |
-| [**removeFcmToken**](FCMTokensApi.md#removeFcmToken) | **DELETE** users/{userId}/fcm-tokens/{tokenId} | Eliminar token FCM |
+| [**listFcmTokens**](FCMTokensApi.md#listFcmTokens) | **GET** api/v1/fcm-tokens | Listar tokens FCM del usuario |
+| [**registerFcmToken**](FCMTokensApi.md#registerFcmToken) | **POST** api/v1/fcm-tokens | Registrar token FCM |
+| [**removeFcmToken**](FCMTokensApi.md#removeFcmToken) | **DELETE** api/v1/fcm-tokens/{tokenId} | Eliminar token FCM |
 
 
 
 Listar tokens FCM del usuario
+
+Lista paginada con page, size y sort estándar.
 
 ### Example
 ```kotlin
@@ -21,21 +23,25 @@ Listar tokens FCM del usuario
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(FCMTokensApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<FcmTokenResponse> = webService.listFcmTokens(userId)
+    val result : PageResponseFcmTokenResponse = webService.listFcmTokens(page, size, sort)
 }
 ```
 
 ### Parameters
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**|  | |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
 
 ### Return type
 
-[**kotlin.collections.List&lt;FcmTokenResponse&gt;**](FcmTokenResponse.md)
+[**PageResponseFcmTokenResponse**](PageResponseFcmTokenResponse.md)
 
 ### Authorization
 
@@ -58,16 +64,14 @@ Registrar token FCM
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(FCMTokensApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val registerFcmTokenRequest : RegisterFcmTokenRequest =  // RegisterFcmTokenRequest | 
 
 launch(Dispatchers.IO) {
-    val result : FcmTokenResponse = webService.registerFcmToken(userId, registerFcmTokenRequest)
+    val result : FcmTokenResponse = webService.registerFcmToken(registerFcmTokenRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **registerFcmTokenRequest** | [**RegisterFcmTokenRequest**](RegisterFcmTokenRequest.md)|  | |
@@ -97,16 +101,14 @@ Eliminar token FCM
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(FCMTokensApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | 
 val tokenId : kotlin.Long = 789 // kotlin.Long | 
 
 launch(Dispatchers.IO) {
-    webService.removeFcmToken(userId, tokenId)
+    webService.removeFcmToken(tokenId)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **tokenId** | **kotlin.Long**|  | |

@@ -4,10 +4,10 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**getBalanceDashboard**](AnalyticsApi.md#getBalanceDashboard) | **POST** analytics/dashboard/balance | Dashboard de balance |
-| [**getBudgetExecution**](AnalyticsApi.md#getBudgetExecution) | **POST** analytics/budgets/{id}/execution | Ejecucion de presupuesto |
-| [**getBudgetsDashboard**](AnalyticsApi.md#getBudgetsDashboard) | **POST** analytics/dashboard/budgets | Dashboard de presupuestos |
-| [**getBudgetsExecutionsByPeriod**](AnalyticsApi.md#getBudgetsExecutionsByPeriod) | **POST** analytics/budgets/executions | Ejecuciones por periodo |
+| [**getBalanceDashboard**](AnalyticsApi.md#getBalanceDashboard) | **POST** api/v1/analytics/dashboard/balance | Dashboard de balance |
+| [**getBudgetExecution**](AnalyticsApi.md#getBudgetExecution) | **POST** api/v1/analytics/budgets/{id}/execution | Ejecucion de presupuesto |
+| [**getBudgetsDashboard**](AnalyticsApi.md#getBudgetsDashboard) | **POST** api/v1/analytics/dashboard/budgets | Dashboard de presupuestos |
+| [**getBudgetsExecutionsByPeriod**](AnalyticsApi.md#getBudgetsExecutionsByPeriod) | **GET** api/v1/analytics/budgets/executions | Ejecuciones por periodo |
 
 
 
@@ -27,7 +27,7 @@ val webService = apiClient.createWebservice(AnalyticsApi::class.java)
 val periodRequest : PeriodRequest =  // PeriodRequest | 
 
 launch(Dispatchers.IO) {
-    val result : GetBudgetsDashboard200Response = webService.getBalanceDashboard(periodRequest)
+    val result : TransactionsDashboard = webService.getBalanceDashboard(periodRequest)
 }
 ```
 
@@ -38,7 +38,7 @@ launch(Dispatchers.IO) {
 
 ### Return type
 
-[**GetBudgetsDashboard200Response**](GetBudgetsDashboard200Response.md)
+[**TransactionsDashboard**](TransactionsDashboard.md)
 
 ### Authorization
 
@@ -105,7 +105,7 @@ val webService = apiClient.createWebservice(AnalyticsApi::class.java)
 val periodRequest : PeriodRequest =  // PeriodRequest | 
 
 launch(Dispatchers.IO) {
-    val result : GetBudgetsDashboard200Response = webService.getBudgetsDashboard(periodRequest)
+    val result : BudgetsDashboard = webService.getBudgetsDashboard(periodRequest)
 }
 ```
 
@@ -116,7 +116,7 @@ launch(Dispatchers.IO) {
 
 ### Return type
 
-[**GetBudgetsDashboard200Response**](GetBudgetsDashboard200Response.md)
+[**BudgetsDashboard**](BudgetsDashboard.md)
 
 ### Authorization
 
@@ -130,7 +130,7 @@ No authorization required
 
 Ejecuciones por periodo
 
-Obtiene ejecuciones de presupuestos por periodo.
+Obtiene ejecuciones de presupuestos paginadas por un rango de fechas del usuario.
 
 ### Example
 ```kotlin
@@ -141,21 +141,29 @@ Obtiene ejecuciones de presupuestos por periodo.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(AnalyticsApi::class.java)
-val periodRequest : PeriodRequest =  // PeriodRequest | 
+val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<BudgetExecutionResponse> = webService.getBudgetsExecutionsByPeriod(periodRequest)
+    val result : PageResponseBudgetExecutionResponse = webService.getBudgetsExecutionsByPeriod(from, to, page, size, sort)
 }
 ```
 
 ### Parameters
+| **from** | **java.time.LocalDate**|  | |
+| **to** | **java.time.LocalDate**|  | |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **periodRequest** | [**PeriodRequest**](PeriodRequest.md)|  | |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
 
 ### Return type
 
-[**kotlin.collections.List&lt;BudgetExecutionResponse&gt;**](BudgetExecutionResponse.md)
+[**PageResponseBudgetExecutionResponse**](PageResponseBudgetExecutionResponse.md)
 
 ### Authorization
 
@@ -163,6 +171,6 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: */*
 

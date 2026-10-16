@@ -23,56 +23,66 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.SavingGoalResponse
+import org.openapitools.client.models.SavingGoalState
 
 class SavingGoalResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of SavingGoalResponse
         //val modelInstance = SavingGoalResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la meta de ahorro
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion de la meta de ahorro
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `targetAmount`
+        // to test the property `targetAmount` - Monto objetivo de la meta de ahorro
         should("test targetAmount") {
             // uncomment below to test the property
             //modelInstance.targetAmount shouldBe ("TODO")
         }
 
-        // to test the property `accumulated`
+        // to test the property `currencyCode` - Codigo de moneda de la meta
+        should("test currencyCode") {
+            // uncomment below to test the property
+            //modelInstance.currencyCode shouldBe ("TODO")
+        }
+
+        // to test the property `accumulated` - Monto acumulado hasta el momento
         should("test accumulated") {
             // uncomment below to test the property
             //modelInstance.accumulated shouldBe ("TODO")
         }
 
-        // to test the property `deadline`
+        // to test the property `deadline` - Fecha limite para alcanzar la meta
         should("test deadline") {
             // uncomment below to test the property
             //modelInstance.deadline shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion de la meta
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `completedAt`
+        // to test the property `completedAt` - Fecha y hora en que la meta fue completada, si aplica
         should("test completedAt") {
             // uncomment below to test the property
             //modelInstance.completedAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que la meta fue deshabilitada, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
@@ -84,55 +94,55 @@ class SavingGoalResponseTest : ShouldSpec() {
             //modelInstance.state shouldBe ("TODO")
         }
 
-        // to test the property `active`
+        // to test the property `active` - Indica si la meta esta activa
         should("test active") {
             // uncomment below to test the property
             //modelInstance.active shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador unico del usuario asociado a la meta
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `progressPercentage`
+        // to test the property `progressPercentage` - Porcentaje de progreso hacia la meta
         should("test progressPercentage") {
             // uncomment below to test the property
             //modelInstance.progressPercentage shouldBe ("TODO")
         }
 
-        // to test the property `transactionsCount`
+        // to test the property `transactionsCount` - Cantidad de transacciones asociadas a la meta
         should("test transactionsCount") {
             // uncomment below to test the property
             //modelInstance.transactionsCount shouldBe ("TODO")
         }
 
-        // to test the property `outstanding`
+        // to test the property `outstanding` - Monto pendiente para alcanzar la meta
         should("test outstanding") {
             // uncomment below to test the property
             //modelInstance.outstanding shouldBe ("TODO")
         }
 
-        // to test the property `daysRemaining`
+        // to test the property `daysRemaining` - Numero de dias restantes hasta la fecha limite
         should("test daysRemaining") {
             // uncomment below to test the property
             //modelInstance.daysRemaining shouldBe ("TODO")
         }
 
-        // to test the property `averageContribution`
+        // to test the property `averageContribution` - Monto promedio aportado por transaccion
         should("test averageContribution") {
             // uncomment below to test the property
             //modelInstance.averageContribution shouldBe ("TODO")
         }
 
-        // to test the property `completed`
+        // to test the property `completed` - Indica si la meta ya fue completada
         should("test completed") {
             // uncomment below to test the property
             //modelInstance.completed shouldBe ("TODO")
         }
 
-        // to test the property `estimatedCompletionDate`
+        // to test the property `estimatedCompletionDate` - Fecha estimada de cumplimiento de la meta, calculada en base al ritmo de aportes
         should("test estimatedCompletionDate") {
             // uncomment below to test the property
             //modelInstance.estimatedCompletionDate shouldBe ("TODO")

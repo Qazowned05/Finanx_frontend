@@ -35,20 +35,26 @@ class UserPreferencesApiTest : ShouldSpec() {
         // uncomment below to create an instance of UserPreferencesApi
         //val apiInstance = UserPreferencesApi()
 
+        // to test createUserPreferences
+        should("test createUserPreferences") {
+            // uncomment below to test createUserPreferences
+            //val userPreferencesRequest : UserPreferencesRequest =  // UserPreferencesRequest | 
+            //val result : UserPreferencesResponse = apiInstance.createUserPreferences(userPreferencesRequest)
+            //result shouldBe ("TODO")
+        }
+
         // to test getUserPreferences
         should("test getUserPreferences") {
             // uncomment below to test getUserPreferences
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val result : UserPreferencesResponse = apiInstance.getUserPreferences(userId)
+            //val result : UserPreferencesResponse = apiInstance.getUserPreferences()
             //result shouldBe ("TODO")
         }
 
         // to test updateUserPreferences
         should("test updateUserPreferences") {
             // uncomment below to test updateUserPreferences
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val userPreferencesRequest : UserPreferencesRequest =  // UserPreferencesRequest | 
-            //val result : UserPreferencesResponse = apiInstance.updateUserPreferences(userId, userPreferencesRequest)
+            //val result : UserPreferencesResponse = apiInstance.updateUserPreferences(userPreferencesRequest)
             //result shouldBe ("TODO")
         }
 

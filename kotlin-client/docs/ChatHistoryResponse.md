@@ -6,7 +6,7 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **id** | **kotlin.Long** | Identificador unico del historial |  [optional] |
 | **turnNumber** | **kotlin.Int** | Numero de turno dentro de la sesion |  [optional] |
-| **role** | [**inline**](#Role) | Rol del mensaje |  [optional] |
+| **role** | [**ChatRole**](ChatRole.md) |  |  [optional] |
 | **message** | **kotlin.String** | Contenido del mensaje |  [optional] |
 | **tokensUsed** | **kotlin.Int** | Cantidad de tokens usados |  [optional] |
 | **model** | **kotlin.String** | Modelo utilizado |  [optional] |
@@ -17,13 +17,6 @@
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha de creacion del mensaje |  [optional] |
 | **sessionUUID** | **kotlin.String** | UUID de la sesion |  [optional] |
 | **sessionId** | **kotlin.Long** | ID de la sesion |  [optional] |
-
-
-<a id="Role"></a>
-## Enum: role
-| Name | Value |
-| ---- | ----- |
-| role | USER, AI |
 
 
 

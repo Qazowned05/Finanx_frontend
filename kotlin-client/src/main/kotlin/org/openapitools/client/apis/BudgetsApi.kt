@@ -6,14 +6,15 @@ import retrofit2.Response
 import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
+import org.openapitools.client.models.BudgetHealth
 import org.openapitools.client.models.BudgetRequest
 import org.openapitools.client.models.BudgetResponse
-import org.openapitools.client.models.PeriodRequest
-import org.openapitools.client.models.TimeBoundListBudgetResponse
+import org.openapitools.client.models.BudgetState
+import org.openapitools.client.models.PageResponseBudgetResponse
 
 interface BudgetsApi {
     /**
-     * POST budgets/{id}/cancel
+     * POST api/v1/budgets/{id}/cancel
      * Cancelar presupuesto
      * Cancela un presupuesto.
      * Responses:
@@ -22,11 +23,11 @@ interface BudgetsApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("budgets/{id}/cancel")
+    @POST("api/v1/budgets/{id}/cancel")
     suspend fun cancelBudget(@Path("id") id: kotlin.Long): Response<Unit>
 
     /**
-     * POST budgets
+     * POST api/v1/budgets
      * Crear presupuesto
      * Crea un nuevo presupuesto.
      * Responses:
@@ -36,11 +37,11 @@ interface BudgetsApi {
      * @param budgetRequest 
      * @return [BudgetResponse]
      */
-    @POST("budgets")
+    @POST("api/v1/budgets")
     suspend fun createBudget(@Body budgetRequest: BudgetRequest): Response<BudgetResponse>
 
     /**
-     * POST budgets/{id}/disable
+     * POST api/v1/budgets/{id}/disable
      * Deshabilitar presupuesto
      * Deshabilita un presupuesto.
      * Responses:
@@ -49,75 +50,11 @@ interface BudgetsApi {
      * @param id 
      * @return [Unit]
      */
-    @POST("budgets/{id}/disable")
+    @POST("api/v1/budgets/{id}/disable")
     suspend fun disableBudget(@Path("id") id: kotlin.Long): Response<Unit>
 
-
     /**
-    * enum for parameter health
-    */
-    enum class HealthFindAllBudgetsByPeriodAndHealth(val value: kotlin.String) {
-        @Json(name = "OK") OK("OK"),
-        @Json(name = "NEAR_LIMIT") NEAR_LIMIT("NEAR_LIMIT"),
-        @Json(name = "EXCEEDED") EXCEEDED("EXCEEDED"),
-        @Json(name = "INACTIVE") INACTIVE("INACTIVE")
-    }
-
-    /**
-     * POST budgets/{health}
-     * Filtrar por salud
-     * Filtra presupuestos por health.
-     * Responses:
-     *  - 200: OK
-     *
-     * @param health 
-     * @param periodRequest 
-     * @return [TimeBoundListBudgetResponse]
-     */
-    @POST("budgets/{health}")
-    suspend fun findAllBudgetsByPeriodAndHealth(@Path("health") health: kotlin.String, @Body periodRequest: PeriodRequest): Response<TimeBoundListBudgetResponse>
-
-    /**
-     * GET budgets/user/{idUser}
-     * Listar presupuestos por usuario
-     * Obtiene todos los presupuestos de un usuario.
-     * Responses:
-     *  - 200: Listado obtenido
-     *  - 404: Usuario no encontrado
-     *
-     * @param idUser ID usuario
-     * @return [kotlin.collections.List<BudgetResponse>]
-     */
-    @GET("budgets/user/{idUser}")
-    suspend fun findAllBudgetsByUser(@Path("idUser") idUser: kotlin.Long): Response<kotlin.collections.List<BudgetResponse>>
-
-
-    /**
-    * enum for parameter state
-    */
-    enum class StateFindAllBudgetsByUserAndState(val value: kotlin.String) {
-        @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "DISABLED") DISABLED("DISABLED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED")
-    }
-
-    /**
-     * GET budgets/user/{idUser}/{state}
-     * Listar por usuario y estado
-     * Obtiene presupuestos filtrados por estado.
-     * Responses:
-     *  - 200: Listado obtenido
-     *
-     * @param idUser 
-     * @param state 
-     * @return [kotlin.collections.List<BudgetResponse>]
-     */
-    @GET("budgets/user/{idUser}/{state}")
-    suspend fun findAllBudgetsByUserAndState(@Path("idUser") idUser: kotlin.Long, @Path("state") state: kotlin.String): Response<kotlin.collections.List<BudgetResponse>>
-
-    /**
-     * GET budgets/{id}
+     * GET api/v1/budgets/{id}
      * Buscar presupuesto
      * Obtiene un presupuesto por ID.
      * Responses:
@@ -127,11 +64,32 @@ interface BudgetsApi {
      * @param id 
      * @return [BudgetResponse]
      */
-    @GET("budgets/{id}")
+    @GET("api/v1/budgets/{id}")
     suspend fun findBudgetById(@Path("id") id: kotlin.Long): Response<BudgetResponse>
 
     /**
-     * PUT budgets/{id}
+     * GET api/v1/budgets
+     * Listar presupuestos por usuario
+     * Lista paginada del usuario autenticado. Admite filtros active, state, health y rango from/to; active&#x3D;true por defecto.
+     * Responses:
+     *  - 200: Listado obtenido
+     *  - 404: Usuario no encontrado
+     *
+     * @param active  (optional, default to true)
+     * @param state  (optional)
+     * @param health  (optional)
+     * @param from  (optional)
+     * @param to  (optional)
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("end,ASC"))
+     * @return [PageResponseBudgetResponse]
+     */
+    @GET("api/v1/budgets")
+    suspend fun listBudgets(@Query("active") active: kotlin.Boolean? = true, @Query("state") state: BudgetState? = null, @Query("health") health: BudgetHealth? = null, @Query("from") from: java.time.LocalDate? = null, @Query("to") to: java.time.LocalDate? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("end,ASC")): Response<PageResponseBudgetResponse>
+
+    /**
+     * PUT api/v1/budgets/{id}
      * Actualizar presupuesto
      * Actualiza un presupuesto.
      * Responses:
@@ -141,7 +99,7 @@ interface BudgetsApi {
      * @param budgetRequest 
      * @return [BudgetResponse]
      */
-    @PUT("budgets/{id}")
+    @PUT("api/v1/budgets/{id}")
     suspend fun updateBudget(@Path("id") id: kotlin.Long, @Body budgetRequest: BudgetRequest): Response<BudgetResponse>
 
 }

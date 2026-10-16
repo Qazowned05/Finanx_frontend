@@ -27,8 +27,10 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.SubscriptionsApi
+import org.openapitools.client.models.PageResponseSubscriptionResponse
 import org.openapitools.client.models.SubscriptionRequest
 import org.openapitools.client.models.SubscriptionResponse
+import org.openapitools.client.models.SubscriptionState
 
 class SubscriptionsApiTest : ShouldSpec() {
     init {
@@ -59,19 +61,29 @@ class SubscriptionsApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test findAllSubscriptionsByUser
-        should("test findAllSubscriptionsByUser") {
-            // uncomment below to test findAllSubscriptionsByUser
-            //val userId : kotlin.Long = 789 // kotlin.Long | User id
-            //val result : kotlin.collections.List<SubscriptionResponse> = apiInstance.findAllSubscriptionsByUser(userId)
-            //result shouldBe ("TODO")
-        }
-
         // to test findSubscriptionById
         should("test findSubscriptionById") {
             // uncomment below to test findSubscriptionById
             //val id : kotlin.Long = 789 // kotlin.Long | Subscription id
             //val result : SubscriptionResponse = apiInstance.findSubscriptionById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test getCurrentSubscription
+        should("test getCurrentSubscription") {
+            // uncomment below to test getCurrentSubscription
+            //val result : SubscriptionResponse = apiInstance.getCurrentSubscription()
+            //result shouldBe ("TODO")
+        }
+
+        // to test listSubscriptions
+        should("test listSubscriptions") {
+            // uncomment below to test listSubscriptions
+            //val state : SubscriptionState =  // SubscriptionState | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseSubscriptionResponse = apiInstance.listSubscriptions(state, page, size, sort)
             //result shouldBe ("TODO")
         }
 

@@ -23,7 +23,11 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.RankingItemReasonSummary
+import org.openapitools.client.models.AggregateByReasonSummary
 
 class RankingItemReasonSummaryTest : ShouldSpec() {
     init {

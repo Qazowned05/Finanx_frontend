@@ -23,14 +23,21 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.TransactionScheduleRequest
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.TransactionType
 
 class TransactionScheduleRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of TransactionScheduleRequest
         //val modelInstance = TransactionScheduleRequest()
 
-        // to test the property `amount`
+        // to test the property `amount` - Monto de la transaccion programada (debe ser mayor a 0)
         should("test amount") {
             // uncomment below to test the property
             //modelInstance.amount shouldBe ("TODO")
@@ -48,13 +55,19 @@ class TransactionScheduleRequestTest : ShouldSpec() {
             //modelInstance.transactionType shouldBe ("TODO")
         }
 
-        // to test the property `reasonId`
+        // to test the property `walletId` - Identificador de la billetera (null = usar la principal)
+        should("test walletId") {
+            // uncomment below to test the property
+            //modelInstance.walletId shouldBe ("TODO")
+        }
+
+        // to test the property `reasonId` - Identificador del motivo asociado a la transaccion
         should("test reasonId") {
             // uncomment below to test the property
             //modelInstance.reasonId shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion de la transaccion programada
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")

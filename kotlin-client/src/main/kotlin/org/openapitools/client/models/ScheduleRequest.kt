@@ -30,12 +30,12 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * Solicitud base para crear o actualizar una programacion asociada a un usuario y categoria
+ * Datos de la programacion
  *
  * @param userId Identificador unico del usuario asociado a la programacion
  * @param categoryId Identificador unico de la categoria asociada a la programacion
  * @param type 
- * @param recurrenceRule Regla de recurrencia que define la periodicidad de la programacion
+ * @param recurrenceRule 
  */
 
 
@@ -52,7 +52,6 @@ interface ScheduleRequest : Serializable {
     val categoryId: kotlin.Long
     @Json(name = "type")
     val type: kotlin.String
-    /* Regla de recurrencia que define la periodicidad de la programacion */
     @Json(name = "recurrenceRule")
     val recurrenceRule: RecurrenceRuleRequest?
 

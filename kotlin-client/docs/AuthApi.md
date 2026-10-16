@@ -4,9 +4,9 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**authRegister**](AuthApi.md#authRegister) | **POST** auth/register | Registro |
-| [**authWithGoogle**](AuthApi.md#authWithGoogle) | **POST** auth/google | Login con Google |
-| [**login**](AuthApi.md#login) | **POST** auth/login | Login |
+| [**authRegister**](AuthApi.md#authRegister) | **POST** api/v1/auth/register | Registro |
+| [**authWithGoogle**](AuthApi.md#authWithGoogle) | **POST** api/v1/auth/google | Login con Google |
+| [**login**](AuthApi.md#login) | **POST** api/v1/auth/login | Login |
 
 
 

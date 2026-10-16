@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.PaymentProvider
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -34,9 +36,9 @@ import java.io.Serializable
  * @param userId Id of the paying user
  * @param amount Amount to charge
  * @param currency ISO currency code
- * @param provider Payment provider used for this attempt
+ * @param provider 
  * @param subscriptionId Id of the subscription this payment belongs to, if any
- * @param method Payment method used
+ * @param method 
  * @param idempotencyKey Client-supplied idempotency key, generated automatically when absent
  * @param metadata Free-form metadata for this payment
  */
@@ -56,17 +58,15 @@ data class PaymentRequest (
     @Json(name = "currency")
     val currency: kotlin.String,
 
-    /* Payment provider used for this attempt */
     @Json(name = "provider")
-    val provider: PaymentRequest.Provider,
+    val provider: PaymentProvider,
 
     /* Id of the subscription this payment belongs to, if any */
     @Json(name = "subscriptionId")
     val subscriptionId: kotlin.Long? = null,
 
-    /* Payment method used */
     @Json(name = "method")
-    val method: PaymentRequest.Method? = null,
+    val method: PaymentMethod? = null,
 
     /* Client-supplied idempotency key, generated automatically when absent */
     @Json(name = "idempotencyKey")
@@ -81,33 +81,6 @@ data class PaymentRequest (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Payment provider used for this attempt
-     *
-     * Values: MERCADO_PAGO,CULQI,STRIPE,MANUAL_TRANSFER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Provider(val value: kotlin.String) {
-        @Json(name = "MERCADO_PAGO") MERCADO_PAGO("MERCADO_PAGO"),
-        @Json(name = "CULQI") CULQI("CULQI"),
-        @Json(name = "STRIPE") STRIPE("STRIPE"),
-        @Json(name = "MANUAL_TRANSFER") MANUAL_TRANSFER("MANUAL_TRANSFER");
-    }
-    /**
-     * Payment method used
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Method(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
 
 }
 

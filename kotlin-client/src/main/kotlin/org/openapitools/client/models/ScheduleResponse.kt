@@ -24,6 +24,7 @@
 package org.openapitools.client.models
 
 import org.openapitools.client.models.RecurrenceRuleResponse
+import org.openapitools.client.models.ScheduleState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -42,8 +43,8 @@ import java.io.Serializable
  * @param lastRunAt Fecha y hora de la ultima ejecucion realizada
  * @param disabledAt Fecha y hora en que la programacion fue deshabilitada, si aplica
  * @param active Indica si la programacion esta activa
- * @param state Estado actual de la programacion
- * @param recurrenceRule Regla de recurrencia asociada a la programacion
+ * @param state 
+ * @param recurrenceRule 
  */
 
 
@@ -81,26 +82,10 @@ interface ScheduleResponse : Serializable {
     /* Indica si la programacion esta activa */
     @Json(name = "active")
     val active: kotlin.Boolean?
-    /* Estado actual de la programacion */
     @Json(name = "state")
-    val state: ScheduleResponse.State?
-    /* Regla de recurrencia asociada a la programacion */
+    val state: ScheduleState?
     @Json(name = "recurrenceRule")
     val recurrenceRule: RecurrenceRuleResponse?
-    /**
-     * Estado actual de la programacion
-     *
-     * Values: RUNNING,PAUSED,FINALIZED,CANCELLED,CREATED,ERROR
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "RUNNING") RUNNING("RUNNING"),
-        @Json(name = "PAUSED") PAUSED("PAUSED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "CREATED") CREATED("CREATED"),
-        @Json(name = "ERROR") ERROR("ERROR");
-    }
 
 }
 

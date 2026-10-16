@@ -24,6 +24,7 @@
 package org.openapitools.client.models
 
 import org.openapitools.client.models.ChatHistoryResponse
+import org.openapitools.client.models.ChatSessionState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -36,7 +37,7 @@ import java.io.Serializable
  * @param uuid UUID de la sesion
  * @param createdAt Fecha de creacion de la sesion
  * @param endedAt Fecha de finalizacion de la sesion
- * @param state Estado de la sesion
+ * @param state 
  * @param userId ID de usuario asociado a la sesion
  * @param history Historial de mensajes de la sesion
  */
@@ -60,9 +61,8 @@ data class ChatSessionResponse (
     @Json(name = "endedAt")
     val endedAt: java.time.LocalDateTime? = null,
 
-    /* Estado de la sesion */
     @Json(name = "state")
-    val state: ChatSessionResponse.State? = null,
+    val state: ChatSessionState? = null,
 
     /* ID de usuario asociado a la sesion */
     @Json(name = "userId")
@@ -77,17 +77,6 @@ data class ChatSessionResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Estado de la sesion
-     *
-     * Values: ACTIVE,EXPIRED,CLOSED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
-        @Json(name = "EXPIRED") EXPIRED("EXPIRED"),
-        @Json(name = "CLOSED") CLOSED("CLOSED");
-    }
 
 }
 

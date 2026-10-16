@@ -23,62 +23,73 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.BudgetExecutionResponse
+import org.openapitools.client.models.BudgetHealth
+import org.openapitools.client.models.BudgetState
 
 class BudgetExecutionResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of BudgetExecutionResponse
         //val modelInstance = BudgetExecutionResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico del presupuesto
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador del usuario propietario del presupuesto
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `categoryId` - Identificador de la categoria asociada al presupuesto
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
+        // to test the property `categoryName` - Nombre de la categoria asociada al presupuesto
         should("test categoryName") {
             // uncomment below to test the property
             //modelInstance.categoryName shouldBe ("TODO")
         }
 
-        // to test the property `scheduleId`
+        // to test the property `scheduleId` - Identificador de la programacion asociada al presupuesto
         should("test scheduleId") {
             // uncomment below to test the property
             //modelInstance.scheduleId shouldBe ("TODO")
         }
 
-        // to test the property `alertable`
+        // to test the property `alertable` - Indica si el presupuesto debe generar alertas
         should("test alertable") {
             // uncomment below to test the property
             //modelInstance.alertable shouldBe ("TODO")
         }
 
-        // to test the property `percentAlert`
+        // to test the property `percentAlert` - Porcentaje de alerta respecto al limite definido
         should("test percentAlert") {
             // uncomment below to test the property
             //modelInstance.percentAlert shouldBe ("TODO")
         }
 
-        // to test the property `limitAmount`
+        // to test the property `limitAmount` - Monto limite del presupuesto
         should("test limitAmount") {
             // uncomment below to test the property
             //modelInstance.limitAmount shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `currencyCode` - Codigo de moneda del presupuesto
+        should("test currencyCode") {
+            // uncomment below to test the property
+            //modelInstance.currencyCode shouldBe ("TODO")
+        }
+
+        // to test the property `description` - Descripcion del presupuesto
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
@@ -96,43 +107,43 @@ class BudgetExecutionResponseTest : ShouldSpec() {
             //modelInstance.health shouldBe ("TODO")
         }
 
-        // to test the property `start`
+        // to test the property `start` - Fecha y hora de inicio del presupuesto
         should("test start") {
             // uncomment below to test the property
             //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `end`
+        // to test the property `end` - Fecha y hora de fin del presupuesto
         should("test end") {
             // uncomment below to test the property
             //modelInstance.end shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion del presupuesto
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora de desactivacion del presupuesto
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `spentAmount`
+        // to test the property `spentAmount` - Monto total gastado en el presupuesto
         should("test spentAmount") {
             // uncomment below to test the property
             //modelInstance.spentAmount shouldBe ("TODO")
         }
 
-        // to test the property `remainingAmount`
+        // to test the property `remainingAmount` - Monto restante disponible en el presupuesto
         should("test remainingAmount") {
             // uncomment below to test the property
             //modelInstance.remainingAmount shouldBe ("TODO")
         }
 
-        // to test the property `executionPercentage`
+        // to test the property `executionPercentage` - Porcentaje de ejecucion del presupuesto respecto al limite definido
         should("test executionPercentage") {
             // uncomment below to test the property
             //modelInstance.executionPercentage shouldBe ("TODO")

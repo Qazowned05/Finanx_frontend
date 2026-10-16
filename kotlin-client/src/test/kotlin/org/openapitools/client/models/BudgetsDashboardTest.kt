@@ -23,20 +23,31 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.BudgetsDashboard
+import org.openapitools.client.models.Aggregate
+import org.openapitools.client.models.AggregateByBudgetExecutionResponse
+import org.openapitools.client.models.AggregateByBudgetHealth
+import org.openapitools.client.models.DashboardResponse
+import org.openapitools.client.models.InsightSummary
+import org.openapitools.client.models.PeriodResponse
+import org.openapitools.client.models.RankingCategoryResponse
+import org.openapitools.client.models.TimeLineBudgetExecutionResponse
 
 class BudgetsDashboardTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of BudgetsDashboard
         //val modelInstance = BudgetsDashboard()
 
-        // to test the property `byHealth`
+        // to test the property `byHealth` - Lista de agregados por estado de salud del presupuesto
         should("test byHealth") {
             // uncomment below to test the property
             //modelInstance.byHealth shouldBe ("TODO")
         }
 
-        // to test the property `byCategory`
+        // to test the property `byCategory` - Lista de agregados por categoria de ejecucion presupuestal
         should("test byCategory") {
             // uncomment below to test the property
             //modelInstance.byCategory shouldBe ("TODO")
@@ -60,19 +71,19 @@ class BudgetsDashboardTest : ShouldSpec() {
             //modelInstance.mostRemaining shouldBe ("TODO")
         }
 
-        // to test the property `totalBudgetLimitAmount`
+        // to test the property `totalBudgetLimitAmount` - Monto limite total de todos los presupuestos
         should("test totalBudgetLimitAmount") {
             // uncomment below to test the property
             //modelInstance.totalBudgetLimitAmount shouldBe ("TODO")
         }
 
-        // to test the property `totalBudgetSpentAmount`
+        // to test the property `totalBudgetSpentAmount` - Monto total gastado en todos los presupuestos
         should("test totalBudgetSpentAmount") {
             // uncomment below to test the property
             //modelInstance.totalBudgetSpentAmount shouldBe ("TODO")
         }
 
-        // to test the property `totalBudgetRemainingAmount`
+        // to test the property `totalBudgetRemainingAmount` - Monto total restante en todos los presupuestos
         should("test totalBudgetRemainingAmount") {
             // uncomment below to test the property
             //modelInstance.totalBudgetRemainingAmount shouldBe ("TODO")

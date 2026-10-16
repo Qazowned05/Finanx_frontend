@@ -14,8 +14,8 @@
 | **limitAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto limite del presupuesto |  [optional] |
 | **currencyCode** | **kotlin.String** | Codigo de moneda del presupuesto |  [optional] |
 | **description** | **kotlin.String** | Descripcion del presupuesto |  [optional] |
-| **state** | [**inline**](#State) | Estado actual del presupuesto |  [optional] |
-| **health** | [**inline**](#Health) | Salud del presupuesto segun su ejecucion |  [optional] |
+| **state** | [**BudgetState**](BudgetState.md) |  |  [optional] |
+| **health** | [**BudgetHealth**](BudgetHealth.md) |  |  [optional] |
 | **start** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de inicio del presupuesto |  [optional] |
 | **end** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de fin del presupuesto |  [optional] |
 | **createdAt** | [**java.time.LocalDateTime**](java.time.LocalDateTime.md) | Fecha y hora de creacion del presupuesto |  [optional] |
@@ -23,20 +23,6 @@
 | **spentAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto total gastado en el presupuesto |  [optional] |
 | **remainingAmount** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Monto restante disponible en el presupuesto |  [optional] |
 | **executionPercentage** | [**java.math.BigDecimal**](java.math.BigDecimal.md) | Porcentaje de ejecucion del presupuesto respecto al limite definido |  [optional] |
-
-
-<a id="State"></a>
-## Enum: state
-| Name | Value |
-| ---- | ----- |
-| state | ACTIVE, CANCELLED, DISABLED, FINALIZED |
-
-
-<a id="Health"></a>
-## Enum: health
-| Name | Value |
-| ---- | ----- |
-| health | OK, NEAR_LIMIT, EXCEEDED, INACTIVE |
 
 
 

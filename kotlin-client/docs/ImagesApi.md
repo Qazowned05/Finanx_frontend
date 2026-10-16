@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**downloadImage**](ImagesApi.md#downloadImage) | **GET** images/{imageId} | Descargar imagen |
+| [**downloadImage**](ImagesApi.md#downloadImage) | **GET** api/v1/images/{imageId} | Descargar imagen |
 
 
 
 Descargar imagen
 
-Retorna los bytes de una imagen por su ID.
+Redirige a una URL prefirmada de corta duración después de validar que la imagen pertenece al usuario autenticado.
 
 ### Example
 ```kotlin
@@ -24,7 +24,7 @@ val webService = apiClient.createWebservice(ImagesApi::class.java)
 val imageId : kotlin.Long = 789 // kotlin.Long | ID de la imagen
 
 launch(Dispatchers.IO) {
-    val result : kotlin.ByteArray = webService.downloadImage(imageId)
+    webService.downloadImage(imageId)
 }
 ```
 
@@ -35,7 +35,7 @@ launch(Dispatchers.IO) {
 
 ### Return type
 
-**kotlin.ByteArray**
+null (empty response body)
 
 ### Authorization
 
@@ -44,5 +44,5 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: */*
+ - **Accept**: Not defined
 

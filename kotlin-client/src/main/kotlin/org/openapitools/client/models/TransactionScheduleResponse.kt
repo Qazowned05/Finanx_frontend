@@ -23,8 +23,11 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleResponse
 import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.ScheduleState
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -43,15 +46,15 @@ import java.io.Serializable
  * @param lastRunAt Fecha y hora de la ultima ejecucion realizada
  * @param disabledAt Fecha y hora en que la programacion fue deshabilitada, si aplica
  * @param active Indica si la programacion esta activa
- * @param state Estado actual de la programacion
- * @param recurrenceRule Regla de recurrencia asociada a la programacion
+ * @param state 
+ * @param recurrenceRule 
  * @param walletId Identificador de la billetera
  * @param walletCurrency Moneda de la billetera
  * @param reasonId Identificador del motivo asociado a la transaccion
  * @param reasonDesc Descripcion del motivo asociado a la transaccion
  * @param amount Monto de la transaccion programada
- * @param paymentMethod Metodo de pago de la transaccion
- * @param transactionType Tipo de transaccion (ingreso o gasto)
+ * @param paymentMethod 
+ * @param transactionType 
  */
 
 
@@ -96,11 +99,9 @@ data class TransactionScheduleResponse (
     @Json(name = "active")
     override val active: kotlin.Boolean? = null,
 
-    /* Estado actual de la programacion */
     @Json(name = "state")
-    override val state: ScheduleResponse.State? = null,
+    override val state: ScheduleState? = null,
 
-    /* Regla de recurrencia asociada a la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleResponse? = null,
 
@@ -124,44 +125,17 @@ data class TransactionScheduleResponse (
     @Json(name = "amount")
     val amount: java.math.BigDecimal? = null,
 
-    /* Metodo de pago de la transaccion */
     @Json(name = "paymentMethod")
-    val paymentMethod: TransactionScheduleResponse.PaymentMethod? = null,
+    val paymentMethod: PaymentMethod? = null,
 
-    /* Tipo de transaccion (ingreso o gasto) */
     @Json(name = "transactionType")
-    val transactionType: TransactionScheduleResponse.TransactionType? = null
+    val transactionType: TransactionType? = null
 
 ) : ScheduleResponse, Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Metodo de pago de la transaccion
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class PaymentMethod(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Tipo de transaccion (ingreso o gasto)
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TransactionType(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

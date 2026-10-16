@@ -23,7 +23,13 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.NotificationsApi
+import org.openapitools.client.models.NotificationDTO
+import org.openapitools.client.models.NotificationState
+import org.openapitools.client.models.PageResponseNotificationDTO
 
 class NotificationsApiTest : ShouldSpec() {
     init {
@@ -37,28 +43,23 @@ class NotificationsApiTest : ShouldSpec() {
             //apiInstance.discardNotification(body)
         }
 
-        // to test findAllNotificationByUser
-        should("test findAllNotificationByUser") {
-            // uncomment below to test findAllNotificationByUser
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllNotificationByUser(idUser)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllNotificationsByUserAndState
-        should("test findAllNotificationsByUserAndState") {
-            // uncomment below to test findAllNotificationsByUserAndState
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val state : kotlin.String = state_example // kotlin.String | Estado
-            //val result : kotlin.collections.List<NotificationDTO> = apiInstance.findAllNotificationsByUserAndState(idUser, state)
-            //result shouldBe ("TODO")
-        }
-
         // to test findNotificationById
         should("test findNotificationById") {
             // uncomment below to test findNotificationById
-            //val id : kotlin.Long = 789 // kotlin.Long | ID notificaciÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID notificacion
             //val result : NotificationDTO = apiInstance.findNotificationById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listNotifications
+        should("test listNotifications") {
+            // uncomment below to test listNotifications
+            //val state : NotificationState =  // NotificationState | 
+            //val search : kotlin.String = search_example // kotlin.String | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseNotificationDTO = apiInstance.listNotifications(state, search, page, size, sort)
             //result shouldBe ("TODO")
         }
 
@@ -72,9 +73,8 @@ class NotificationsApiTest : ShouldSpec() {
         // to test purgeNotifications
         should("test purgeNotifications") {
             // uncomment below to test purgeNotifications
-            //val userId : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val dateTime : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | Fecha lÃ­mite
-            //apiInstance.purgeNotifications(userId, dateTime)
+            //val dateTime : java.time.LocalDateTime = 2013-10-20T19:20:30+01:00 // java.time.LocalDateTime | Fecha limite
+            //apiInstance.purgeNotifications(dateTime)
         }
 
     }

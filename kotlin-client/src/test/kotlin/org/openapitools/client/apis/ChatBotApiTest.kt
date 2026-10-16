@@ -29,6 +29,7 @@ import io.kotlintest.specs.ShouldSpec
 import org.openapitools.client.apis.ChatBotApi
 import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
+import org.openapitools.client.models.PageResponseChatSessionResponse
 import org.openapitools.client.models.SendMessageRequest
 
 class ChatBotApiTest : ShouldSpec() {
@@ -39,53 +40,50 @@ class ChatBotApiTest : ShouldSpec() {
         // to test closeSession
         should("test closeSession") {
             // uncomment below to test closeSession
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
             //val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion
-            //val result : ChatSessionResponse = apiInstance.closeSession(userId, sessionId)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllSessionsByUser
-        should("test findAllSessionsByUser") {
-            // uncomment below to test findAllSessionsByUser
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
-            //val result : kotlin.collections.List<ChatSessionResponse> = apiInstance.findAllSessionsByUser(userId)
+            //val result : ChatSessionResponse = apiInstance.closeSession(sessionId)
             //result shouldBe ("TODO")
         }
 
         // to test findSessionById
         should("test findSessionById") {
             // uncomment below to test findSessionById
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
             //val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion
-            //val result : ChatSessionResponse = apiInstance.findSessionById(userId, sessionId)
+            //val result : ChatSessionResponse = apiInstance.findSessionById(sessionId)
             //result shouldBe ("TODO")
         }
 
         // to test findSessionByUUID
         should("test findSessionByUUID") {
             // uncomment below to test findSessionByUUID
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
             //val uuid : kotlin.String = 550e8400-e29b-41d4-a716-446655440000 // kotlin.String | UUID de la sesion
-            //val result : ChatSessionResponse = apiInstance.findSessionByUUID(userId, uuid)
+            //val result : ChatSessionResponse = apiInstance.findSessionByUUID(uuid)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listChatSessions
+        should("test listChatSessions") {
+            // uncomment below to test listChatSessions
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseChatSessionResponse = apiInstance.listChatSessions(page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test sendMessage
         should("test sendMessage") {
             // uncomment below to test sendMessage
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
             //val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion activa
             //val sendMessageRequest : SendMessageRequest =  // SendMessageRequest | 
-            //val result : ChatHistoryResponse = apiInstance.sendMessage(userId, sessionId, sendMessageRequest)
+            //val result : ChatHistoryResponse = apiInstance.sendMessage(sessionId, sendMessageRequest)
             //result shouldBe ("TODO")
         }
 
         // to test startSession
         should("test startSession") {
             // uncomment below to test startSession
-            //val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
-            //val result : ChatSessionResponse = apiInstance.startSession(userId)
+            //val result : ChatSessionResponse = apiInstance.startSession()
             //result shouldBe ("TODO")
         }
 

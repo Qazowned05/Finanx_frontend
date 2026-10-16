@@ -25,6 +25,7 @@ package org.openapitools.client.models
 
 import org.openapitools.client.models.RecurrenceRuleResponse
 import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -43,8 +44,8 @@ import java.io.Serializable
  * @param lastRunAt Fecha y hora de la ultima ejecucion realizada
  * @param disabledAt Fecha y hora en que la programacion fue deshabilitada, si aplica
  * @param active Indica si la programacion esta activa
- * @param state Estado actual de la programacion
- * @param recurrenceRule Regla de recurrencia asociada a la programacion
+ * @param state 
+ * @param recurrenceRule 
  * @param alertable Indica si el presupuesto debe generar alertas
  * @param percentAlert Porcentaje de alerta respecto al limite del presupuesto
  * @param limitAmount Monto limite del presupuesto
@@ -93,11 +94,9 @@ data class BudgetScheduleResponse (
     @Json(name = "active")
     override val active: kotlin.Boolean? = null,
 
-    /* Estado actual de la programacion */
     @Json(name = "state")
-    override val state: ScheduleResponse.State? = null,
+    override val state: ScheduleState? = null,
 
-    /* Regla de recurrencia asociada a la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleResponse? = null,
 

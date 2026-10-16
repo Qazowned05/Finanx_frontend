@@ -23,7 +23,12 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.RecurrenceType
 
 class RecurrenceRuleRequestTest : ShouldSpec() {
     init {
@@ -36,19 +41,19 @@ class RecurrenceRuleRequestTest : ShouldSpec() {
             //modelInstance.recurrenceType shouldBe ("TODO")
         }
 
-        // to test the property `interval`
+        // to test the property `interval` - Intervalo de repeticion segun el tipo de recurrencia
         should("test interval") {
             // uncomment below to test the property
             //modelInstance.interval shouldBe ("TODO")
         }
 
-        // to test the property `start`
+        // to test the property `start` - Fecha de inicio de la recurrencia (formato yyyy-MM-dd)
         should("test start") {
             // uncomment below to test the property
             //modelInstance.start shouldBe ("TODO")
         }
 
-        // to test the property `end`
+        // to test the property `end` - Fecha de fin de la recurrencia (formato yyyy-MM-dd)
         should("test end") {
             // uncomment below to test the property
             //modelInstance.end shouldBe ("TODO")

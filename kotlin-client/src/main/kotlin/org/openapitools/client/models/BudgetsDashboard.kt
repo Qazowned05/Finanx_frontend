@@ -40,16 +40,16 @@ import java.io.Serializable
  * Dashboard de presupuestos con agregados por salud y categoria, evolucion de ejecucion y metricas globales
  *
  * @param type 
- * @param periodResponse Periodo de referencia del dashboard
+ * @param periodResponse 
  * @param title Titulo descriptivo del dashboard
  * @param createdAt Fecha y hora de creacion del dashboard
- * @param insightSummary Resumen de insights generados para el periodo
- * @param aggregate Agregado general con metricas calculadas
+ * @param insightSummary 
+ * @param aggregate 
  * @param byHealth Lista de agregados por estado de salud del presupuesto
  * @param byCategory Lista de agregados por categoria de ejecucion presupuestal
- * @param executionEvolution Linea de tiempo de la evolucion de ejecucion de presupuestos
- * @param mostExecuted Ranking de categorias mas ejecutadas
- * @param mostRemaining Ranking de categorias con mayor saldo restante
+ * @param executionEvolution 
+ * @param mostExecuted 
+ * @param mostRemaining 
  * @param totalBudgetLimitAmount Monto limite total de todos los presupuestos
  * @param totalBudgetSpentAmount Monto total gastado en todos los presupuestos
  * @param totalBudgetRemainingAmount Monto total restante en todos los presupuestos
@@ -61,7 +61,6 @@ data class BudgetsDashboard (
     @Json(name = "type")
     override val type: kotlin.String,
 
-    /* Periodo de referencia del dashboard */
     @Json(name = "periodResponse")
     override val periodResponse: PeriodResponse? = null,
 
@@ -73,11 +72,9 @@ data class BudgetsDashboard (
     @Json(name = "createdAt")
     override val createdAt: java.time.LocalDateTime? = null,
 
-    /* Resumen de insights generados para el periodo */
     @Json(name = "insightSummary")
     override val insightSummary: InsightSummary? = null,
 
-    /* Agregado general con metricas calculadas */
     @Json(name = "aggregate")
     override val aggregate: Aggregate? = null,
 
@@ -89,15 +86,12 @@ data class BudgetsDashboard (
     @Json(name = "byCategory")
     val byCategory: kotlin.collections.List<AggregateByBudgetExecutionResponse>? = null,
 
-    /* Linea de tiempo de la evolucion de ejecucion de presupuestos */
     @Json(name = "executionEvolution")
     val executionEvolution: TimeLineBudgetExecutionResponse? = null,
 
-    /* Ranking de categorias mas ejecutadas */
     @Json(name = "mostExecuted")
     val mostExecuted: RankingCategoryResponse? = null,
 
-    /* Ranking de categorias con mayor saldo restante */
     @Json(name = "mostRemaining")
     val mostRemaining: RankingCategoryResponse? = null,
 

@@ -27,6 +27,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.WebhooksApi
+import org.openapitools.client.models.PaymentProvider
 
 class WebhooksApiTest : ShouldSpec() {
     init {
@@ -36,7 +37,7 @@ class WebhooksApiTest : ShouldSpec() {
         // to test receiveWebhook
         should("test receiveWebhook") {
             // uncomment below to test receiveWebhook
-            //val provider : kotlin.String = provider_example // kotlin.String | Payment provider
+            //val provider : PaymentProvider =  // PaymentProvider | Payment provider
             //val body : kotlin.String = body_example // kotlin.String | 
             //val xSignature : kotlin.String = xSignature_example // kotlin.String | Signature header sent by the provider
             //apiInstance.receiveWebhook(provider, body, xSignature)

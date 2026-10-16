@@ -7,48 +7,49 @@ import okhttp3.RequestBody
 import com.squareup.moshi.Json
 
 import org.openapitools.client.models.FcmTokenResponse
+import org.openapitools.client.models.PageResponseFcmTokenResponse
 import org.openapitools.client.models.RegisterFcmTokenRequest
 
 interface FCMTokensApi {
     /**
-     * GET users/{userId}/fcm-tokens
+     * GET api/v1/fcm-tokens
      * Listar tokens FCM del usuario
-     * 
+     * Lista paginada con page, size y sort estándar.
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
-     * @return [kotlin.collections.List<FcmTokenResponse>]
+     * @param page Zero-based page index (0..N) (optional, default to 0)
+     * @param size The size of the page to be returned (optional, default to 50)
+     * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("createdAt,DESC"))
+     * @return [PageResponseFcmTokenResponse]
      */
-    @GET("users/{userId}/fcm-tokens")
-    suspend fun listFcmTokens(@Path("userId") userId: kotlin.Long): Response<kotlin.collections.List<FcmTokenResponse>>
+    @GET("api/v1/fcm-tokens")
+    suspend fun listFcmTokens(@Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("createdAt,DESC")): Response<PageResponseFcmTokenResponse>
 
     /**
-     * POST users/{userId}/fcm-tokens
+     * POST api/v1/fcm-tokens
      * Registrar token FCM
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param registerFcmTokenRequest 
      * @return [FcmTokenResponse]
      */
-    @POST("users/{userId}/fcm-tokens")
-    suspend fun registerFcmToken(@Path("userId") userId: kotlin.Long, @Body registerFcmTokenRequest: RegisterFcmTokenRequest): Response<FcmTokenResponse>
+    @POST("api/v1/fcm-tokens")
+    suspend fun registerFcmToken(@Body registerFcmTokenRequest: RegisterFcmTokenRequest): Response<FcmTokenResponse>
 
     /**
-     * DELETE users/{userId}/fcm-tokens/{tokenId}
+     * DELETE api/v1/fcm-tokens/{tokenId}
      * Eliminar token FCM
      * 
      * Responses:
      *  - 200: OK
      *
-     * @param userId 
      * @param tokenId 
      * @return [Unit]
      */
-    @DELETE("users/{userId}/fcm-tokens/{tokenId}")
-    suspend fun removeFcmToken(@Path("userId") userId: kotlin.Long, @Path("tokenId") tokenId: kotlin.Long): Response<Unit>
+    @DELETE("api/v1/fcm-tokens/{tokenId}")
+    suspend fun removeFcmToken(@Path("tokenId") tokenId: kotlin.Long): Response<Unit>
 
 }

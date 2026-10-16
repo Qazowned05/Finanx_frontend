@@ -23,6 +23,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.PaymentProvider
+import org.openapitools.client.models.PaymentState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -36,9 +39,9 @@ import java.io.Serializable
  * @param subscriptionId Id of the linked subscription, if any
  * @param amount Charged amount
  * @param currency ISO currency code
- * @param provider Payment provider used
- * @param method Payment method used
- * @param state Current payment state
+ * @param provider 
+ * @param method 
+ * @param state 
  * @param externalReference Reference assigned by the provider
  * @param failureReason Reason the payment failed, if applicable
  * @param paidAt Date and time the payment was confirmed
@@ -69,17 +72,14 @@ data class PaymentResponse (
     @Json(name = "currency")
     val currency: kotlin.String? = null,
 
-    /* Payment provider used */
     @Json(name = "provider")
-    val provider: PaymentResponse.Provider? = null,
+    val provider: PaymentProvider? = null,
 
-    /* Payment method used */
     @Json(name = "method")
-    val method: PaymentResponse.Method? = null,
+    val method: PaymentMethod? = null,
 
-    /* Current payment state */
     @Json(name = "state")
-    val state: PaymentResponse.State? = null,
+    val state: PaymentState? = null,
 
     /* Reference assigned by the provider */
     @Json(name = "externalReference")
@@ -106,47 +106,6 @@ data class PaymentResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Payment provider used
-     *
-     * Values: MERCADO_PAGO,CULQI,STRIPE,MANUAL_TRANSFER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Provider(val value: kotlin.String) {
-        @Json(name = "MERCADO_PAGO") MERCADO_PAGO("MERCADO_PAGO"),
-        @Json(name = "CULQI") CULQI("CULQI"),
-        @Json(name = "STRIPE") STRIPE("STRIPE"),
-        @Json(name = "MANUAL_TRANSFER") MANUAL_TRANSFER("MANUAL_TRANSFER");
-    }
-    /**
-     * Payment method used
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Method(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Current payment state
-     *
-     * Values: PENDING,PROCESSING,COMPLETED,FAILED,REFUNDED,DISPUTED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "PENDING") PENDING("PENDING"),
-        @Json(name = "PROCESSING") PROCESSING("PROCESSING"),
-        @Json(name = "COMPLETED") COMPLETED("COMPLETED"),
-        @Json(name = "FAILED") FAILED("FAILED"),
-        @Json(name = "REFUNDED") REFUNDED("REFUNDED"),
-        @Json(name = "DISPUTED") DISPUTED("DISPUTED");
-    }
 
 }
 

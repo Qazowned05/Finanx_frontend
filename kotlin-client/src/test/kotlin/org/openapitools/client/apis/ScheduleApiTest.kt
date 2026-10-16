@@ -23,7 +23,14 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.ScheduleApi
+import org.openapitools.client.models.PageResponseScheduleResponse
+import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 class ScheduleApiTest : ShouldSpec() {
     init {
@@ -33,54 +40,56 @@ class ScheduleApiTest : ShouldSpec() {
         // to test cancelSchedule
         should("test cancelSchedule") {
             // uncomment below to test cancelSchedule
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programaciÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
             //apiInstance.cancelSchedule(id)
         }
 
         // to test createSchedule
         should("test createSchedule") {
             // uncomment below to test createSchedule
-            //val createScheduleRequest : CreateScheduleRequest =  // CreateScheduleRequest | 
-            //val result : UpdateSchedule200Response = apiInstance.createSchedule(createScheduleRequest)
+            //val scheduleRequest : ScheduleRequest =  // ScheduleRequest | 
+            //val result : ScheduleResponse = apiInstance.createSchedule(scheduleRequest)
             //result shouldBe ("TODO")
         }
 
         // to test disableSchedule
         should("test disableSchedule") {
             // uncomment below to test disableSchedule
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programaciÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
             //apiInstance.disableSchedule(id)
         }
 
-        // to test findAllScheduleByUserAndState
-        should("test findAllScheduleByUserAndState") {
-            // uncomment below to test findAllScheduleByUserAndState
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val state : kotlin.String = state_example // kotlin.String | Estado de la programaciÃ³n
-            //val result : kotlin.collections.List<UpdateSchedule200Response> = apiInstance.findAllScheduleByUserAndState(idUser, state)
+        // to test listSchedules
+        should("test listSchedules") {
+            // uncomment below to test listSchedules
+            //val state : ScheduleState =  // ScheduleState | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseScheduleResponse = apiInstance.listSchedules(state, page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test pauseSchedule
         should("test pauseSchedule") {
             // uncomment below to test pauseSchedule
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programaciÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
             //apiInstance.pauseSchedule(id)
         }
 
         // to test resumeSchedule
         should("test resumeSchedule") {
             // uncomment below to test resumeSchedule
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programaciÃ³n
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
             //apiInstance.resumeSchedule(id)
         }
 
         // to test updateSchedule
         should("test updateSchedule") {
             // uncomment below to test updateSchedule
-            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programaciÃ³n
-            //val updateScheduleRequest : UpdateScheduleRequest =  // UpdateScheduleRequest | 
-            //val result : UpdateSchedule200Response = apiInstance.updateSchedule(id, updateScheduleRequest)
+            //val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
+            //val scheduleRequest : ScheduleRequest =  // ScheduleRequest | 
+            //val result : ScheduleResponse = apiInstance.updateSchedule(id, scheduleRequest)
             //result shouldBe ("TODO")
         }
 

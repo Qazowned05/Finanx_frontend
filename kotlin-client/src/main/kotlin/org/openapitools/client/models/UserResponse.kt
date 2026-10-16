@@ -23,7 +23,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.Role
 import org.openapitools.client.models.UserPreferencesResponse
+import org.openapitools.client.models.UserState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -37,13 +39,13 @@ import java.io.Serializable
  * @param lastname Apellidos del usuario
  * @param email Correo electronico del usuario
  * @param username Nombre de usuario unico
- * @param role Rol asignado al usuario
- * @param state Estado actual del usuario
+ * @param role 
+ * @param state 
  * @param moneyBalance Balance monetario del usuario
  * @param createdAt Fecha y hora de creacion del usuario
  * @param disabledAt Fecha y hora en que el usuario fue deshabilitado, si aplica
  * @param fullName Nombre completo del usuario en formato concatenado
- * @param preferences Preferencias del usuario
+ * @param preferences 
  */
 
 
@@ -69,13 +71,11 @@ data class UserResponse (
     @Json(name = "username")
     val username: kotlin.String? = null,
 
-    /* Rol asignado al usuario */
     @Json(name = "role")
-    val role: UserResponse.Role? = null,
+    val role: Role? = null,
 
-    /* Estado actual del usuario */
     @Json(name = "state")
-    val state: UserResponse.State? = null,
+    val state: UserState? = null,
 
     /* Balance monetario del usuario */
     @Json(name = "moneyBalance")
@@ -93,7 +93,6 @@ data class UserResponse (
     @Json(name = "fullName")
     val fullName: kotlin.String? = null,
 
-    /* Preferencias del usuario */
     @Json(name = "preferences")
     val preferences: UserPreferencesResponse? = null
 
@@ -102,27 +101,6 @@ data class UserResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Rol asignado al usuario
-     *
-     * Values: USER,SYSTEM
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Role(val value: kotlin.String) {
-        @Json(name = "USER") USER("USER"),
-        @Json(name = "SYSTEM") SYSTEM("SYSTEM");
-    }
-    /**
-     * Estado actual del usuario
-     *
-     * Values: ENABLED,BLOCKED,DISABLED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "ENABLED") ENABLED("ENABLED"),
-        @Json(name = "BLOCKED") BLOCKED("BLOCKED"),
-        @Json(name = "DISABLED") DISABLED("DISABLED");
-    }
 
 }
 

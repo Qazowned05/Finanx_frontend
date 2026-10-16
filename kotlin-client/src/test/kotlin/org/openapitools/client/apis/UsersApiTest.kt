@@ -23,7 +23,15 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.UsersApi
+import org.openapitools.client.models.LoginResponse
+import org.openapitools.client.models.PageResponseUserResponse
+import org.openapitools.client.models.TimeZone
+import org.openapitools.client.models.UserRequest
+import org.openapitools.client.models.UserResponse
 
 class UsersApiTest : ShouldSpec() {
     init {
@@ -61,6 +69,13 @@ class UsersApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
+        // to test findCurrentUser
+        should("test findCurrentUser") {
+            // uncomment below to test findCurrentUser
+            //val result : UserResponse = apiInstance.findCurrentUser()
+            //result shouldBe ("TODO")
+        }
+
         // to test findUserById
         should("test findUserById") {
             // uncomment below to test findUserById
@@ -72,7 +87,18 @@ class UsersApiTest : ShouldSpec() {
         // to test listTimeZones
         should("test listTimeZones") {
             // uncomment below to test listTimeZones
-            //val result : kotlin.collections.List<kotlin.String> = apiInstance.listTimeZones()
+            //val result : kotlin.collections.List<TimeZone> = apiInstance.listTimeZones()
+            //result shouldBe ("TODO")
+        }
+
+        // to test listUsers
+        should("test listUsers") {
+            // uncomment below to test listUsers
+            //val search : kotlin.String = search_example // kotlin.String | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseUserResponse = apiInstance.listUsers(search, page, size, sort)
             //result shouldBe ("TODO")
         }
 
@@ -89,14 +115,6 @@ class UsersApiTest : ShouldSpec() {
             // uncomment below to test resetUserData
             //val id : kotlin.Long = 789 // kotlin.Long | 
             //apiInstance.resetUserData(id)
-        }
-
-        // to test searchUserByName
-        should("test searchUserByName") {
-            // uncomment below to test searchUserByName
-            //val string : kotlin.String = string_example // kotlin.String | 
-            //val result : kotlin.collections.List<UserResponse> = apiInstance.searchUserByName(string)
-            //result shouldBe ("TODO")
         }
 
         // to test updateUser

@@ -28,6 +28,7 @@ import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.FCMTokensApi
 import org.openapitools.client.models.FcmTokenResponse
+import org.openapitools.client.models.PageResponseFcmTokenResponse
 import org.openapitools.client.models.RegisterFcmTokenRequest
 
 class FCMTokensApiTest : ShouldSpec() {
@@ -38,26 +39,26 @@ class FCMTokensApiTest : ShouldSpec() {
         // to test listFcmTokens
         should("test listFcmTokens") {
             // uncomment below to test listFcmTokens
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<FcmTokenResponse> = apiInstance.listFcmTokens(userId)
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseFcmTokenResponse = apiInstance.listFcmTokens(page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test registerFcmToken
         should("test registerFcmToken") {
             // uncomment below to test registerFcmToken
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val registerFcmTokenRequest : RegisterFcmTokenRequest =  // RegisterFcmTokenRequest | 
-            //val result : FcmTokenResponse = apiInstance.registerFcmToken(userId, registerFcmTokenRequest)
+            //val result : FcmTokenResponse = apiInstance.registerFcmToken(registerFcmTokenRequest)
             //result shouldBe ("TODO")
         }
 
         // to test removeFcmToken
         should("test removeFcmToken") {
             // uncomment below to test removeFcmToken
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val tokenId : kotlin.Long = 789 // kotlin.Long | 
-            //apiInstance.removeFcmToken(userId, tokenId)
+            //apiInstance.removeFcmToken(tokenId)
         }
 
     }

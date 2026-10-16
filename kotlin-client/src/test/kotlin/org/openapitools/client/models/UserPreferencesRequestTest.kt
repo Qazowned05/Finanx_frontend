@@ -27,13 +27,14 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.UserPreferencesRequest
+import org.openapitools.client.models.TimeZone
 
 class UserPreferencesRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of UserPreferencesRequest
         //val modelInstance = UserPreferencesRequest()
 
-        // to test the property `timeZone` - Zona horaria preferida
+        // to test the property `timeZone`
         should("test timeZone") {
             // uncomment below to test the property
             //modelInstance.timeZone shouldBe ("TODO")

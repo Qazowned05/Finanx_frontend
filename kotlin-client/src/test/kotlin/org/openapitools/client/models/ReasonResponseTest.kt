@@ -23,44 +23,47 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.ReasonResponse
 
 class ReasonResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of ReasonResponse
         //val modelInstance = ReasonResponse()
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico del motivo
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion del motivo
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador unico del usuario asociado al motivo
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion del motivo
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que el motivo fue deshabilitado, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `active`
+        // to test the property `active` - Indica si el motivo esta activo
         should("test active") {
             // uncomment below to test the property
             //modelInstance.active shouldBe ("TODO")

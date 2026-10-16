@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.ChatRole
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -33,7 +34,7 @@ import java.io.Serializable
  *
  * @param id Identificador unico del historial
  * @param turnNumber Numero de turno dentro de la sesion
- * @param role Rol del mensaje
+ * @param role 
  * @param message Contenido del mensaje
  * @param tokensUsed Cantidad de tokens usados
  * @param model Modelo utilizado
@@ -57,9 +58,8 @@ data class ChatHistoryResponse (
     @Json(name = "turnNumber")
     val turnNumber: kotlin.Int? = null,
 
-    /* Rol del mensaje */
     @Json(name = "role")
-    val role: ChatHistoryResponse.Role? = null,
+    val role: ChatRole? = null,
 
     /* Contenido del mensaje */
     @Json(name = "message")
@@ -106,16 +106,6 @@ data class ChatHistoryResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Rol del mensaje
-     *
-     * Values: USER,AI
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Role(val value: kotlin.String) {
-        @Json(name = "USER") USER("USER"),
-        @Json(name = "AI") AI("AI");
-    }
 
 }
 

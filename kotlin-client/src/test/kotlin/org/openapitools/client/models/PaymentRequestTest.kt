@@ -27,6 +27,8 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.PaymentRequest
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.PaymentProvider
 
 class PaymentRequestTest : ShouldSpec() {
     init {
@@ -51,7 +53,7 @@ class PaymentRequestTest : ShouldSpec() {
             //modelInstance.currency shouldBe ("TODO")
         }
 
-        // to test the property `provider` - Payment provider used for this attempt
+        // to test the property `provider`
         should("test provider") {
             // uncomment below to test the property
             //modelInstance.provider shouldBe ("TODO")
@@ -63,7 +65,7 @@ class PaymentRequestTest : ShouldSpec() {
             //modelInstance.subscriptionId shouldBe ("TODO")
         }
 
-        // to test the property `method` - Payment method used
+        // to test the property `method`
         should("test method") {
             // uncomment below to test the property
             //modelInstance.method shouldBe ("TODO")

@@ -4,11 +4,10 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**createPayment**](PaymentsApi.md#createPayment) | **POST** payments | Create payment |
-| [**findAllPaymentsBySubscription**](PaymentsApi.md#findAllPaymentsBySubscription) | **GET** payments/subscription/{subscriptionId} | List payments by subscription |
-| [**findAllPaymentsByUser**](PaymentsApi.md#findAllPaymentsByUser) | **GET** payments/user/{userId} | List payments by user |
-| [**findPaymentById**](PaymentsApi.md#findPaymentById) | **GET** payments/{id} | Find payment |
-| [**refundPayment**](PaymentsApi.md#refundPayment) | **POST** payments/{id}/refund | Refund payment |
+| [**createPayment**](PaymentsApi.md#createPayment) | **POST** api/v1/payments | Create payment |
+| [**findPaymentById**](PaymentsApi.md#findPaymentById) | **GET** api/v1/payments/{id} | Find payment |
+| [**listPayments**](PaymentsApi.md#listPayments) | **GET** api/v1/payments | List payments by user |
+| [**refundPayment**](PaymentsApi.md#refundPayment) | **POST** api/v1/payments/{id}/refund | Refund payment |
 
 
 
@@ -51,84 +50,6 @@ No authorization required
  - **Accept**: */*
 
 
-List payments by subscription
-
-Gets all payments linked to a subscription.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(PaymentsApi::class.java)
-val subscriptionId : kotlin.Long = 789 // kotlin.Long | Subscription id
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<PaymentResponse> = webService.findAllPaymentsBySubscription(subscriptionId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **subscriptionId** | **kotlin.Long**| Subscription id | |
-
-### Return type
-
-[**kotlin.collections.List&lt;PaymentResponse&gt;**](PaymentResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-List payments by user
-
-Gets all payments made by a user.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(PaymentsApi::class.java)
-val userId : kotlin.Long = 789 // kotlin.Long | User id
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<PaymentResponse> = webService.findAllPaymentsByUser(userId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**| User id | |
-
-### Return type
-
-[**kotlin.collections.List&lt;PaymentResponse&gt;**](PaymentResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
 Find payment
 
 Gets a payment by id.
@@ -157,6 +78,57 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**PaymentResponse**](PaymentResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+List payments by user
+
+Lists payments of the authenticated user with optional state, subscriptionId and from/to filters, plus pagination and sort.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(PaymentsApi::class.java)
+val state : PaymentState =  // PaymentState | 
+val subscriptionId : kotlin.Long = 789 // kotlin.Long | 
+val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponsePaymentResponse = webService.listPayments(state, subscriptionId, from, to, page, size, sort)
+}
+```
+
+### Parameters
+| **state** | [**PaymentState**](.md)|  | [optional] [enum: PENDING, PROCESSING, COMPLETED, FAILED, REFUNDED, DISPUTED] |
+| **subscriptionId** | **kotlin.Long**|  | [optional] |
+| **from** | **java.time.LocalDate**|  | [optional] |
+| **to** | **java.time.LocalDate**|  | [optional] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
+
+### Return type
+
+[**PageResponsePaymentResponse**](PageResponsePaymentResponse.md)
 
 ### Authorization
 

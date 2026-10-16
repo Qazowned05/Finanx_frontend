@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.SavingGoalState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -40,7 +41,7 @@ import java.io.Serializable
  * @param createdAt Fecha y hora de creacion de la meta
  * @param completedAt Fecha y hora en que la meta fue completada, si aplica
  * @param disabledAt Fecha y hora en que la meta fue deshabilitada, si aplica
- * @param state Estado actual de la meta de ahorro
+ * @param state 
  * @param active Indica si la meta esta activa
  * @param userId Identificador unico del usuario asociado a la meta
  * @param progressPercentage Porcentaje de progreso hacia la meta
@@ -91,9 +92,8 @@ data class SavingGoalResponse (
     @Json(name = "disabledAt")
     val disabledAt: java.time.LocalDateTime? = null,
 
-    /* Estado actual de la meta de ahorro */
     @Json(name = "state")
-    val state: SavingGoalResponse.State? = null,
+    val state: SavingGoalState? = null,
 
     /* Indica si la meta esta activa */
     @Json(name = "active")
@@ -136,17 +136,6 @@ data class SavingGoalResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Estado actual de la meta de ahorro
-     *
-     * Values: RUNNING,COMPLETED,CANCELLED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "RUNNING") RUNNING("RUNNING"),
-        @Json(name = "COMPLETED") COMPLETED("COMPLETED"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED");
-    }
 
 }
 

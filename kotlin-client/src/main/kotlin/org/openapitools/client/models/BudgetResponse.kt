@@ -23,6 +23,8 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.BudgetHealth
+import org.openapitools.client.models.BudgetState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -41,8 +43,8 @@ import java.io.Serializable
  * @param limitAmount Monto limite del presupuesto
  * @param currencyCode Codigo de moneda del presupuesto
  * @param description Descripcion del presupuesto
- * @param state Estado actual del presupuesto
- * @param health Salud del presupuesto segun su ejecucion
+ * @param state 
+ * @param health 
  * @param start Fecha y hora de inicio del presupuesto
  * @param end Fecha y hora de fin del presupuesto
  * @param createdAt Fecha y hora de creacion del presupuesto
@@ -92,13 +94,11 @@ data class BudgetResponse (
     @Json(name = "description")
     val description: kotlin.String? = null,
 
-    /* Estado actual del presupuesto */
     @Json(name = "state")
-    val state: BudgetResponse.State? = null,
+    val state: BudgetState? = null,
 
-    /* Salud del presupuesto segun su ejecucion */
     @Json(name = "health")
-    val health: BudgetResponse.Health? = null,
+    val health: BudgetHealth? = null,
 
     /* Fecha y hora de inicio del presupuesto */
     @Json(name = "start")
@@ -121,30 +121,6 @@ data class BudgetResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Estado actual del presupuesto
-     *
-     * Values: ACTIVE,CANCELLED,DISABLED,FINALIZED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
-        @Json(name = "CANCELLED") CANCELLED("CANCELLED"),
-        @Json(name = "DISABLED") DISABLED("DISABLED"),
-        @Json(name = "FINALIZED") FINALIZED("FINALIZED");
-    }
-    /**
-     * Salud del presupuesto segun su ejecucion
-     *
-     * Values: OK,NEAR_LIMIT,EXCEEDED,INACTIVE
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Health(val value: kotlin.String) {
-        @Json(name = "OK") OK("OK"),
-        @Json(name = "NEAR_LIMIT") NEAR_LIMIT("NEAR_LIMIT"),
-        @Json(name = "EXCEEDED") EXCEEDED("EXCEEDED"),
-        @Json(name = "INACTIVE") INACTIVE("INACTIVE");
-    }
 
 }
 

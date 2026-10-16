@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Ranking de metodos de pago con metricas resumidas
  *
  * @param count 
  * @param title 

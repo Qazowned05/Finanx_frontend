@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Ranking de los principales motivos de ingreso
  *
  * @param count 
  * @param title 

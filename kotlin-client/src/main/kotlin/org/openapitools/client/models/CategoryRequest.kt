@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -34,7 +35,7 @@ import java.io.Serializable
  * @param name Nombre de la categoria
  * @param description Descripcion de la categoria
  * @param userId Identificador del usuario propietario de la categoria
- * @param type Tipo de transaccion asociado a la categoria
+ * @param type 
  */
 
 
@@ -52,25 +53,14 @@ data class CategoryRequest (
     @Json(name = "userId")
     val userId: kotlin.Long,
 
-    /* Tipo de transaccion asociado a la categoria */
     @Json(name = "type")
-    val type: CategoryRequest.Type
+    val type: TransactionType
 
 ) : Serializable {
     companion object {
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Tipo de transaccion asociado a la categoria
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Type(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

@@ -23,20 +23,23 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.LoginRequest
 
 class LoginRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of LoginRequest
         //val modelInstance = LoginRequest()
 
-        // to test the property `email`
+        // to test the property `email` - Correo electronico del usuario
         should("test email") {
             // uncomment below to test the property
             //modelInstance.email shouldBe ("TODO")
         }
 
-        // to test the property `password`
+        // to test the property `password` - Contrasena del usuario
         should("test password") {
             // uncomment below to test the property
             //modelInstance.password shouldBe ("TODO")

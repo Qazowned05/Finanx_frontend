@@ -23,7 +23,11 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.LoginResponse
+import org.openapitools.client.models.UserResponse
 
 class LoginResponseTest : ShouldSpec() {
     init {
@@ -36,7 +40,7 @@ class LoginResponseTest : ShouldSpec() {
             //modelInstance.user shouldBe ("TODO")
         }
 
-        // to test the property `token`
+        // to test the property `token` - Token JWT generado tras la autenticacion
         should("test token") {
             // uncomment below to test the property
             //modelInstance.token shouldBe ("TODO")

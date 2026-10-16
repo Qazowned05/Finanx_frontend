@@ -23,7 +23,16 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.AnalyticsApi
+import org.openapitools.client.models.BudgetExecutionResponse
+import org.openapitools.client.models.BudgetsDashboard
+import org.openapitools.client.models.DashboardResponse
+import org.openapitools.client.models.PageResponseBudgetExecutionResponse
+import org.openapitools.client.models.PeriodRequest
+import org.openapitools.client.models.TransactionsDashboard
 
 class AnalyticsApiTest : ShouldSpec() {
     init {
@@ -34,8 +43,7 @@ class AnalyticsApiTest : ShouldSpec() {
         should("test getBalanceDashboard") {
             // uncomment below to test getBalanceDashboard
             //val periodRequest : PeriodRequest =  // PeriodRequest | 
-            //val prompt : kotlin.String = prompt_example // kotlin.String | Prompt opcional
-            //val result : GetBudgetsDashboard200Response = apiInstance.getBalanceDashboard(periodRequest, prompt)
+            //val result : TransactionsDashboard = apiInstance.getBalanceDashboard(periodRequest)
             //result shouldBe ("TODO")
         }
 
@@ -51,16 +59,19 @@ class AnalyticsApiTest : ShouldSpec() {
         should("test getBudgetsDashboard") {
             // uncomment below to test getBudgetsDashboard
             //val periodRequest : PeriodRequest =  // PeriodRequest | 
-            //val prompt : kotlin.String = prompt_example // kotlin.String | 
-            //val result : GetBudgetsDashboard200Response = apiInstance.getBudgetsDashboard(periodRequest, prompt)
+            //val result : BudgetsDashboard = apiInstance.getBudgetsDashboard(periodRequest)
             //result shouldBe ("TODO")
         }
 
         // to test getBudgetsExecutionsByPeriod
         should("test getBudgetsExecutionsByPeriod") {
             // uncomment below to test getBudgetsExecutionsByPeriod
-            //val periodRequest : PeriodRequest =  // PeriodRequest | 
-            //val result : kotlin.collections.List<BudgetExecutionResponse> = apiInstance.getBudgetsExecutionsByPeriod(periodRequest)
+            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseBudgetExecutionResponse = apiInstance.getBudgetsExecutionsByPeriod(from, to, page, size, sort)
             //result shouldBe ("TODO")
         }
 

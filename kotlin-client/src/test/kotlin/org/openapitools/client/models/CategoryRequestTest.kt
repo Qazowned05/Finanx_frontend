@@ -23,29 +23,39 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.CategoryRequest
+import org.openapitools.client.models.TransactionType
 
 class CategoryRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of CategoryRequest
         //val modelInstance = CategoryRequest()
 
-        // to test the property `name`
+        // to test the property `name` - Nombre de la categoria
         should("test name") {
             // uncomment below to test the property
             //modelInstance.name shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion de la categoria
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador del usuario propietario de la categoria
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
+        }
+
+        // to test the property `type`
+        should("test type") {
+            // uncomment below to test the property
+            //modelInstance.type shouldBe ("TODO")
         }
 
     }

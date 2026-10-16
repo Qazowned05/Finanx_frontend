@@ -23,7 +23,12 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.RecurrenceRuleResponse
+import org.openapitools.client.models.ScheduleState
 
 class ScheduleResponseTest : ShouldSpec() {
     init {
@@ -36,55 +41,55 @@ class ScheduleResponseTest : ShouldSpec() {
             //modelInstance.type shouldBe ("TODO")
         }
 
-        // to test the property `id`
+        // to test the property `id` - Identificador unico de la programacion
         should("test id") {
             // uncomment below to test the property
             //modelInstance.id shouldBe ("TODO")
         }
 
-        // to test the property `userId`
+        // to test the property `userId` - Identificador unico del usuario asociado a la programacion
         should("test userId") {
             // uncomment below to test the property
             //modelInstance.userId shouldBe ("TODO")
         }
 
-        // to test the property `categoryId`
+        // to test the property `categoryId` - Identificador unico de la categoria asociada a la programacion
         should("test categoryId") {
             // uncomment below to test the property
             //modelInstance.categoryId shouldBe ("TODO")
         }
 
-        // to test the property `categoryName`
+        // to test the property `categoryName` - Nombre de la categoria asociada a la programacion
         should("test categoryName") {
             // uncomment below to test the property
             //modelInstance.categoryName shouldBe ("TODO")
         }
 
-        // to test the property `nextRunAt`
+        // to test the property `nextRunAt` - Fecha y hora de la proxima ejecucion programada
         should("test nextRunAt") {
             // uncomment below to test the property
             //modelInstance.nextRunAt shouldBe ("TODO")
         }
 
-        // to test the property `createdAt`
+        // to test the property `createdAt` - Fecha y hora de creacion de la programacion
         should("test createdAt") {
             // uncomment below to test the property
             //modelInstance.createdAt shouldBe ("TODO")
         }
 
-        // to test the property `lastRunAt`
+        // to test the property `lastRunAt` - Fecha y hora de la ultima ejecucion realizada
         should("test lastRunAt") {
             // uncomment below to test the property
             //modelInstance.lastRunAt shouldBe ("TODO")
         }
 
-        // to test the property `disabledAt`
+        // to test the property `disabledAt` - Fecha y hora en que la programacion fue deshabilitada, si aplica
         should("test disabledAt") {
             // uncomment below to test the property
             //modelInstance.disabledAt shouldBe ("TODO")
         }
 
-        // to test the property `active`
+        // to test the property `active` - Indica si la programacion esta activa
         should("test active") {
             // uncomment below to test the property
             //modelInstance.active shouldBe ("TODO")

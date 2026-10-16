@@ -23,19 +23,26 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.ScheduleBudgetsApi
+import org.openapitools.client.models.PageResponseBudgetScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 class ScheduleBudgetsApiTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of ScheduleBudgetsApi
         //val apiInstance = ScheduleBudgetsApi()
 
-        // to test findAllBudgetScheduleByUserAndState
-        should("test findAllBudgetScheduleByUserAndState") {
-            // uncomment below to test findAllBudgetScheduleByUserAndState
-            //val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val state : kotlin.String = state_example // kotlin.String | Estado
-            //val result : kotlin.collections.List<BudgetScheduleResponse> = apiInstance.findAllBudgetScheduleByUserAndState(idUser, state)
+        // to test listBudgetSchedules
+        should("test listBudgetSchedules") {
+            // uncomment below to test listBudgetSchedules
+            //val state : ScheduleState =  // ScheduleState | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseBudgetScheduleResponse = apiInstance.listBudgetSchedules(state, page, size, sort)
             //result shouldBe ("TODO")
         }
 

@@ -23,47 +23,44 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.UserRequest
 
 class UserRequestTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of UserRequest
         //val modelInstance = UserRequest()
 
-        // to test the property `name`
+        // to test the property `name` - Nombres del usuario
         should("test name") {
             // uncomment below to test the property
             //modelInstance.name shouldBe ("TODO")
         }
 
-        // to test the property `lastname`
+        // to test the property `lastname` - Apellidos del usuario
         should("test lastname") {
             // uncomment below to test the property
             //modelInstance.lastname shouldBe ("TODO")
         }
 
-        // to test the property `email`
+        // to test the property `email` - Correo electronico del usuario
         should("test email") {
             // uncomment below to test the property
             //modelInstance.email shouldBe ("TODO")
         }
 
-        // to test the property `username`
+        // to test the property `username` - Nombre de usuario unico
         should("test username") {
             // uncomment below to test the property
             //modelInstance.username shouldBe ("TODO")
         }
 
-        // to test the property `password`
+        // to test the property `password` - Contrasena del usuario
         should("test password") {
             // uncomment below to test the property
             //modelInstance.password shouldBe ("TODO")
-        }
-
-        // to test the property `timeZone`
-        should("test timeZone") {
-            // uncomment below to test the property
-            //modelInstance.timeZone shouldBe ("TODO")
         }
 
     }

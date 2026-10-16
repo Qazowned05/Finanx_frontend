@@ -23,6 +23,7 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.TimeZone
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -31,7 +32,7 @@ import java.io.Serializable
 /**
  * Solicitud para actualizar preferencias del usuario
  *
- * @param timeZone Zona horaria preferida
+ * @param timeZone 
  * @param currencyCode Codigo de moneda por defecto
  * @param emailNotifications Notificaciones por email habilitadas
  */
@@ -39,9 +40,8 @@ import java.io.Serializable
 
 data class UserPreferencesRequest (
 
-    /* Zona horaria preferida */
     @Json(name = "timeZone")
-    val timeZone: UserPreferencesRequest.TimeZone,
+    val timeZone: TimeZone,
 
     /* Codigo de moneda por defecto */
     @Json(name = "currencyCode")
@@ -56,38 +56,6 @@ data class UserPreferencesRequest (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Zona horaria preferida
-     *
-     * Values: AMERICA_LIMA,AMERICA_BOGOTA,AMERICA_QUITO,AMERICA_CARACAS,AMERICA_LA_PAZ,AMERICA_ASUNCION,AMERICA_MONTEVIDEO,AMERICA_SANTIAGO,AMERICA_BUENOS_AIRES,AMERICA_GUATEMALA,AMERICA_COSTA_RICA,AMERICA_TEGUCIGALPA,AMERICA_EL_SALVADOR,AMERICA_MANAGUA,AMERICA_PANAMA,AMERICA_HAVANA,AMERICA_SANTO_DOMINGO,AMERICA_PUERTO_RICO,AMERICA_MEXICO_CITY,EUROPE_MADRID,AFRICA_CEUTA,ATLANTIC_CANARY,AMERICA_NEW_YORK,AMERICA_LOS_ANGELES
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TimeZone(val value: kotlin.String) {
-        @Json(name = "AMERICA_LIMA") AMERICA_LIMA("AMERICA_LIMA"),
-        @Json(name = "AMERICA_BOGOTA") AMERICA_BOGOTA("AMERICA_BOGOTA"),
-        @Json(name = "AMERICA_QUITO") AMERICA_QUITO("AMERICA_QUITO"),
-        @Json(name = "AMERICA_CARACAS") AMERICA_CARACAS("AMERICA_CARACAS"),
-        @Json(name = "AMERICA_LA_PAZ") AMERICA_LA_PAZ("AMERICA_LA_PAZ"),
-        @Json(name = "AMERICA_ASUNCION") AMERICA_ASUNCION("AMERICA_ASUNCION"),
-        @Json(name = "AMERICA_MONTEVIDEO") AMERICA_MONTEVIDEO("AMERICA_MONTEVIDEO"),
-        @Json(name = "AMERICA_SANTIAGO") AMERICA_SANTIAGO("AMERICA_SANTIAGO"),
-        @Json(name = "AMERICA_BUENOS_AIRES") AMERICA_BUENOS_AIRES("AMERICA_BUENOS_AIRES"),
-        @Json(name = "AMERICA_GUATEMALA") AMERICA_GUATEMALA("AMERICA_GUATEMALA"),
-        @Json(name = "AMERICA_COSTA_RICA") AMERICA_COSTA_RICA("AMERICA_COSTA_RICA"),
-        @Json(name = "AMERICA_TEGUCIGALPA") AMERICA_TEGUCIGALPA("AMERICA_TEGUCIGALPA"),
-        @Json(name = "AMERICA_EL_SALVADOR") AMERICA_EL_SALVADOR("AMERICA_EL_SALVADOR"),
-        @Json(name = "AMERICA_MANAGUA") AMERICA_MANAGUA("AMERICA_MANAGUA"),
-        @Json(name = "AMERICA_PANAMA") AMERICA_PANAMA("AMERICA_PANAMA"),
-        @Json(name = "AMERICA_HAVANA") AMERICA_HAVANA("AMERICA_HAVANA"),
-        @Json(name = "AMERICA_SANTO_DOMINGO") AMERICA_SANTO_DOMINGO("AMERICA_SANTO_DOMINGO"),
-        @Json(name = "AMERICA_PUERTO_RICO") AMERICA_PUERTO_RICO("AMERICA_PUERTO_RICO"),
-        @Json(name = "AMERICA_MEXICO_CITY") AMERICA_MEXICO_CITY("AMERICA_MEXICO_CITY"),
-        @Json(name = "EUROPE_MADRID") EUROPE_MADRID("EUROPE_MADRID"),
-        @Json(name = "AFRICA_CEUTA") AFRICA_CEUTA("AFRICA_CEUTA"),
-        @Json(name = "ATLANTIC_CANARY") ATLANTIC_CANARY("ATLANTIC_CANARY"),
-        @Json(name = "AMERICA_NEW_YORK") AMERICA_NEW_YORK("AMERICA_NEW_YORK"),
-        @Json(name = "AMERICA_LOS_ANGELES") AMERICA_LOS_ANGELES("AMERICA_LOS_ANGELES");
-    }
 
 }
 

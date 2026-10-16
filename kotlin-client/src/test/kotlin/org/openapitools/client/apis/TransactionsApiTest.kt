@@ -23,7 +23,14 @@
 
 package org.openapitools.client.apis
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.apis.TransactionsApi
+import org.openapitools.client.models.PageResponseTransactionResponse
+import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 
 class TransactionsApiTest : ShouldSpec() {
     init {
@@ -38,48 +45,27 @@ class TransactionsApiTest : ShouldSpec() {
             //result shouldBe ("TODO")
         }
 
-        // to test findAllActiveTransactionByUser
-        should("test findAllActiveTransactionByUser") {
-            // uncomment below to test findAllActiveTransactionByUser
-            //val userId : kotlin.Long = 789 // kotlin.Long | ID usuario
-            //val result : kotlin.collections.List<TransactionResponse> = apiInstance.findAllActiveTransactionByUser(userId)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllTransactionByCategoryAndDateBetween
-        should("test findAllTransactionByCategoryAndDateBetween") {
-            // uncomment below to test findAllTransactionByCategoryAndDateBetween
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val categoryId : kotlin.Long = 789 // kotlin.Long | 
-            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-            //val result : kotlin.collections.List<TransactionResponse> = apiInstance.findAllTransactionByCategoryAndDateBetween(userId, categoryId, from, to)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllTransactionByUser
-        should("test findAllTransactionByUser") {
-            // uncomment below to test findAllTransactionByUser
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<TransactionResponse> = apiInstance.findAllTransactionByUser(userId)
-            //result shouldBe ("TODO")
-        }
-
-        // to test findAllTransactionsByUserBetween
-        should("test findAllTransactionsByUserBetween") {
-            // uncomment below to test findAllTransactionsByUserBetween
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
-            //val result : kotlin.collections.List<TransactionResponse> = apiInstance.findAllTransactionsByUserBetween(userId, from, to)
-            //result shouldBe ("TODO")
-        }
-
         // to test findTransactionById
         should("test findTransactionById") {
             // uncomment below to test findTransactionById
             //val id : kotlin.Long = 789 // kotlin.Long | 
             //val result : TransactionResponse = apiInstance.findTransactionById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listTransactions
+        should("test listTransactions") {
+            // uncomment below to test listTransactions
+            //val active : kotlin.Boolean = true // kotlin.Boolean | 
+            //val type : TransactionType =  // TransactionType | 
+            //val walletId : kotlin.Long = 789 // kotlin.Long | 
+            //val categoryId : kotlin.Long = 789 // kotlin.Long | 
+            //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseTransactionResponse = apiInstance.listTransactions(active, type, walletId, categoryId, from, to, page, size, sort)
             //result shouldBe ("TODO")
         }
 

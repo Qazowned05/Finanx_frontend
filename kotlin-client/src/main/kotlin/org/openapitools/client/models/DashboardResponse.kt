@@ -35,11 +35,11 @@ import java.io.Serializable
  * Respuesta base de un dashboard con periodo, titulo, fecha de creacion, resumen de insights y metricas agregadas
  *
  * @param type 
- * @param periodResponse Periodo de referencia del dashboard
+ * @param periodResponse 
  * @param title Titulo descriptivo del dashboard
  * @param createdAt Fecha y hora de creacion del dashboard
- * @param insightSummary Resumen de insights generados para el periodo
- * @param aggregate Agregado general con metricas calculadas
+ * @param insightSummary 
+ * @param aggregate 
  */
 
 
@@ -50,7 +50,6 @@ interface DashboardResponse : Serializable {
 
     @Json(name = "type")
     val type: kotlin.String
-    /* Periodo de referencia del dashboard */
     @Json(name = "periodResponse")
     val periodResponse: PeriodResponse?
     /* Titulo descriptivo del dashboard */
@@ -59,10 +58,8 @@ interface DashboardResponse : Serializable {
     /* Fecha y hora de creacion del dashboard */
     @Json(name = "createdAt")
     val createdAt: java.time.LocalDateTime?
-    /* Resumen de insights generados para el periodo */
     @Json(name = "insightSummary")
     val insightSummary: InsightSummary?
-    /* Agregado general con metricas calculadas */
     @Json(name = "aggregate")
     val aggregate: Aggregate?
 

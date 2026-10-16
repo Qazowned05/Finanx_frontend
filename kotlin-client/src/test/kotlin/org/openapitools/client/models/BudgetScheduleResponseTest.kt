@@ -23,32 +23,38 @@
 
 package org.openapitools.client.models
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+
+import org.openapitools.client.models.BudgetScheduleResponse
+import org.openapitools.client.models.RecurrenceRuleResponse
+import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.ScheduleState
 
 class BudgetScheduleResponseTest : ShouldSpec() {
     init {
         // uncomment below to create an instance of BudgetScheduleResponse
         //val modelInstance = BudgetScheduleResponse()
 
-        // to test the property `alertable`
+        // to test the property `alertable` - Indica si el presupuesto debe generar alertas
         should("test alertable") {
             // uncomment below to test the property
             //modelInstance.alertable shouldBe ("TODO")
         }
 
-        // to test the property `percentAlert`
+        // to test the property `percentAlert` - Porcentaje de alerta respecto al limite del presupuesto
         should("test percentAlert") {
             // uncomment below to test the property
             //modelInstance.percentAlert shouldBe ("TODO")
         }
 
-        // to test the property `limitAmount`
+        // to test the property `limitAmount` - Monto limite del presupuesto
         should("test limitAmount") {
             // uncomment below to test the property
             //modelInstance.limitAmount shouldBe ("TODO")
         }
 
-        // to test the property `description`
+        // to test the property `description` - Descripcion del presupuesto
         should("test description") {
             // uncomment below to test the property
             //modelInstance.description shouldBe ("TODO")

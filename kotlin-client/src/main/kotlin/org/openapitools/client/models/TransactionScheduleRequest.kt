@@ -23,8 +23,10 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.ScheduleRequest
+import org.openapitools.client.models.TransactionType
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -37,9 +39,9 @@ import java.io.Serializable
  * @param categoryId Identificador unico de la categoria asociada a la programacion
  * @param type 
  * @param amount Monto de la transaccion programada (debe ser mayor a 0)
- * @param paymentMethod Metodo de pago de la transaccion
- * @param transactionType Tipo de transaccion (ingreso o gasto)
- * @param recurrenceRule Regla de recurrencia que define la periodicidad de la programacion
+ * @param paymentMethod 
+ * @param transactionType 
+ * @param recurrenceRule 
  * @param walletId Identificador de la billetera (null = usar la principal)
  * @param reasonId Identificador del motivo asociado a la transaccion
  * @param description Descripcion de la transaccion programada
@@ -63,15 +65,12 @@ data class TransactionScheduleRequest (
     @Json(name = "amount")
     val amount: java.math.BigDecimal,
 
-    /* Metodo de pago de la transaccion */
     @Json(name = "paymentMethod")
-    val paymentMethod: TransactionScheduleRequest.PaymentMethod,
+    val paymentMethod: PaymentMethod,
 
-    /* Tipo de transaccion (ingreso o gasto) */
     @Json(name = "transactionType")
-    val transactionType: TransactionScheduleRequest.TransactionType,
+    val transactionType: TransactionType,
 
-    /* Regla de recurrencia que define la periodicidad de la programacion */
     @Json(name = "recurrenceRule")
     override val recurrenceRule: RecurrenceRuleRequest? = null,
 
@@ -92,31 +91,6 @@ data class TransactionScheduleRequest (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Metodo de pago de la transaccion
-     *
-     * Values: CASH,CREDIT_CARD,DEBIT_CARD,BANK_TRANSFER,YAPE,PLIN,OTHER
-     */
-    @JsonClass(generateAdapter = false)
-    enum class PaymentMethod(val value: kotlin.String) {
-        @Json(name = "CASH") CASH("CASH"),
-        @Json(name = "CREDIT_CARD") CREDIT_CARD("CREDIT_CARD"),
-        @Json(name = "DEBIT_CARD") DEBIT_CARD("DEBIT_CARD"),
-        @Json(name = "BANK_TRANSFER") BANK_TRANSFER("BANK_TRANSFER"),
-        @Json(name = "YAPE") YAPE("YAPE"),
-        @Json(name = "PLIN") PLIN("PLIN"),
-        @Json(name = "OTHER") OTHER("OTHER");
-    }
-    /**
-     * Tipo de transaccion (ingreso o gasto)
-     *
-     * Values: SPENT,INCOME
-     */
-    @JsonClass(generateAdapter = false)
-    enum class TransactionType(val value: kotlin.String) {
-        @Json(name = "SPENT") SPENT("SPENT"),
-        @Json(name = "INCOME") INCOME("INCOME");
-    }
 
 }
 

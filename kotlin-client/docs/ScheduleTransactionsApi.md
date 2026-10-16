@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**findAllTScheduleByUserAndState**](ScheduleTransactionsApi.md#findAllTScheduleByUserAndState) | **GET** schedule/transactions/user/{idUser}/{state} | Listar programaciones de transacciones |
+| [**listTransactionSchedules**](ScheduleTransactionsApi.md#listTransactionSchedules) | **GET** api/v1/schedule/transactions | Listar programaciones de transacciones |
 
 
 
 Listar programaciones de transacciones
 
-Obtiene programaciones de transacciones por usuario y estado.
+Lista programaciones de transacciones activas y paginadas con filtro opcional state.
 
 ### Example
 ```kotlin
@@ -21,23 +21,27 @@ Obtiene programaciones de transacciones por usuario y estado.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleTransactionsApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-val state : kotlin.String = state_example // kotlin.String | Estado
+val state : ScheduleState =  // ScheduleState | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<TransactionScheduleResponse> = webService.findAllTScheduleByUserAndState(idUser, state)
+    val result : PageResponseTransactionScheduleResponse = webService.listTransactionSchedules(state, page, size, sort)
 }
 ```
 
 ### Parameters
-| **idUser** | **kotlin.Long**| ID usuario | |
+| **state** | [**ScheduleState**](.md)|  | [optional] [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**| Estado | [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;nextRunAt,ASC&quot;)] |
 
 ### Return type
 
-[**kotlin.collections.List&lt;TransactionScheduleResponse&gt;**](TransactionScheduleResponse.md)
+[**PageResponseTransactionScheduleResponse**](PageResponseTransactionScheduleResponse.md)
 
 ### Authorization
 

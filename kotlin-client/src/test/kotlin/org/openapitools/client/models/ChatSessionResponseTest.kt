@@ -28,6 +28,7 @@ import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.models.ChatSessionResponse
 import org.openapitools.client.models.ChatHistoryResponse
+import org.openapitools.client.models.ChatSessionState
 
 class ChatSessionResponseTest : ShouldSpec() {
     init {
@@ -58,7 +59,7 @@ class ChatSessionResponseTest : ShouldSpec() {
             //modelInstance.endedAt shouldBe ("TODO")
         }
 
-        // to test the property `state` - Estado de la sesion
+        // to test the property `state`
         should("test state") {
             // uncomment below to test the property
             //modelInstance.state shouldBe ("TODO")

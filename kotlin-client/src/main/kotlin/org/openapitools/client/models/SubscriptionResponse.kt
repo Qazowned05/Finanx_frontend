@@ -23,6 +23,9 @@
 
 package org.openapitools.client.models
 
+import org.openapitools.client.models.BillingCycle
+import org.openapitools.client.models.SubscriptionPlan
+import org.openapitools.client.models.SubscriptionState
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -33,9 +36,9 @@ import java.io.Serializable
  *
  * @param id Unique subscription id
  * @param userId Id of the subscribing user
- * @param plan Subscription plan
- * @param billingCycle Billing cycle
- * @param state Current subscription state
+ * @param plan 
+ * @param billingCycle 
+ * @param state 
  * @param amount Amount charged per billing cycle
  * @param currency ISO currency code
  * @param autoRenew Whether the subscription renews automatically
@@ -57,17 +60,14 @@ data class SubscriptionResponse (
     @Json(name = "userId")
     val userId: kotlin.Long? = null,
 
-    /* Subscription plan */
     @Json(name = "plan")
-    val plan: SubscriptionResponse.Plan? = null,
+    val plan: SubscriptionPlan? = null,
 
-    /* Billing cycle */
     @Json(name = "billingCycle")
-    val billingCycle: SubscriptionResponse.BillingCycle? = null,
+    val billingCycle: BillingCycle? = null,
 
-    /* Current subscription state */
     @Json(name = "state")
-    val state: SubscriptionResponse.State? = null,
+    val state: SubscriptionState? = null,
 
     /* Amount charged per billing cycle */
     @Json(name = "amount")
@@ -106,40 +106,6 @@ data class SubscriptionResponse (
         private const val serialVersionUID: Long = 123
     }
 
-    /**
-     * Subscription plan
-     *
-     * Values: FREE,PREMIUM_TRIAL,PREMIUM
-     */
-    @JsonClass(generateAdapter = false)
-    enum class Plan(val value: kotlin.String) {
-        @Json(name = "FREE") FREE("FREE"),
-        @Json(name = "PREMIUM_TRIAL") PREMIUM_TRIAL("PREMIUM_TRIAL"),
-        @Json(name = "PREMIUM") PREMIUM("PREMIUM");
-    }
-    /**
-     * Billing cycle
-     *
-     * Values: MONTHLY,ANNUAL
-     */
-    @JsonClass(generateAdapter = false)
-    enum class BillingCycle(val value: kotlin.String) {
-        @Json(name = "MONTHLY") MONTHLY("MONTHLY"),
-        @Json(name = "ANNUAL") ANNUAL("ANNUAL");
-    }
-    /**
-     * Current subscription state
-     *
-     * Values: PENDING,ACTIVE,PAST_DUE,CANCELED,EXPIRED
-     */
-    @JsonClass(generateAdapter = false)
-    enum class State(val value: kotlin.String) {
-        @Json(name = "PENDING") PENDING("PENDING"),
-        @Json(name = "ACTIVE") ACTIVE("ACTIVE"),
-        @Json(name = "PAST_DUE") PAST_DUE("PAST_DUE"),
-        @Json(name = "CANCELED") CANCELED("CANCELED"),
-        @Json(name = "EXPIRED") EXPIRED("EXPIRED");
-    }
 
 }
 

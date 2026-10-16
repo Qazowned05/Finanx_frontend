@@ -30,7 +30,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * 
+ * Ranking de las categorias principales
  *
  * @param count 
  * @param title 

@@ -27,6 +27,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 
 import org.openapitools.client.apis.WalletsApi
+import org.openapitools.client.models.PageResponseWalletResponse
 import org.openapitools.client.models.WalletRequest
 import org.openapitools.client.models.WalletResponse
 
@@ -38,44 +39,42 @@ class WalletsApiTest : ShouldSpec() {
         // to test create
         should("test create") {
             // uncomment below to test create
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val walletRequest : WalletRequest =  // WalletRequest | 
-            //val result : WalletResponse = apiInstance.create(userId, walletRequest)
+            //val result : WalletResponse = apiInstance.create(walletRequest)
             //result shouldBe ("TODO")
         }
 
         // to test disable
         should("test disable") {
             // uncomment below to test disable
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //apiInstance.disable(userId, id)
-        }
-
-        // to test findAllByUser
-        should("test findAllByUser") {
-            // uncomment below to test findAllByUser
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
-            //val result : kotlin.collections.List<WalletResponse> = apiInstance.findAllByUser(userId)
-            //result shouldBe ("TODO")
+            //apiInstance.disable(id)
         }
 
         // to test findById
         should("test findById") {
             // uncomment below to test findById
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val id : kotlin.Long = 789 // kotlin.Long | 
-            //val result : WalletResponse = apiInstance.findById(userId, id)
+            //val result : WalletResponse = apiInstance.findById(id)
+            //result shouldBe ("TODO")
+        }
+
+        // to test listWallets
+        should("test listWallets") {
+            // uncomment below to test listWallets
+            //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+            //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+            //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+            //val result : PageResponseWalletResponse = apiInstance.listWallets(page, size, sort)
             //result shouldBe ("TODO")
         }
 
         // to test update
         should("test update") {
             // uncomment below to test update
-            //val userId : kotlin.Long = 789 // kotlin.Long | 
             //val id : kotlin.Long = 789 // kotlin.Long | 
             //val walletRequest : WalletRequest =  // WalletRequest | 
-            //val result : WalletResponse = apiInstance.update(userId, id, walletRequest)
+            //val result : WalletResponse = apiInstance.update(id, walletRequest)
             //result shouldBe ("TODO")
         }
 

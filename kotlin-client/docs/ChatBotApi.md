@@ -4,12 +4,12 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**closeSession**](ChatBotApi.md#closeSession) | **PATCH** users/{userId}/chat/sessions/{sessionId}/close | Cerrar sesion de chat |
-| [**findAllSessionsByUser**](ChatBotApi.md#findAllSessionsByUser) | **GET** users/{userId}/chat/sessions | Listar sesiones del usuario |
-| [**findSessionById**](ChatBotApi.md#findSessionById) | **GET** users/{userId}/chat/sessions/{sessionId} | Obtener sesion por ID |
-| [**findSessionByUUID**](ChatBotApi.md#findSessionByUUID) | **GET** users/{userId}/chat/sessions/uuid/{uuid} | Obtener sesion por UUID |
-| [**sendMessage**](ChatBotApi.md#sendMessage) | **POST** users/{userId}/chat/sessions/{sessionId}/messages | Enviar mensaje al chatbot |
-| [**startSession**](ChatBotApi.md#startSession) | **POST** users/{userId}/chat/sessions | Iniciar sesion de chat |
+| [**closeSession**](ChatBotApi.md#closeSession) | **PATCH** api/v1/chat/sessions/{sessionId}/close | Cerrar sesion de chat |
+| [**findSessionById**](ChatBotApi.md#findSessionById) | **GET** api/v1/chat/sessions/{sessionId} | Obtener sesion por ID |
+| [**findSessionByUUID**](ChatBotApi.md#findSessionByUUID) | **GET** api/v1/chat/sessions/uuid/{uuid} | Obtener sesion por UUID |
+| [**listChatSessions**](ChatBotApi.md#listChatSessions) | **GET** api/v1/chat/sessions | Listar sesiones del usuario |
+| [**sendMessage**](ChatBotApi.md#sendMessage) | **POST** api/v1/chat/sessions/{sessionId}/messages | Enviar mensaje al chatbot |
+| [**startSession**](ChatBotApi.md#startSession) | **POST** api/v1/chat/sessions | Iniciar sesion de chat |
 
 
 
@@ -26,16 +26,14 @@ Marca la sesion como cerrada. No se podran enviar mas mensajes en ella.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
 val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion
 
 launch(Dispatchers.IO) {
-    val result : ChatSessionResponse = webService.closeSession(userId, sessionId)
+    val result : ChatSessionResponse = webService.closeSession(sessionId)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**| ID del usuario | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **sessionId** | **kotlin.Long**| ID de la sesion | |
@@ -43,45 +41,6 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**ChatSessionResponse**](ChatSessionResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: */*
-
-
-Listar sesiones del usuario
-
-Retorna todas las sesiones de chat del usuario.
-
-### Example
-```kotlin
-// Import classes:
-//import org.openapitools.client.*
-//import org.openapitools.client.infrastructure.*
-//import org.openapitools.client.models.*
-
-val apiClient = ApiClient()
-val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
-
-launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<ChatSessionResponse> = webService.findAllSessionsByUser(userId)
-}
-```
-
-### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**| ID del usuario | |
-
-### Return type
-
-[**kotlin.collections.List&lt;ChatSessionResponse&gt;**](ChatSessionResponse.md)
 
 ### Authorization
 
@@ -106,16 +65,14 @@ Retorna el detalle de una sesion incluyendo su historial de mensajes.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
 val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion
 
 launch(Dispatchers.IO) {
-    val result : ChatSessionResponse = webService.findSessionById(userId, sessionId)
+    val result : ChatSessionResponse = webService.findSessionById(sessionId)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**| ID del usuario | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **sessionId** | **kotlin.Long**| ID de la sesion | |
@@ -147,16 +104,14 @@ Retorna el detalle de una sesion usando su UUID publico.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
 val uuid : kotlin.String = 550e8400-e29b-41d4-a716-446655440000 // kotlin.String | UUID de la sesion
 
 launch(Dispatchers.IO) {
-    val result : ChatSessionResponse = webService.findSessionByUUID(userId, uuid)
+    val result : ChatSessionResponse = webService.findSessionByUUID(uuid)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**| ID del usuario | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **uuid** | **kotlin.String**| UUID de la sesion | |
@@ -164,6 +119,49 @@ launch(Dispatchers.IO) {
 ### Return type
 
 [**ChatSessionResponse**](ChatSessionResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+
+Listar sesiones del usuario
+
+Retorna sesiones de chat paginadas; admite page, size y sort estándar.
+
+### Example
+```kotlin
+// Import classes:
+//import org.openapitools.client.*
+//import org.openapitools.client.infrastructure.*
+//import org.openapitools.client.models.*
+
+val apiClient = ApiClient()
+val webService = apiClient.createWebservice(ChatBotApi::class.java)
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+
+launch(Dispatchers.IO) {
+    val result : PageResponseChatSessionResponse = webService.listChatSessions(page, size, sort)
+}
+```
+
+### Parameters
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;createdAt,DESC&quot;)] |
+
+### Return type
+
+[**PageResponseChatSessionResponse**](PageResponseChatSessionResponse.md)
 
 ### Authorization
 
@@ -188,17 +186,15 @@ Envia un mensaje dentro de una sesion activa. El chatbot detecta automaticamente
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
 val sessionId : kotlin.Long = 1 // kotlin.Long | ID de la sesion activa
 val sendMessageRequest : SendMessageRequest =  // SendMessageRequest | 
 
 launch(Dispatchers.IO) {
-    val result : ChatHistoryResponse = webService.sendMessage(userId, sessionId, sendMessageRequest)
+    val result : ChatHistoryResponse = webService.sendMessage(sessionId, sendMessageRequest)
 }
 ```
 
 ### Parameters
-| **userId** | **kotlin.Long**| ID del usuario | |
 | **sessionId** | **kotlin.Long**| ID de la sesion activa | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
@@ -231,17 +227,14 @@ Crea una nueva sesion de chat e inyecta el contexto financiero del periodo actua
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ChatBotApi::class.java)
-val userId : kotlin.Long = 1 // kotlin.Long | ID del usuario
 
 launch(Dispatchers.IO) {
-    val result : ChatSessionResponse = webService.startSession(userId)
+    val result : ChatSessionResponse = webService.startSession()
 }
 ```
 
 ### Parameters
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **kotlin.Long**| ID del usuario | |
+This endpoint does not need any parameter.
 
 ### Return type
 

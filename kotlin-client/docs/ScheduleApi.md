@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**cancelSchedule**](ScheduleApi.md#cancelSchedule) | **POST** schedule/{id}/cancel | Cancelar programacion |
-| [**createSchedule**](ScheduleApi.md#createSchedule) | **POST** schedule | Crear programacion |
-| [**disableSchedule**](ScheduleApi.md#disableSchedule) | **DELETE** schedule/{id}/disable | Deshabilitar programacion |
-| [**findAllScheduleByUserAndState**](ScheduleApi.md#findAllScheduleByUserAndState) | **GET** schedule/user/{idUser}/{state} | Listar programaciones por usuario y estado |
-| [**pauseSchedule**](ScheduleApi.md#pauseSchedule) | **POST** schedule/{id}/pause | Pausar programacion |
-| [**resumeSchedule**](ScheduleApi.md#resumeSchedule) | **POST** schedule/{id}/resume | Reanudar programacion |
-| [**updateSchedule**](ScheduleApi.md#updateSchedule) | **PUT** schedule/{id} | Actualizar programacion |
+| [**cancelSchedule**](ScheduleApi.md#cancelSchedule) | **POST** api/v1/schedule/{id}/cancel | Cancelar programacion |
+| [**createSchedule**](ScheduleApi.md#createSchedule) | **POST** api/v1/schedule | Crear programacion |
+| [**disableSchedule**](ScheduleApi.md#disableSchedule) | **DELETE** api/v1/schedule/{id}/disable | Deshabilitar programacion |
+| [**listSchedules**](ScheduleApi.md#listSchedules) | **GET** api/v1/schedule | Listar programaciones por usuario y estado |
+| [**pauseSchedule**](ScheduleApi.md#pauseSchedule) | **POST** api/v1/schedule/{id}/pause | Pausar programacion |
+| [**resumeSchedule**](ScheduleApi.md#resumeSchedule) | **POST** api/v1/schedule/{id}/resume | Reanudar programacion |
+| [**updateSchedule**](ScheduleApi.md#updateSchedule) | **PUT** api/v1/schedule/{id} | Actualizar programacion |
 
 
 
@@ -66,21 +66,21 @@ Crea una nueva programacion.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleApi::class.java)
-val createScheduleRequest : CreateScheduleRequest =  // CreateScheduleRequest | 
+val scheduleRequest : ScheduleRequest =  // ScheduleRequest | 
 
 launch(Dispatchers.IO) {
-    val result : UpdateSchedule200Response = webService.createSchedule(createScheduleRequest)
+    val result : ScheduleResponse = webService.createSchedule(scheduleRequest)
 }
 ```
 
 ### Parameters
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **createScheduleRequest** | [**CreateScheduleRequest**](CreateScheduleRequest.md)|  | |
+| **scheduleRequest** | [**ScheduleRequest**](ScheduleRequest.md)|  | |
 
 ### Return type
 
-[**UpdateSchedule200Response**](UpdateSchedule200Response.md)
+[**ScheduleResponse**](ScheduleResponse.md)
 
 ### Authorization
 
@@ -133,7 +133,7 @@ No authorization required
 
 Listar programaciones por usuario y estado
 
-Obtiene programaciones activas filtradas por usuario y estado.
+Lista programaciones activas paginadas con filtro opcional state.
 
 ### Example
 ```kotlin
@@ -144,23 +144,27 @@ Obtiene programaciones activas filtradas por usuario y estado.
 
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleApi::class.java)
-val idUser : kotlin.Long = 789 // kotlin.Long | ID usuario
-val state : kotlin.String = state_example // kotlin.String | Estado de la programacion
+val state : ScheduleState =  // ScheduleState | 
+val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
+val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
+val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : kotlin.collections.List<UpdateSchedule200Response> = webService.findAllScheduleByUserAndState(idUser, state)
+    val result : PageResponseScheduleResponse = webService.listSchedules(state, page, size, sort)
 }
 ```
 
 ### Parameters
-| **idUser** | **kotlin.Long**| ID usuario | |
+| **state** | [**ScheduleState**](.md)|  | [optional] [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
+| **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **state** | **kotlin.String**| Estado de la programacion | [enum: RUNNING, PAUSED, FINALIZED, CANCELLED, CREATED, ERROR] |
+| **sort** | [**kotlin.collections.List&lt;kotlin.String&gt;**](kotlin.String.md)| Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. | [optional] [default to arrayListOf(&quot;nextRunAt,ASC&quot;)] |
 
 ### Return type
 
-[**kotlin.collections.List&lt;UpdateSchedule200Response&gt;**](UpdateSchedule200Response.md)
+[**PageResponseScheduleResponse**](PageResponseScheduleResponse.md)
 
 ### Authorization
 
@@ -264,10 +268,10 @@ Actualiza una programacion existente.
 val apiClient = ApiClient()
 val webService = apiClient.createWebservice(ScheduleApi::class.java)
 val id : kotlin.Long = 789 // kotlin.Long | ID de la programacion
-val updateScheduleRequest : UpdateScheduleRequest =  // UpdateScheduleRequest | 
+val scheduleRequest : ScheduleRequest =  // ScheduleRequest | 
 
 launch(Dispatchers.IO) {
-    val result : UpdateSchedule200Response = webService.updateSchedule(id, updateScheduleRequest)
+    val result : ScheduleResponse = webService.updateSchedule(id, scheduleRequest)
 }
 ```
 
@@ -275,11 +279,11 @@ launch(Dispatchers.IO) {
 | **id** | **kotlin.Long**| ID de la programacion | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **updateScheduleRequest** | [**UpdateScheduleRequest**](UpdateScheduleRequest.md)|  | |
+| **scheduleRequest** | [**ScheduleRequest**](ScheduleRequest.md)|  | |
 
 ### Return type
 
-[**UpdateSchedule200Response**](UpdateSchedule200Response.md)
+[**ScheduleResponse**](ScheduleResponse.md)
 
 ### Authorization
 
