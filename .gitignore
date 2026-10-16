@@ -19,3 +19,5 @@ local.properties
 /kotlin-client/gradlew.bat
 .devcontainer
 /doc/
+/skills
+/opencode.json
