@@ -1,6 +1,10 @@
 package com.elias.mismonedas.data.model
 
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.RecurrenceType
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 
 data class SelectOption(
@@ -11,7 +15,7 @@ data class SelectOption(
 data class CategoryOption(
     val id: Long,
     val label: String,
-    val type: org.openapitools.client.models.TransactionRequest.Type
+    val type: TransactionType
 )
 
 data class TransactionFormOptions(
@@ -30,8 +34,8 @@ data class NewTransactionCommand(
     val walletId: Long? = null,
     val categoryId: Long,
     val amount: BigDecimal,
-    val paymentMethod: org.openapitools.client.models.TransactionRequest.PaymentMethod,
-    val type: org.openapitools.client.models.TransactionRequest.Type,
+    val paymentMethod: PaymentMethod,
+    val type: TransactionType,
     val reasonId: Long? = null,
     val newReason: String? = null,
     val savingGoalId: Long? = null,
@@ -41,9 +45,9 @@ data class NewTransactionCommand(
 )
 
 data class NewTransactionSchedule(
-    val recurrenceType: org.openapitools.client.models.RecurrenceRuleRequest.RecurrenceType,
+    val recurrenceType: RecurrenceType,
     val interval: Int,
     val startDate: java.time.LocalDate,
     val endDate: java.time.LocalDate,
-    val dayOfWeek: java.time.DayOfWeek? = null
+    val dayOfWeek: DayOfWeek? = null
 )

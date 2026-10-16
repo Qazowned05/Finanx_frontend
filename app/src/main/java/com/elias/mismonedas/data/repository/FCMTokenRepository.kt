@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.FCMTokensApi
 import org.openapitools.client.models.FcmTokenResponse
+import org.openapitools.client.models.PageResponseFcmTokenResponse
 import org.openapitools.client.models.RegisterFcmTokenRequest
 import java.io.IOException
 import javax.inject.Inject
@@ -11,11 +12,11 @@ import javax.inject.Inject
 class FCMTokenRepository @Inject constructor(
     private val api: FCMTokensApi
 ) {
-    suspend fun register(userId: Long, token: String, deviceName: String?): Result<FcmTokenResponse> =
+    suspend fun register(token: String, deviceName: String?): Result<FcmTokenResponse> =
         withContext(Dispatchers.IO) {
             try {
                 val request = RegisterFcmTokenRequest(token = token, deviceName = deviceName)
-                val response = api.registerFcmToken(userId, request)
+                val response = api.registerFcmToken(request)
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
                     Result.success(body)
@@ -28,10 +29,10 @@ class FCMTokenRepository @Inject constructor(
             }
         }
 
-    suspend fun list(userId: Long): Result<List<FcmTokenResponse>> =
+    suspend fun list(): Result<PageResponseFcmTokenResponse> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.listFcmTokens(userId)
+                val response = api.listFcmTokens()
                 val body = response.body()
                 if (response.isSuccessful && body != null) {
                     Result.success(body)
@@ -43,10 +44,10 @@ class FCMTokenRepository @Inject constructor(
             }
         }
 
-    suspend fun remove(userId: Long, tokenId: Long): Result<Unit> =
+    suspend fun remove(tokenId: Long): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val response = api.removeFcmToken(userId, tokenId)
+                val response = api.removeFcmToken(tokenId)
                 if (response.isSuccessful) {
                     Result.success(Unit)
                 } else {

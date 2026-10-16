@@ -4,23 +4,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.PaymentsApi
 import org.openapitools.client.apis.SubscriptionsApi
+import org.openapitools.client.models.PageResponsePaymentResponse
 import org.openapitools.client.models.PaymentResponse
+import org.openapitools.client.models.PaymentState
 import org.openapitools.client.models.SubscriptionRequest
 import org.openapitools.client.models.SubscriptionResponse
 import java.io.IOException
+import java.time.LocalDate
 import javax.inject.Inject
 
 class SubscriptionRepository @Inject constructor(
     private val subscriptionsApi: SubscriptionsApi,
     private val paymentsApi: PaymentsApi
 ) {
-    suspend fun getCurrentSubscription(userId: Long): SubscriptionResponse? =
+    //todo, deberia crearse un endpoint exclusivo para la suscripcion actual para evitar este hack
+    suspend fun getCurrentSubscription(): SubscriptionResponse? =
         withContext(Dispatchers.IO) {
-            val response = subscriptionsApi.findAllSubscriptionsByUser(userId)
+            val response = subscriptionsApi.getCurrentSubscription()
             if (response.isSuccessful && response.body() != null) {
-                response.body()!!.firstOrNull()
+                response.body()
             } else {
-                null
+                throw IOException("Error al obtener plan: ${response.code()}")
             }
         }
 
@@ -44,13 +48,37 @@ class SubscriptionRepository @Inject constructor(
             }
         }
 
-    suspend fun getPaymentHistory(userId: Long): List<PaymentResponse> =
+    suspend fun getPaymentHistory(): PageResponsePaymentResponse? =
         withContext(Dispatchers.IO) {
-            val response = paymentsApi.findAllPaymentsByUser(userId)
+            val response = paymentsApi.listPayments()
             if (response.isSuccessful && response.body() != null) {
                 response.body()!!
             } else {
-                emptyList()
+                throw IOException("Error al obtener historial de pagos: ${response.code()}")
+            }
+        }
+
+    suspend fun listPaymentPage(
+        state: PaymentState? = null,
+        subscriptionId: Long? = null,
+        from: LocalDate? = null,
+        to: LocalDate? = null,
+        page: Int = 0,
+        size: Int = DEFAULT_PAGE_SIZE
+    ): PageResponsePaymentResponse =
+        withContext(Dispatchers.IO) {
+            val response = paymentsApi.listPayments(
+                state = state,
+                subscriptionId = subscriptionId,
+                from = from,
+                to = to,
+                page = page,
+                size = size
+            )
+            if (response.isSuccessful && response.body() != null) {
+                response.body()!!
+            } else {
+                throw IOException("Error al obtener historial de pagos: ${response.code()}")
             }
         }
 }

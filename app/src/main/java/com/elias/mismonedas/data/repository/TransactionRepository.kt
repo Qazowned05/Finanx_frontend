@@ -16,13 +16,18 @@ import org.openapitools.client.apis.ScheduleApi
 import org.openapitools.client.apis.ScheduleTransactionsApi
 import org.openapitools.client.apis.TransactionsApi
 import org.openapitools.client.apis.WalletsApi
+import org.openapitools.client.models.PageResponseTransactionResponse
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
 import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
 import org.openapitools.client.models.TransactionScheduleRequest
+import org.openapitools.client.models.TransactionType
+import org.openapitools.client.models.WalletResponse
 import retrofit2.Response
 import java.io.IOException
 import java.time.DayOfWeek
+import java.time.LocalDate
 import javax.inject.Inject
 
 class TransactionRepository @Inject constructor(
@@ -30,81 +35,24 @@ class TransactionRepository @Inject constructor(
     private val categoryApi: CategoriesApi,
     private val reasonApi: ReasonsApi,
     private val savingGoalApi: SavingsApi,
-    private val transactionScheduleApi: ScheduleTransactionsApi,
     private val scheduleApi: ScheduleApi,
     private val walletsApi: WalletsApi
 ) {
 
-    suspend fun loadTransactionData(userId: Long): TransactionData =
+    suspend fun loadTransactionData(): TransactionData =
         withContext(Dispatchers.IO) {
             coroutineScope {
                 val transactionsDeferred = async {
                     transactionApi
-                        .findAllActiveTransactionByUser(userId)
+                        .listTransactions()
                         .bodyOrThrow("No se pudieron obtener los movimientos")
                 }
 
-                val categoriesDeferred = async {
-                    categoryApi
-                        .findAllCategoriesByUser(userId)
-                        .bodyOrThrow("No se pudieron obtener las categorías")
-                }
+                val options = loadFormOptions()
 
-                val reasonsDeferred = async {
-                    reasonApi
-                        .findAllReasonByUser(userId)
-                        .bodyOrThrow("No se pudieron obtener los motivos")
-                }
-
-                val goalsDeferred = async {
-                    savingGoalApi
-                        .findAllActiveSavingGoalByUser(userId)
-                        .bodyOrThrow("No se pudieron obtener las metas")
-                }
-
-                val categories = categoriesDeferred.await()
-                val reasons = reasonsDeferred.await()
-                val goals = goalsDeferred.await()
-
-                val transactions = transactionsDeferred.await()
-                    .sortedByDescending { it.createdAt }
-
-                val options = TransactionFormOptions(
-                    categories = categories
-                        .filter { it.active == true }
-                        .mapNotNull { category ->
-                            val id = category.id ?: return@mapNotNull null
-                            val typeName = category.type?.name ?: return@mapNotNull null
-                            CategoryOption(
-                                id = id,
-                                label = category.name ?: "Categoría $id",
-                                type = TransactionRequest.Type.valueOf(typeName)
-                            )
-                        }
-                        .sortedBy { it.label },
-
-                    reasons = reasons
-                        .filter { it.active == true }
-                        .mapNotNull { reason ->
-                            val id = reason.id ?: return@mapNotNull null
-                            SelectOption(
-                                id = id,
-                                label = reason.description ?: "Motivo $id"
-                            )
-                        }
-                        .sortedBy { it.label },
-
-                    savingGoals = goals
-                        .filter { it.active == true && it.completed != true }
-                        .mapNotNull { goal ->
-                            val id = goal.id ?: return@mapNotNull null
-                            SelectOption(
-                                id = id,
-                                label = goal.description ?: "Meta $id"
-                            )
-                        }
-                        .sortedBy { it.label }
-                )
+                val transactions = transactionsDeferred.await().items
+                    ?.sortedByDescending { it.createdAt }
+                    ?: emptyList()
 
                 TransactionData(
                     transactions = transactions,
@@ -113,10 +61,74 @@ class TransactionRepository @Inject constructor(
             }
         }
 
+    suspend fun loadFormOptions(): TransactionFormOptions =
+        withContext(Dispatchers.IO) {
+            coroutineScope {
+                val categoriesDeferred = async {
+                    categoryApi
+                        .listCategories(size = 200)
+                        .bodyOrThrow("No se pudieron obtener las categorías")
+                }
+
+                val reasonsDeferred = async {
+                    reasonApi
+                        .listReasons(size = 200)
+                        .bodyOrThrow("No se pudieron obtener los motivos")
+                }
+
+                val goalsDeferred = async {
+                    savingGoalApi
+                        .listSavingGoals(size = 200)
+                        .bodyOrThrow("No se pudieron obtener las metas")
+                }
+
+                val categories = categoriesDeferred.await()
+                val reasons = reasonsDeferred.await()
+                val goals = goalsDeferred.await()
+
+                TransactionFormOptions(
+                    categories = categories.items
+                        ?.filter { it.active == true }
+                        ?.mapNotNull { category ->
+                            val id = category.id ?: return@mapNotNull null
+                            val typeName = category.type?.name ?: return@mapNotNull null
+                            CategoryOption(
+                                id = id,
+                                label = category.name ?: "Categoría $id",
+                                type = TransactionType.valueOf(typeName)
+                            )
+                        }
+                        ?.sortedBy { it.label } ?: emptyList(),
+
+                    reasons = reasons.items
+                        ?.filter { it.active == true }
+                        ?.mapNotNull { reason ->
+                            val id = reason.id ?: return@mapNotNull null
+                            SelectOption(
+                                id = id,
+                                label = reason.description ?: "Motivo $id"
+                            )
+                        }
+                        ?.sortedBy { it.label } ?: emptyList(),
+
+                    savingGoals = goals.items
+                        ?.filter { it.active == true && it.completed != true }
+                        ?.mapNotNull { goal ->
+                            val id = goal.id ?: return@mapNotNull null
+                            SelectOption(
+                                id = id,
+                                label = goal.description ?: "Meta $id"
+                            )
+                        }
+                        ?.sortedBy { it.label } ?: emptyList()
+                )
+            }
+        }
+
     suspend fun createTransaction(
         command: NewTransactionCommand
     ): Unit = withContext(Dispatchers.IO) {
-        val walletId = command.walletId ?: resolvePrimaryWalletId(command.userId)
+        val walletId = command.walletId ?: resolvePrimaryWalletId()
 
         if (command.schedule != null) {
             scheduleApi.createSchedule(command.toScheduleRequest(walletId))
@@ -133,7 +145,7 @@ class TransactionRepository @Inject constructor(
         transactionId: Long,
         command: NewTransactionCommand
     ): TransactionResponse = withContext(Dispatchers.IO) {
-        val walletId = command.walletId ?: resolvePrimaryWalletId(command.userId)
+        val walletId = command.walletId ?: resolvePrimaryWalletId()
         transactionApi
             .updateTransaction(
                 id = transactionId,
@@ -148,23 +160,56 @@ class TransactionRepository @Inject constructor(
             .ensureSuccessful("No se pudo eliminar el movimiento")
     }
 
-    private suspend fun resolvePrimaryWalletId(userId: Long): Long {
+    private suspend fun resolvePrimaryWalletId(): Long {
         val wallets = walletsApi
-            .findAllByUser(userId)
+            .listWallets()
             .bodyOrThrow("No se pudieron obtener las billeteras")
-        return wallets.firstOrNull { it.primary == true }?.id
-            ?: wallets.firstOrNull()?.id
+        return wallets.items?.firstOrNull { it.primary == true }?.id
+            ?: wallets.items?.firstOrNull()?.id
             ?: throw ApiException("No se encontró ninguna billetera")
     }
 
-    suspend fun getPrimaryWalletCurrency(userId: Long): String {
+    suspend fun getPrimaryWalletCurrency(): String {
         val wallets = walletsApi
-            .findAllByUser(userId)
+            .listWallets()
             .bodyOrThrow("No se pudieron obtener las billeteras")
-        return wallets.firstOrNull { it.primary == true }?.currencyCode
-            ?: wallets.firstOrNull()?.currencyCode
+        return wallets.items?.firstOrNull { it.primary == true }?.currencyCode
+            ?: wallets.items?.firstOrNull()?.currencyCode
             ?: "PEN"
     }
+
+    suspend fun listTransactionPage(
+        type: TransactionType? = null,
+        walletId: Long? = null,
+        categoryId: Long? = null,
+        from: LocalDate? = null,
+        to: LocalDate? = null,
+        page: Int = 0,
+        size: Int = DEFAULT_PAGE_SIZE
+    ): PageResponseTransactionResponse =
+        withContext(Dispatchers.IO) {
+            transactionApi
+                .listTransactions(
+                    active = true,
+                    type = type,
+                    walletId = walletId,
+                    categoryId = categoryId,
+                    from = from,
+                    to = to,
+                    page = page,
+                    size = size
+                )
+                .bodyOrThrow("No se pudieron obtener los movimientos")
+        }
+
+    suspend fun listWallets(): List<WalletResponse> =
+        withContext(Dispatchers.IO) {
+            walletsApi
+                .listWallets(size = 200)
+                .bodyOrThrow("No se pudieron obtener las billeteras")
+                .items
+                ?: emptyList()
+        }
 }
 
 class ApiException(
@@ -197,22 +242,19 @@ private fun NewTransactionCommand.toScheduleRequest(walletId: Long?): Transactio
         type = "TRANSACTION",
         description = newReason?.trim()?.takeIf(String::isNotBlank) ?: "Programación",
         amount = amount,
-        paymentMethod = TransactionScheduleRequest.PaymentMethod.valueOf(paymentMethod.name),
-        transactionType = TransactionScheduleRequest.TransactionType.valueOf(type.name),
+        paymentMethod = PaymentMethod.valueOf(paymentMethod.name),
+        transactionType = TransactionType.valueOf(type.name),
         recurrenceRule = RecurrenceRuleRequest(
             recurrenceType = scheduleConfig.recurrenceType,
             interval = scheduleConfig.interval,
             start = scheduleConfig.startDate,
             end = scheduleConfig.endDate,
-            dayOfWeek = scheduleConfig.dayOfWeek?.toRecurrenceDayOfWeek()
+            dayOfWeek = scheduleConfig.dayOfWeek
         ),
         walletId = walletId,
         reasonId = reasonId
     )
 }
-
-private fun DayOfWeek.toRecurrenceDayOfWeek(): RecurrenceRuleRequest.DayOfWeek =
-    RecurrenceRuleRequest.DayOfWeek.valueOf(name)
 
 private fun <T> Response<T>.bodyOrThrow(defaultMessage: String): T {
     if (!isSuccessful) {

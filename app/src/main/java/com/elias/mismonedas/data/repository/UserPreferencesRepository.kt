@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.openapitools.client.apis.UserPreferencesApi
 import org.openapitools.client.apis.WalletsApi
+import org.openapitools.client.models.TimeZone
 import org.openapitools.client.models.UserPreferencesRequest
 import org.openapitools.client.models.UserPreferencesResponse
 import org.openapitools.client.models.WalletRequest
@@ -18,7 +19,7 @@ class UserPreferencesRepository @Inject constructor(
     suspend fun createPreferences(
         userId: Long,
         currencyCode: String,
-        timeZone: UserPreferencesRequest.TimeZone,
+        timeZone: TimeZone,
         emailNotifications: Boolean
     ): Result<UserPreferencesResponse> = withContext(Dispatchers.IO) {
         try {
@@ -27,7 +28,7 @@ class UserPreferencesRepository @Inject constructor(
                 currencyCode = currencyCode,
                 emailNotifications = emailNotifications
             )
-            val response = userPreferencesApi.createUserPreferences(userId, request)
+            val response = userPreferencesApi.createUserPreferences(request)
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 Result.success(body)
@@ -40,9 +41,9 @@ class UserPreferencesRepository @Inject constructor(
         }
     }
 
-    suspend fun getPreferences(userId: Long): Result<UserPreferencesResponse> = withContext(Dispatchers.IO) {
+    suspend fun getPreferences(): Result<UserPreferencesResponse> = withContext(Dispatchers.IO) {
         try {
-            val response = userPreferencesApi.getUserPreferences(userId)
+            val response = userPreferencesApi.getUserPreferences()
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 Result.success(body)
@@ -56,9 +57,8 @@ class UserPreferencesRepository @Inject constructor(
     }
 
     suspend fun updatePreferences(
-        userId: Long,
         currencyCode: String,
-        timeZone: UserPreferencesRequest.TimeZone,
+        timeZone: TimeZone,
         emailNotifications: Boolean
     ): Result<UserPreferencesResponse> = withContext(Dispatchers.IO) {
         try {
@@ -67,7 +67,7 @@ class UserPreferencesRepository @Inject constructor(
                 currencyCode = currencyCode,
                 emailNotifications = emailNotifications
             )
-            val response = userPreferencesApi.updateUserPreferences(userId, request)
+            val response = userPreferencesApi.updateUserPreferences(request)
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 Result.success(body)
@@ -81,7 +81,6 @@ class UserPreferencesRepository @Inject constructor(
     }
 
     suspend fun createWallet(
-        userId: Long,
         currencyCode: String
     ): Result<WalletResponse> = withContext(Dispatchers.IO) {
         try {
@@ -89,7 +88,7 @@ class UserPreferencesRepository @Inject constructor(
                 currencyCode = currencyCode,
                 primary = true
             )
-            val response = walletsApi.create(userId, request)
+            val response = walletsApi.create(request)
             val body = response.body()
             if (response.isSuccessful && body != null) {
                 Result.success(body)

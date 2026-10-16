@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionType
 
 object TransactionQuickPrefs {
     private const val PREFS_NAME = "transaction_quick_prefs"
@@ -29,9 +31,9 @@ object TransactionQuickPrefs {
     }
 
     fun rememberSelection(
-        type: TransactionRequest.Type,
+        type: TransactionType,
         categoryId: Long,
-        paymentMethod: TransactionRequest.PaymentMethod
+        paymentMethod: PaymentMethod
     ) {
         prefs.edit()
             .putString(KEY_LAST_TYPE, type.name)
@@ -40,25 +42,25 @@ object TransactionQuickPrefs {
             .apply()
     }
 
-    fun lastTransactionType(): TransactionRequest.Type? {
+    fun lastTransactionType(): TransactionType? {
         val value = prefs.getString(KEY_LAST_TYPE, null) ?: return null
-        return runCatching { TransactionRequest.Type.valueOf(value) }.getOrNull()
+        return runCatching { TransactionType.valueOf(value) }.getOrNull()
     }
 
-    fun lastCategoryId(type: TransactionRequest.Type): Long? {
+    fun lastCategoryId(type: TransactionType): Long? {
         val key = categoryKey(type)
         val value = prefs.getLong(key, -1L)
         return if (value >= 0) value else null
     }
 
-    fun lastPaymentMethod(): TransactionRequest.PaymentMethod? {
+    fun lastPaymentMethod(): PaymentMethod? {
         val value = prefs.getString(KEY_LAST_PAYMENT_METHOD, null) ?: return null
-        return runCatching { TransactionRequest.PaymentMethod.valueOf(value) }.getOrNull()
+        return runCatching { PaymentMethod.valueOf(value) }.getOrNull()
     }
 
-    private fun categoryKey(type: TransactionRequest.Type): String =
+    private fun categoryKey(type: TransactionType): String =
         when (type) {
-            TransactionRequest.Type.SPENT -> KEY_LAST_CATEGORY_SPENT
-            TransactionRequest.Type.INCOME -> KEY_LAST_CATEGORY_INCOME
+            TransactionType.SPENT -> KEY_LAST_CATEGORY_SPENT
+            TransactionType.INCOME -> KEY_LAST_CATEGORY_INCOME
         }
 }
