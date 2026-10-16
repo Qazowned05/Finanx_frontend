@@ -182,6 +182,7 @@ class TransactionRepository @Inject constructor(
         type: TransactionType? = null,
         walletId: Long? = null,
         categoryId: Long? = null,
+        search: String? = null,
         from: LocalDate? = null,
         to: LocalDate? = null,
         page: Int = 0,
@@ -196,6 +197,7 @@ class TransactionRepository @Inject constructor(
                     categoryId = categoryId,
                     from = from,
                     to = to,
+                    search = search?.trim()?.takeIf(String::isNotBlank),
                     page = page,
                     size = size
                 )

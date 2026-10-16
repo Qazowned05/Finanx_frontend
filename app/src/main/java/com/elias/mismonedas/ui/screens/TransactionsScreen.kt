@@ -49,7 +49,6 @@ import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.RefreshableList
 import com.elias.mismonedas.ui.components.TransactionRecordItem
 import com.elias.mismonedas.ui.components.TransactionsFilterBar
-import com.elias.mismonedas.ui.util.toSearchDate
 import com.elias.mismonedas.ui.viewmodel.TransactionUiState
 import org.openapitools.client.models.TransactionResponse
 import org.openapitools.client.models.TransactionType
@@ -78,16 +77,6 @@ fun TransactionsScreen(
     val datePickerState = rememberDatePickerState()
     val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyListState()
-
-    // Búsqueda de texto local: el backend todavía no expone `search` para movimientos.
-    // Filtra únicamente las páginas ya cargadas.
-    val visibleTransactions = state.transactions.filter { transaction ->
-        val normalizedQuery = state.query.trim().lowercase()
-        normalizedQuery.isBlank() ||
-                (transaction.reasonDescription?.lowercase()?.contains(normalizedQuery) == true) ||
-                (transaction.categoryName?.lowercase()?.contains(normalizedQuery) == true) ||
-                transaction.createdAt.toSearchDate().contains(normalizedQuery)
-    }
 
     val hasActiveFilters = state.query.isNotBlank() ||
             state.filterCategoryId != null ||
@@ -196,7 +185,7 @@ fun TransactionsScreen(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             contentPadding = PaddingValues(bottom = 88.dp)
                         ) {
-                            if (visibleTransactions.isEmpty()) {
+                            if (state.transactions.isEmpty()) {
                                 item {
                                     TransactionsEmptyState(
                                         hasQuery = hasActiveFilters,
@@ -206,7 +195,7 @@ fun TransactionsScreen(
                                 }
                             } else {
                                 items(
-                                    items = visibleTransactions,
+                                    items = state.transactions,
                                     key = { it.id ?: 0 }
                                 ) { transaction ->
                                     TransactionRecordItem(

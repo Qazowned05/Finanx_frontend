@@ -72,7 +72,7 @@ fun TransactionsFilterBar(
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
-            placeholder = { Text("Buscar en los movimientos cargados") },
+            placeholder = { Text("Buscar movimientos") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,

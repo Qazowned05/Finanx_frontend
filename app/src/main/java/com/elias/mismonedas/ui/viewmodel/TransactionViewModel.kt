@@ -10,6 +10,8 @@ import com.elias.mismonedas.data.model.TransactionFormOptions
 import com.elias.mismonedas.data.preferences.TransactionQuickPrefs
 import com.elias.mismonedas.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.PageResponseTransactionResponse
 import org.openapitools.client.models.PaymentMethod
@@ -223,6 +225,7 @@ class TransactionViewModel @Inject constructor(
     }
 
     private var currentUserId: Long? = null
+    private var searchJob: Job? = null
 
     fun load(userId: Long, force: Boolean = false) {
         currentUserId = userId
@@ -251,6 +254,7 @@ class TransactionViewModel @Inject constructor(
                     type = state.filterType,
                     walletId = state.filterWalletId,
                     categoryId = state.filterCategoryId,
+                    search = state.query,
                     from = state.filterFrom,
                     to = state.filterTo,
                     page = 0
@@ -296,6 +300,7 @@ class TransactionViewModel @Inject constructor(
                     type = state.filterType,
                     walletId = state.filterWalletId,
                     categoryId = state.filterCategoryId,
+                    search = state.query,
                     from = state.filterFrom,
                     to = state.filterTo,
                     page = next
@@ -319,7 +324,13 @@ class TransactionViewModel @Inject constructor(
     }
 
     fun setQuery(query: String) {
+        if (state.query == query) return
         state = state.copy(query = query)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MS)
+            applyFilters(state)
+        }
     }
 
     fun setTypeFilter(type: TransactionType?) {
@@ -339,8 +350,10 @@ class TransactionViewModel @Inject constructor(
     }
 
     fun clearFilters() {
+        searchJob?.cancel()
         applyFilters(
             state.copy(
+                query = "",
                 filterType = null,
                 filterWalletId = null,
                 filterCategoryId = null,
@@ -360,6 +373,10 @@ class TransactionViewModel @Inject constructor(
             isLoadingMore = false
         )
         currentUserId?.let { load(it, force = true) }
+    }
+
+    private companion object {
+        private const val SEARCH_DEBOUNCE_MS = 350L
     }
 
     private fun PageResponseTransactionResponse.hasMorePages(): Boolean {
