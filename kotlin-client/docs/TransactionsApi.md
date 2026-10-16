@@ -92,7 +92,7 @@ No authorization required
 
 Listar transacciones del usuario
 
-Lista paginada del usuario autenticado. Admite filtros por active, type, walletId, categoryId y rango from/to; el orden usa sort estándar.
+Lista paginada del usuario autenticado. Admite filtros por active, type, walletId, categoryId, rango from/to y busqueda de texto libre sobre el motivo y la categoria; el orden usa sort estándar.
 
 ### Example
 ```kotlin
@@ -109,12 +109,13 @@ val walletId : kotlin.Long = 789 // kotlin.Long |
 val categoryId : kotlin.Long = 789 // kotlin.Long | 
 val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
 val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+val search : kotlin.String = search_example // kotlin.String | 
 val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
 val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
 val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
 
 launch(Dispatchers.IO) {
-    val result : PageResponseTransactionResponse = webService.listTransactions(active, type, walletId, categoryId, from, to, page, size, sort)
+    val result : PageResponseTransactionResponse = webService.listTransactions(active, type, walletId, categoryId, from, to, search, page, size, sort)
 }
 ```
 
@@ -125,6 +126,7 @@ launch(Dispatchers.IO) {
 | **categoryId** | **kotlin.Long**|  | [optional] |
 | **from** | **java.time.LocalDate**|  | [optional] |
 | **to** | **java.time.LocalDate**|  | [optional] |
+| **search** | **kotlin.String**|  | [optional] |
 | **page** | **kotlin.Int**| Zero-based page index (0..N) | [optional] [default to 0] |
 | **size** | **kotlin.Int**| The size of the page to be returned | [optional] [default to 50] |
 | Name | Type | Description  | Notes |

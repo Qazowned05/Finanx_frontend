@@ -41,7 +41,7 @@ interface TransactionsApi {
     /**
      * GET api/v1/transactions
      * Listar transacciones del usuario
-     * Lista paginada del usuario autenticado. Admite filtros por active, type, walletId, categoryId y rango from/to; el orden usa sort estándar.
+     * Lista paginada del usuario autenticado. Admite filtros por active, type, walletId, categoryId, rango from/to y busqueda de texto libre sobre el motivo y la categoria; el orden usa sort estándar.
      * Responses:
      *  - 200: OK
      *
@@ -51,13 +51,14 @@ interface TransactionsApi {
      * @param categoryId  (optional)
      * @param from  (optional)
      * @param to  (optional)
+     * @param search  (optional)
      * @param page Zero-based page index (0..N) (optional, default to 0)
      * @param size The size of the page to be returned (optional, default to 50)
      * @param sort Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. (optional, default to arrayListOf("createdAt,DESC"))
      * @return [PageResponseTransactionResponse]
      */
     @GET("api/v1/transactions")
-    suspend fun listTransactions(@Query("active") active: kotlin.Boolean? = null, @Query("type") type: TransactionType? = null, @Query("walletId") walletId: kotlin.Long? = null, @Query("categoryId") categoryId: kotlin.Long? = null, @Query("from") from: java.time.LocalDate? = null, @Query("to") to: java.time.LocalDate? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("createdAt,DESC")): Response<PageResponseTransactionResponse>
+    suspend fun listTransactions(@Query("active") active: kotlin.Boolean? = null, @Query("type") type: TransactionType? = null, @Query("walletId") walletId: kotlin.Long? = null, @Query("categoryId") categoryId: kotlin.Long? = null, @Query("from") from: java.time.LocalDate? = null, @Query("to") to: java.time.LocalDate? = null, @Query("search") search: kotlin.String? = null, @Query("page") page: kotlin.Int? = 0, @Query("size") size: kotlin.Int? = 50, @Query("sort") sort: @JvmSuppressWildcards kotlin.collections.List<kotlin.String>? = arrayListOf("createdAt,DESC")): Response<PageResponseTransactionResponse>
 
     /**
      * DELETE api/v1/transactions/{id}

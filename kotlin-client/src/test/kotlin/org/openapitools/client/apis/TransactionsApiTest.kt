@@ -62,10 +62,11 @@ class TransactionsApiTest : ShouldSpec() {
             //val categoryId : kotlin.Long = 789 // kotlin.Long | 
             //val from : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
             //val to : java.time.LocalDate = 2013-10-20 // java.time.LocalDate | 
+            //val search : kotlin.String = search_example // kotlin.String | 
             //val page : kotlin.Int = 56 // kotlin.Int | Zero-based page index (0..N)
             //val size : kotlin.Int = 56 // kotlin.Int | The size of the page to be returned
             //val sort : kotlin.collections.List<kotlin.String> =  // kotlin.collections.List<kotlin.String> | Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
-            //val result : PageResponseTransactionResponse = apiInstance.listTransactions(active, type, walletId, categoryId, from, to, page, size, sort)
+            //val result : PageResponseTransactionResponse = apiInstance.listTransactions(active, type, walletId, categoryId, from, to, search, page, size, sort)
             //result shouldBe ("TODO")
         }
 
