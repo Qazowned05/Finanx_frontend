@@ -9,7 +9,9 @@ import com.elias.mismonedas.data.repository.ChatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.ChatHistoryResponse
+import org.openapitools.client.models.ChatRole
 import org.openapitools.client.models.ChatSessionResponse
+import org.openapitools.client.models.PageResponseChatSessionResponse
 import javax.inject.Inject
 
 data class ChatUiState(
@@ -23,12 +25,16 @@ data class ChatUiState(
     // Lista de sesiones pasadas
     val sessions: List<ChatSessionResponse> = emptyList(),
     val isLoadingSessions: Boolean = false,
+    override val isRefreshing: Boolean = false,
+    val page: Int = 0,
+    val hasMore: Boolean = true,
+    val isLoadingMore: Boolean = false,
 
     // Sesión en modo lectura (historial de sesión cerrada)
     val selectedSession: ChatSessionResponse? = null,
 
     val error: String? = null
-)
+) : RefreshableUiState
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
@@ -45,7 +51,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             state = state.copy(isStartingSession = true, error = null)
             try {
-                val response = repository.startSession(userId)
+                val response = repository.startSession()
                 if (response.isSuccessful) {
                     val session = response.body()!!
                     state = state.copy(
@@ -75,7 +81,7 @@ class ChatViewModel @Inject constructor(
         val sessionId = state.activeSession?.id ?: return
         viewModelScope.launch {
             try {
-                repository.closeSession(userId, sessionId)
+                repository.closeSession(sessionId)
             } catch (e: Exception) {
                 // Silencioso — el estado local se limpia de todas formas
             } finally {
@@ -101,7 +107,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             // Optimistic UI: agrega el mensaje del usuario inmediatamente
             val userMsg = ChatHistoryResponse(
-                role = ChatHistoryResponse.Role.USER,
+                role = ChatRole.USER,
                 message = text,
                 turnNumber = state.messages.size + 1
             )
@@ -139,27 +145,80 @@ class ChatViewModel @Inject constructor(
 
     fun loadSessions(userId: Long) {
         viewModelScope.launch {
-            state = state.copy(isLoadingSessions = true, error = null)
+            val hasData = state.sessions.isNotEmpty()
+            state = state.copy(
+                isLoadingSessions = !hasData,
+                isRefreshing = hasData,
+                error = null
+            )
             try {
-                val response = repository.findAllSessions(userId)
+                val response = repository.listChatSessionPage(page = 0)
                 if (response.isSuccessful) {
+                    val body = response.body()
                     state = state.copy(
-                        sessions = response.body().orEmpty(),
-                        isLoadingSessions = false
+                        sessions = body?.items.orEmpty(),
+                        page = body?.pagination?.page ?: 0,
+                        hasMore = body.hasMorePages(),
+                        isLoadingSessions = false,
+                        isRefreshing = false
                     )
                 } else {
                     state = state.copy(
                         isLoadingSessions = false,
+                        isRefreshing = false,
                         error = "Error ${response.code()}: no se pudieron cargar las sesiones."
                     )
                 }
             } catch (e: Exception) {
                 state = state.copy(
                     isLoadingSessions = false,
+                    isRefreshing = false,
                     error = "Error de red: ${e.message}"
                 )
             }
         }
+    }
+
+    fun refreshSessions(userId: Long) {
+        loadSessions(userId)
+    }
+
+    fun loadMoreSessions(userId: Long) {
+        if (!state.hasMore || state.isLoadingMore || state.isLoadingSessions || state.isRefreshing) return
+
+        viewModelScope.launch {
+            state = state.copy(isLoadingMore = true)
+
+            try {
+                val next = state.page + 1
+                val response = repository.listChatSessionPage(page = next)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    state = state.copy(
+                        sessions = state.sessions + body?.items.orEmpty(),
+                        page = body?.pagination?.page ?: next,
+                        hasMore = body.hasMorePages(),
+                        isLoadingMore = false
+                    )
+                } else {
+                    state = state.copy(
+                        isLoadingMore = false,
+                        error = "Error ${response.code()}: no se pudieron cargar más sesiones."
+                    )
+                }
+            } catch (e: Exception) {
+                state = state.copy(
+                    isLoadingMore = false,
+                    error = "Error de red: ${e.message}"
+                )
+            }
+        }
+    }
+
+    private fun PageResponseChatSessionResponse?.hasMorePages(): Boolean {
+        val current = this?.pagination?.page ?: 0
+        val total = this?.pagination?.totalPages ?: 1
+        return current + 1 < total
     }
 
     fun openSession(session: ChatSessionResponse) {

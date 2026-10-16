@@ -28,6 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.openapitools.client.models.TimeZone
 import org.openapitools.client.models.UserPreferencesRequest
 import org.openapitools.client.models.UserResponse
 import javax.inject.Inject
@@ -122,11 +123,11 @@ class AuthViewModel @Inject constructor(
         val currentToken = TokenStore.fcmToken
         if (userId > 0L && currentToken.isNotEmpty()) {
             try {
-                val tokens = fcmTokenRepository.list(userId).getOrNull()
+                val tokens = fcmTokenRepository.list().getOrNull()?.items
                 val matching = tokens?.firstOrNull { it.token == currentToken }
                 val tokenId = matching?.id
                 if (tokenId != null) {
-                    fcmTokenRepository.remove(userId, tokenId)
+                    fcmTokenRepository.remove(tokenId)
                 }
             } catch (_: Throwable) {}
         }
@@ -225,7 +226,7 @@ class AuthViewModel @Inject constructor(
             if (completed) {
                 registrationStep = RegistrationStep.Completed
             } else {
-                val result = preferencesRepository.getPreferences(userId)
+                val result = preferencesRepository.getPreferences()
                 if (result.isSuccess) {
                     TutorialPreferences.markRegistrationCompleted(userId)
                     registrationStep = RegistrationStep.Completed
@@ -239,7 +240,7 @@ class AuthViewModel @Inject constructor(
     fun registerPreferences(
         userId: Long,
         currencyCode: String,
-        timeZone: UserPreferencesRequest.TimeZone,
+        timeZone: TimeZone,
         emailNotifications: Boolean
     ) {
         viewModelScope.launch {
@@ -260,7 +261,6 @@ class AuthViewModel @Inject constructor(
             }
 
             val walletResult = preferencesRepository.createWallet(
-                userId = userId,
                 currencyCode = currencyCode
             )
 
@@ -305,10 +305,10 @@ class AuthViewModel @Inject constructor(
                 val prevFcmToken = TokenStore.fcmToken
                 if (prevUserId > 0L && prevFcmToken.isNotEmpty()) {
                     viewModelScope.launch {
-                        val tokens = fcmTokenRepository.list(prevUserId).getOrNull()
+                        val tokens = fcmTokenRepository.list().getOrNull()?.items
                         val matching = tokens?.firstOrNull { it.token == prevFcmToken }
                         matching?.id?.let { tokenId ->
-                            fcmTokenRepository.remove(prevUserId, tokenId)
+                            fcmTokenRepository.remove(tokenId)
                         }
                     }
                 }
@@ -346,7 +346,7 @@ class AuthViewModel @Inject constructor(
                     TokenStore.fcmToken = token
                 }
                 if (token.isNotEmpty()) {
-                    fcmTokenRepository.register(userId, token, Build.MODEL)
+                    fcmTokenRepository.register(token, Build.MODEL)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to register FCM token", e)

@@ -11,8 +11,13 @@ import com.elias.mismonedas.data.preferences.TransactionQuickPrefs
 import com.elias.mismonedas.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.PageResponseTransactionResponse
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.TransactionRequest
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
+import org.openapitools.client.models.WalletResponse
+import java.time.LocalDate
 import javax.inject.Inject
 
 sealed interface TransactionSaveState {
@@ -32,8 +37,17 @@ data class TransactionUiState(
     val error: String? = null,
     val actionMessage: String? = null,
     val saveState: TransactionSaveState =
-        TransactionSaveState.Idle
-) : com.elias.mismonedas.ui.viewmodel.RefreshableUiState
+        TransactionSaveState.Idle,
+    val wallets: List<WalletResponse> = emptyList(),
+    val filterType: TransactionType? = null,
+    val filterWalletId: Long? = null,
+    val filterCategoryId: Long? = null,
+    val filterFrom: LocalDate? = null,
+    val filterTo: LocalDate? = null,
+    val page: Int = 0,
+    val hasMore: Boolean = true,
+    val isLoadingMore: Boolean = false
+) : RefreshableUiState
 
 enum class TransactionStep { TYPE, CATEGORY, DETAILS, SAVING_GOAL }
 
@@ -41,12 +55,12 @@ enum class TransactionDraftField { CATEGORY, AMOUNT, PAYMENT_METHOD }
 
 data class TransactionDraftState(
     val step: TransactionStep = TransactionStep.TYPE,
-    val type: TransactionRequest.Type? = null,
+    val type: TransactionType? = null,
     val categoryId: Long? = null,
     val amountText: String = "",
     val reasonId: Long? = null,
     val reasonText: String = "",
-    val paymentMethod: TransactionRequest.PaymentMethod? = null,
+    val paymentMethod: PaymentMethod? = null,
     val savingGoalId: Long? = null,
     val receiptId: Long? = null,
     val convertCurrency: Boolean = false,
@@ -57,7 +71,7 @@ data class TransactionDraftState(
 @Suppress("UNUSED_PARAMETER")
 fun TransactionDraftState.visibleSteps(hasActiveSavingGoals: Boolean): List<TransactionStep> {
     val steps = mutableListOf(TransactionStep.TYPE, TransactionStep.CATEGORY, TransactionStep.DETAILS)
-    if (this.type == TransactionRequest.Type.INCOME) steps += TransactionStep.SAVING_GOAL
+    if (this.type == TransactionType.INCOME) steps += TransactionStep.SAVING_GOAL
     return steps
 }
 
@@ -72,11 +86,11 @@ class TransactionViewModel @Inject constructor(
     var draft by mutableStateOf(TransactionDraftState())
         private set
 
-    fun updateType(type: TransactionRequest.Type) {
+    fun updateType(type: TransactionType) {
         draft = draft.copy(
             type = type,
             categoryId = null,
-            savingGoalId = if (type == TransactionRequest.Type.INCOME) draft.savingGoalId else null,
+            savingGoalId = if (type == TransactionType.INCOME) draft.savingGoalId else null,
             step = TransactionStep.CATEGORY
         )
     }
@@ -100,7 +114,7 @@ class TransactionViewModel @Inject constructor(
         draft = draft.copy(reasonId = id, reasonText = text)
     }
 
-    fun updatePaymentMethod(method: TransactionRequest.PaymentMethod) {
+    fun updatePaymentMethod(method: PaymentMethod) {
         draft = draft.copy(
             paymentMethod = method,
             fieldErrors = draft.fieldErrors - TransactionDraftField.PAYMENT_METHOD
@@ -110,7 +124,7 @@ class TransactionViewModel @Inject constructor(
     fun updateSavingGoal(id: Long?) {
         draft = draft.copy(savingGoalId = id)
     }
-
+    //todo verificar uso
     fun updateReceiptId(id: Long?) {
         draft = draft.copy(receiptId = id)
     }
@@ -119,6 +133,7 @@ class TransactionViewModel @Inject constructor(
         draft = draft.copy(convertCurrency = value)
     }
 
+    //todo verificar uso
     fun updateOcrCurrency(currency: String) {
         draft = draft.copy(ocrCurrency = currency)
     }
@@ -136,8 +151,8 @@ class TransactionViewModel @Inject constructor(
         if (draft.type != null) return
 
         val detectedType = when (transactionTypeValue.uppercase()) {
-            "INCOME" -> TransactionRequest.Type.INCOME
-            else -> TransactionRequest.Type.SPENT
+            "INCOME" -> TransactionType.INCOME
+            else -> TransactionType.SPENT
         }
 
         val matchedCategory = if (categoryId > 0 && availableCategories.any { it.id == categoryId }) {
@@ -145,7 +160,7 @@ class TransactionViewModel @Inject constructor(
         } else null
 
         val matchedPaymentMethod = paymentMethodValue.isNotBlank().let {
-            TransactionRequest.PaymentMethod.entries
+            PaymentMethod.entries
                 .firstOrNull { m -> m.value.equals(paymentMethodValue, ignoreCase = true) }
         }
 
@@ -165,7 +180,7 @@ class TransactionViewModel @Inject constructor(
 
     suspend fun getWalletCurrency(userId: Long): String {
         return try {
-            repository.getPrimaryWalletCurrency(userId)
+            repository.getPrimaryWalletCurrency()
         } catch (_: Exception) {
             "PEN"
         }
@@ -212,7 +227,6 @@ class TransactionViewModel @Inject constructor(
     fun load(userId: Long, force: Boolean = false) {
         currentUserId = userId
         if (!force && state.transactions.isNotEmpty() && state.formOptions.categories.isNotEmpty()) return
-        currentUserId = userId
 
         viewModelScope.launch {
             val hasData = state.transactions.isNotEmpty()
@@ -223,20 +237,41 @@ class TransactionViewModel @Inject constructor(
             )
 
             try {
-                val transactionData =
-                    repository.loadTransactionData(userId)
+                val options = if (state.formOptions.categories.isEmpty()) {
+                    repository.loadFormOptions()
+                } else {
+                    state.formOptions
+                }
+                val wallets = if (state.wallets.isEmpty()) {
+                    runCatching { repository.listWallets() }.getOrDefault(emptyList())
+                } else {
+                    state.wallets
+                }
+                val page = repository.listTransactionPage(
+                    type = state.filterType,
+                    walletId = state.filterWalletId,
+                    categoryId = state.filterCategoryId,
+                    from = state.filterFrom,
+                    to = state.filterTo,
+                    page = 0
+                )
 
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = false,
-                    transactions = transactionData.transactions,
-                    formOptions = transactionData.formOptions,
+                    transactions = page.items ?: emptyList(),
+                    formOptions = options,
+                    wallets = wallets,
+                    page = page.pagination?.page ?: 0,
+                    hasMore = page.hasMorePages(),
+                    isLoadingMore = false,
                     error = null
                 )
             } catch (exception: Exception) {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = false,
+                    isLoadingMore = false,
                     error = exception.message
                         ?: "No se pudieron cargar los movimientos"
                 )
@@ -248,8 +283,89 @@ class TransactionViewModel @Inject constructor(
         currentUserId?.let { load(it, force = true) }
     }
 
+    fun loadMore() {
+        if (currentUserId == null) return
+        if (!state.hasMore || state.isLoadingMore || state.isLoading || state.isRefreshing) return
+
+        viewModelScope.launch {
+            state = state.copy(isLoadingMore = true)
+
+            try {
+                val next = state.page + 1
+                val page = repository.listTransactionPage(
+                    type = state.filterType,
+                    walletId = state.filterWalletId,
+                    categoryId = state.filterCategoryId,
+                    from = state.filterFrom,
+                    to = state.filterTo,
+                    page = next
+                )
+
+                state = state.copy(
+                    transactions = state.transactions + (page.items ?: emptyList()),
+                    page = page.pagination?.page ?: next,
+                    hasMore = page.hasMorePages(),
+                    isLoadingMore = false,
+                    error = null
+                )
+            } catch (exception: Exception) {
+                state = state.copy(
+                    isLoadingMore = false,
+                    error = exception.message
+                        ?: "No se pudieron cargar más movimientos"
+                )
+            }
+        }
+    }
+
     fun setQuery(query: String) {
         state = state.copy(query = query)
+    }
+
+    fun setTypeFilter(type: TransactionType?) {
+        applyFilters(state.copy(filterType = type))
+    }
+
+    fun setWalletFilter(walletId: Long?) {
+        applyFilters(state.copy(filterWalletId = walletId))
+    }
+
+    fun setCategoryFilter(categoryId: Long?) {
+        applyFilters(state.copy(filterCategoryId = categoryId))
+    }
+
+    fun setDateFilter(from: LocalDate?, to: LocalDate?) {
+        applyFilters(state.copy(filterFrom = from, filterTo = to))
+    }
+
+    fun clearFilters() {
+        applyFilters(
+            state.copy(
+                filterType = null,
+                filterWalletId = null,
+                filterCategoryId = null,
+                filterFrom = null,
+                filterTo = null
+            )
+        )
+    }
+
+    private fun applyFilters(filtered: TransactionUiState) {
+        state = filtered.copy(
+            transactions = emptyList(),
+            page = 0,
+            hasMore = true,
+            isLoading = true,
+            isRefreshing = false,
+            isLoadingMore = false
+        )
+        currentUserId?.let { load(it, force = true) }
+    }
+
+    private fun PageResponseTransactionResponse.hasMorePages(): Boolean {
+        val current = pagination?.page ?: 0
+        val total = pagination?.totalPages ?: 1
+        return current + 1 < total
     }
 
     fun createTransaction(command: NewTransactionCommand) {

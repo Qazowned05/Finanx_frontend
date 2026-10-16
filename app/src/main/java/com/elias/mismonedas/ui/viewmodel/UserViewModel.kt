@@ -9,6 +9,7 @@ import com.elias.mismonedas.data.repository.UserPreferencesRepository
 import com.elias.mismonedas.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.TimeZone
 import org.openapitools.client.models.UserRequest
 import org.openapitools.client.models.UserResponse
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class UserViewModel @Inject constructor(
 
     fun loadPreferences(userId: Long) {
         viewModelScope.launch {
-            preferencesRepository.getPreferences(userId).fold(
+            preferencesRepository.getPreferences().fold(
                 onSuccess = { preferences = it },
                 onFailure = { preferencesState = UserActionState.Error(it.message ?: "Error al cargar preferencias") }
             )
@@ -62,12 +63,12 @@ class UserViewModel @Inject constructor(
     fun updatePreferences(
         userId: Long,
         currencyCode: String,
-        timeZone: org.openapitools.client.models.UserPreferencesRequest.TimeZone,
+        timeZone: TimeZone,
         emailNotifications: Boolean
     ) {
         viewModelScope.launch {
             preferencesState = UserActionState.Loading
-            preferencesRepository.updatePreferences(userId, currencyCode, timeZone, emailNotifications).fold(
+            preferencesRepository.updatePreferences(currencyCode, timeZone, emailNotifications).fold(
                 onSuccess = {
                     preferences = it
                     preferencesState = UserActionState.Success("Preferencias actualizadas correctamente")

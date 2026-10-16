@@ -42,10 +42,10 @@ class ReceiptViewModel @Inject constructor(
     var improveState by mutableStateOf<ImproveState>(ImproveState.Idle)
         private set
 
-    fun scanReceipt(userId: Long, imageUri: Uri, context: Context) {
+    fun scanReceipt(imageUri: Uri, context: Context) {
         viewModelScope.launch {
             scanState = ScanState.Scanning
-            repository.scan(userId, imageUri, context).fold(
+            repository.scan(imageUri, context).fold(
                 onSuccess = {
                     lastScanResult = it
                     scanState = ScanState.Success(it)
@@ -55,10 +55,10 @@ class ReceiptViewModel @Inject constructor(
         }
     }
 
-    fun improveScan(receiptId: Long, userId: Long) {
+    fun improveScan(receiptId: Long) {
         viewModelScope.launch {
             improveState = ImproveState.Improving
-            repository.improveScan(receiptId, userId).fold(
+            repository.improveScan(receiptId).fold(
                 onSuccess = {
                     lastScanResult = it
                     improveState = ImproveState.Success(it)

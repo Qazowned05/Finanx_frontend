@@ -8,12 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.elias.mismonedas.data.repository.BudgetRepository
 import com.elias.mismonedas.data.repository.SavingGoalRepository
 import com.elias.mismonedas.data.repository.TransactionRepository
+import com.elias.mismonedas.ui.util.buildCurrentMonthPeriod
 import com.elias.mismonedas.ui.util.toReadableDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetExecutionResponse
+import org.openapitools.client.models.BudgetState
 import org.openapitools.client.models.SavingGoalResponse
+import org.openapitools.client.models.SavingGoalState
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.YearMonth
 import javax.inject.Inject
@@ -75,10 +79,10 @@ class HomeViewModel @Inject constructor(
 
             try {
                 val data =
-                    repository.loadTransactionData(userId)
+                    repository.loadTransactionData()
 
                 val primaryCurrency =
-                    repository.getPrimaryWalletCurrency(userId)
+                    repository.getPrimaryWalletCurrency()
 
                 val currentMonth = YearMonth.now()
 
@@ -93,10 +97,10 @@ class HomeViewModel @Inject constructor(
                     BigDecimal.ZERO
                 ) { accumulated, transaction ->
                     when (transaction.type) {
-                        TransactionResponse.Type.INCOME ->
+                        TransactionType.INCOME ->
                             accumulated + (transaction.amount ?: BigDecimal.ZERO)
 
-                        TransactionResponse.Type.SPENT ->
+                        TransactionType.SPENT ->
                             accumulated - (transaction.amount ?: BigDecimal.ZERO)
 
                         else -> accumulated
@@ -104,23 +108,23 @@ class HomeViewModel @Inject constructor(
                 }
 
                 val monthlyIncome = monthlyTransactions
-                    .filter { it.type == TransactionResponse.Type.INCOME }
+                    .filter { it.type == TransactionType.INCOME }
                     .fold(BigDecimal.ZERO) { total, item ->
                         total + (item.amount ?: BigDecimal.ZERO)
                     }
 
                 val monthlyExpenses = monthlyTransactions
-                    .filter { it.type == TransactionResponse.Type.SPENT }
+                    .filter { it.type == TransactionType.SPENT }
                     .fold(BigDecimal.ZERO) { total, item ->
                         total + (item.amount ?: BigDecimal.ZERO)
                     }
 
                 val incomeSeries = monthlyTransactions
-                    .filter { it.type == TransactionResponse.Type.INCOME }
+                    .filter { it.type == TransactionType.INCOME }
                     .toDailySeries()
 
                 val expenseSeries = monthlyTransactions
-                    .filter { it.type == TransactionResponse.Type.SPENT }
+                    .filter { it.type == TransactionType.SPENT }
                     .toDailySeries()
 
                 val primaryAlert = when {
@@ -136,7 +140,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 // FIX-005: Cargar presupuestos y metas aleatorios
-                val randomBudget = fetchRandomBudget(userId)
+                val randomBudget = fetchRandomBudget()
                 val randomSavingGoal = fetchRandomSavingGoal(userId)
 
                 state = HomeUiState(
@@ -173,12 +177,12 @@ class HomeViewModel @Inject constructor(
         load(userId, currentUserName)
     }
 
-    private suspend fun fetchRandomBudget(userId: Long): BudgetExecutionResponse? {
+    private suspend fun fetchRandomBudget(): BudgetExecutionResponse? {
         return try {
-            val period = com.elias.mismonedas.ui.util.buildCurrentMonthPeriod(userId)
-            val response = budgetRepository.getDetailedBudgets(period)
-            val budgets = response.body()?.filter {
-                it.state == BudgetExecutionResponse.State.ACTIVE
+            val currentMonthPeriod = buildCurrentMonthPeriod()
+            val response = budgetRepository.listDetailed(currentMonthPeriod.start, currentMonthPeriod.end)
+            val budgets = response.body()?.items?.filter {
+                it.state == BudgetState.ACTIVE
             } ?: emptyList()
             if (budgets.isNotEmpty()) budgets.random() else null
         } catch (_: Exception) {
@@ -188,9 +192,9 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun fetchRandomSavingGoal(userId: Long): SavingGoalResponse? {
         return try {
-            val response = savingGoalRepository.getSavingGoals(userId)
-            val goals = response.body()?.filter {
-                it.state == SavingGoalResponse.State.RUNNING
+            val response = savingGoalRepository.list(null)
+            val goals = response.body()?.items?.filter {
+                it.state == SavingGoalState.RUNNING
             } ?: emptyList()
             if (goals.isNotEmpty()) goals.random() else null
         } catch (_: Exception) {

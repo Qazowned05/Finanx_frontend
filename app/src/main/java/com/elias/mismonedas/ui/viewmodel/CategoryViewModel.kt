@@ -7,16 +7,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elias.mismonedas.data.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.CategoryRequest
 import org.openapitools.client.models.CategoryResponse
+import org.openapitools.client.models.PageResponseCategoryResponse
+import org.openapitools.client.models.TransactionType
 import javax.inject.Inject
 
-sealed class CategoryState : com.elias.mismonedas.ui.viewmodel.RefreshableUiState {
+private const val SEARCH_DEBOUNCE_MILLIS = 350L
+
+sealed class CategoryState : RefreshableUiState {
     object Loading : CategoryState() {
         override val isRefreshing: Boolean = false
     }
-    data class Success(val categories: List<CategoryResponse>, override val isRefreshing: Boolean = false) : CategoryState()
+    data class Success(
+        val categories: List<CategoryResponse>,
+        override val isRefreshing: Boolean = false,
+        val page: Int = 0,
+        val hasMore: Boolean = true,
+        val isLoadingMore: Boolean = false
+    ) : CategoryState()
     data class Error(val message: String) : CategoryState() {
         override val isRefreshing: Boolean = false
     }
@@ -33,27 +45,108 @@ class CategoryViewModel @Inject constructor(
     var actionSuccess by mutableStateOf<String?>(null)
         private set
 
-    fun fetchCategories(userId: Long, force: Boolean = false) {
+    var query by mutableStateOf("")
+        private set
+
+    var typeFilter by mutableStateOf<TransactionType?>(null)
+        private set
+
+    private var searchJob: Job? = null
+
+    fun fetchCategories(force: Boolean = false) {
         if (!force && categoryState is CategoryState.Success) return
+        load()
+    }
+
+    private fun load() {
         viewModelScope.launch {
-            val hasData = categoryState is CategoryState.Success && (categoryState as CategoryState.Success).categories.isNotEmpty()
-            categoryState = if (hasData) (categoryState as CategoryState.Success).copy(isRefreshing = true)
-            else CategoryState.Loading
+            val current = categoryState
+            val hasData = current is CategoryState.Success && current.categories.isNotEmpty()
+            categoryState = if (hasData) {
+                (current as CategoryState.Success).copy(isRefreshing = true, isLoadingMore = false)
+            } else {
+                CategoryState.Loading
+            }
 
             try {
-                val response = repository.getActiveCategories(userId)
-                if (response.isSuccessful && response.body() != null) {
-                    categoryState = CategoryState.Success(response.body()!!, isRefreshing = false)
-                } else {
-                    categoryState = CategoryState.Error("Error al cargar categorías: ${response.code()}")
-                }
+                val response = repository.listCategoriesPage(
+                    active = true,
+                    type = typeFilter,
+                    search = query.trim().ifBlank { null },
+                    page = 0
+                )
+                categoryState = CategoryState.Success(
+                    categories = response.items ?: emptyList(),
+                    isRefreshing = false,
+                    page = response.pagination?.page ?: 0,
+                    hasMore = response.hasMorePages(),
+                    isLoadingMore = false
+                )
             } catch (e: Exception) {
                 categoryState = CategoryState.Error("Error de red: ${e.message}")
             }
         }
     }
 
-    fun createCategory(userId: Long, name: String, description: String, type: CategoryRequest.Type) {
+    fun loadMore() {
+        val current = categoryState as? CategoryState.Success ?: return
+        if (!current.hasMore || current.isLoadingMore || current.isRefreshing) return
+
+        viewModelScope.launch {
+            categoryState = current.copy(isLoadingMore = true)
+            try {
+                val next = current.page + 1
+                val response = repository.listCategoriesPage(
+                    active = true,
+                    type = typeFilter,
+                    search = query.trim().ifBlank { null },
+                    page = next
+                )
+                val latest = categoryState as? CategoryState.Success ?: return@launch
+                categoryState = latest.copy(
+                    categories = latest.categories + (response.items ?: emptyList()),
+                    page = response.pagination?.page ?: next,
+                    hasMore = response.hasMorePages(),
+                    isLoadingMore = false
+                )
+            } catch (_: Exception) {
+                val latest = categoryState as? CategoryState.Success
+                if (latest != null) {
+                    categoryState = latest.copy(isLoadingMore = false)
+                }
+            }
+        }
+    }
+
+    fun onQueryChange(value: String) {
+        if (query == value) return
+        query = value
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MILLIS)
+            applyFilters()
+        }
+    }
+
+    fun onTypeFilterChange(type: TransactionType?) {
+        if (typeFilter == type) return
+        typeFilter = type
+        searchJob?.cancel()
+        applyFilters()
+    }
+
+    private fun applyFilters() {
+        categoryState = CategoryState.Loading
+        load()
+    }
+
+    private fun PageResponseCategoryResponse.hasMorePages(): Boolean {
+        val current = pagination?.page ?: 0
+        val total = pagination?.totalPages ?: 1
+        return current + 1 < total
+    }
+
+    fun createCategory(userId: Long, name: String, description: String, type: TransactionType) {
         viewModelScope.launch {
             try {
                 val request = CategoryRequest(
@@ -65,7 +158,7 @@ class CategoryViewModel @Inject constructor(
                 val response = repository.createCategory(request)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría creada"
-                    fetchCategories(userId, force = true)
+                    fetchCategories(force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al crear: ${response.code()}")
                 }
@@ -75,7 +168,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun updateCategory(userId: Long, categoryId: Long, name: String, description: String, type: CategoryRequest.Type) {
+    fun updateCategory(userId: Long, categoryId: Long, name: String, description: String, type: TransactionType) {
         viewModelScope.launch {
             try {
                 val request = CategoryRequest(
@@ -87,7 +180,7 @@ class CategoryViewModel @Inject constructor(
                 val response = repository.updateCategory(categoryId, request)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría actualizada"
-                    fetchCategories(userId, force = true)
+                    fetchCategories(force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al actualizar: ${response.code()}")
                 }
@@ -103,7 +196,7 @@ class CategoryViewModel @Inject constructor(
                 val response = repository.disableCategory(categoryId)
                 if (response.isSuccessful) {
                     actionSuccess = "Categoría desactivada"
-                    fetchCategories(userId, force = true)
+                    fetchCategories(force = true)
                 } else {
                     categoryState = CategoryState.Error("Error al desactivar: ${response.code()}")
                 }

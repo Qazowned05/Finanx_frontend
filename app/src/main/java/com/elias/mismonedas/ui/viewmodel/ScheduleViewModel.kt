@@ -14,9 +14,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleRequest
 import org.openapitools.client.models.BudgetScheduleResponse
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.PageResponseBudgetScheduleResponse
+import org.openapitools.client.models.PageResponseTransactionScheduleResponse
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
+import org.openapitools.client.models.ScheduleState
 import org.openapitools.client.models.TransactionScheduleRequest
 import org.openapitools.client.models.TransactionScheduleResponse
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
@@ -26,7 +33,11 @@ sealed class RecurringState : com.elias.mismonedas.ui.viewmodel.RefreshableUiSta
     data class Success(
         val transactionSchedules: List<TransactionScheduleResponse>,
         val budgetSchedules: List<BudgetScheduleResponse>,
-        override val isRefreshing: Boolean = false
+        override val isRefreshing: Boolean = false,
+        val transactionPage: Int = 0,
+        val budgetPage: Int = 0,
+        val hasMore: Boolean = true,
+        val isLoadingMore: Boolean = false
     ) : RecurringState()
     data class Error(val message: String) : RecurringState() { override val isRefreshing: Boolean = false }
 }
@@ -66,20 +77,45 @@ class ScheduleViewModel @Inject constructor(
     var formState by mutableStateOf<ScheduleFormState>(ScheduleFormState.Idle)
         private set
 
+    var stateFilter by mutableStateOf<ScheduleState?>(ScheduleState.RUNNING)
+        private set
+
+    private var currentUserId: Long? = null
+
     fun fetchAll(userId: Long, state: String = "RUNNING", force: Boolean = false) {
+        val parsed = ScheduleState.decode(state)
+        val filterChanged = parsed != stateFilter
+        stateFilter = parsed
+        load(userId, force = force || filterChanged)
+    }
+
+    fun load(userId: Long, force: Boolean = false) {
+        currentUserId = userId
         if (!force && recurringState is RecurringState.Success) return
         viewModelScope.launch {
-            val hasData = recurringState is RecurringState.Success && ((recurringState as RecurringState.Success).transactionSchedules.isNotEmpty() || (recurringState as RecurringState.Success).budgetSchedules.isNotEmpty())
-            recurringState = if (hasData) (recurringState as RecurringState.Success).copy(isRefreshing = true)
-            else RecurringState.Loading
+            val current = recurringState
+            val hasData = current is RecurringState.Success &&
+                (current.transactionSchedules.isNotEmpty() || current.budgetSchedules.isNotEmpty())
+            recurringState = if (hasData && current is RecurringState.Success) {
+                current.copy(isRefreshing = true)
+            } else {
+                RecurringState.Loading
+            }
             recurringState = try {
-                val txResponse = repository.getTransactionSchedulesByUserAndState(userId, state)
-                val budgetResponse = repository.getBudgetSchedulesByUserAndState(userId, state)
+                val scheduleState = stateFilter
+                val txResponse = repository.listT(scheduleState, page = 0)
+                val budgetResponse = repository.listB(scheduleState, page = 0)
                 if (txResponse.isSuccessful && budgetResponse.isSuccessful) {
+                    val txBody = txResponse.body()
+                    val budgetBody = budgetResponse.body()
                     RecurringState.Success(
-                        transactionSchedules = txResponse.body() ?: emptyList(),
-                        budgetSchedules = budgetResponse.body() ?: emptyList(),
-                        isRefreshing = false
+                        transactionSchedules = txBody?.items ?: emptyList(),
+                        budgetSchedules = budgetBody?.items ?: emptyList(),
+                        isRefreshing = false,
+                        transactionPage = txBody?.pagination?.page ?: 0,
+                        budgetPage = budgetBody?.pagination?.page ?: 0,
+                        hasMore = (txBody?.hasMorePages() ?: false) || (budgetBody?.hasMorePages() ?: false),
+                        isLoadingMore = false
                     )
                 } else {
                     RecurringState.Error("Error al cargar recurrentes")
@@ -90,20 +126,57 @@ class ScheduleViewModel @Inject constructor(
         }
     }
 
+    fun loadMore() {
+        val current = recurringState as? RecurringState.Success ?: return
+        if (!current.hasMore || current.isLoadingMore || current.isRefreshing) return
+        viewModelScope.launch {
+            recurringState = current.copy(isLoadingMore = true)
+            try {
+                val scheduleState = stateFilter
+                val nextTransactionPage = current.transactionPage + 1
+                val nextBudgetPage = current.budgetPage + 1
+                val txResponse = repository.listT(scheduleState, page = nextTransactionPage)
+                val budgetResponse = repository.listB(scheduleState, page = nextBudgetPage)
+                if (txResponse.isSuccessful && budgetResponse.isSuccessful) {
+                    val txBody = txResponse.body()
+                    val budgetBody = budgetResponse.body()
+                    recurringState = current.copy(
+                        transactionSchedules = current.transactionSchedules + (txBody?.items ?: emptyList()),
+                        budgetSchedules = current.budgetSchedules + (budgetBody?.items ?: emptyList()),
+                        transactionPage = txBody?.pagination?.page ?: nextTransactionPage,
+                        budgetPage = budgetBody?.pagination?.page ?: nextBudgetPage,
+                        hasMore = (txBody?.hasMorePages() ?: false) || (budgetBody?.hasMorePages() ?: false),
+                        isLoadingMore = false
+                    )
+                } else {
+                    recurringState = current.copy(isLoadingMore = false)
+                }
+            } catch (e: Exception) {
+                recurringState = current.copy(isLoadingMore = false)
+            }
+        }
+    }
+
+    fun onStateFilterChange(filter: ScheduleState?) {
+        if (stateFilter == filter) return
+        stateFilter = filter
+        currentUserId?.let { load(it, force = true) }
+    }
+
     fun loadFormOptions(userId: Long, force: Boolean = false) {
         if (!force && formState is ScheduleFormState.Ready) return
         viewModelScope.launch {
             formState = ScheduleFormState.Loading
             try {
-                val categoriesDeferred = async { categoryRepository.getActiveCategories(userId) }
-                val reasonsDeferred = async { reasonRepository.getReasonsByUser(userId) }
+                val categoriesDeferred = async { categoryRepository.list(active = true, type = null) }
+                val reasonsDeferred = async { reasonRepository.list(active = true) }
                 val catResponse = categoriesDeferred.await()
                 val reasonResponse = reasonsDeferred.await()
                 if (catResponse.isSuccessful && reasonResponse.isSuccessful) {
                     formState = ScheduleFormState.Ready(
                         ScheduleFormOptions(
-                            categories = catResponse.body() ?: emptyList(),
-                            reasons = (reasonResponse.body() ?: emptyList())
+                            categories = catResponse.body()?.items ?: emptyList(),
+                            reasons = (reasonResponse.body()?.items ?: emptyList())
                                 .filter { it.active == true }
                                 .mapNotNull { r -> r.id?.let { SelectOption(it, r.description ?: "") } }
                         )
@@ -123,13 +196,13 @@ class ScheduleViewModel @Inject constructor(
         reasonId: Long?,
         description: String?,
         amount: BigDecimal,
-        paymentMethod: TransactionScheduleRequest.PaymentMethod,
-        transactionType: TransactionScheduleRequest.TransactionType,
-        recurrenceType: RecurrenceRuleRequest.RecurrenceType,
+        paymentMethod: PaymentMethod,
+        transactionType: TransactionType,
+        recurrenceType: RecurrenceType,
         interval: Int,
         start: LocalDate,
         end: LocalDate,
-        dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null
+        dayOfWeek: DayOfWeek? = null
     ) {
         viewModelScope.launch {
             actionState = RecurringActionState.Loading
@@ -157,7 +230,7 @@ class ScheduleViewModel @Inject constructor(
                 val response = repository.createSchedule(request)
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success
-                    fetchAll(userId, force = true)
+                    load(userId, force = true)
                 } else {
                     actionState = RecurringActionState.Error("No se pudo crear: ${response.message()}")
                 }
@@ -175,11 +248,11 @@ class ScheduleViewModel @Inject constructor(
         percentAlert: Int,
         limitAmount: BigDecimal,
         description: String,
-        recurrenceType: RecurrenceRuleRequest.RecurrenceType,
+        recurrenceType: RecurrenceType,
         interval: Int,
         start: LocalDate,
         end: LocalDate,
-        dayOfWeek: RecurrenceRuleRequest.DayOfWeek? = null
+        dayOfWeek: DayOfWeek? = null
     ) {
         viewModelScope.launch {
             actionState = RecurringActionState.Loading
@@ -205,7 +278,7 @@ class ScheduleViewModel @Inject constructor(
                 )
                 if (response.isSuccessful) {
                     actionState = RecurringActionState.Success
-                    fetchAll(userId, force = true)
+                    load(userId, force = true)
                 } else {
                     actionState = RecurringActionState.Error("No se pudo crear: ${response.message()}")
                 }
@@ -217,23 +290,35 @@ class ScheduleViewModel @Inject constructor(
 
     fun pause(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.pauseSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
+            try { if (repository.pauseSchedule(id).isSuccessful) load(userId, force = true) } catch (_: Exception) {}
         }
     }
 
     fun resume(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.resumeSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
+            try { if (repository.resumeSchedule(id).isSuccessful) load(userId, force = true) } catch (_: Exception) {}
         }
     }
 
     fun cancel(id: Long, userId: Long) {
         viewModelScope.launch {
-            try { if (repository.cancelSchedule(id).isSuccessful) fetchAll(userId, force = true) } catch (_: Exception) {}
+            try { if (repository.cancelSchedule(id).isSuccessful) load(userId, force = true) } catch (_: Exception) {}
         }
     }
 
     fun resetActionState() {
         actionState = RecurringActionState.Idle
+    }
+
+    private fun PageResponseTransactionScheduleResponse.hasMorePages(): Boolean {
+        val current = pagination?.page ?: 0
+        val total = pagination?.totalPages ?: 1
+        return current + 1 < total
+    }
+
+    private fun PageResponseBudgetScheduleResponse.hasMorePages(): Boolean {
+        val current = pagination?.page ?: 0
+        val total = pagination?.totalPages ?: 1
+        return current + 1 < total
     }
 }

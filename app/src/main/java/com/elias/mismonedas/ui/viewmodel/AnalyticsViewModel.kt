@@ -47,8 +47,7 @@ class AnalyticsViewModel @Inject constructor(
 
             val periodRequest = PeriodRequest(
                 start  = state.startDate,
-                end    = state.endDate,
-                userId = userId
+                end    = state.endDate
             )
 
             try {
@@ -85,8 +84,7 @@ class AnalyticsViewModel @Inject constructor(
             state = state.copy(isBudgetsLoading = true, budgetsError = null)
             val periodRequest = PeriodRequest(
                 start = state.startDate,
-                end = state.endDate,
-                userId = userId
+                end = state.endDate
             )
             try {
                 val response = repository.getBudgetsDashboard(periodRequest)
