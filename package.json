@@ -1,0 +1,11 @@
+{
+  "name": "mismonedas-api-sync",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "sync:api": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/sync-openapi.ps1"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.41.0"
+  }
+}

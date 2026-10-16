@@ -1,0 +1,5120 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: FCM Tokens
+  description: Gestion de tokens FCM para notificaciones push
+- name: ChatBot
+  description: Chatbot financiero conversacional de Mis Monedas
+- name: Images
+  description: Almacenamiento generico de imagenes
+- name: Receipts
+  description: Escaneo OCR de recibos
+- name: User Preferences
+  description: Gestion de preferencias de usuario
+paths:
+  /api/v1/wallets/{id}:
+    get:
+      tags:
+      - Wallets
+      summary: Obtener billetera por ID
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+    put:
+      tags:
+      - Wallets
+      summary: Actualizar billetera
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WalletRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+    delete:
+      tags:
+      - Wallets
+      summary: Deshabilitar billetera
+      operationId: disable
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Buscar usuario por ID
+      operationId: findUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+    put:
+      tags:
+      - Users
+      summary: Actualizar datos de usuario
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/v1/users/me/preferences:
+    get:
+      tags:
+      - User Preferences
+      summary: Obtener preferencias del usuario
+      operationId: getUserPreferences
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserPreferencesResponse"
+    put:
+      tags:
+      - User Preferences
+      summary: Actualizar preferencias del usuario
+      operationId: updateUserPreferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPreferencesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserPreferencesResponse"
+    post:
+      tags:
+      - User Preferences
+      summary: Crear preferencias del usuario
+      operationId: createUserPreferences
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPreferencesRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserPreferencesResponse"
+  /api/v1/transactions/{id}:
+    get:
+      tags:
+      - Transactions
+      summary: Buscar transaccion
+      description: Obtiene una transaccion por ID.
+      operationId: findTransactionById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+    put:
+      tags:
+      - Transactions
+      summary: Actualizar transaccion
+      description: Actualiza una transaccion.
+      operationId: updateTransaction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+    delete:
+      tags:
+      - Transactions
+      summary: Eliminar transaccion
+      description: Deshabilita una transaccion.
+      operationId: transactionDelete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/schedule/{id}:
+    put:
+      tags:
+      - Schedule
+      summary: Actualizar programacion
+      description: Actualiza una programacion existente.
+      operationId: updateSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID de la programacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleRequest"
+        required: true
+      responses:
+        "200":
+          description: Actualizada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+  /api/v1/savings/{id}:
+    get:
+      tags:
+      - Savings
+      summary: Buscar meta
+      description: Obtiene una meta de ahorro por ID.
+      operationId: findSavingGoalById
+      parameters:
+      - name: id
+        in: path
+        description: ID meta
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+    put:
+      tags:
+      - Savings
+      summary: Actualizar meta
+      description: Actualiza una meta de ahorro.
+      operationId: updateSavingGoal
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingGoalRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+  /api/v1/reasons/{id}:
+    get:
+      tags:
+      - Reasons
+      summary: Buscar razon
+      description: Obtiene una razon por ID.
+      operationId: findReasonById
+      parameters:
+      - name: id
+        in: path
+        description: ID de la razon
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+    put:
+      tags:
+      - Reasons
+      summary: Actualizar razon
+      description: Actualiza una razon existente.
+      operationId: updateReason
+      parameters:
+      - name: id
+        in: path
+        description: ID de la razon
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReasonRequest"
+        required: true
+      responses:
+        "200":
+          description: Actualizada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+  /api/v1/categories/{id}:
+    get:
+      tags:
+      - Categories
+      summary: Buscar categoria por ID
+      description: Obtiene una categoria especifica.
+      operationId: findCategoryById
+      parameters:
+      - name: id
+        in: path
+        description: ID de la categoria
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Categoria encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+    put:
+      tags:
+      - Categories
+      summary: Actualizar categoria
+      description: Actualiza una categoria existente.
+      operationId: updateCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID de la categoria
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: Actualizada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/budgets/{id}:
+    get:
+      tags:
+      - Budgets
+      summary: Buscar presupuesto
+      description: Obtiene un presupuesto por ID.
+      operationId: findBudgetById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+        "404":
+          description: No encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+    put:
+      tags:
+      - Budgets
+      summary: Actualizar presupuesto
+      description: Actualiza un presupuesto.
+      operationId: updateBudget
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+  /webhooks/{provider}:
+    post:
+      tags:
+      - Webhooks
+      summary: Receive provider webhook
+      description: Receives an inbound webhook notification from a payment provider.
+      operationId: receiveWebhook
+      parameters:
+      - name: provider
+        in: path
+        description: Payment provider
+        required: true
+        schema:
+          $ref: "#/components/schemas/PaymentProvider"
+      - name: X-Signature
+        in: header
+        description: Signature header sent by the provider
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        "200":
+          description: Accepted (duplicates are idempotent)
+        "401":
+          description: Invalid signature
+  /api/v1/wallets:
+    get:
+      tags:
+      - Wallets
+      summary: Listar billeteras del usuario autenticado
+      description: "Lista paginada con page, size y sort estándar."
+      operationId: listWallets
+      parameters:
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "id,ASC"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseWalletResponse"
+    post:
+      tags:
+      - Wallets
+      summary: Crear billetera
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WalletRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+  /api/v1/users/{id}/reset-data:
+    post:
+      tags:
+      - Users
+      summary: Resetear datos de usuario
+      operationId: resetUserData
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/users/{id}/disable:
+    post:
+      tags:
+      - Users
+      summary: Deshabilitar usuario
+      operationId: disableUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/v1/users/{id}/block:
+    post:
+      tags:
+      - Users
+      summary: Bloquear usuario
+      operationId: blockUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/v1/users/{id}/activate:
+    post:
+      tags:
+      - Users
+      summary: Habilitar usuario
+      operationId: enableUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/v1/users/register:
+    post:
+      tags:
+      - Users
+      summary: Registrar un nuevo usuario
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /api/v1/transactions:
+    get:
+      tags:
+      - Transactions
+      summary: Listar transacciones del usuario
+      description: "Lista paginada del usuario autenticado. Admite filtros por active,\
+        \ type, walletId, categoryId y rango from/to; el orden usa sort estándar."
+      operationId: listTransactions
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: type
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/TransactionType"
+      - name: walletId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: categoryId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseTransactionResponse"
+    post:
+      tags:
+      - Transactions
+      summary: Crear transaccion
+      description: Crea una nueva transaccion.
+      operationId: createTransaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+  /api/v1/subscriptions:
+    get:
+      tags:
+      - Subscriptions
+      summary: List subscriptions by user
+      description: Lists subscriptions of the authenticated user with optional state
+        and pagination/sort parameters.
+      operationId: listSubscriptions
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/SubscriptionState"
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: List retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseSubscriptionResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseSubscriptionResponse"
+    post:
+      tags:
+      - Subscriptions
+      summary: Create subscription
+      description: "Creates a new subscription in PENDING state, awaiting payment\
+        \ confirmation."
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriptionRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "400":
+          description: Invalid data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/subscriptions/{id}/renew:
+    post:
+      tags:
+      - Subscriptions
+      summary: Renew subscription
+      description: Opens the next billing period for an active subscription.
+      operationId: renewSubscription
+      parameters:
+      - name: id
+        in: path
+        description: Subscription id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Renewed
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/subscriptions/{id}/cancel:
+    post:
+      tags:
+      - Subscriptions
+      summary: Cancel subscription
+      description: Cancels a subscription and disables auto renew.
+      operationId: cancelSubscription
+      parameters:
+      - name: id
+        in: path
+        description: Subscription id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Canceled
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/subscriptions/{id}/activate:
+    post:
+      tags:
+      - Subscriptions
+      summary: Activate subscription
+      description: Activates a PENDING or PAST_DUE subscription and opens a new billing
+        period.
+      operationId: activateSubscription
+      parameters:
+      - name: id
+        in: path
+        description: Subscription id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Activated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "409":
+          description: Invalid state transition
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/schedule:
+    get:
+      tags:
+      - Schedule
+      summary: Listar programaciones por usuario y estado
+      description: Lista programaciones activas paginadas con filtro opcional state.
+      operationId: listSchedules
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/ScheduleState"
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "nextRunAt,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseScheduleResponse"
+    post:
+      tags:
+      - Schedule
+      summary: Crear programacion
+      description: Crea una nueva programacion.
+      operationId: createSchedule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleRequest"
+        required: true
+      responses:
+        "201":
+          description: Programacion creada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ScheduleResponse"
+  /api/v1/schedule/{id}/resume:
+    post:
+      tags:
+      - Schedule
+      summary: Reanudar programacion
+      description: Reanuda una programacion pausada.
+      operationId: resumeSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID de la programacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Reanudada
+        "404":
+          description: No encontrada
+  /api/v1/schedule/{id}/pause:
+    post:
+      tags:
+      - Schedule
+      summary: Pausar programacion
+      description: Pausa una programacion.
+      operationId: pauseSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID de la programacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Pausada
+        "404":
+          description: No encontrada
+  /api/v1/schedule/{id}/cancel:
+    post:
+      tags:
+      - Schedule
+      summary: Cancelar programacion
+      description: Cancela una programacion.
+      operationId: cancelSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID de la programacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Cancelada
+        "404":
+          description: No encontrada
+  /api/v1/savings:
+    get:
+      tags:
+      - Savings
+      summary: Listar metas del usuario
+      description: Obtiene las metas de ahorro del usuario autenticado.
+      operationId: listSavingGoals
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/SavingGoalState"
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "deadline,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseSavingGoalResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseSavingGoalResponse"
+    post:
+      tags:
+      - Savings
+      summary: Crear meta
+      description: Crea una nueva meta de ahorro.
+      operationId: createSavingGoal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SavingGoalRequest"
+        required: true
+      responses:
+        "201":
+          description: Creada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SavingGoalResponse"
+  /api/v1/savings/{id}/disable:
+    post:
+      tags:
+      - Savings
+      summary: Deshabilitar meta
+      description: Deshabilita una meta.
+      operationId: disableSavingGoal
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/savings/{id}/cancel:
+    post:
+      tags:
+      - Savings
+      summary: Cancelar meta
+      description: Cancela una meta de ahorro.
+      operationId: cancelSavingGoal
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/receipts/{receiptId}/improve:
+    post:
+      tags:
+      - Receipts
+      summary: Mejorar parseo con IA
+      description: Re-ejecuta GeminiParser sobre el texto OCR guardado. Actualiza
+        el recibo solo si la confianza mejora.
+      operationId: improveScan
+      parameters:
+      - name: receiptId
+        in: path
+        description: ID del recibo
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+  /api/v1/receipts/scan:
+    post:
+      tags:
+      - Receipts
+      summary: Encolar escaneo OCR de recibo
+      description: "Sube la imagen, crea el recibo en estado PENDING y encola el OCR\
+        \ en el microservicio doc-processing. Responde 202 con la Location para consultar\
+        \ el resultado. Requiere plan PREMIUM."
+      operationId: scanReceipt
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - image
+              type: object
+              properties:
+                image:
+                  type: string
+                  description: Imagen del recibo (max 5MB)
+                  format: binary
+      responses:
+        "202":
+          description: Escaneo encolado; consultar estado en Location
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+        "400":
+          description: Imagen invalida o muy grande
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+        "403":
+          description: Plan no suficiente (PLAN_REQUIRED)
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+  /api/v1/reasons:
+    get:
+      tags:
+      - Reasons
+      summary: Listar razones del usuario
+      description: Lista paginada de razones del usuario autenticado con filtros active
+        y search; active=true por defecto.
+      operationId: listReasons
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "description,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseReasonResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseReasonResponse"
+    post:
+      tags:
+      - Reasons
+      summary: Crear razon
+      description: Crea una nueva razon.
+      operationId: createReason
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReasonRequest"
+        required: true
+      responses:
+        "201":
+          description: Creada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReasonResponse"
+  /api/v1/reasons/{id}/disable:
+    post:
+      tags:
+      - Reasons
+      summary: Deshabilitar razon
+      description: Deshabilita una razon.
+      operationId: disableReason
+      parameters:
+      - name: id
+        in: path
+        description: ID de la razon
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Deshabilitada
+        "404":
+          description: No encontrada
+  /api/v1/payments:
+    get:
+      tags:
+      - Payments
+      summary: List payments by user
+      description: "Lists payments of the authenticated user with optional state,\
+        \ subscriptionId and from/to filters, plus pagination and sort."
+      operationId: listPayments
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/PaymentState"
+      - name: subscriptionId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: List retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponsePaymentResponse"
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponsePaymentResponse"
+    post:
+      tags:
+      - Payments
+      summary: Create payment
+      description: Starts a new payment attempt against the configured provider.
+      operationId: createPayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Invalid data
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+  /api/v1/payments/{id}/refund:
+    post:
+      tags:
+      - Payments
+      summary: Refund payment
+      description: Requests a refund on the provider and marks the payment as REFUNDED.
+      operationId: refundPayment
+      parameters:
+      - name: id
+        in: path
+        description: Payment id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Refunded
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "409":
+          description: Invalid state transition
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+  /api/v1/notifications/purge-older-than:
+    post:
+      tags:
+      - Notifications
+      summary: Eliminar notificaciones antiguas
+      description: Elimina notificaciones anteriores a una fecha.
+      operationId: purgeNotifications
+      parameters:
+      - name: dateTime
+        in: query
+        description: Fecha limite
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "204":
+          description: Eliminadas
+  /api/v1/notifications/mark-as-read:
+    post:
+      tags:
+      - Notifications
+      summary: Marcar como leida
+      description: Marca una notificacion como leida.
+      operationId: markAsRead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: ID de la notificacion
+              format: int64
+        required: true
+      responses:
+        "204":
+          description: Actualizada
+        "404":
+          description: No encontrada
+  /api/v1/notifications/discard:
+    post:
+      tags:
+      - Notifications
+      summary: Descartar notificacion
+      description: Marca una notificacion como descartada.
+      operationId: discardNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              description: ID de la notificacion
+              format: int64
+        required: true
+      responses:
+        "204":
+          description: Descartada
+        "404":
+          description: No encontrada
+  /api/v1/fcm-tokens:
+    get:
+      tags:
+      - FCM Tokens
+      summary: Listar tokens FCM del usuario
+      description: "Lista paginada con page, size y sort estándar."
+      operationId: listFcmTokens
+      parameters:
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseFcmTokenResponse"
+    post:
+      tags:
+      - FCM Tokens
+      summary: Registrar token FCM
+      operationId: registerFcmToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterFcmTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FcmTokenResponse"
+  /api/v1/chat/sessions:
+    get:
+      tags:
+      - ChatBot
+      summary: Listar sesiones del usuario
+      description: "Retorna sesiones de chat paginadas; admite page, size y sort está\
+        ndar."
+      operationId: listChatSessions
+      parameters:
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: Lista obtenida exitosamente
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseChatSessionResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseChatSessionResponse"
+    post:
+      tags:
+      - ChatBot
+      summary: Iniciar sesion de chat
+      description: Crea una nueva sesion de chat e inyecta el contexto financiero
+        del periodo actual y anterior.
+      operationId: startSession
+      responses:
+        "200":
+          description: Sesion creada exitosamente
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+  /api/v1/chat/sessions/{sessionId}/messages:
+    post:
+      tags:
+      - ChatBot
+      summary: Enviar mensaje al chatbot
+      description: |
+        Envia un mensaje dentro de una sesion activa. El chatbot detecta automaticamente
+        la skill apropiada (ADVISOR para consultas financieras, CHITCHAT para conversacion general)
+        e inyecta el contexto financiero cuando corresponde.
+        Retorna la respuesta del asistente lista para mostrar al usuario.
+      operationId: sendMessage
+      parameters:
+      - name: sessionId
+        in: path
+        description: ID de la sesion activa
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageRequest"
+        required: true
+      responses:
+        "200":
+          description: Mensaje procesado y respuesta generada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatHistoryResponse"
+        "400":
+          description: Mensaje vacio o invalido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatHistoryResponse"
+        "404":
+          description: Sesion no encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatHistoryResponse"
+        "409":
+          description: La sesion no esta activa
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatHistoryResponse"
+  /api/v1/categories:
+    get:
+      tags:
+      - Categories
+      summary: Listar categorias del usuario
+      description: "Lista paginada del usuario autenticado con filtros opcionales\
+        \ active, type y search."
+      operationId: listCategories
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: type
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/TransactionType"
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "name,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCategoryResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseCategoryResponse"
+    post:
+      tags:
+      - Categories
+      summary: Crear categoria
+      description: Crea una nueva categoria.
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "201":
+          description: Creada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/categories/{id}/disable:
+    post:
+      tags:
+      - Categories
+      summary: Deshabilitar categoria
+      description: Deshabilita una categoria.
+      operationId: disableCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID de la categoria
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Deshabilitada
+        "404":
+          description: No encontrada
+  /api/v1/budgets:
+    get:
+      tags:
+      - Budgets
+      summary: Listar presupuestos por usuario
+      description: "Lista paginada del usuario autenticado. Admite filtros active,\
+        \ state, health y rango from/to; active=true por defecto."
+      operationId: listBudgets
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: true
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/BudgetState"
+      - name: health
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/BudgetHealth"
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "end,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseBudgetResponse"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseBudgetResponse"
+    post:
+      tags:
+      - Budgets
+      summary: Crear presupuesto
+      description: Crea un nuevo presupuesto.
+      operationId: createBudget
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BudgetRequest"
+        required: true
+      responses:
+        "201":
+          description: Creado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetResponse"
+  /api/v1/budgets/{id}/disable:
+    post:
+      tags:
+      - Budgets
+      summary: Deshabilitar presupuesto
+      description: Deshabilita un presupuesto.
+      operationId: disableBudget
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/budgets/{id}/cancel:
+    post:
+      tags:
+      - Budgets
+      summary: Cancelar presupuesto
+      description: Cancela un presupuesto.
+      operationId: cancelBudget
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Registro
+      description: Registro de nuevo usuario.
+      operationId: authRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequest"
+        required: true
+      responses:
+        "200":
+          description: Registro exitoso
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Datos invalidos
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /api/v1/auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: Autenticacion de usuario.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Login exitoso
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Credenciales invalidas
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /api/v1/auth/google:
+    post:
+      tags:
+      - Auth
+      summary: Login con Google
+      description: Autenticacion mediante Google.
+      operationId: authWithGoogle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleLoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Login exitoso
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Token invalido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+  /api/v1/analytics/dashboard/budgets:
+    post:
+      tags:
+      - Analytics
+      summary: Dashboard de presupuestos
+      description: Genera el dashboard de presupuestos.
+      operationId: getBudgetsDashboard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodRequest"
+        required: true
+      responses:
+        "200":
+          description: Dashboard generado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetsDashboard"
+        "400":
+          description: Request invalido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+  /api/v1/analytics/dashboard/balance:
+    post:
+      tags:
+      - Analytics
+      summary: Dashboard de balance
+      description: Genera el dashboard de balance basado en un periodo y un prompt
+        opcional.
+      operationId: getBalanceDashboard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PeriodRequest"
+        required: true
+      responses:
+        "200":
+          description: Dashboard generado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TransactionsDashboard"
+        "400":
+          description: Request invalido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+  /api/v1/analytics/budgets/{id}/execution:
+    post:
+      tags:
+      - Analytics
+      summary: Ejecucion de presupuesto
+      description: Obtiene la ejecucion de un presupuesto por ID.
+      operationId: getBudgetExecution
+      parameters:
+      - name: id
+        in: path
+        description: ID presupuesto
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Ejecucion encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetExecutionResponse"
+        "404":
+          description: No encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BudgetExecutionResponse"
+  /api/v1/chat/sessions/{sessionId}/close:
+    patch:
+      tags:
+      - ChatBot
+      summary: Cerrar sesion de chat
+      description: Marca la sesion como cerrada. No se podran enviar mas mensajes
+        en ella.
+      operationId: closeSession
+      parameters:
+      - name: sessionId
+        in: path
+        description: ID de la sesion
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      responses:
+        "200":
+          description: Sesion cerrada exitosamente
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+        "404":
+          description: Sesion no encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+  /api/v1/users:
+    get:
+      tags:
+      - Users
+      summary: Listar usuarios
+      description: "Lista paginada con búsqueda opcional por nombre, apellido, email\
+        \ o username."
+      operationId: listUsers
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseUserResponse"
+  /api/v1/users/timezones:
+    get:
+      tags:
+      - Users
+      summary: Listar zonas horarias disponibles
+      operationId: listTimeZones
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TimeZone"
+  /api/v1/users/me:
+    get:
+      tags:
+      - Users
+      summary: Obtener el usuario autenticado
+      operationId: findCurrentUser
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/v1/subscriptions/{id}:
+    get:
+      tags:
+      - Subscriptions
+      summary: Find subscription
+      description: Gets a subscription by id.
+      operationId: findSubscriptionById
+      parameters:
+      - name: id
+        in: path
+        description: Subscription id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/subscriptions/current:
+    get:
+      tags:
+      - Subscriptions
+      summary: Get current subscription
+      description: Returns the active subscription of the authenticated user.
+      operationId: getCurrentSubscription
+      responses:
+        "200":
+          description: Active subscription found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+        "404":
+          description: No active subscription
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+  /api/v1/schedule/transactions:
+    get:
+      tags:
+      - Schedule-Transactions
+      summary: Listar programaciones de transacciones
+      description: Lista programaciones de transacciones activas y paginadas con filtro
+        opcional state.
+      operationId: listTransactionSchedules
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/ScheduleState"
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "nextRunAt,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseTransactionScheduleResponse"
+  /api/v1/schedule/budgets:
+    get:
+      tags:
+      - Schedule-Budgets
+      summary: Listar programaciones de presupuestos
+      description: Lista programaciones de presupuestos activas y paginadas con filtro
+        opcional state.
+      operationId: listBudgetSchedules
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/ScheduleState"
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "nextRunAt,ASC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseBudgetScheduleResponse"
+  /api/v1/receipts/{receiptId}:
+    get:
+      tags:
+      - Receipts
+      summary: Obtener resultado de escaneo
+      description: Recupera el resultado de un escaneo previo por ID.
+      operationId: getScanResult
+      parameters:
+      - name: receiptId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+  /api/v1/payments/{id}:
+    get:
+      tags:
+      - Payments
+      summary: Find payment
+      description: Gets a payment by id.
+      operationId: findPaymentById
+      parameters:
+      - name: id
+        in: path
+        description: Payment id
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Not found
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+  /api/v1/notifications:
+    get:
+      tags:
+      - Notifications
+      summary: Listar notificaciones del usuario
+      description: Lista paginada de notificaciones del usuario autenticado con filtros
+        opcionales state y search.
+      operationId: listNotifications
+      parameters:
+      - name: state
+        in: query
+        required: false
+        schema:
+          $ref: "#/components/schemas/NotificationState"
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseNotificationDTO"
+        "404":
+          description: Usuario no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseNotificationDTO"
+  /api/v1/notifications/{id}:
+    get:
+      tags:
+      - Notifications
+      summary: Buscar notificacion
+      description: Obtiene una notificacion por ID.
+      operationId: findNotificationById
+      parameters:
+      - name: id
+        in: path
+        description: ID notificacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NotificationDTO"
+        "404":
+          description: No encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NotificationDTO"
+  /api/v1/images/{imageId}:
+    get:
+      tags:
+      - Images
+      summary: Descargar imagen
+      description: Redirige a una URL prefirmada de corta duración después de validar
+        que la imagen pertenece al usuario autenticado.
+      operationId: downloadImage
+      parameters:
+      - name: imageId
+        in: path
+        description: ID de la imagen
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "302":
+          description: Redirección a SeaweedFS
+        "404":
+          description: Imagen no encontrada
+        "401":
+          description: Usuario no autenticado
+  /api/v1/chat/sessions/{sessionId}:
+    get:
+      tags:
+      - ChatBot
+      summary: Obtener sesion por ID
+      description: Retorna el detalle de una sesion incluyendo su historial de mensajes.
+      operationId: findSessionById
+      parameters:
+      - name: sessionId
+        in: path
+        description: ID de la sesion
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      responses:
+        "200":
+          description: Sesion encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+        "404":
+          description: Sesion no encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+  /api/v1/chat/sessions/uuid/{uuid}:
+    get:
+      tags:
+      - ChatBot
+      summary: Obtener sesion por UUID
+      description: Retorna el detalle de una sesion usando su UUID publico.
+      operationId: findSessionByUUID
+      parameters:
+      - name: uuid
+        in: path
+        description: UUID de la sesion
+        required: true
+        schema:
+          type: string
+        example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        "200":
+          description: Sesion encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+        "404":
+          description: Sesion no encontrada
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ChatSessionResponse"
+  /api/v1/analytics/budgets/executions:
+    get:
+      tags:
+      - Analytics
+      summary: Ejecuciones por periodo
+      description: Obtiene ejecuciones de presupuestos paginadas por un rango de fechas
+        del usuario.
+      operationId: getBudgetsExecutionsByPeriod
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 50
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "createdAt,DESC"
+      responses:
+        "200":
+          description: Listado obtenido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseBudgetExecutionResponse"
+        "400":
+          description: Request invalido
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageResponseBudgetExecutionResponse"
+  /api/v1/users/{id}/delete:
+    delete:
+      tags:
+      - Users
+      summary: Eliminar usuario
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/schedule/{id}/disable:
+    delete:
+      tags:
+      - Schedule
+      summary: Deshabilitar programacion
+      description: Deshabilita una programacion.
+      operationId: disableSchedule
+      parameters:
+      - name: id
+        in: path
+        description: ID de la programacion
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Deshabilitada
+        "404":
+          description: No encontrada
+  /api/v1/fcm-tokens/{tokenId}:
+    delete:
+      tags:
+      - FCM Tokens
+      summary: Eliminar token FCM
+      operationId: removeFcmToken
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    WalletRequest:
+      required:
+      - currencyCode
+      type: object
+      properties:
+        currencyCode:
+          maxLength: 3
+          minLength: 3
+          type: string
+          description: Codigo de moneda (ISO 4217)
+          example: PEN
+        primary:
+          type: boolean
+          description: Indica si es la billetera principal
+          example: true
+      description: Solicitud para crear o actualizar una billetera
+    WalletResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la billetera
+          format: int64
+          example: 1
+        userId:
+          type: integer
+          description: Identificador del usuario propietario
+          format: int64
+          example: 42
+        currencyCode:
+          type: string
+          description: Codigo de moneda (ISO 4217)
+          example: PEN
+        balance:
+          type: number
+          description: Balance actual
+          example: 1500.0
+        primary:
+          type: boolean
+          description: Indica si es la billetera principal
+          example: true
+      description: Respuesta que representa una billetera
+    UserRequest:
+      required:
+      - email
+      - lastname
+      - name
+      - password
+      - username
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Nombres del usuario
+          example: Jorge Jackson
+        lastname:
+          minLength: 1
+          type: string
+          description: Apellidos del usuario
+          example: Valdivia Torreon
+        email:
+          minLength: 1
+          type: string
+          description: Correo electronico del usuario
+          format: email
+          example: jorge.valdivia@example.com
+        username:
+          minLength: 1
+          type: string
+          description: Nombre de usuario unico
+          example: UsuarioFin2026
+        password:
+          minLength: 1
+          type: string
+          description: Contrasena del usuario
+          example: StrongPassword123!
+      description: Solicitud para registrar un nuevo usuario en el sistema
+    Role:
+      type: string
+      description: Rol asignado al usuario
+      example: USER
+      enum:
+      - USER
+      - SYSTEM
+    TimeZone:
+      type: string
+      description: Zona horaria preferida
+      example: AMERICA_LIMA
+      enum:
+      - AMERICA_LIMA
+      - AMERICA_BOGOTA
+      - AMERICA_QUITO
+      - AMERICA_CARACAS
+      - AMERICA_LA_PAZ
+      - AMERICA_ASUNCION
+      - AMERICA_MONTEVIDEO
+      - AMERICA_SANTIAGO
+      - AMERICA_BUENOS_AIRES
+      - AMERICA_GUATEMALA
+      - AMERICA_COSTA_RICA
+      - AMERICA_TEGUCIGALPA
+      - AMERICA_EL_SALVADOR
+      - AMERICA_MANAGUA
+      - AMERICA_PANAMA
+      - AMERICA_HAVANA
+      - AMERICA_SANTO_DOMINGO
+      - AMERICA_PUERTO_RICO
+      - AMERICA_MEXICO_CITY
+      - EUROPE_MADRID
+      - AFRICA_CEUTA
+      - ATLANTIC_CANARY
+      - AMERICA_NEW_YORK
+      - AMERICA_LOS_ANGELES
+    UserPreferencesResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico
+          format: int64
+          example: 1
+        timeZone:
+          $ref: "#/components/schemas/TimeZone"
+        currencyCode:
+          type: string
+          description: Codigo de moneda por defecto
+          example: PEN
+        emailNotifications:
+          type: boolean
+          description: Notificaciones por email habilitadas
+          example: true
+        fcmTokens:
+          type: array
+          description: Tokens FCM registrados
+          example:
+          - fM8x...abc123
+          items:
+            type: string
+            description: Tokens FCM registrados
+            example: "[\"fM8x...abc123\"]"
+        createdAt:
+          type: string
+          description: Fecha de creacion
+          format: date-time
+        updatedAt:
+          type: string
+          description: Ultima actualizacion
+          format: date-time
+      description: Preferencias del usuario
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del usuario
+          format: int64
+          example: 42
+        name:
+          type: string
+          description: Nombres del usuario
+          example: Jorge Jackson
+        lastname:
+          type: string
+          description: Apellidos del usuario
+          example: Valdivia Torreon
+        email:
+          type: string
+          description: Correo electronico del usuario
+          example: jorge.valdivia@example.com
+        username:
+          type: string
+          description: Nombre de usuario unico
+          example: UsuarioFin2026
+        role:
+          $ref: "#/components/schemas/Role"
+        state:
+          $ref: "#/components/schemas/UserState"
+        moneyBalance:
+          type: number
+          description: Balance monetario del usuario
+          example: 1500.0
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion del usuario
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que el usuario fue deshabilitado, si aplica"
+          format: date-time
+        fullName:
+          type: string
+          description: Nombre completo del usuario en formato concatenado
+          example: JORGE JACKSON VALDIVIA TORREON
+        preferences:
+          $ref: "#/components/schemas/UserPreferencesResponse"
+      description: Respuesta que representa un usuario registrado en el sistema
+    UserState:
+      type: string
+      description: Estado actual del usuario
+      example: ENABLED
+      enum:
+      - ENABLED
+      - BLOCKED
+      - DISABLED
+    UserPreferencesRequest:
+      required:
+      - currencyCode
+      - timeZone
+      type: object
+      properties:
+        timeZone:
+          $ref: "#/components/schemas/TimeZone"
+        currencyCode:
+          maxLength: 3
+          minLength: 3
+          type: string
+          description: Codigo de moneda por defecto
+          example: PEN
+        emailNotifications:
+          type: boolean
+          description: Notificaciones por email habilitadas
+          example: true
+      description: Solicitud para actualizar preferencias del usuario
+    PaymentMethod:
+      type: string
+      description: Metodo de pago utilizado en la transaccion
+      example: CREDIT_CARD
+      enum:
+      - CASH
+      - CREDIT_CARD
+      - DEBIT_CARD
+      - BANK_TRANSFER
+      - YAPE
+      - PLIN
+      - OTHER
+    TransactionRequest:
+      required:
+      - amount
+      - categoryId
+      - paymentMethod
+      - type
+      - walletId
+      type: object
+      properties:
+        walletId:
+          type: integer
+          description: Identificador unico de la billetera asociada a la transaccion
+          format: int64
+          example: 1
+        categoryId:
+          type: integer
+          description: Identificador unico de la categoria asociada a la transaccion
+          format: int64
+          example: 101
+        reasonId:
+          type: integer
+          description: "Identificador del motivo asociado a la transaccion, si aplica"
+          format: int64
+          example: 501
+        description:
+          type: string
+          description: Descripcion de la transaccion
+          example: Compra de libros universitarios
+        savingGoalId:
+          type: integer
+          description: "Identificador de la meta de ahorro asociada, si aplica"
+          format: int64
+          example: 3001
+        receiptId:
+          type: integer
+          description: "Identificador del recibo escaneado vía OCR, si aplica"
+          format: int64
+          example: 1
+        amount:
+          minimum: 0.00
+          exclusiveMinimum: true
+          type: number
+          description: Monto de la transaccion (debe ser mayor a 0)
+          example: 150.75
+        paymentMethod:
+          $ref: "#/components/schemas/PaymentMethod"
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        convertCurrency:
+          type: boolean
+          description: "Si true y receiptId presente, convierte el monto del recibo\
+            \ (currencyGuess) a la moneda del wallet usando el exchange service"
+          example: false
+          default: false
+      description: "Solicitud para registrar una transaccion asociada a un usuario,\
+        \ categoria y opcionalmente a un motivo o meta de ahorro"
+    TransactionType:
+      type: string
+      description: Tipo de transaccion (ingreso o gasto)
+      example: SPENT
+      enum:
+      - SPENT
+      - INCOME
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la transaccion
+          format: int64
+          example: 10001
+        walletId:
+          type: integer
+          description: Identificador unico de la billetera asociada a la transaccion
+          format: int64
+          example: 1
+        walletCurrency:
+          type: string
+          description: Moneda de la billetera
+          example: PEN
+        walletPrimary:
+          type: boolean
+          description: Indica si la billetera es principal
+          example: true
+        categoryId:
+          type: integer
+          description: Identificador unico de la categoria asociada a la transaccion
+          format: int64
+          example: 101
+        categoryName:
+          type: string
+          description: Nombre de la categoria asociada a la transaccion
+          example: Alimentacion
+        reasonId:
+          type: integer
+          description: "Identificador del motivo asociado a la transaccion, si aplica"
+          format: int64
+          example: 501
+        reasonDescription:
+          type: string
+          description: Descripcion del motivo asociado a la transaccion
+          example: Compra de utiles escolares
+        savingGoalId:
+          type: integer
+          description: "Identificador de la meta de ahorro asociada, si aplica"
+          format: int64
+          example: 3001
+        scheduleId:
+          type: integer
+          description: "Identificador de la programacion asociada, si aplica"
+          format: int64
+          example: 2001
+        receiptId:
+          type: integer
+          description: "Identificador del recibo asociado, si aplica"
+          format: int64
+          example: 4001
+        receiptImageId:
+          type: integer
+          description: "Identificador de la imagen del recibo asociado, si aplica"
+          format: int64
+          example: 4001
+        amount:
+          type: number
+          description: Monto de la transaccion
+          example: 150.75
+        paymentMethod:
+          $ref: "#/components/schemas/PaymentMethod"
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion de la transaccion
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que la transaccion fue deshabilitada, si aplica"
+          format: date-time
+        active:
+          type: boolean
+          description: Indica si la transaccion esta activa
+          example: true
+      description: Respuesta que representa una transaccion registrada en el sistema
+    BudgetScheduleResponse:
+      type: object
+      description: Respuesta que representa una programacion de presupuesto con limites
+        y alertas
+      allOf:
+      - $ref: "#/components/schemas/ScheduleResponse"
+      - type: object
+        properties:
+          alertable:
+            type: boolean
+            description: Indica si el presupuesto debe generar alertas
+            example: true
+          percentAlert:
+            type: integer
+            description: Porcentaje de alerta respecto al limite del presupuesto
+            format: int32
+            example: 80
+          limitAmount:
+            type: number
+            description: Monto limite del presupuesto
+            example: 1500.0
+          description:
+            type: string
+            description: Descripcion del presupuesto
+            example: Presupuesto mensual de alimentacion
+    DayOfWeek:
+      type: string
+      description: Dia especifico de la semana en que aplica la recurrencia (solo
+        relevante si recurrenceType = WEEKLY)
+      example: MONDAY
+      enum:
+      - MONDAY
+      - TUESDAY
+      - WEDNESDAY
+      - THURSDAY
+      - FRIDAY
+      - SATURDAY
+      - SUNDAY
+    RecurrenceRuleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la regla de recurrencia
+          format: int64
+          example: 1001
+        recurrenceType:
+          $ref: "#/components/schemas/RecurrenceType"
+        interval:
+          type: integer
+          description: Intervalo de repeticion segun el tipo de recurrencia
+          format: int32
+          example: 2
+        dayOfWeek:
+          $ref: "#/components/schemas/DayOfWeek"
+        start:
+          type: string
+          description: Fecha y hora de inicio de la recurrencia
+          format: date-time
+        end:
+          type: string
+          description: Fecha y hora de fin de la recurrencia
+          format: date-time
+        durationDays:
+          type: integer
+          description: Duracion total del periodo de recurrencia en dias
+          format: int64
+          example: 183
+      description: Respuesta que representa una regla de recurrencia aplicada a transacciones
+        o presupuestos
+    RecurrenceType:
+      type: string
+      description: "Tipo de recurrencia (diaria, semanal, mensual, anual)"
+      example: WEEKLY
+      enum:
+      - NONE
+      - DAILY
+      - WEEKLY
+      - MONTHLY
+      - YEARLY
+    ScheduleResponse:
+      required:
+      - type
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la programacion
+          format: int64
+          example: 2001
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado a la programacion
+          format: int64
+          example: 42
+        categoryId:
+          type: integer
+          description: Identificador unico de la categoria asociada a la programacion
+          format: int64
+          example: 101
+        categoryName:
+          type: string
+          description: Nombre de la categoria asociada a la programacion
+          example: Alimentacion
+        nextRunAt:
+          type: string
+          description: Fecha y hora de la proxima ejecucion programada
+          format: date-time
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion de la programacion
+          format: date-time
+        lastRunAt:
+          type: string
+          description: Fecha y hora de la ultima ejecucion realizada
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que la programacion fue deshabilitada, si\
+            \ aplica"
+          format: date-time
+        active:
+          type: boolean
+          description: Indica si la programacion esta activa
+          example: true
+        state:
+          $ref: "#/components/schemas/ScheduleState"
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleResponse"
+        type:
+          type: string
+      description: "Respuesta que representa una programacion asociada a un usuario\
+        \ y categoria, incluyendo estado y regla de recurrencia"
+      discriminator:
+        propertyName: type
+        mapping:
+          BUDGET: "#/components/schemas/BudgetScheduleResponse"
+          TRANSACTION: "#/components/schemas/TransactionScheduleResponse"
+    ScheduleState:
+      type: string
+      description: Estado actual de la programacion
+      example: RUNNING
+      enum:
+      - RUNNING
+      - PAUSED
+      - FINALIZED
+      - CANCELLED
+      - CREATED
+      - ERROR
+    TransactionScheduleResponse:
+      type: object
+      description: Respuesta que representa una programacion de transacciones asociada
+        a un usuario y categoria
+      allOf:
+      - $ref: "#/components/schemas/ScheduleResponse"
+      - type: object
+        properties:
+          walletId:
+            type: integer
+            description: Identificador de la billetera
+            format: int64
+            example: 1
+          walletCurrency:
+            type: string
+            description: Moneda de la billetera
+            example: PEN
+          reasonId:
+            type: integer
+            description: Identificador del motivo asociado a la transaccion
+            format: int64
+            example: 501
+          reasonDesc:
+            type: string
+            description: Descripcion del motivo asociado a la transaccion
+            example: Pago mensual de suscripcion a Netflix
+          amount:
+            type: number
+            description: Monto de la transaccion programada
+            example: 29.99
+          paymentMethod:
+            $ref: "#/components/schemas/PaymentMethod"
+          transactionType:
+            $ref: "#/components/schemas/TransactionType"
+    BudgetScheduleRequest:
+      required:
+      - alertable
+      - categoryId
+      - description
+      - limitAmount
+      - percentAlert
+      - userId
+      type: object
+      description: Solicitud para crear o actualizar una programacion de presupuesto
+        con limites y alertas
+      allOf:
+      - $ref: "#/components/schemas/ScheduleRequest"
+      - type: object
+        properties:
+          alertable:
+            type: boolean
+            description: Indica si el presupuesto debe generar alertas
+            example: true
+          percentAlert:
+            type: integer
+            description: Porcentaje de alerta respecto al limite del presupuesto
+            format: int32
+            example: 80
+          limitAmount:
+            type: number
+            description: Monto limite del presupuesto
+            example: 1500.0
+          description:
+            minLength: 1
+            type: string
+            description: Descripcion del presupuesto
+            example: Presupuesto mensual de alimentacion
+    RecurrenceRuleRequest:
+      required:
+      - end
+      - interval
+      - recurrenceType
+      - start
+      type: object
+      properties:
+        recurrenceType:
+          $ref: "#/components/schemas/RecurrenceType"
+        interval:
+          type: integer
+          description: Intervalo de repeticion segun el tipo de recurrencia
+          format: int32
+          example: 2
+        dayOfWeek:
+          $ref: "#/components/schemas/DayOfWeek"
+        start:
+          type: string
+          description: Fecha de inicio de la recurrencia (formato yyyy-MM-dd)
+          format: date
+          example: 2026-07-01
+        end:
+          type: string
+          description: Fecha de fin de la recurrencia (formato yyyy-MM-dd)
+          format: date
+          example: 2026-12-31
+      description: Solicitud para definir una regla de recurrencia en transacciones
+        o presupuestos
+    ScheduleRequest:
+      required:
+      - categoryId
+      - type
+      - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado a la programacion
+          format: int64
+          example: 42
+        categoryId:
+          type: integer
+          description: Identificador unico de la categoria asociada a la programacion
+          format: int64
+          example: 101
+        recurrenceRule:
+          $ref: "#/components/schemas/RecurrenceRuleRequest"
+        type:
+          type: string
+      description: Datos de la programacion
+      discriminator:
+        propertyName: type
+        mapping:
+          BUDGET: "#/components/schemas/BudgetScheduleRequest"
+          TRANSACTION: "#/components/schemas/TransactionScheduleRequest"
+    TransactionScheduleRequest:
+      required:
+      - amount
+      - categoryId
+      - paymentMethod
+      - transactionType
+      - userId
+      type: object
+      description: Solicitud para crear o actualizar una programacion de transacciones
+        asociada a un usuario y categoria
+      allOf:
+      - $ref: "#/components/schemas/ScheduleRequest"
+      - type: object
+        properties:
+          walletId:
+            type: integer
+            description: Identificador de la billetera (null = usar la principal)
+            format: int64
+            example: 1
+          reasonId:
+            type: integer
+            description: Identificador del motivo asociado a la transaccion
+            format: int64
+            example: 501
+          description:
+            type: string
+            description: Descripcion de la transaccion programada
+            example: Pago mensual de suscripcion a Netflix
+          amount:
+            minimum: 0.00
+            exclusiveMinimum: true
+            type: number
+            description: Monto de la transaccion programada (debe ser mayor a 0)
+            example: 29.99
+          paymentMethod:
+            $ref: "#/components/schemas/PaymentMethod"
+          transactionType:
+            $ref: "#/components/schemas/TransactionType"
+    SavingGoalRequest:
+      required:
+      - deadline
+      - description
+      - targetAmount
+      - userId
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+          description: Descripcion de la meta de ahorro
+          example: Ahorro para comprar una laptop
+        targetAmount:
+          type: number
+          description: Monto objetivo de la meta de ahorro
+          example: 2500.0
+        deadline:
+          type: string
+          description: Fecha limite para alcanzar la meta (formato yyyy-MM-dd)
+          format: date
+          example: 2026-12-31
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado a la meta
+          format: int64
+          example: 42
+      description: Solicitud para registrar una nueva meta de ahorro en el sistema
+    SavingGoalResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la meta de ahorro
+          format: int64
+          example: 1001
+        description:
+          type: string
+          description: Descripcion de la meta de ahorro
+          example: Ahorro para comprar una laptop
+        targetAmount:
+          type: number
+          description: Monto objetivo de la meta de ahorro
+          example: 2500.0
+        currencyCode:
+          type: string
+          description: Codigo de moneda de la meta
+          example: PEN
+        accumulated:
+          type: number
+          description: Monto acumulado hasta el momento
+          example: 1200.0
+        deadline:
+          type: string
+          description: Fecha limite para alcanzar la meta
+          format: date-time
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion de la meta
+          format: date-time
+        completedAt:
+          type: string
+          description: "Fecha y hora en que la meta fue completada, si aplica"
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que la meta fue deshabilitada, si aplica"
+          format: date-time
+        state:
+          $ref: "#/components/schemas/SavingGoalState"
+        active:
+          type: boolean
+          description: Indica si la meta esta activa
+          example: true
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado a la meta
+          format: int64
+          example: 42
+        progressPercentage:
+          type: number
+          description: Porcentaje de progreso hacia la meta
+          format: double
+          example: 48.0
+        transactionsCount:
+          type: integer
+          description: Cantidad de transacciones asociadas a la meta
+          format: int32
+          example: 15
+        outstanding:
+          type: number
+          description: Monto pendiente para alcanzar la meta
+          example: 1300.0
+        daysRemaining:
+          type: integer
+          description: Numero de dias restantes hasta la fecha limite
+          format: int64
+          example: 180
+        averageContribution:
+          type: number
+          description: Monto promedio aportado por transaccion
+          example: 80.0
+        completed:
+          type: boolean
+          description: Indica si la meta ya fue completada
+          example: false
+        estimatedCompletionDate:
+          type: string
+          description: "Fecha estimada de cumplimiento de la meta, calculada en base\
+            \ al ritmo de aportes"
+          format: date-time
+      description: Respuesta que representa una meta de ahorro con su estado y metricas
+        de progreso
+    SavingGoalState:
+      type: string
+      description: Estado actual de la meta de ahorro
+      example: RUNNING
+      enum:
+      - RUNNING
+      - COMPLETED
+      - CANCELLED
+    ReasonRequest:
+      required:
+      - description
+      - userId
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+          description: Descripcion del motivo
+          example: Compra de utiles escolares
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado al motivo
+          format: int64
+          example: 42
+      description: Datos de la razon
+    ReasonResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del motivo
+          format: int64
+          example: 501
+        description:
+          type: string
+          description: Descripcion del motivo
+          example: Pago de servicios basicos
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado al motivo
+          format: int64
+          example: 42
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion del motivo
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que el motivo fue deshabilitado, si aplica"
+          format: date-time
+        active:
+          type: boolean
+          description: Indica si el motivo esta activo
+          example: true
+      description: Respuesta que representa un motivo asociado a una transaccion
+    CategoryRequest:
+      required:
+      - description
+      - name
+      - type
+      - userId
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Nombre de la categoria
+          example: Alimentacion
+        description:
+          minLength: 1
+          type: string
+          description: Descripcion de la categoria
+          example: "Compras de alimentos, restaurantes y productos de consumo diario"
+        userId:
+          type: integer
+          description: Identificador del usuario propietario de la categoria
+          format: int64
+          example: 123
+        type:
+          $ref: "#/components/schemas/TransactionType"
+      description: Datos de la categoria
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la categoria
+          format: int64
+          example: 101
+        name:
+          type: string
+          description: Nombre de la categoria
+          example: Alimentacion
+        description:
+          type: string
+          description: Descripcion detallada de la categoria
+          example: "Compras de alimentos, restaurantes y productos de consumo diario"
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        active:
+          type: boolean
+          description: Indica si la categoria esta activa
+          example: true
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion de la categoria
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que la categoria fue deshabilitada, si aplica"
+          format: date-time
+      description: Respuesta que representa una categoria de transaccion registrada
+        en el sistema
+    BudgetRequest:
+      required:
+      - alertable
+      - categoryId
+      - description
+      - end
+      - limitAmount
+      - start
+      - userId
+      type: object
+      properties:
+        alertable:
+          type: boolean
+          description: Indica si el presupuesto debe generar alertas
+          example: true
+        percentAlert:
+          maximum: 100
+          minimum: 0
+          type: integer
+          description: Porcentaje de alerta respecto al limite definido
+          format: int32
+          example: 80
+        limitAmount:
+          minimum: 0.00
+          exclusiveMinimum: true
+          type: number
+          description: Monto limite del presupuesto
+          example: 5000.0
+        description:
+          minLength: 1
+          type: string
+          description: Descripcion del presupuesto
+          example: Presupuesto mensual para alimentos
+        userId:
+          type: integer
+          description: Identificador del usuario propietario del presupuesto
+          format: int64
+          example: 123
+        categoryId:
+          type: integer
+          description: Identificador de la categoria asociada al presupuesto
+          format: int64
+          example: 45
+        start:
+          type: string
+          description: Fecha de inicio del presupuesto
+          format: date
+          example: 2026-07-01
+        end:
+          type: string
+          description: Fecha de fin del presupuesto
+          format: date
+          example: 2026-07-31
+      description: "Solicitud para crear o actualizar un presupuesto con limites,\
+        \ alertas y periodo definido"
+    BudgetHealth:
+      type: string
+      description: Salud del presupuesto segun su ejecucion
+      example: OK
+      enum:
+      - OK
+      - NEAR_LIMIT
+      - EXCEEDED
+      - INACTIVE
+    BudgetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del presupuesto
+          format: int64
+          example: 101
+        userId:
+          type: integer
+          description: Identificador del usuario propietario del presupuesto
+          format: int64
+          example: 123
+        categoryId:
+          type: integer
+          description: Identificador de la categoria asociada al presupuesto
+          format: int64
+          example: 45
+        categoryName:
+          type: string
+          description: Nombre de la categoria asociada al presupuesto
+          example: Alimentos
+        scheduleId:
+          type: integer
+          description: Identificador de la programacion asociada al presupuesto
+          format: int64
+          example: 12
+        alertable:
+          type: boolean
+          description: Indica si el presupuesto debe generar alertas
+          example: true
+        percentAlert:
+          type: integer
+          description: Porcentaje de alerta respecto al limite definido
+          format: int32
+          example: 80
+        limitAmount:
+          type: number
+          description: Monto limite del presupuesto
+          example: 5000.0
+        currencyCode:
+          type: string
+          description: Codigo de moneda del presupuesto
+          example: PEN
+        description:
+          type: string
+          description: Descripcion del presupuesto
+          example: Presupuesto mensual para alimentos
+        state:
+          $ref: "#/components/schemas/BudgetState"
+        health:
+          $ref: "#/components/schemas/BudgetHealth"
+        start:
+          type: string
+          description: Fecha y hora de inicio del presupuesto
+          format: date-time
+        end:
+          type: string
+          description: Fecha y hora de fin del presupuesto
+          format: date-time
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion del presupuesto
+          format: date-time
+        disabledAt:
+          type: string
+          description: Fecha y hora de desactivacion del presupuesto
+          format: date-time
+      description: "Respuesta de presupuesto con informacion detallada de limites,\
+        \ estado y periodo"
+    BudgetState:
+      type: string
+      description: Estado actual del presupuesto
+      example: ACTIVE
+      enum:
+      - ACTIVE
+      - CANCELLED
+      - DISABLED
+      - FINALIZED
+    PaymentProvider:
+      type: string
+      enum:
+      - MERCADO_PAGO
+      - CULQI
+      - STRIPE
+      - MANUAL_TRANSFER
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserResponse"
+        token:
+          type: string
+          description: Token JWT generado tras la autenticacion
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      description: Respuesta de login que contiene el usuario autenticado y el token
+        JWT
+    BillingCycle:
+      type: string
+      description: Billing cycle
+      example: MONTHLY
+      enum:
+      - MONTHLY
+      - ANNUAL
+    SubscriptionPlan:
+      type: string
+      description: Subscription plan
+      example: PREMIUM
+      enum:
+      - FREE
+      - PREMIUM_TRIAL
+      - PREMIUM
+    SubscriptionRequest:
+      required:
+      - amount
+      - billingCycle
+      - currency
+      - plan
+      - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: Id of the subscribing user
+          format: int64
+          example: 42
+        plan:
+          $ref: "#/components/schemas/SubscriptionPlan"
+        billingCycle:
+          $ref: "#/components/schemas/BillingCycle"
+        amount:
+          type: number
+          description: Amount charged per billing cycle
+          example: 29.9
+        currency:
+          type: string
+          description: ISO currency code
+          example: PEN
+        autoRenew:
+          type: boolean
+          description: Whether the subscription renews automatically
+          example: true
+      description: Subscription data
+    SubscriptionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique subscription id
+          format: int64
+          example: 500
+        userId:
+          type: integer
+          description: Id of the subscribing user
+          format: int64
+          example: 42
+        plan:
+          $ref: "#/components/schemas/SubscriptionPlan"
+        billingCycle:
+          $ref: "#/components/schemas/BillingCycle"
+        state:
+          $ref: "#/components/schemas/SubscriptionState"
+        amount:
+          type: number
+          description: Amount charged per billing cycle
+          example: 29.9
+        currency:
+          type: string
+          description: ISO currency code
+          example: PEN
+        autoRenew:
+          type: boolean
+          description: Whether the subscription renews automatically
+          example: true
+        currentPeriodStart:
+          type: string
+          description: Start of the current billing period
+          format: date-time
+        currentPeriodEnd:
+          type: string
+          description: End of the current billing period
+          format: date-time
+        canceledAt:
+          type: string
+          description: "Date and time the subscription was canceled, if applicable"
+          format: date-time
+        createdAt:
+          type: string
+          description: Creation date and time
+          format: date-time
+        updatedAt:
+          type: string
+          description: Last update date and time
+          format: date-time
+      description: Subscription data returned by the API
+    SubscriptionState:
+      type: string
+      description: Current subscription state
+      example: ACTIVE
+      enum:
+      - PENDING
+      - ACTIVE
+      - PAST_DUE
+      - CANCELED
+      - EXPIRED
+    ReceiptResponse:
+      type: object
+      properties:
+        receiptId:
+          type: integer
+          description: Identificador del recibo escaneado
+          format: int64
+          example: 1
+        status:
+          $ref: "#/components/schemas/ReceiptScanStatus"
+        errorMessage:
+          type: string
+          description: Mensaje de error si el escaneo falló (nullable)
+          example: No se detectó el monto
+        imageId:
+          type: integer
+          description: ID de la imagen asociada (nullable si no tiene imagen)
+          format: int64
+          example: 1
+        detectedAmount:
+          type: number
+          description: Monto total detectado
+          example: 45.0
+        detectedDate:
+          type: string
+          description: Fecha detectada en el recibo (nullable)
+          format: date
+          example: 2026-07-01
+        description:
+          type: string
+          description: Descripción/nombre del comercio detectado
+          example: Supermercado ABC
+        paymentMethod:
+          $ref: "#/components/schemas/PaymentMethod"
+        transactionType:
+          $ref: "#/components/schemas/TransactionType"
+        detectedCategoryId:
+          type: integer
+          description: ID de la categoría detectada (nullable)
+          format: int64
+          example: 3
+        rawOcrText:
+          type: string
+          description: Texto OCR crudo extraído de la imagen
+          example: |-
+            BOLETA DE VENTA
+            TOTAL S/. 45.00
+        currencyGuess:
+          type: string
+          description: Moneda detectada (no resuelta contra Wallet)
+          example: PEN
+        confidenceScore:
+          type: number
+          description: Nivel de confianza del parseo
+          format: double
+          example: 0.85
+        parserEngineUsed:
+          type: string
+          description: Motor usado para el parseo (REGEX o GEMINI)
+          example: REGEX
+      description: Resultado del escaneo OCR de un recibo
+    ReceiptScanStatus:
+      type: string
+      description: Estado del procesamiento OCR
+      example: PENDING
+      enum:
+      - PENDING
+      - PROCESSING
+      - DONE
+      - FAILED
+    PaymentRequest:
+      required:
+      - amount
+      - currency
+      - provider
+      - userId
+      type: object
+      properties:
+        userId:
+          type: integer
+          description: Id of the paying user
+          format: int64
+          example: 42
+        subscriptionId:
+          type: integer
+          description: "Id of the subscription this payment belongs to, if any"
+          format: int64
+          example: 500
+        amount:
+          type: number
+          description: Amount to charge
+          example: 29.9
+        currency:
+          type: string
+          description: ISO currency code
+          example: PEN
+        provider:
+          $ref: "#/components/schemas/PaymentProvider"
+        method:
+          $ref: "#/components/schemas/PaymentMethod"
+        idempotencyKey:
+          type: string
+          description: "Client-supplied idempotency key, generated automatically when\
+            \ absent"
+          example: 3f2f1e2a-9c3b-4b7a-9e0b-6f6f2a1b9c00
+        metadata:
+          type: object
+          additionalProperties:
+            type: object
+            description: Free-form metadata for this payment
+          description: Free-form metadata for this payment
+      description: Payment data
+    PaymentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique payment id
+          format: int64
+          example: 9001
+        userId:
+          type: integer
+          description: Id of the paying user
+          format: int64
+          example: 42
+        subscriptionId:
+          type: integer
+          description: "Id of the linked subscription, if any"
+          format: int64
+          example: 500
+        amount:
+          type: number
+          description: Charged amount
+          example: 29.9
+        currency:
+          type: string
+          description: ISO currency code
+          example: PEN
+        provider:
+          $ref: "#/components/schemas/PaymentProvider"
+        method:
+          $ref: "#/components/schemas/PaymentMethod"
+        state:
+          $ref: "#/components/schemas/PaymentState"
+        externalReference:
+          type: string
+          description: Reference assigned by the provider
+          example: MP-8823991
+        failureReason:
+          type: string
+          description: "Reason the payment failed, if applicable"
+          example: Insufficient funds
+        paidAt:
+          type: string
+          description: Date and time the payment was confirmed
+          format: date-time
+        createdAt:
+          type: string
+          description: Creation date and time
+          format: date-time
+        updatedAt:
+          type: string
+          description: Last update date and time
+          format: date-time
+      description: Payment data returned by the API
+    PaymentState:
+      type: string
+      description: Current payment state
+      example: COMPLETED
+      enum:
+      - PENDING
+      - PROCESSING
+      - COMPLETED
+      - FAILED
+      - REFUNDED
+      - DISPUTED
+    RegisterFcmTokenRequest:
+      required:
+      - token
+      type: object
+      properties:
+        token:
+          minLength: 1
+          type: string
+          description: Token FCM del dispositivo
+          example: fM8x...abc123
+        deviceName:
+          type: string
+          description: Nombre descriptivo del dispositivo
+          example: Samsung Galaxy S24
+      description: Solicitud para registrar un token FCM
+    FcmTokenResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del token
+          format: int64
+          example: 1
+        token:
+          type: string
+          description: Token FCM
+          example: fM8x...abc123
+        deviceName:
+          type: string
+          description: Nombre del dispositivo
+          example: Samsung Galaxy S24
+        createdAt:
+          type: string
+          description: Fecha de creacion
+          format: date-time
+        updatedAt:
+          type: string
+          description: Ultima actualizacion
+          format: date-time
+      description: Respuesta con informacion de un token FCM registrado
+    ChatHistoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del historial
+          format: int64
+          example: 10
+        turnNumber:
+          type: integer
+          description: Numero de turno dentro de la sesion
+          format: int32
+          example: 1
+        role:
+          $ref: "#/components/schemas/ChatRole"
+        message:
+          type: string
+          description: Contenido del mensaje
+          example: "Hola, necesito ayuda"
+        tokensUsed:
+          type: integer
+          description: Cantidad de tokens usados
+          format: int32
+          example: 120
+        model:
+          type: string
+          description: Modelo utilizado
+          example: gpt-4
+        finishReason:
+          type: string
+          description: Motivo de finalizacion
+          example: stop
+        safetyRatings:
+          type: object
+          additionalProperties:
+            type: object
+            description: Ratings de seguridad en formato JSON
+          description: Ratings de seguridad en formato JSON
+        latencyMs:
+          type: integer
+          description: Latencia en milisegundos
+          format: int64
+          example: 250
+        metadata:
+          type: object
+          additionalProperties:
+            type: object
+            description: Metadatos adicionales en formato JSON
+          description: Metadatos adicionales en formato JSON
+        createdAt:
+          type: string
+          description: Fecha de creacion del mensaje
+          format: date-time
+          example: 2026-06-26T20:38:00Z
+        sessionUUID:
+          type: string
+          description: UUID de la sesion
+        sessionId:
+          type: integer
+          description: ID de la sesion
+          format: int64
+      description: Representa un turno dentro de la sesion de chat
+    ChatRole:
+      type: string
+      description: Rol del mensaje
+      example: USER
+      enum:
+      - USER
+      - AI
+    ChatSessionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID de la sesion
+          format: int64
+          example: 1
+        uuid:
+          type: string
+          description: UUID de la sesion
+          example: 550e8400-e29b-41d4-a716-446655440000
+        createdAt:
+          type: string
+          description: Fecha de creacion de la sesion
+          format: date-time
+          example: 2026-06-26T20:38:00Z
+        endedAt:
+          type: string
+          description: Fecha de finalizacion de la sesion
+          format: date-time
+          example: 2026-06-26T21:00:00Z
+        state:
+          $ref: "#/components/schemas/ChatSessionState"
+        userId:
+          type: integer
+          description: ID de usuario asociado a la sesion
+          format: int64
+        history:
+          type: array
+          description: Historial de mensajes de la sesion
+          items:
+            $ref: "#/components/schemas/ChatHistoryResponse"
+      description: Representa una sesion de chat
+    ChatSessionState:
+      type: string
+      description: Estado de la sesion
+      example: ACTIVE
+      enum:
+      - ACTIVE
+      - EXPIRED
+      - CLOSED
+    SendMessageRequest:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          maxLength: 500
+          minLength: 0
+          type: string
+          description: Texto del mensaje
+          example: ¿Como están mis gastos este mes?
+      description: Mensaje del usuario al chatbot
+    LoginRequest:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          description: Correo electronico del usuario
+          example: usuario@example.com
+        password:
+          minLength: 1
+          type: string
+          description: Contrasena del usuario
+          example: MiContrasenaSegura123
+      description: Solicitud de login interno con email y contrasena
+    GoogleLoginRequest:
+      required:
+      - idToken
+      type: object
+      properties:
+        idToken:
+          minLength: 1
+          type: string
+          description: ID Token JWT emitido por Google tras la autenticacion
+          example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjE2Y...
+      description: "Solicitud de login con Google, contiene el ID Token emitido por\
+        \ Google Identity"
+    Aggregate:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Titulo o nombre del agregado
+          example: Transacciones de Junio
+        totalAmount:
+          type: number
+          description: Monto total acumulado
+          example: 12500.75
+        averageAmount:
+          type: number
+          description: Monto promedio calculado
+          example: 3125.18
+        occurrenceCount:
+          type: integer
+          description: Numero de ocurrencias consideradas
+          format: int64
+          example: 4
+        max:
+          type: number
+          description: Valor maximo encontrado
+          example: 5000.0
+        min:
+          type: number
+          description: Valor minimo encontrado
+          example: 100.0
+      description: Resumen/Agregado
+    AggregateByBudgetExecutionResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/BudgetExecutionResponse"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+      description: Lista de agregados por categoria de ejecucion presupuestal
+    AggregateByBudgetHealth:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/BudgetHealth"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+      description: Lista de agregados por estado de salud del presupuesto
+    AggregateByCategoryResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/CategoryResponse"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    BudgetExecutionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del presupuesto
+          format: int64
+          example: 101
+        userId:
+          type: integer
+          description: Identificador del usuario propietario del presupuesto
+          format: int64
+          example: 123
+        categoryId:
+          type: integer
+          description: Identificador de la categoria asociada al presupuesto
+          format: int64
+          example: 45
+        categoryName:
+          type: string
+          description: Nombre de la categoria asociada al presupuesto
+          example: Alimentos
+        scheduleId:
+          type: integer
+          description: Identificador de la programacion asociada al presupuesto
+          format: int64
+          example: 12
+        alertable:
+          type: boolean
+          description: Indica si el presupuesto debe generar alertas
+          example: true
+        percentAlert:
+          type: integer
+          description: Porcentaje de alerta respecto al limite definido
+          format: int32
+          example: 80
+        limitAmount:
+          type: number
+          description: Monto limite del presupuesto
+          example: 5000.0
+        currencyCode:
+          type: string
+          description: Codigo de moneda del presupuesto
+          example: PEN
+        description:
+          type: string
+          description: Descripcion del presupuesto
+          example: Presupuesto mensual para alimentos
+        state:
+          $ref: "#/components/schemas/BudgetState"
+        health:
+          $ref: "#/components/schemas/BudgetHealth"
+        start:
+          type: string
+          description: Fecha y hora de inicio del presupuesto
+          format: date-time
+        end:
+          type: string
+          description: Fecha y hora de fin del presupuesto
+          format: date-time
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion del presupuesto
+          format: date-time
+        disabledAt:
+          type: string
+          description: Fecha y hora de desactivacion del presupuesto
+          format: date-time
+        spentAmount:
+          type: number
+          description: Monto total gastado en el presupuesto
+          example: 2500.0
+        remainingAmount:
+          type: number
+          description: Monto restante disponible en el presupuesto
+          example: 500.0
+        executionPercentage:
+          type: number
+          description: Porcentaje de ejecucion del presupuesto respecto al limite
+            definido
+          example: 83.33
+      description: "Respuesta de ejecucion de presupuesto con montos gastados, restantes\
+        \ y porcentaje de ejecucion"
+    BudgetsDashboard:
+      type: object
+      description: "Dashboard de presupuestos con agregados por salud y categoria,\
+        \ evolucion de ejecucion y metricas globales"
+      allOf:
+      - $ref: "#/components/schemas/DashboardResponse"
+      - type: object
+        properties:
+          byHealth:
+            type: array
+            description: Lista de agregados por estado de salud del presupuesto
+            items:
+              $ref: "#/components/schemas/AggregateByBudgetHealth"
+          byCategory:
+            type: array
+            description: Lista de agregados por categoria de ejecucion presupuestal
+            items:
+              $ref: "#/components/schemas/AggregateByBudgetExecutionResponse"
+          executionEvolution:
+            $ref: "#/components/schemas/TimeLineBudgetExecutionResponse"
+          mostExecuted:
+            $ref: "#/components/schemas/RankingCategoryResponse"
+          mostRemaining:
+            $ref: "#/components/schemas/RankingCategoryResponse"
+          totalBudgetLimitAmount:
+            type: number
+            description: Monto limite total de todos los presupuestos
+            example: 50000.0
+          totalBudgetSpentAmount:
+            type: number
+            description: Monto total gastado en todos los presupuestos
+            example: 37500.0
+          totalBudgetRemainingAmount:
+            type: number
+            description: Monto total restante en todos los presupuestos
+            example: 12500.0
+    Insight:
+      type: object
+      properties:
+        severity:
+          $ref: "#/components/schemas/InsightSeverity"
+        title:
+          type: string
+          description: Titulo breve
+          example: Presupuesto cercano al limite
+        description:
+          type: string
+          description: Descripcion detallada
+          example: El gasto ha alcanzado el 85% del presupuesto asignado
+        action:
+          type: string
+          description: Accion recomendada
+          example: Revisar gastos futuros y ajustar si es necesario
+      description: "Objeto que representa un insight con severidad, titulo, descripcion\
+        \ y accion recomendada"
+    InsightSeverity:
+      type: string
+      description: Enumeracion de severidades posibles
+      example: WARNING
+      enum:
+      - INFO
+      - WARNING
+      - CRITICAL
+    InsightSummary:
+      type: object
+      properties:
+        insights:
+          type: array
+          description: Lista de insights
+          items:
+            $ref: "#/components/schemas/Insight"
+        insightsCount:
+          type: integer
+          description: Numero total de insights
+          format: int32
+          example: 5
+      description: Resumen de insights generados
+    PeriodResponse:
+      type: object
+      properties:
+        start:
+          type: string
+          description: Fecha de inicio del periodo (formato yyyy-MM-dd)
+          format: date
+          example: 2026-06-01
+        end:
+          type: string
+          description: Fecha de fin del periodo (formato yyyy-MM-dd)
+          format: date
+          example: 2026-06-30
+        userId:
+          type: integer
+          description: Identificador unico del usuario asociado al periodo
+          format: int64
+          example: 42
+        readableString:
+          type: string
+          description: Representacion legible del periodo en texto
+          example: 01 junio 2026 a 30 junio 2026
+      description: "Respuesta que representa un periodo de fechas asociado a un usuario,\
+        \ incluyendo una version legible en texto"
+    RankingCategoryResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemCategoryResponse"
+      description: Ranking de categorias con mayor saldo restante
+    RankingItemCategoryResponse:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByCategoryResponse"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    TimeLineBudgetExecutionResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointBudgetExecutionResponse"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+      description: Linea de tiempo de la evolucion de ejecucion de presupuestos
+    TimeSeriesPointBudgetExecutionResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetExecutionResponse"
+    PeriodRequest:
+      required:
+      - end
+      - start
+      type: object
+      properties:
+        start:
+          type: string
+          description: Fecha de inicio del periodo (formato yyyy-MM-dd)
+          format: date
+          example: 2026-06-01
+        end:
+          type: string
+          description: Fecha de fin del periodo (formato yyyy-MM-dd)
+          format: date
+          example: 2026-06-30
+      description: Periodo
+    AggregateByCategorySummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/CategorySummary"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByPaymentMethod:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/PaymentMethod"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByReasonSummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/ReasonSummary"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    AggregateByTransactionType:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        factor:
+          $ref: "#/components/schemas/TransactionType"
+        factorName:
+          type: string
+        sharePercentage:
+          type: number
+    CategorySummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la categoria
+          format: int64
+          example: 5
+        name:
+          type: string
+          description: Nombre de la categoria
+          example: Transporte
+        type:
+          $ref: "#/components/schemas/TransactionType"
+      description: Resumen de una categoria con identificador y nombre
+    DashboardResponse:
+      required:
+      - type
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+          description: Titulo descriptivo del dashboard
+          example: Resumen financiero mensual
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion del dashboard
+          format: date-time
+        insightSummary:
+          $ref: "#/components/schemas/InsightSummary"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        type:
+          type: string
+      description: "Respuesta base de un dashboard con periodo, titulo, fecha de creacion,\
+        \ resumen de insights y metricas agregadas"
+      discriminator:
+        propertyName: type
+    RankingCategorySummary:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemCategorySummary"
+      description: Ranking de las categorias principales
+    RankingItemCategorySummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByCategorySummary"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemPaymentMethod:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByPaymentMethod"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemReasonSummary:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByReasonSummary"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingItemTransactionType:
+      type: object
+      properties:
+        aggregate:
+          $ref: "#/components/schemas/AggregateByTransactionType"
+        rank:
+          type: integer
+          format: int32
+        metricValue:
+          type: number
+    RankingPaymentMethod:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemPaymentMethod"
+      description: Ranking de metodos de pago con metricas resumidas
+    RankingReasonSummary:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemReasonSummary"
+      description: Ranking de los principales motivos de ingreso
+    RankingTransactionType:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RankingItemTransactionType"
+      description: Ranking por tipo de transaccion con metricas resumidas
+    ReasonSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico del motivo
+          format: int64
+          example: 501
+        description:
+          type: string
+          description: Descripcion breve del motivo
+          example: Compra de alimentos
+      description: Resumen de un motivo asociado a una transaccion
+    TimeLineTransactionResponse:
+      type: object
+      properties:
+        periodResponse:
+          $ref: "#/components/schemas/PeriodResponse"
+        title:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPointTransactionResponse"
+        aggregate:
+          $ref: "#/components/schemas/Aggregate"
+        count:
+          type: integer
+          format: int64
+      description: Linea de tiempo de ingresos diarios
+    TimeSeriesPointTransactionResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        amount:
+          type: number
+        occurrenceCount:
+          type: integer
+          format: int64
+        context:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionResponse"
+    TransactionsDashboard:
+      type: object
+      description: Dashboard de transacciones con rankings y lineas de tiempo de ingresos
+        y gastos
+      allOf:
+      - $ref: "#/components/schemas/DashboardResponse"
+      - type: object
+        properties:
+          balance:
+            type: number
+            description: Balance del periodo
+          summaryByCategory:
+            $ref: "#/components/schemas/RankingCategorySummary"
+          summaryByPaymentMethod:
+            $ref: "#/components/schemas/RankingPaymentMethod"
+          summaryByType:
+            $ref: "#/components/schemas/RankingTransactionType"
+          dailyExpenses:
+            $ref: "#/components/schemas/TimeLineTransactionResponse"
+          dailyIncome:
+            $ref: "#/components/schemas/TimeLineTransactionResponse"
+          topCategories:
+            $ref: "#/components/schemas/RankingCategorySummary"
+          topSpentReasons:
+            $ref: "#/components/schemas/RankingReasonSummary"
+          topIncomeReasons:
+            $ref: "#/components/schemas/RankingReasonSummary"
+    PageResponseWalletResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WalletResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PaginationResponse:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalItems:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponseUserResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseTransactionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseSubscriptionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriptionResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseScheduleResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScheduleResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseTransactionScheduleResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionScheduleResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseBudgetScheduleResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetScheduleResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseSavingGoalResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SavingGoalResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseReasonResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReasonResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponsePaymentResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    NotificationState:
+      type: string
+      enum:
+      - SCHEDULED
+      - SENT
+      - READ
+      - DISCARD
+    NotificationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identificador unico de la notificacion
+          format: int64
+          example: 1001
+        userId:
+          type: integer
+          description: Identificador del usuario asociado a la notificacion
+          format: int64
+          example: 42
+        userEmail:
+          type: string
+          description: Correo electronico del usuario
+          example: usuario@ejemplo.com
+        emailNotifications:
+          type: boolean
+          description: Indica si el usuario tiene habilitadas las notificaciones por
+            email
+          example: true
+        fcmTokens:
+          type: array
+          description: Tokens FCM del usuario para notificaciones push
+          example:
+          - fM8x...abc123
+          items:
+            type: string
+            description: Tokens FCM del usuario para notificaciones push
+            example: "[\"fM8x...abc123\"]"
+        type:
+          $ref: "#/components/schemas/NotificationType"
+        message:
+          type: string
+          description: Mensaje de la notificacion
+          example: Has alcanzado el 80% de tu presupuesto de alimentacion
+        createdAt:
+          type: string
+          description: Fecha y hora de creacion de la notificacion
+          format: date-time
+        disabledAt:
+          type: string
+          description: "Fecha y hora en que la notificacion fue deshabilitada, si\
+            \ aplica"
+          format: date-time
+        scheduledAt:
+          type: string
+          description: Fecha y hora programada para enviar la notificacion
+          format: date-time
+        sentAt:
+          type: string
+          description: Fecha y hora en que la notificacion fue enviada
+          format: date-time
+        state:
+          $ref: "#/components/schemas/NotificationState"
+        scheduleId:
+          type: integer
+          description: Identificador de la programacion asociada
+          format: int64
+          example: 200
+        budgetId:
+          type: integer
+          description: Identificador del presupuesto asociado
+          format: int64
+          example: 300
+        budgetDescription:
+          type: string
+          description: Descripcion del presupuesto asociado
+          example: Presupuesto de transporte
+        budgetState:
+          $ref: "#/components/schemas/BudgetState"
+        savingGoalId:
+          type: integer
+          description: Identificador de la meta de ahorro asociada
+          format: int64
+          example: 400
+        savingGoalDescription:
+          type: string
+          description: Descripcion de la meta de ahorro asociada
+          example: Ahorro para viaje
+      description: Objeto de transferencia que representa una notificacion generada
+        en el sistema
+    NotificationType:
+      type: string
+      description: Tipo de notificacion
+      example: ALERTA_PRESUPUESTO
+      enum:
+      - WARNING
+      - SUCCESS
+      - ERROR
+      - INFO
+    PageResponseNotificationDTO:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationDTO"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseFcmTokenResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FcmTokenResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseChatSessionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatSessionResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseCategoryResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseBudgetResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
+    PageResponseBudgetExecutionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BudgetExecutionResponse"
+        pagination:
+          $ref: "#/components/schemas/PaginationResponse"
