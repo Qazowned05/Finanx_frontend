@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     TokenStore.fcmToken = token
                     val userId = TokenStore.userId
                     if (userId > 0L) {
-                        fcmTokenRepository.register(userId, token, Build.MODEL)
+                        fcmTokenRepository.register(token, Build.MODEL)
                         Log.d(TAG, "FCM token registered for user $userId")
                     }
                 }

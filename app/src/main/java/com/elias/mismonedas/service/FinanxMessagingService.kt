@@ -36,7 +36,7 @@ class FinanxMessagingService : FirebaseMessagingService() {
                 applicationContext, FcmEntryPoint::class.java
             )
             scope.launch {
-                entryPoint.fcmTokenRepository().register(userId, token, Build.MODEL)
+                entryPoint.fcmTokenRepository().register(token, Build.MODEL)
             }
         }
     }
