@@ -39,7 +39,9 @@ import com.elias.mismonedas.ui.components.FinanxCard
 import com.elias.mismonedas.ui.components.FinanxOutlinedTextField
 import com.elias.mismonedas.ui.screens.transaction.create.RecurrenceTypeDropdown
 import com.elias.mismonedas.ui.util.toReadableDate
+import org.openapitools.client.models.DayOfWeek
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -49,19 +51,19 @@ import java.util.TimeZone
 
 @Composable
 internal fun RecurrenceSection(
-    recurrenceType: RecurrenceRuleRequest.RecurrenceType,
+    recurrenceType: RecurrenceType,
     intervalText: String,
     startDateText: String,
     endDateText: String,
     enabled: Boolean,
-    selectedDayOfWeek: RecurrenceRuleRequest.DayOfWeek?,
-    onRecurrenceTypeChange: (RecurrenceRuleRequest.RecurrenceType) -> Unit,
+    selectedDayOfWeek: DayOfWeek?,
+    onRecurrenceTypeChange: (RecurrenceType) -> Unit,
     onIntervalChange: (String) -> Unit,
     onStartDateChange: (String) -> Unit,
     onEndDateChange: (String) -> Unit,
-    onDayOfWeekChange: (RecurrenceRuleRequest.DayOfWeek?) -> Unit,
+    onDayOfWeekChange: (DayOfWeek?) -> Unit,
 
-) {
+    ) {
     val parsedInterval = intervalText.toIntOrNull()?.takeIf { it > 0 }
     val parsedStart = startDateText.toLocalDateOrNull()
     val parsedEnd = endDateText.toLocalDateOrNull()
@@ -69,7 +71,7 @@ internal fun RecurrenceSection(
     val intervalError = intervalText.isNotEmpty() && parsedInterval == null
     val startError = startDateText.isNotEmpty() && parsedStart == null
     val endError = endDateText.isNotEmpty() && (!datesValid || parsedEnd == null)
-    val isWeekly = recurrenceType == RecurrenceRuleRequest.RecurrenceType.WEEKLY
+    val isWeekly = recurrenceType == RecurrenceType.WEEKLY
 
     FinanxCard(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -234,20 +236,20 @@ internal fun String.toLocalDateOrNull(): LocalDate? =
     runCatching { LocalDate.parse(trim()) }.getOrNull()
 
 private val dayOfWeekLabels = mapOf(
-    RecurrenceRuleRequest.DayOfWeek.MONDAY to "LUN",
-    RecurrenceRuleRequest.DayOfWeek.TUESDAY to "MAR",
-    RecurrenceRuleRequest.DayOfWeek.WEDNESDAY to "MIÉ",
-    RecurrenceRuleRequest.DayOfWeek.THURSDAY to "JUE",
-    RecurrenceRuleRequest.DayOfWeek.FRIDAY to "VIE",
-    RecurrenceRuleRequest.DayOfWeek.SATURDAY to "SÁB",
-    RecurrenceRuleRequest.DayOfWeek.SUNDAY to "DOM"
+    DayOfWeek.MONDAY to "LUN",
+    DayOfWeek.TUESDAY to "MAR",
+    DayOfWeek.WEDNESDAY to "MIÉ",
+    DayOfWeek.THURSDAY to "JUE",
+    DayOfWeek.FRIDAY to "VIE",
+    DayOfWeek.SATURDAY to "SÁB",
+    DayOfWeek.SUNDAY to "DOM"
 )
 
 @Composable
 internal fun DayOfWeekSelector(
-    selected: RecurrenceRuleRequest.DayOfWeek?,
+    selected: DayOfWeek?,
     enabled: Boolean,
-    onSelected: (RecurrenceRuleRequest.DayOfWeek?) -> Unit
+    onSelected: (DayOfWeek?) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
@@ -259,7 +261,7 @@ internal fun DayOfWeekSelector(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            RecurrenceRuleRequest.DayOfWeek.entries.forEach { day ->
+            DayOfWeek.entries.forEach { day ->
                 val isSelected = selected == day
                 val containerColor = if (isSelected)
                     MaterialTheme.colorScheme.primary

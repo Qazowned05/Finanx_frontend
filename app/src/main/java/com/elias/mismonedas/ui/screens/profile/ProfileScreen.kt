@@ -35,6 +35,7 @@ import com.elias.mismonedas.ui.components.FinanxConfirmDialog
 import com.elias.mismonedas.ui.screens.analytics.components.SectionTitle
 import com.elias.mismonedas.ui.viewmodel.UserActionState
 import com.elias.mismonedas.ui.viewmodel.UserViewModel
+import org.openapitools.client.models.TimeZone
 import org.openapitools.client.models.UserPreferencesRequest
 import org.openapitools.client.models.UserPreferencesResponse
 import org.openapitools.client.models.UserResponse
@@ -551,20 +552,20 @@ private fun PinSetupDialog(
 @Composable
 private fun EditPreferencesDialog(
     current: UserPreferencesResponse?,
-    onConfirm: (currencyCode: String, timeZone: UserPreferencesRequest.TimeZone, emailNotifications: Boolean) -> Unit,
+    onConfirm: (currencyCode: String, timeZone: TimeZone, emailNotifications: Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val timeZones = UserPreferencesRequest.TimeZone.values()
+    val timeZones = TimeZone.entries.toTypedArray()
     var selectedCurrency by remember { mutableStateOf(current?.currencyCode ?: "PEN") }
     var selectedTimeZone by remember {
         val initial = current?.timeZone?.name?.let {
-            try { UserPreferencesRequest.TimeZone.valueOf(it) } catch (_: Exception) { null }
-        } ?: UserPreferencesRequest.TimeZone.AMERICA_LIMA
+            try { TimeZone.valueOf(it) } catch (_: Exception) { null }
+        } ?: TimeZone.AMERICA_LIMA
         mutableStateOf(initial)
     }
     var expandedTimeZone by remember { mutableStateOf(false) }
     var emailNotifications by remember { mutableStateOf(current?.emailNotifications ?: true) }
-    fun displayName(zone: UserPreferencesRequest.TimeZone): String =
+    fun displayName(zone: TimeZone): String =
         zone.value.replace("_", " ").lowercase().replaceFirstChar { it.uppercase() }
     AlertDialog(
         onDismissRequest = onDismiss,

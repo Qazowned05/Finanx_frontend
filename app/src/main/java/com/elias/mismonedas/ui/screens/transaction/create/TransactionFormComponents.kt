@@ -18,18 +18,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.elias.mismonedas.ui.components.FinanxOutlinedTextField
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
 import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionTypeSelector(
-    selected: TransactionRequest.Type,
-    onSelected: (TransactionRequest.Type) -> Unit
+    selected: TransactionType,
+    onSelected: (TransactionType) -> Unit
 ) {
     val options = listOf(
-        TransactionRequest.Type.SPENT to "Gasto",
-        TransactionRequest.Type.INCOME to "Ingreso"
+        TransactionType.SPENT to "Gasto",
+        TransactionType.INCOME to "Ingreso"
     )
 
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -137,14 +140,14 @@ fun <T> FormDropdown(
 
 @Composable
 fun PaymentMethodDropdown(
-    selected: TransactionRequest.PaymentMethod,
+    selected: PaymentMethod,
     enabled: Boolean,
-    onSelected: (TransactionRequest.PaymentMethod) -> Unit
+    onSelected: (PaymentMethod) -> Unit
 ) {
     FormDropdown(
         label = "Método de pago",
         placeholder = "Selecciona un método",
-        items = TransactionRequest.PaymentMethod.entries,
+        items = PaymentMethod.entries,
         selectedItem = selected,
         itemLabel = {
             it.toSpanishLabel()
@@ -158,15 +161,15 @@ fun PaymentMethodDropdown(
 
 @Composable
 fun RecurrenceTypeDropdown(
-    selected: RecurrenceRuleRequest.RecurrenceType,
+    selected: RecurrenceType,
     enabled: Boolean,
-    onSelected: (RecurrenceRuleRequest.RecurrenceType) -> Unit,
+    onSelected: (RecurrenceType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     FormDropdown(
         label = "Frecuencia",
         placeholder = "Selecciona una frecuencia",
-        items = RecurrenceRuleRequest.RecurrenceType.entries,
+        items = RecurrenceType.entries,
         selectedItem = selected,
         itemLabel = {
             it.toSpanishLabel()
@@ -179,20 +182,21 @@ fun RecurrenceTypeDropdown(
     )
 }
 
-private fun TransactionRequest.PaymentMethod.toSpanishLabel(): String = when (this) {
-    TransactionRequest.PaymentMethod.CASH -> "Efectivo"
-    TransactionRequest.PaymentMethod.CREDIT_CARD -> "Tarjeta de crédito"
-    TransactionRequest.PaymentMethod.DEBIT_CARD -> "Tarjeta de débito"
-    TransactionRequest.PaymentMethod.BANK_TRANSFER -> "Transferencia bancaria"
-    TransactionRequest.PaymentMethod.YAPE -> "Yape"
-    TransactionRequest.PaymentMethod.PLIN -> "Plin"
-    TransactionRequest.PaymentMethod.OTHER -> "Otro"
+//todo verificar si debe ir aqui o si ya existe/duplicacion
+fun PaymentMethod.toSpanishLabel(): String = when (this) {
+    PaymentMethod.CASH -> "Efectivo"
+    PaymentMethod.CREDIT_CARD -> "Tarjeta de crédito"
+    PaymentMethod.DEBIT_CARD -> "Tarjeta de débito"
+    PaymentMethod.BANK_TRANSFER -> "Transferencia bancaria"
+    PaymentMethod.YAPE -> "Yape"
+    PaymentMethod.PLIN -> "Plin"
+    PaymentMethod.OTHER -> "Otro"
 }
 
-private fun RecurrenceRuleRequest.RecurrenceType.toSpanishLabel(): String = when (this) {
-    RecurrenceRuleRequest.RecurrenceType.DAILY -> "Diaria"
-    RecurrenceRuleRequest.RecurrenceType.WEEKLY -> "Semanal"
-    RecurrenceRuleRequest.RecurrenceType.MONTHLY -> "Mensual"
-    RecurrenceRuleRequest.RecurrenceType.YEARLY -> "Anual"
-    RecurrenceRuleRequest.RecurrenceType.NONE -> "Sin recurrencia"
+private fun RecurrenceType.toSpanishLabel(): String = when (this) {
+    RecurrenceType.DAILY -> "Diaria"
+    RecurrenceType.WEEKLY -> "Semanal"
+    RecurrenceType.MONTHLY -> "Mensual"
+    RecurrenceType.YEARLY -> "Anual"
+    RecurrenceType.NONE -> "Sin recurrencia"
 }

@@ -18,44 +18,11 @@ import com.elias.mismonedas.ui.screens.saving.goalIcons
 import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.util.toReadableDate
 import org.openapitools.client.models.BudgetExecutionResponse
+import org.openapitools.client.models.BudgetHealth
 import org.openapitools.client.models.BudgetResponse
+import org.openapitools.client.models.BudgetState
 import java.math.BigDecimal
 
-fun BudgetResponse.State?.toDomain(): BudgetState? = when (this) {
-    BudgetResponse.State.ACTIVE -> BudgetState.ACTIVE
-    BudgetResponse.State.CANCELLED -> BudgetState.CANCELLED
-    BudgetResponse.State.FINALIZED -> BudgetState.FINALIZED
-    else -> null
-}
-
-fun BudgetExecutionResponse.State?.toDomain(): BudgetState? = when (this) {
-    BudgetExecutionResponse.State.ACTIVE -> BudgetState.ACTIVE
-    BudgetExecutionResponse.State.CANCELLED -> BudgetState.CANCELLED
-    BudgetExecutionResponse.State.FINALIZED -> BudgetState.FINALIZED
-    else -> null
-}
-
-fun BudgetResponse.Health?.toDomain(): BudgetHealth? = when (this) {
-    BudgetResponse.Health.EXCEEDED -> BudgetHealth.EXCEEDED
-    BudgetResponse.Health.NEAR_LIMIT -> BudgetHealth.NEAR_LIMIT
-    BudgetResponse.Health.OK -> BudgetHealth.OK
-    else -> null
-}
-
-fun BudgetExecutionResponse.Health?.toDomain(): BudgetHealth? = when (this) {
-    BudgetExecutionResponse.Health.EXCEEDED -> BudgetHealth.EXCEEDED
-    BudgetExecutionResponse.Health.NEAR_LIMIT -> BudgetHealth.NEAR_LIMIT
-    BudgetExecutionResponse.Health.OK -> BudgetHealth.OK
-    else -> null
-}
-
-enum class BudgetState {
-    ACTIVE, CANCELLED, FINALIZED
-}
-
-enum class BudgetHealth {
-    EXCEEDED, NEAR_LIMIT, OK
-}
 @Composable
 fun BudgetCard(
     budget: BudgetExecutionResponse,
@@ -72,8 +39,8 @@ fun BudgetCard(
         spentAmount = budget.spentAmount,
         remainingAmount = budget.remainingAmount,
         progressPercentage = budget.executionPercentage,
-        state = budget.state.toDomain(),
-        health = budget.health.toDomain(),
+        state = budget.state,
+        health = budget.health,
         createdAt = budget.createdAt?.toReadableDate(),
         iconIndex = iconIndex,
         showProgress = true,
@@ -100,8 +67,8 @@ fun BudgetCard(
         spentAmount = null,
         remainingAmount = null,
         progressPercentage = null,
-        state = budget.state.toDomain(),
-        health = budget.health.toDomain(),
+        state = budget.state,
+        health = budget.health,
         createdAt = budget.createdAt?.toReadableDate(),
         iconIndex = iconIndex,
         showProgress = false,

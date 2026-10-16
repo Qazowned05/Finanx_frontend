@@ -1,5 +1,6 @@
 package com.elias.mismonedas.ui.screens.schedule
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -25,6 +28,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +54,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.components.FinanxCard
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.SpotlightOverlay
 import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
@@ -68,6 +74,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.openapitools.client.models.BudgetScheduleResponse
 import org.openapitools.client.models.ScheduleResponse
+import org.openapitools.client.models.ScheduleState
 import org.openapitools.client.models.TransactionScheduleResponse
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -110,6 +117,7 @@ fun ScheduledTransactionsScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
+    val listState = rememberLazyListState()
 
     val visibleTransactions = if (recurringState is RecurringState.Success) {
         recurringState.transactionSchedules.filter { ts ->
@@ -160,6 +168,28 @@ fun ScheduledTransactionsScreen(
                 shape = RoundedCornerShape(12.dp)
             )
 
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = viewModel.stateFilter == null,
+                    onClick = { viewModel.onStateFilterChange(null) },
+                    label = { Text("Todos") }
+                )
+                ScheduleState.entries.forEach { scheduleState ->
+                    FilterChip(
+                        selected = viewModel.stateFilter == scheduleState,
+                        onClick = { viewModel.onStateFilterChange(scheduleState) },
+                        label = { Text(scheduleState.chipLabel()) }
+                    )
+                }
+            }
+
             Spacer(Modifier.height(12.dp))
 
             when (recurringState) {
@@ -174,21 +204,31 @@ fun ScheduledTransactionsScreen(
                 ) {
                     Text(recurringState.message, color = MaterialTheme.colorScheme.error)
                     Spacer(Modifier.height(12.dp))
-                    Button(onClick = { viewModel.fetchAll(userId) }) { Text("Reintentar") }
+                    Button(onClick = { viewModel.load(userId, force = true) }) { Text("Reintentar") }
                 }
 
                 is RecurringState.Success -> {
+                    val loadedCount = recurringState.transactionSchedules.size + recurringState.budgetSchedules.size
+
                     if (visibleTransactions.isEmpty() && visibleBudgets.isEmpty()) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text("No tienes programaciones activas", color = TextGray)
                         }
                     } else {
+                        LoadMoreEffect(
+                            listState = listState,
+                            enabled = recurringState.hasMore && loadedCount > 0,
+                            itemCount = loadedCount,
+                            onLoadMore = { viewModel.loadMore() }
+                        )
+
                         com.elias.mismonedas.ui.components.RefreshableList(
-                            isRefreshing = (recurringState as? com.elias.mismonedas.ui.viewmodel.RecurringState.Success)?.isRefreshing ?: false,
-                            onRefresh = { viewModel.fetchAll(userId, force = true) },
+                            isRefreshing = recurringState.isRefreshing,
+                            onRefresh = { viewModel.load(userId, force = true) },
                             modifier = Modifier.fillMaxSize()
                         ) {
                             LazyColumn(
+                                state = listState,
                                 verticalArrangement = Arrangement.spacedBy(10.dp),
                                 contentPadding = PaddingValues(bottom = 88.dp)
                             ) {
@@ -228,6 +268,10 @@ fun ScheduledTransactionsScreen(
                                             onCancel = { viewModel.cancel(bs.id ?: 0, userId) }
                                         )
                                     }
+                                }
+
+                                item {
+                                    LoadMoreFooter(isLoadingMore = recurringState.isLoadingMore)
                                 }
                             }
                         }
@@ -291,7 +335,7 @@ private fun TransactionScheduleItem(
     onCancel: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val isPaused = ts.state == ScheduleResponse.State.PAUSED
+    val isPaused = ts.state == ScheduleState.PAUSED
 
     FinanxCard(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -321,7 +365,7 @@ private fun BudgetScheduleItem(
     onCancel: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val isPaused = bs.state == ScheduleResponse.State.PAUSED
+    val isPaused = bs.state == ScheduleState.PAUSED
 
     FinanxCard(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -342,4 +386,13 @@ private fun BudgetScheduleItem(
             }
         }
     }
+}
+
+private fun ScheduleState.chipLabel(): String = when (this) {
+    ScheduleState.RUNNING -> "Activas"
+    ScheduleState.PAUSED -> "Pausadas"
+    ScheduleState.FINALIZED -> "Finalizadas"
+    ScheduleState.CANCELLED -> "Canceladas"
+    ScheduleState.CREATED -> "Creadas"
+    ScheduleState.ERROR -> "Error"
 }

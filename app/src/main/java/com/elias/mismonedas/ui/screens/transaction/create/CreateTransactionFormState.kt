@@ -4,13 +4,17 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import com.elias.mismonedas.data.model.NewTransactionCommand
 import com.elias.mismonedas.data.model.NewTransactionSchedule
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
 import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.LocalDate
 
 data class CreateTransactionFormState(
-    val type: TransactionRequest.Type = TransactionRequest.Type.SPENT,
+    val type: TransactionType = TransactionType.SPENT,
 
     val amountText: String = "",
 
@@ -20,15 +24,15 @@ data class CreateTransactionFormState(
 
     val newReason: String = "",
 
-    val paymentMethod: TransactionRequest.PaymentMethod =
-        TransactionRequest.PaymentMethod.CASH,
+    val paymentMethod: PaymentMethod =
+        PaymentMethod.CASH,
 
     val savingGoalId: Long? = null,
 
     val isScheduled: Boolean = false,
 
-    val recurrenceType: RecurrenceRuleRequest.RecurrenceType =
-        RecurrenceRuleRequest.RecurrenceType.MONTHLY,
+    val recurrenceType: RecurrenceType =
+        RecurrenceType.MONTHLY,
 
     val recurrenceIntervalText: String = "1",
 
@@ -85,6 +89,7 @@ data class CreateTransactionFormState(
                 isScheduleValid
     }
 
+    //todo verificar uso
     fun toCommand(
         userId: Long,
         walletId: Long? = null,
@@ -141,7 +146,7 @@ data class CreateTransactionFormState(
                     interval = interval,
                     startDate = startDate,
                     endDate = endDate,
-                    dayOfWeek = startDate.dayOfWeek
+                    dayOfWeek = DayOfWeek.valueOf(startDate.dayOfWeek.name)
                 )
             } else {
                 null
@@ -149,7 +154,7 @@ data class CreateTransactionFormState(
         )
     }
 }
-
+//todo verificar uso
 val CreateTransactionFormStateSaver:
         Saver<CreateTransactionFormState, Any> =
     listSaver(
@@ -172,11 +177,11 @@ val CreateTransactionFormStateSaver:
         restore = { values ->
             CreateTransactionFormState(
                 type = runCatching {
-                    TransactionRequest.Type.valueOf(
+                    TransactionType.valueOf(
                         values[0] as String
                     )
                 }.getOrDefault(
-                    TransactionRequest.Type.SPENT
+                    TransactionType.SPENT
                 ),
                 amountText =
                     values[1] as String,
@@ -189,11 +194,11 @@ val CreateTransactionFormStateSaver:
                 newReason =
                     values[4] as String,
                 paymentMethod = runCatching {
-                    TransactionRequest.PaymentMethod.valueOf(
+                    PaymentMethod.valueOf(
                         values[5] as String
                     )
                 }.getOrDefault(
-                    TransactionRequest.PaymentMethod.CASH
+                    PaymentMethod.CASH
                 ),
                 savingGoalId =
                     (values[6] as Long)
@@ -202,11 +207,11 @@ val CreateTransactionFormStateSaver:
                     values.getOrNull(7) as? Boolean
                         ?: false,
                 recurrenceType = runCatching {
-                    RecurrenceRuleRequest.RecurrenceType.valueOf(
+                    RecurrenceType.valueOf(
                         values.getOrNull(8) as String
                     )
                 }.getOrDefault(
-                    RecurrenceRuleRequest.RecurrenceType.MONTHLY
+                    RecurrenceType.MONTHLY
                 ),
                 recurrenceIntervalText =
                     values.getOrNull(9) as? String

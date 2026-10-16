@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+//todo verificar uso
 @Composable
 fun SegmentedButton(items: List<String>, onItemSelected: (Int) -> Unit) {
     var selectedIndex by remember { mutableStateOf(0) }

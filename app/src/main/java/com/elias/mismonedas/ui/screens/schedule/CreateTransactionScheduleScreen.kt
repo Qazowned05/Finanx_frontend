@@ -39,8 +39,12 @@ import com.elias.mismonedas.ui.screens.transaction.create.PaymentMethodDropdown
 import com.elias.mismonedas.ui.viewmodel.CategoryState
 import com.elias.mismonedas.ui.viewmodel.RecurringActionState
 import com.elias.mismonedas.ui.viewmodel.ScheduleViewModel
+import org.openapitools.client.models.DayOfWeek
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
 import org.openapitools.client.models.TransactionScheduleRequest
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -54,14 +58,14 @@ fun CreateTransactionScheduleScreen(
     onSuccess: () -> Unit,
     onBack: () -> Unit
 ) {
-    var transactionType by remember { mutableStateOf(TransactionScheduleRequest.TransactionType.SPENT) }
+    var transactionType by remember { mutableStateOf(TransactionType.SPENT) }
     var selectedCategoryId by remember { mutableStateOf<Long?>(null) }
     var reasonId by remember { mutableStateOf<Long?>(null) }
     var reasonText by remember { mutableStateOf("") }
     var amountText by remember { mutableStateOf("") }
-    var paymentMethod by remember { mutableStateOf(TransactionScheduleRequest.PaymentMethod.CASH) }
-    var recurrenceType by remember { mutableStateOf(RecurrenceRuleRequest.RecurrenceType.MONTHLY) }
-    var selectedDayOfWeek by remember { mutableStateOf<RecurrenceRuleRequest.DayOfWeek?>(null) }
+    var paymentMethod by remember { mutableStateOf(PaymentMethod.CASH) }
+    var recurrenceType by remember { mutableStateOf(RecurrenceType.MONTHLY) }
+    var selectedDayOfWeek by remember { mutableStateOf<DayOfWeek?>(null) }
     var intervalText by remember { mutableStateOf("1") }
     var startDateText by remember { mutableStateOf(LocalDate.now().toString()) }
     var endDateText by remember { mutableStateOf(LocalDate.now().plusYears(1).toString()) }
@@ -85,10 +89,10 @@ fun CreateTransactionScheduleScreen(
 
     val filteredCategories = if (categoryState is CategoryState.Success) {
         categoryState.categories.mapNotNull { it.toCategoryOption() }.filter { cat ->
-            if (transactionType == TransactionScheduleRequest.TransactionType.SPENT)
-                cat.type == TransactionRequest.Type.SPENT
+            if (transactionType == TransactionType.SPENT)
+                cat.type == TransactionType.SPENT
             else
-                cat.type == TransactionRequest.Type.INCOME
+                cat.type == TransactionType.INCOME
         }
     } else emptyList()
 
@@ -98,9 +102,9 @@ fun CreateTransactionScheduleScreen(
     // register unsaved-check callback for parent navigation
     registerHasUnsaved?.invoke {
         selectedCategoryId != null || reasonId != null || reasonText.isNotBlank() || amountText.isNotBlank() ||
-                paymentMethod != TransactionScheduleRequest.PaymentMethod.CASH || recurrenceType != RecurrenceRuleRequest.RecurrenceType.MONTHLY || selectedDayOfWeek != null ||
+                paymentMethod != PaymentMethod.CASH || recurrenceType != RecurrenceType.MONTHLY || selectedDayOfWeek != null ||
                 intervalText != "1" || startDateText != LocalDate.now().toString() || endDateText != LocalDate.now().plusYears(1).toString() ||
-                transactionType != TransactionScheduleRequest.TransactionType.SPENT
+                transactionType != TransactionType.SPENT
     }
 
     Column(
@@ -112,17 +116,17 @@ fun CreateTransactionScheduleScreen(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
-                selected = transactionType == TransactionScheduleRequest.TransactionType.SPENT,
+                selected = transactionType == TransactionType.SPENT,
                 onClick = {
-                    transactionType = TransactionScheduleRequest.TransactionType.SPENT
+                    transactionType = TransactionType.SPENT
                     selectedCategoryId = null
                 },
                 label = { Text("Gasto") }
             )
             FilterChip(
-                selected = transactionType == TransactionScheduleRequest.TransactionType.INCOME,
+                selected = transactionType == TransactionType.INCOME,
                 onClick = {
-                    transactionType = TransactionScheduleRequest.TransactionType.INCOME
+                    transactionType = TransactionType.INCOME
                     selectedCategoryId = null
                 },
                 label = { Text("Ingreso") }
@@ -166,17 +170,17 @@ fun CreateTransactionScheduleScreen(
 
         PaymentMethodDropdown(
             selected = when (paymentMethod) {
-                TransactionScheduleRequest.PaymentMethod.CASH -> TransactionRequest.PaymentMethod.CASH
-                TransactionScheduleRequest.PaymentMethod.CREDIT_CARD -> TransactionRequest.PaymentMethod.CREDIT_CARD
-                TransactionScheduleRequest.PaymentMethod.DEBIT_CARD -> TransactionRequest.PaymentMethod.DEBIT_CARD
-                TransactionScheduleRequest.PaymentMethod.BANK_TRANSFER -> TransactionRequest.PaymentMethod.BANK_TRANSFER
-                TransactionScheduleRequest.PaymentMethod.YAPE -> TransactionRequest.PaymentMethod.YAPE
-                TransactionScheduleRequest.PaymentMethod.PLIN -> TransactionRequest.PaymentMethod.PLIN
-                TransactionScheduleRequest.PaymentMethod.OTHER -> TransactionRequest.PaymentMethod.OTHER
+                PaymentMethod.CASH -> PaymentMethod.CASH
+                PaymentMethod.CREDIT_CARD -> PaymentMethod.CREDIT_CARD
+                PaymentMethod.DEBIT_CARD -> PaymentMethod.DEBIT_CARD
+                PaymentMethod.BANK_TRANSFER -> PaymentMethod.BANK_TRANSFER
+                PaymentMethod.YAPE -> PaymentMethod.YAPE
+                PaymentMethod.PLIN -> PaymentMethod.PLIN
+                PaymentMethod.OTHER -> PaymentMethod.OTHER
             },
             enabled = !isLoading,
             onSelected = { pm ->
-                paymentMethod = TransactionScheduleRequest.PaymentMethod.valueOf(pm.name)
+                paymentMethod = PaymentMethod.valueOf(pm.name)
             }
         )
 
@@ -187,7 +191,7 @@ fun CreateTransactionScheduleScreen(
             endDateText = endDateText,
             enabled = !isLoading,
             selectedDayOfWeek = selectedDayOfWeek,
-            onRecurrenceTypeChange = { recurrenceType = it; if (it != RecurrenceRuleRequest.RecurrenceType.WEEKLY) selectedDayOfWeek = null },
+            onRecurrenceTypeChange = { recurrenceType = it; if (it != RecurrenceType.WEEKLY) selectedDayOfWeek = null },
             onIntervalChange = { intervalText = it },
             onStartDateChange = { startDateText = it },
             onEndDateChange = { endDateText = it },

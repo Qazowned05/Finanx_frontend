@@ -31,5 +31,6 @@ class TutorialController(
         currentIndex++
     }
 
+    //todo
     fun skip() = onFinished()
 }

@@ -37,8 +37,11 @@ import com.elias.mismonedas.ui.components.toCategoryOption
 import com.elias.mismonedas.ui.viewmodel.CategoryState
 import com.elias.mismonedas.ui.viewmodel.RecurringActionState
 import com.elias.mismonedas.ui.viewmodel.ScheduleViewModel
+import org.openapitools.client.models.DayOfWeek
 import org.openapitools.client.models.RecurrenceRuleRequest
+import org.openapitools.client.models.RecurrenceType
 import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -57,8 +60,8 @@ fun CreateBudgetScheduleScreen(
     var limitText by remember { mutableStateOf("") }
     var alertable by remember { mutableStateOf(true) }
     var percentAlertText by remember { mutableStateOf("80") }
-    var recurrenceType by remember { mutableStateOf(RecurrenceRuleRequest.RecurrenceType.MONTHLY) }
-    var selectedDayOfWeek by remember { mutableStateOf<RecurrenceRuleRequest.DayOfWeek?>(null) }
+    var recurrenceType by remember { mutableStateOf(RecurrenceType.MONTHLY) }
+    var selectedDayOfWeek by remember { mutableStateOf<DayOfWeek?>(null) }
     var intervalText by remember { mutableStateOf("1") }
     var startDateText by remember { mutableStateOf(LocalDate.now().toString()) }
     var endDateText by remember { mutableStateOf(LocalDate.now().plusYears(1).toString()) }
@@ -83,7 +86,7 @@ fun CreateBudgetScheduleScreen(
     val categories = if (categoryState is CategoryState.Success) {
         categoryState.categories
             .mapNotNull { it.toCategoryOption() }
-            .filter { it.type == TransactionRequest.Type.SPENT }
+            .filter { it.type == TransactionType.SPENT }
     } else emptyList()
 
     val canCreate = selectedCategoryId != null && description.isNotBlank() &&
@@ -94,7 +97,7 @@ fun CreateBudgetScheduleScreen(
     // register unsaved-check callback for parent navigation
     registerHasUnsaved?.invoke {
         selectedCategoryId != null || description.isNotBlank() || limitText.isNotBlank() ||
-                alertable || percentAlertText != "80" || recurrenceType != RecurrenceRuleRequest.RecurrenceType.MONTHLY || selectedDayOfWeek != null ||
+                alertable || percentAlertText != "80" || recurrenceType != RecurrenceType.MONTHLY || selectedDayOfWeek != null ||
                 intervalText != "1" || startDateText != LocalDate.now().toString() || endDateText != LocalDate.now().plusYears(1).toString()
     }
 
@@ -171,7 +174,7 @@ fun CreateBudgetScheduleScreen(
             endDateText = endDateText,
             enabled = !isLoading,
             selectedDayOfWeek = selectedDayOfWeek,
-            onRecurrenceTypeChange = { recurrenceType = it; if (it != RecurrenceRuleRequest.RecurrenceType.WEEKLY) selectedDayOfWeek = null },
+            onRecurrenceTypeChange = { recurrenceType = it; if (it != RecurrenceType.WEEKLY) selectedDayOfWeek = null },
             onIntervalChange = { intervalText = it },
             onStartDateChange = { startDateText = it },
             onEndDateChange = { endDateText = it },

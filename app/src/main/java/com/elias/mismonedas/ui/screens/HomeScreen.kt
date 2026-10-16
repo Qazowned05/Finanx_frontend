@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.BudgetHealth
 
 @Composable
 fun HomeScreen(
@@ -361,8 +362,8 @@ private fun RandomBudgetCard(
 ) {
     val progress = (budget.executionPercentage?.toFloat() ?: 0f) / 100f
     val healthColor = when (budget.health) {
-        org.openapitools.client.models.BudgetExecutionResponse.Health.EXCEEDED -> MaterialTheme.colorScheme.error
-        org.openapitools.client.models.BudgetExecutionResponse.Health.NEAR_LIMIT -> MaterialTheme.colorScheme.secondary
+        BudgetHealth.EXCEEDED -> MaterialTheme.colorScheme.error
+        BudgetHealth.NEAR_LIMIT -> MaterialTheme.colorScheme.secondary
         else -> MaterialTheme.colorScheme.primary
     }
 

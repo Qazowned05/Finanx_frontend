@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -28,6 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
+import com.elias.mismonedas.ui.components.RefreshableList
 import org.openapitools.client.models.ChatSessionResponse
 
 
@@ -37,8 +41,11 @@ fun SessionListView(
     onNewSession: () -> Unit,
     onOpenSession: (ChatSessionResponse) -> Unit,
     newSessionModifier: Modifier = Modifier,
-    finnIconModifier: Modifier = Modifier
+    finnIconModifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
+    onLoadMore: () -> Unit = {}
 ) {
+    val listState = rememberLazyListState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -116,12 +123,31 @@ fun SessionListView(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+
+            LoadMoreEffect(
+                listState = listState,
+                enabled = state.hasMore && state.sessions.isNotEmpty(),
+                itemCount = state.sessions.size,
+                onLoadMore = onLoadMore
+            )
+
+            RefreshableList(
+                isRefreshing = state.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(state.sessions) { session ->
-                    SessionCard(session = session, onClick = { onOpenSession(session) })
+                LazyColumn(
+                    state = listState,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(state.sessions) { session ->
+                        SessionCard(session = session, onClick = { onOpenSession(session) })
+                    }
+
+                    item {
+                        LoadMoreFooter(isLoadingMore = state.isLoadingMore)
+                    }
                 }
             }
         }

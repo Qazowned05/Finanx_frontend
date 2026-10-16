@@ -5,6 +5,7 @@ import com.elias.mismonedas.data.model.CategoryOption
 import com.elias.mismonedas.ui.screens.transaction.create.FormDropdown
 import org.openapitools.client.models.CategoryResponse
 import org.openapitools.client.models.TransactionRequest
+import org.openapitools.client.models.TransactionType
 
 @Composable
 fun CategoryDropdown(
@@ -37,6 +38,6 @@ fun CategoryResponse.toCategoryOption(): CategoryOption? {
     return CategoryOption(
         id = categoryId,
         label = name ?: "Categoría $categoryId",
-        type = TransactionRequest.Type.valueOf(categoryType.name)
+        type = TransactionType.valueOf(categoryType.name)
     )
 }

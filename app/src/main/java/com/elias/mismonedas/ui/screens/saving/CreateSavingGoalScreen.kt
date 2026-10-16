@@ -39,7 +39,7 @@ fun CreateSavingGoalScreen(
     val parsedAmount = amountText.replace(",", ".").toBigDecimalOrNull()
     val parsedDeadline = deadlineText.toLocalDateOrNull()
 
-    val isSaving = viewModel.savingGoalState is com.elias.mismonedas.ui.viewmodel.SavingGoalState.Loading
+    val isSaving = viewModel.savingGoalUIState is com.elias.mismonedas.ui.viewmodel.SavingGoalUIState.Loading
     val canCreate = description.isNotBlank() && parsedAmount != null && parsedAmount.signum() > 0 && parsedDeadline != null && !isSaving
 
     LaunchedEffect(viewModel.actionSuccess) {

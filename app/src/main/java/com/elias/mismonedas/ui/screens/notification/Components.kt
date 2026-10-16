@@ -47,6 +47,8 @@ import com.elias.mismonedas.ui.theme.IncomeGreen
 import com.elias.mismonedas.ui.theme.BrownPrimary
 import com.elias.mismonedas.ui.theme.BrownSecondary
 import org.openapitools.client.models.NotificationDTO
+import org.openapitools.client.models.NotificationState
+import org.openapitools.client.models.NotificationType
 
 
 @Composable
@@ -56,7 +58,7 @@ fun NotificationItem(
     onMarkAsRead: () -> Unit
 ) {
     val style = notificationStyle(notification)
-    val isRead = notification.state == NotificationDTO.State.READ
+    val isRead = notification.state == NotificationState.READ
     var expanded by remember { mutableStateOf(false) }
 
     val cardContainer = MaterialTheme.colorScheme.surface
@@ -234,25 +236,25 @@ data class NotificationVisualStyle(
 @Composable
 fun notificationStyle(notification: NotificationDTO): NotificationVisualStyle {
     return when (notification.type) {
-        NotificationDTO.Type.WARNING -> NotificationVisualStyle(
+        NotificationType.WARNING -> NotificationVisualStyle(
             icon = Icons.Default.Warning,
             color = MaterialTheme.colorScheme.tertiary,
             background = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f)
         )
 
-        NotificationDTO.Type.SUCCESS -> NotificationVisualStyle(
+        NotificationType.SUCCESS -> NotificationVisualStyle(
             icon = Icons.Default.CheckCircle,
             color = IncomeGreen,
             background = IncomeGreen.copy(alpha = 0.12f)
         )
 
-        NotificationDTO.Type.ERROR -> NotificationVisualStyle(
+        NotificationType.ERROR -> NotificationVisualStyle(
             icon = Icons.Default.Error,
             color = ExpenseRed,
             background = ExpenseRed.copy(alpha = 0.12f)
         )
 
-        NotificationDTO.Type.INFO, null -> NotificationVisualStyle(
+        NotificationType.INFO, null -> NotificationVisualStyle(
             icon = Icons.Default.Info,
             color = BrownPrimary,
             background = BrownSecondary.copy(alpha = 0.14f)
@@ -260,12 +262,12 @@ fun notificationStyle(notification: NotificationDTO): NotificationVisualStyle {
     }
 }
 
-fun notificationStateText(state: NotificationDTO.State?): String {
+fun notificationStateText(state: NotificationState?): String {
     return when (state) {
-        NotificationDTO.State.SENT -> "Nueva"
-        NotificationDTO.State.READ -> "Leída"
-        NotificationDTO.State.SCHEDULED -> "Nueva"
-        NotificationDTO.State.DISCARD -> "Descartada"
+        NotificationState.SENT -> "Nueva"
+        NotificationState.READ -> "Leída"
+        NotificationState.SCHEDULED -> "Nueva"
+        NotificationState.DISCARD -> "Descartada"
         null -> "Sin estado"
     }
 }

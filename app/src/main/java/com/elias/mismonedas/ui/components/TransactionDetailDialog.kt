@@ -17,6 +17,7 @@ import com.elias.mismonedas.ui.util.toReadableDate
 import org.openapitools.client.models.TransactionResponse
 import java.math.BigDecimal
 
+// todo verificar uso
 @Composable
 fun TransactionDetailDialog(
     transaction: TransactionResponse,

@@ -20,6 +20,7 @@ fun CameraPreview(
     imageCapture: (ImageCapture) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    //todo verificar esta variable
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 

@@ -225,7 +225,7 @@ fun ScannerScreen(
                                 "${context.packageName}.fileprovider",
                                 file
                             )
-                            receiptViewModel.scanReceipt(userId, croppedUri, context)
+                            receiptViewModel.scanReceipt(croppedUri, context)
                         },
                         onRetry = {
                             capturedUri = null
@@ -273,7 +273,7 @@ fun ScannerScreen(
                         capturedUri = capturedUri,
                         improveState = receiptViewModel.improveState,
                         onImprove = {
-                            receiptViewModel.improveScan(result.receiptId ?: 0L, userId)
+                            receiptViewModel.improveScan(result.receiptId ?: 0L)
                         },
                         onConfirm = {
                             val amount = result.detectedAmount?.toPlainString() ?: ""

@@ -6,6 +6,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -19,12 +21,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.components.DetailRow
 import com.elias.mismonedas.ui.components.EmptyStateCard
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.SpotlightOverlay
 import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
 import com.elias.mismonedas.ui.theme.*
 import com.elias.mismonedas.ui.util.toCurrency
-import com.elias.mismonedas.ui.viewmodel.SavingGoalState
+import com.elias.mismonedas.ui.viewmodel.SavingGoalUIState
 import com.elias.mismonedas.ui.viewmodel.SavingGoalViewModel
 import com.elias.mismonedas.ui.components.TutorialController
 import com.elias.mismonedas.ui.components.TutorialStep
@@ -38,6 +42,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.SavingGoalState
 
 val goalIcons = listOf(
     Icons.Default.DirectionsCar, Icons.Default.Home, Icons.Default.Flight,
@@ -45,11 +50,11 @@ val goalIcons = listOf(
     Icons.Default.Savings, Icons.Default.Star, Icons.Default.Category
 )
 
-private fun SavingGoalResponse.State?.toSavingGoalStateLabel(): String =
+private fun SavingGoalState?.toSavingGoalStateLabel(): String =
     when (this) {
-        SavingGoalResponse.State.RUNNING -> "En progreso"
-        SavingGoalResponse.State.COMPLETED -> "Completada"
-        SavingGoalResponse.State.CANCELLED -> "Cancelada"
+        SavingGoalState.RUNNING -> "En progreso"
+        SavingGoalState.COMPLETED -> "Completada"
+        SavingGoalState.CANCELLED -> "Cancelada"
         null -> "Sin estado"
     }
 
@@ -64,7 +69,8 @@ fun SavingGoalScreen(
         viewModel.fetchSavingGoals(userId)
     }
 
-    val state = viewModel.savingGoalState
+    val state = viewModel.savingGoalUIState
+    val listState = rememberLazyListState()
 
     var goalToEdit by remember { mutableStateOf<SavingGoalResponse?>(null) }
     var goalToDelete by remember { mutableStateOf<SavingGoalResponse?>(null) }
@@ -116,80 +122,104 @@ fun SavingGoalScreen(
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             when (state) {
-                is SavingGoalState.Loading -> {
+                is SavingGoalUIState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
                 }
-                is SavingGoalState.Success -> {
-                    if (state.goals.isEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(24.dp)
-                        ) {
-                            EmptyStateCard(
-                                icon = Icons.Default.Savings,
-                                title = "Sin metas de ahorro",
-                                subtitle = "Toca + para agregar una",
-                                actionLabel = "Nueva meta",
-                                onAction = onCreateGoal
-                            )
-                        }
-                    } else {
-                        com.elias.mismonedas.ui.components.RefreshableList(
-                            isRefreshing = (state as? com.elias.mismonedas.ui.viewmodel.SavingGoalState.Success)?.isRefreshing ?: false,
-                            onRefresh = { viewModel.fetchSavingGoals(userId) },
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                is SavingGoalUIState.Success -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        SavingGoalStateFilterRow(
+                            selected = viewModel.stateFilter,
+                            onSelected = viewModel::onStateFilterChange
+                        )
+
+                        if (state.goals.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(24.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                val groupedGoals = state.goals.groupBy { it.state }
-
-                                groupedGoals.forEach { (status, goals) ->
-                                    item {
-                                        Text(
-                                            text = status.toSavingGoalStateLabel(),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = when (status) {
-                                                SavingGoalResponse.State.COMPLETED -> IncomeGreen
-                                                SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.primary
-                                                else -> MaterialTheme.colorScheme.onSurfaceVariant
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    when (status) {
-                                                        SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
-                                                        SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
-                                                        else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f)
-                                                    },
-                                                    RoundedCornerShape(6.dp)
-                                                )
-                                                .padding(vertical = 6.dp, horizontal = 12.dp)
-                                        )
-                                    }
-
-                                    items(goals.size) { index ->
-                                        val goal = goals[index]
-                                        SavingGoalCard(
-                                            goal = goal,
-                                            iconIndex = index % goalIcons.size,
-                                            isSelected = goalSelected?.id == goal.id,
-                                            onLongPress = { goalSelected = goal },
-                                            onDismiss = { goalSelected = null },
-                                            onClick = { goalDetail = goal }
-                                        )
-                                    }
+                                if (viewModel.stateFilter == null) {
+                                    EmptyStateCard(
+                                        icon = Icons.Default.Savings,
+                                        title = "Sin metas de ahorro",
+                                        subtitle = "Toca + para agregar una",
+                                        actionLabel = "Nueva meta",
+                                        onAction = onCreateGoal
+                                    )
+                                } else {
+                                    Text(
+                                        text = "No hay metas con este estado",
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
                                 }
+                            }
+                        } else {
+                            LoadMoreEffect(
+                                listState = listState,
+                                enabled = state.hasMore && state.goals.isNotEmpty(),
+                                itemCount = state.goals.size,
+                                onLoadMore = viewModel::loadMore
+                            )
 
-                                item { Spacer(modifier = Modifier.height(72.dp)) }
+                            com.elias.mismonedas.ui.components.RefreshableList(
+                                isRefreshing = state.isRefreshing,
+                                onRefresh = { viewModel.fetchSavingGoals(userId) },
+                                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    val groupedGoals = state.goals.groupBy { it.state }
+
+                                    groupedGoals.forEach { (status, goals) ->
+                                        item {
+                                            Text(
+                                                text = status.toSavingGoalStateLabel(),
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = when (status) {
+                                                    SavingGoalState.COMPLETED -> IncomeGreen
+                                                    SavingGoalState.RUNNING -> MaterialTheme.colorScheme.primary
+                                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(
+                                                        when (status) {
+                                                            SavingGoalState.COMPLETED -> IncomeGreen.copy(alpha = 0.08f)
+                                                            SavingGoalState.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
+                                                            else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f)
+                                                        },
+                                                        RoundedCornerShape(6.dp)
+                                                    )
+                                                    .padding(vertical = 6.dp, horizontal = 12.dp)
+                                            )
+                                        }
+
+                                        items(goals.size) { index ->
+                                            val goal = goals[index]
+                                            SavingGoalCard(
+                                                goal = goal,
+                                                iconIndex = index % goalIcons.size,
+                                                isSelected = goalSelected?.id == goal.id,
+                                                onLongPress = { goalSelected = goal },
+                                                onDismiss = { goalSelected = null },
+                                                onClick = { goalDetail = goal }
+                                            )
+                                        }
+                                    }
+
+                                    item { LoadMoreFooter(isLoadingMore = state.isLoadingMore) }
+                                    item { Spacer(modifier = Modifier.height(72.dp)) }
+                                }
                             }
                         }
-
                     }
                 }
-                is SavingGoalState.Error -> {
+                is SavingGoalUIState.Error -> {
                     Text(
                         text = state.message,
                         color = MaterialTheme.colorScheme.error,
@@ -343,6 +373,49 @@ fun SavingGoalScreen(
     }
 }
 
+@Composable
+private fun SavingGoalStateFilterRow(
+    selected: SavingGoalState?,
+    onSelected: (SavingGoalState?) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        item {
+            FilterChip(
+                selected = selected == null,
+                onClick = { onSelected(null) },
+                label = { Text("Todas") }
+            )
+        }
+        item {
+            FilterChip(
+                selected = selected == SavingGoalState.RUNNING,
+                onClick = { onSelected(SavingGoalState.RUNNING) },
+                label = { Text(SavingGoalState.RUNNING.toSavingGoalStateLabel()) }
+            )
+        }
+        item {
+            FilterChip(
+                selected = selected == SavingGoalState.COMPLETED,
+                onClick = { onSelected(SavingGoalState.COMPLETED) },
+                label = { Text(SavingGoalState.COMPLETED.toSavingGoalStateLabel()) }
+            )
+        }
+        item {
+            FilterChip(
+                selected = selected == SavingGoalState.CANCELLED,
+                onClick = { onSelected(SavingGoalState.CANCELLED) },
+                label = { Text(SavingGoalState.CANCELLED.toSavingGoalStateLabel()) }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SavingGoalCard(
@@ -403,8 +476,8 @@ fun SavingGoalCard(
                     modifier = Modifier
                         .background(
                             when (goal.state) {
-                                SavingGoalResponse.State.COMPLETED -> IncomeGreen.copy(alpha = 0.12f)
-                                SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)
+                                SavingGoalState.COMPLETED -> IncomeGreen.copy(alpha = 0.12f)
+                                SavingGoalState.RUNNING -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.18f)
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)
                             },
                             RoundedCornerShape(20.dp)
@@ -415,8 +488,8 @@ fun SavingGoalCard(
                         goal.state.toSavingGoalStateLabel(),
                         style = MaterialTheme.typography.labelSmall,
                         color = when (goal.state) {
-                            SavingGoalResponse.State.COMPLETED -> IncomeGreen
-                            SavingGoalResponse.State.RUNNING -> MaterialTheme.colorScheme.primary
+                            SavingGoalState.COMPLETED -> IncomeGreen
+                            SavingGoalState.RUNNING -> MaterialTheme.colorScheme.primary
                             else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
                     )

@@ -1,5 +1,6 @@
 package com.elias.mismonedas.ui.navigation.entries
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -19,6 +20,8 @@ fun EntryProviderScope<NavKey>.categoryEntries(
 ) {
     entry<AppDestinations.Categories> {
         SetTopBar(TopBarConfig(title = "Categorías"))
+
+        LaunchedEffect(userId) { categoryViewModel.fetchCategories() }
 
         CategoryListScreen(
             userId = userId,

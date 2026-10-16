@@ -12,7 +12,7 @@ import com.elias.mismonedas.ui.navigation.push
 import com.elias.mismonedas.ui.screens.budget.BudgetListScreen
 import com.elias.mismonedas.ui.screens.budget.CreateBudgetScreen
 import com.elias.mismonedas.ui.screens.budget.EditBudgetScreen
-import com.elias.mismonedas.ui.viewmodel.BudgetState
+import com.elias.mismonedas.ui.viewmodel.BudgetUIState
 import com.elias.mismonedas.ui.viewmodel.BudgetViewModel
 import com.elias.mismonedas.ui.viewmodel.CategoryViewModel
 import com.elias.mismonedas.ui.viewmodel.ScheduleViewModel
@@ -30,17 +30,24 @@ fun EntryProviderScope<NavKey>.budgetEntries(
         BudgetListScreen(
             userId = userId,
             viewModel = budgetViewModel,
+            state = budgetViewModel.budgetListState,
             scheduleViewModel = scheduleViewModel,
             categoryViewModel = categoryViewModel,
             onCreateBudget = { backStack.push(AppDestinations.CreateBudget) },
-            onEditBudget = { id -> backStack.push(AppDestinations.EditBudget(id)) }
+            onEditBudget = { id -> backStack.push(AppDestinations.EditBudget(id)) },
+            onRefresh = budgetViewModel::refreshBudgetList,
+            onLoadMore = budgetViewModel::loadMore,
+            onStateFilter = budgetViewModel::setStateFilter,
+            onHealthFilter = budgetViewModel::setHealthFilter,
+            onDateFilter = budgetViewModel::setDateFilter,
+            onClearFilters = budgetViewModel::clearFilters
         )
     }
 
     entry<AppDestinations.CreateBudget> {
         SetTopBar(TopBarConfig(title = "Nuevo presupuesto"))
 
-        LaunchedEffect(userId) { categoryViewModel.fetchCategories(userId) }
+        LaunchedEffect(userId) { categoryViewModel.fetchCategories() }
 
         CreateBudgetScreen(
             userId = userId,
@@ -54,12 +61,12 @@ fun EntryProviderScope<NavKey>.budgetEntries(
         SetTopBar(TopBarConfig(title = "Editar presupuesto"))
 
         LaunchedEffect(key.id) {
-            categoryViewModel.fetchCategories(userId)
+            categoryViewModel.fetchCategories()
             budgetViewModel.fetchDetailedBudgets(userId)
         }
 
-        val detailed = budgetViewModel.budgetState
-        val budget = (detailed as? BudgetState.Success)?.budgets?.firstOrNull { it.id == key.id }
+        val detailed = budgetViewModel.budgetUIState
+        val budget = (detailed as? BudgetUIState.Success)?.budgets?.firstOrNull { it.id == key.id }
 
         if (budget != null) {
             EditBudgetScreen(

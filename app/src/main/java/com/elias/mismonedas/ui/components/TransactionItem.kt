@@ -31,6 +31,7 @@ import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.util.toLabel
 import com.elias.mismonedas.ui.util.toReadableDate
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 
 @Composable
@@ -39,7 +40,7 @@ fun TransactionRecordItem(
     modifier: Modifier = Modifier
 ) {
     val isIncome =
-        transaction.type == TransactionResponse.Type.INCOME
+        transaction.type == TransactionType.INCOME
 
     val movementColor =
         if (isIncome) IncomeGreen else ExpenseRed

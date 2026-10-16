@@ -31,7 +31,7 @@ fun EntryProviderScope<NavKey>.scheduleEntries(
     entry<AppDestinations.ScheduledTransactions> {
         SetTopBar(TopBarConfig(title = "Programaciones"))
 
-        LaunchedEffect(userId) { scheduleViewModel.fetchAll(userId) }
+        LaunchedEffect(userId) { scheduleViewModel.load(userId) }
 
         ScheduledTransactionsScreen(
             viewModel = scheduleViewModel,

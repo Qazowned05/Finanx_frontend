@@ -28,7 +28,7 @@ import com.elias.mismonedas.ui.theme.TextGray
 
 private val moneyInputRegex =
     Regex("""^\d{0,9}([.,]\d{0,2})?$""")
-
+//todo verificar uso
 @Composable
 fun TransactionAmountStep(
     form: CreateTransactionFormState,

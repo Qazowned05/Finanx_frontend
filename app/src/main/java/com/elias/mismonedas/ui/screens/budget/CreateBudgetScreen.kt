@@ -24,6 +24,7 @@ import com.elias.mismonedas.ui.viewmodel.BudgetActionState
 import com.elias.mismonedas.ui.viewmodel.BudgetViewModel
 import com.elias.mismonedas.ui.viewmodel.CategoryState
 import org.openapitools.client.models.BudgetRequest
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -67,7 +68,7 @@ fun CreateBudgetScreen(
     val expenseCategories = if (categoryState is CategoryState.Success) {
         categoryState.categories
             .mapNotNull { it.toCategoryOption() }
-            .filter { it.type == TransactionRequest.Type.SPENT }
+            .filter { it.type == TransactionType.SPENT }
     } else emptyList()
 
     val selectedCategoryName = if (categoryState is CategoryState.Success) {

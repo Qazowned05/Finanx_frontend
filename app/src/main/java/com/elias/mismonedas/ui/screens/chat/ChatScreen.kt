@@ -39,6 +39,8 @@ import kotlinx.coroutines.launch
 import org.openapitools.client.models.ChatHistoryResponse
 import org.openapitools.client.models.ChatSessionResponse
 import com.elias.mismonedas.ui.viewmodel.ChatViewModel
+import org.openapitools.client.models.ChatRole
+import org.openapitools.client.models.ChatSessionState
 
 /**
  * Pantalla principal del chatbot Finn.
@@ -113,6 +115,8 @@ fun ChatScreen(
             state = state,
             onNewSession = { viewModel.startSession(userId) },
             onOpenSession = viewModel::openSession,
+            onRefresh = { viewModel.refreshSessions(userId) },
+            onLoadMore = { viewModel.loadMoreSessions(userId) },
             newSessionModifier = Modifier.tutorialTarget("new_session_button", targetBounds),
             finnIconModifier = Modifier.tutorialTarget("finn_icon", targetBounds)
         )
@@ -233,7 +237,7 @@ private fun ActiveChatView(
 
 @Composable
 fun ChatBubble(message: ChatHistoryResponse) {
-    val isUser = message.role == ChatHistoryResponse.Role.USER
+    val isUser = message.role == ChatRole.USER
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
@@ -373,11 +377,11 @@ private fun ChatInputBar(
 
 
 @Composable
-fun SessionStateBadge(state: ChatSessionResponse.State?) {
+fun SessionStateBadge(state: ChatSessionState?) {
     val (label, color) = when (state) {
-        ChatSessionResponse.State.ACTIVE -> "Activa" to IncomeGreen
-        ChatSessionResponse.State.CLOSED -> "Cerrada" to MaterialTheme.colorScheme.onSurfaceVariant
-        ChatSessionResponse.State.EXPIRED -> "Expirada" to ExpenseRed
+        ChatSessionState.ACTIVE -> "Activa" to IncomeGreen
+        ChatSessionState.CLOSED -> "Cerrada" to MaterialTheme.colorScheme.onSurfaceVariant
+        ChatSessionState.EXPIRED -> "Expirada" to ExpenseRed
         null -> "—" to MaterialTheme.colorScheme.onSurfaceVariant
     }
     Surface(
@@ -394,10 +398,10 @@ fun SessionStateBadge(state: ChatSessionResponse.State?) {
     }
 }
 
-fun sessionStateLabel(state: ChatSessionResponse.State?): String =
+fun sessionStateLabel(state: ChatSessionState?): String =
     when (state) {
-        ChatSessionResponse.State.ACTIVE -> "Sesión activa"
-        ChatSessionResponse.State.CLOSED -> "Sesión cerrada"
-        ChatSessionResponse.State.EXPIRED -> "Sesión expirada"
+        ChatSessionState.ACTIVE -> "Sesión activa"
+        ChatSessionState.CLOSED -> "Sesión cerrada"
+        ChatSessionState.EXPIRED -> "Sesión expirada"
         null -> ""
     }

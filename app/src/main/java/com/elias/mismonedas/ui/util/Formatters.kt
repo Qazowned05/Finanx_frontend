@@ -1,6 +1,8 @@
 package com.elias.mismonedas.ui.util
 
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -63,17 +65,18 @@ fun LocalDate?.toSearchDate(): String {
     return format(displayDateFormatter)
 }
 
-fun TransactionResponse.PaymentMethod.toLabel(): String = when (this) {
-    TransactionResponse.PaymentMethod.CASH -> "Efectivo"
-    TransactionResponse.PaymentMethod.CREDIT_CARD -> "Tarjeta de crédito"
-    TransactionResponse.PaymentMethod.DEBIT_CARD -> "Tarjeta de débito"
-    TransactionResponse.PaymentMethod.BANK_TRANSFER -> "Transferencia"
-    TransactionResponse.PaymentMethod.YAPE -> "Yape"
-    TransactionResponse.PaymentMethod.PLIN -> "Plin"
-    TransactionResponse.PaymentMethod.OTHER -> "Otro"
+fun PaymentMethod.toLabel(): String = when (this) {
+    PaymentMethod.CASH -> "Efectivo"
+    PaymentMethod.CREDIT_CARD -> "Tarjeta de crédito"
+    PaymentMethod.DEBIT_CARD -> "Tarjeta de débito"
+    PaymentMethod.BANK_TRANSFER -> "Transferencia"
+    PaymentMethod.YAPE -> "Yape"
+    PaymentMethod.PLIN -> "Plin"
+    PaymentMethod.OTHER -> "Otro"
 }
 
-fun TransactionResponse.Type.toReadableType(): String = when (this) {
-    TransactionResponse.Type.SPENT -> "Gasto"
-    TransactionResponse.Type.INCOME -> "Ingreso"
+//todo verificar si se está aprovechando
+fun TransactionType.toReadableType(): String = when (this) {
+    TransactionType.SPENT -> "Gasto"
+    TransactionType.INCOME -> "Ingreso"
 }

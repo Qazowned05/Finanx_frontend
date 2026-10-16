@@ -3,6 +3,7 @@ package com.elias.mismonedas.ui.screens.wallet
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.components.EmptyStateCard
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
+import com.elias.mismonedas.ui.components.RefreshableList
 import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.viewmodel.WalletActionState
 import com.elias.mismonedas.ui.viewmodel.WalletListState
@@ -30,6 +34,7 @@ fun WalletScreen(
     val state = viewModel.walletListState
     val actionState = viewModel.actionState
     var showCreateDialog by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         viewModel.loadWallets(userId)
@@ -91,22 +96,40 @@ fun WalletScreen(
                             onAction = { showCreateDialog = true }
                         )
                     } else {
-                        LazyColumn(
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        LoadMoreEffect(
+                            listState = listState,
+                            enabled = state.hasMore && state.wallets.isNotEmpty(),
+                            itemCount = state.wallets.size,
+                            onLoadMore = { viewModel.loadMore(userId) }
+                        )
+
+                        RefreshableList(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = { viewModel.loadWallets(userId) },
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.wallets, key = { it.id ?: 0 }) { wallet ->
-                                WalletCard(
-                                    wallet = wallet,
-                                    onSetPrimary = {
-                                        wallet.id?.let { id ->
-                                            viewModel.setPrimary(userId, id, wallet.currencyCode ?: "PEN")
+                            LazyColumn(
+                                state = listState,
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(state.wallets, key = { it.id ?: 0 }) { wallet ->
+                                    WalletCard(
+                                        wallet = wallet,
+                                        onSetPrimary = {
+                                            wallet.id?.let { id ->
+                                                viewModel.setPrimary(userId, id, wallet.currencyCode ?: "PEN")
+                                            }
+                                        },
+                                        onDisable = {
+                                            wallet.id?.let { viewModel.disableWallet(userId, it) }
                                         }
-                                    },
-                                    onDisable = {
-                                        wallet.id?.let { viewModel.disableWallet(userId, it) }
-                                    }
-                                )
+                                    )
+                                }
+
+                                item {
+                                    LoadMoreFooter(isLoadingMore = state.isLoadingMore)
+                                }
                             }
                         }
                     }

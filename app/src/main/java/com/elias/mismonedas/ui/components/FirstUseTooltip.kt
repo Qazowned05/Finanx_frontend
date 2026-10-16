@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.foundation.layout.Arrangement
-
+//todo verificar uso
 @Composable
 fun FirstUseTooltip(
     targetBounds: Rect?,

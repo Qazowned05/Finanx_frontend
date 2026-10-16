@@ -55,12 +55,14 @@ import com.elias.mismonedas.ui.util.toReadableType
 import com.elias.mismonedas.ui.viewmodel.ReceiptViewModel
 import com.elias.mismonedas.ui.viewmodel.TransactionViewModel
 import org.openapitools.client.models.TransactionResponse
+import org.openapitools.client.models.TransactionType
 
 @Composable
 fun TransactionDetailScreen(
     transactionId: Long?,
     viewModel: TransactionViewModel,
     receiptViewModel: ReceiptViewModel,
+    //todo verificar uso
     onBack: () -> Unit
 ) {
     val tx = transactionId?.let { id -> viewModel.state.transactions.find { it.id == id } }
@@ -90,7 +92,7 @@ fun TransactionDetailScreen(
         return
     }
 
-    val isIncome = tx.type == TransactionResponse.Type.INCOME
+    val isIncome = tx.type == TransactionType.INCOME
     val accentColor = if (isIncome) IncomeGreen else ExpenseRed
 
     Column(

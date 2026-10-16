@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,6 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.rememberCoroutineScope
 import com.elias.mismonedas.ui.components.EmptyStateCard
 import com.elias.mismonedas.ui.components.FinanxOutlinedTextField
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.SpotlightOverlay
 import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
@@ -38,6 +41,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.openapitools.client.models.TransactionType
 
 val categoryIcons = listOf(
     Icons.Default.ShoppingCart, Icons.Default.Home, Icons.Default.DirectionsCar,
@@ -54,11 +58,8 @@ fun CategoryListScreen(
     onNavigateToNotifications: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {}
 ) {
-    LaunchedEffect(userId) {
-        viewModel.fetchCategories(userId)
-    }
-
     val state = viewModel.categoryState
+    val listState = rememberLazyListState()
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var categoryToEdit by remember { mutableStateOf<CategoryResponse?>(null) }
@@ -106,78 +107,98 @@ fun CategoryListScreen(
             }
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (state) {
-                is CategoryState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
-                }
-                is CategoryState.Success -> {
-                    if (state.categories.isEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(24.dp)
-                        ) {
-                            EmptyStateCard(
-                                icon = Icons.Default.Category,
-                                title = "Sin categorías",
-                                subtitle = "Toca + para agregar una",
-                                actionLabel = "Nueva categoría",
-                                onAction = { showCreateDialog = true }
-                            )
-                        }
-                    } else {
-                        com.elias.mismonedas.ui.components.RefreshableList(
-                            isRefreshing = (state as? com.elias.mismonedas.ui.viewmodel.CategoryState.Success)?.isRefreshing
-                                ?: false,
-                            onRefresh = { viewModel.fetchCategories(userId, force = true) },
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
+        Column(modifier = Modifier.fillMaxSize()) {
+            CategoryFilters(
+                query = viewModel.query,
+                onQueryChange = viewModel::onQueryChange,
+                selectedType = viewModel.typeFilter,
+                onTypeSelected = viewModel::onTypeFilterChange
+            )
+
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                when (state) {
+                    is CategoryState.Loading -> {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
+                    }
+                    is CategoryState.Success -> {
+                        if (state.categories.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .padding(24.dp)
                             ) {
-                                val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
+                                EmptyStateCard(
+                                    icon = Icons.Default.Category,
+                                    title = "Sin categorías",
+                                    subtitle = "Toca + para agregar una",
+                                    actionLabel = "Nueva categoría",
+                                    onAction = { showCreateDialog = true }
+                                )
+                            }
+                        } else {
+                            com.elias.mismonedas.ui.components.RefreshableList(
+                                isRefreshing = state.isRefreshing,
+                                onRefresh = { viewModel.fetchCategories(force = true) },
+                                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                LoadMoreEffect(
+                                    listState = listState,
+                                    enabled = state.hasMore && state.categories.isNotEmpty(),
+                                    itemCount = state.categories.size,
+                                    onLoadMore = viewModel::loadMore
+                                )
 
-                                groupedCategories.forEach { (type, categories) ->
+                                LazyColumn(
+                                    state = listState,
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    val groupedCategories = state.categories.groupBy { it.type?.value ?: "SPENT" }
 
-                                    item {
-                                        Text(
-                                            text = if (type == "INCOME") "Ingresos" else "Gastos",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = if (type == "INCOME") IncomeGreen else ExpenseRed,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
-                                                    else ExpenseRed.copy(alpha = 0.08f),
-                                                    RoundedCornerShape(6.dp)
-                                                )
-                                                .padding(vertical = 6.dp, horizontal = 12.dp)
-                                        )
+                                    groupedCategories.forEach { (type, categories) ->
+
+                                        item {
+                                            Text(
+                                                text = if (type == "INCOME") "Ingresos" else "Gastos",
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = if (type == "INCOME") IncomeGreen else ExpenseRed,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(
+                                                        if (type == "INCOME") IncomeGreen.copy(alpha = 0.08f)
+                                                        else ExpenseRed.copy(alpha = 0.08f),
+                                                        RoundedCornerShape(6.dp)
+                                                    )
+                                                    .padding(vertical = 6.dp, horizontal = 12.dp)
+                                            )
+                                        }
+
+                                        items(categories.size) { index ->
+                                            val category = categories[index]
+                                            CategoryCard(
+                                                category = category,
+                                                iconIndex = index % categoryIcons.size,
+                                                isSelected = categorySelected?.id == category.id,
+                                                onLongPress = { categorySelected = category },
+                                                onDismiss = { categorySelected = null }
+                                            )
+                                        }
                                     }
 
-                                    items(categories.size) { index ->
-                                        val category = categories[index]
-                                        CategoryCard(
-                                            category = category,
-                                            iconIndex = index % categoryIcons.size,
-                                            isSelected = categorySelected?.id == category.id,
-                                            onLongPress = { categorySelected = category },
-                                            onDismiss = { categorySelected = null }
-                                        )
+                                    item {
+                                        LoadMoreFooter(isLoadingMore = state.isLoadingMore)
                                     }
                                 }
                             }
                         }
                     }
-                }
-                is CategoryState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                    )
+                    is CategoryState.Error -> {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                        )
+                    }
                 }
             }
         }
@@ -295,12 +316,12 @@ fun CategoryListScreen(
             title = "Editar Categoría",
             initialName = category.name.orEmpty(),
             initialDescription = category.description.orEmpty(),
-            initialType = category.type ?: org.openapitools.client.models.CategoryResponse.Type.SPENT,
+            initialType = category.type ?: TransactionType.SPENT,
             onConfirm = { name, description, selectedType ->
                 val requestType = if (selectedType.value == "INCOME")
-                    org.openapitools.client.models.CategoryRequest.Type.INCOME
+                    TransactionType.INCOME
                 else
-                    org.openapitools.client.models.CategoryRequest.Type.SPENT
+                    TransactionType.SPENT
 
                 viewModel.updateCategory(userId, category.id!!, name, description, requestType)
                 categoryToEdit = null
@@ -309,6 +330,56 @@ fun CategoryListScreen(
         )
     }
 }
+
+@Composable
+private fun CategoryFilters(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    selectedType: TransactionType?,
+    onTypeSelected: (TransactionType?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            placeholder = { Text("Buscar categorías") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Buscar"
+                )
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = selectedType == null,
+                onClick = { onTypeSelected(null) },
+                label = { Text("Todos") }
+            )
+            FilterChip(
+                selected = selectedType == TransactionType.INCOME,
+                onClick = { onTypeSelected(TransactionType.INCOME) },
+                label = { Text("Ingreso") }
+            )
+            FilterChip(
+                selected = selectedType == TransactionType.SPENT,
+                onClick = { onTypeSelected(TransactionType.SPENT) },
+                label = { Text("Gasto") }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryCard(
@@ -388,17 +459,17 @@ fun CategoryFormDialog(
     title: String,
     initialName: String = "",
     initialDescription: String = "",
-    initialType: CategoryResponse.Type = CategoryResponse.Type.SPENT,
-    onConfirm: (String, String, org.openapitools.client.models.CategoryRequest.Type) -> Unit,
+    initialType: TransactionType = TransactionType.SPENT,
+    onConfirm: (String, String, TransactionType) -> Unit,
     onDismiss: () -> Unit
 ) {
     var name by remember { mutableStateOf(initialName) }
     var description by remember { mutableStateOf(initialDescription) }
 
     val initialRequestType = if (initialType.value == "INCOME") {
-        org.openapitools.client.models.CategoryRequest.Type.INCOME
+        TransactionType.INCOME
     } else {
-        org.openapitools.client.models.CategoryRequest.Type.SPENT
+        TransactionType.SPENT
     }
 
     var type by remember { mutableStateOf(initialRequestType) }
@@ -415,15 +486,15 @@ fun CategoryFormDialog(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
-                            selected = type == org.openapitools.client.models.CategoryRequest.Type.SPENT,
-                            onClick = { type = org.openapitools.client.models.CategoryRequest.Type.SPENT }
+                            selected = type == TransactionType.SPENT,
+                            onClick = { type = TransactionType.SPENT }
                         )
                         Text("Gasto", fontSize = 14.sp, color = ExpenseRed)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
-                            selected = type == org.openapitools.client.models.CategoryRequest.Type.INCOME,
-                            onClick = { type = org.openapitools.client.models.CategoryRequest.Type.INCOME }
+                            selected = type == TransactionType.INCOME,
+                            onClick = { type = TransactionType.INCOME }
                         )
                         Text("Ingreso", fontSize = 14.sp, color = IncomeGreen)
                     }

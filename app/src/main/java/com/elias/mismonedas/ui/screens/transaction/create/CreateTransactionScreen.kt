@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -40,7 +39,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -71,13 +69,16 @@ import com.elias.mismonedas.ui.components.FinanxOutlinedTextField
 import com.elias.mismonedas.ui.components.ReasonAutocomplete
 import com.elias.mismonedas.ui.theme.ExpenseRed
 import com.elias.mismonedas.ui.theme.IncomeGreen
-import com.elias.mismonedas.ui.viewmodel.SavingGoalState
+import com.elias.mismonedas.ui.viewmodel.SavingGoalUIState
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftField
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftState
 import com.elias.mismonedas.ui.viewmodel.TransactionSaveState
 import org.openapitools.client.models.TransactionRequest
 import com.elias.mismonedas.ui.viewmodel.TransactionViewModel
 import com.elias.mismonedas.ui.viewmodel.SavingGoalViewModel
+import org.openapitools.client.models.PaymentMethod
+import org.openapitools.client.models.SavingGoalState
+import org.openapitools.client.models.TransactionType
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -102,8 +103,8 @@ fun CreateTransactionScreen(
     val options = transactionViewModel.state.formOptions
     val scrollState = rememberScrollState()
 
-    val hasActiveSavingGoals = when (val state = savingGoalViewModel.savingGoalState) {
-        is SavingGoalState.Success -> state.goals.any { it.active == true && it.state == org.openapitools.client.models.SavingGoalResponse.State.RUNNING }
+    val hasActiveSavingGoals = when (val state = savingGoalViewModel.savingGoalUIState) {
+        is SavingGoalUIState.Success -> state.goals.any { it.active == true && it.state == SavingGoalState.RUNNING }
         else -> options.savingGoals.isNotEmpty()
     }
     val isSaving = transactionViewModel.state.saveState is TransactionSaveState.Saving
@@ -279,7 +280,7 @@ fun CreateTransactionScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TransactionRequest.PaymentMethod.entries.forEach { method ->
+                    PaymentMethod.entries.forEach { method ->
                         FilterChip(
                             selected = draft.paymentMethod == method,
                             onClick = {
@@ -314,7 +315,7 @@ fun CreateTransactionScreen(
                 }
             }
 
-            if (draft.type == TransactionRequest.Type.INCOME && hasActiveSavingGoals) {
+            if (draft.type == TransactionType.INCOME && hasActiveSavingGoals) {
                 Text(
                     text = "Meta de ahorro (opcional)",
                     style = MaterialTheme.typography.bodyMedium,
@@ -371,37 +372,37 @@ fun CreateTransactionScreen(
 
 @Composable
 private fun TypeSelectorCompact(
-    selected: TransactionRequest.Type?,
-    onSelect: (TransactionRequest.Type) -> Unit
+    selected: TransactionType?,
+    onSelect: (TransactionType) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         TypeOption(
-            type = TransactionRequest.Type.SPENT,
+            type = TransactionType.SPENT,
             label = "Gasto",
             icon = Icons.Default.TrendingDown,
-            isSelected = selected == TransactionRequest.Type.SPENT,
+            isSelected = selected == TransactionType.SPENT,
             selectedContainer = MaterialTheme.colorScheme.errorContainer,
             selectedContent = MaterialTheme.colorScheme.onErrorContainer,
-            onClick = { onSelect(TransactionRequest.Type.SPENT) }
+            onClick = { onSelect(TransactionType.SPENT) }
         )
         TypeOption(
-            type = TransactionRequest.Type.INCOME,
+            type = TransactionType.INCOME,
             label = "Ingreso",
             icon = Icons.Default.TrendingUp,
-            isSelected = selected == TransactionRequest.Type.INCOME,
+            isSelected = selected == TransactionType.INCOME,
             selectedContainer = MaterialTheme.colorScheme.primaryContainer,
             selectedContent = MaterialTheme.colorScheme.onPrimaryContainer,
-            onClick = { onSelect(TransactionRequest.Type.INCOME) }
+            onClick = { onSelect(TransactionType.INCOME) }
         )
     }
 }
 
 @Composable
 private fun RowScope.TypeOption(
-    type: TransactionRequest.Type,
+    type: TransactionType,
     label: String,
     icon: ImageVector,
     isSelected: Boolean,
@@ -575,11 +576,11 @@ private fun CategorySelectionGrid(
 
 @Composable
 private fun DetailsSummaryCard(
-    type: TransactionRequest.Type?,
+    type: TransactionType?,
     categoryLabel: String?,
     amountText: String
 ) {
-    val isIncome = type == TransactionRequest.Type.INCOME
+    val isIncome = type == TransactionType.INCOME
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -743,22 +744,10 @@ private fun submitDraft(
             type = type,
             reasonId = draft.reasonId,
             newReason = if (draft.reasonId == null) draft.reasonText.trim().ifBlank { null } else null,
-            savingGoalId = if (type == TransactionRequest.Type.INCOME) draft.savingGoalId else null,
+            savingGoalId = if (type == TransactionType.INCOME) draft.savingGoalId else null,
             receiptId = draft.receiptId,
             convertCurrency = draft.convertCurrency
         )
     )
     return true
-}
-
-private fun TransactionRequest.PaymentMethod.toSpanishLabel(): String {
-    return when (this) {
-        TransactionRequest.PaymentMethod.CASH -> "Efectivo"
-        TransactionRequest.PaymentMethod.CREDIT_CARD -> "Tarjeta crédito"
-        TransactionRequest.PaymentMethod.DEBIT_CARD -> "Tarjeta débito"
-        TransactionRequest.PaymentMethod.BANK_TRANSFER -> "Transferencia"
-        TransactionRequest.PaymentMethod.YAPE -> "Yape"
-        TransactionRequest.PaymentMethod.PLIN -> "Plin"
-        TransactionRequest.PaymentMethod.OTHER -> "Otro"
-    }
 }

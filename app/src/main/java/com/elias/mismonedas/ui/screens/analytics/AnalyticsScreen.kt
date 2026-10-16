@@ -19,7 +19,9 @@ import com.elias.mismonedas.ui.theme.*
 import com.elias.mismonedas.ui.viewmodel.AnalyticsViewModel
 import org.openapitools.client.models.AggregateByBudgetHealth
 import org.openapitools.client.models.AggregateByTransactionType
+import org.openapitools.client.models.BudgetHealth
 import org.openapitools.client.models.BudgetsDashboard
+import org.openapitools.client.models.TransactionType
 import org.openapitools.client.models.TransactionsDashboard
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -117,9 +119,9 @@ private fun DashboardContent(
                         budgetsDashboard.byHealth?.let { byHealth ->
                             val slices = byHealth.mapNotNull { health ->
                         val color = when (health.factor) {
-                                AggregateByBudgetHealth.Factor.OK -> IncomeGreen
-                                AggregateByBudgetHealth.Factor.NEAR_LIMIT -> ExpenseRed
-                                AggregateByBudgetHealth.Factor.EXCEEDED -> MaterialTheme.colorScheme.tertiary
+                                BudgetHealth.OK -> IncomeGreen
+                                BudgetHealth.NEAR_LIMIT -> ExpenseRed
+                                BudgetHealth.EXCEEDED -> MaterialTheme.colorScheme.tertiary
                                 else -> MaterialTheme.colorScheme.outline
                             }
                             DonutSlice(
@@ -164,10 +166,10 @@ private fun DashboardContent(
                 item { SectionTitle("Resumen del período") }
                 item {
                     val incomeItem = typeRanking?.items?.firstOrNull {
-                        it.aggregate?.factor == AggregateByTransactionType.Factor.INCOME
+                        it.aggregate?.factor == TransactionType.INCOME
                     }
                     val spentItem = typeRanking?.items?.firstOrNull {
-                        it.aggregate?.factor == AggregateByTransactionType.Factor.SPENT
+                        it.aggregate?.factor == TransactionType.SPENT
                     }
                     val incomeVal = incomeItem?.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO
                     val spentVal = spentItem?.aggregate?.aggregate?.totalAmount ?: BigDecimal.ZERO
@@ -207,10 +209,10 @@ private fun DashboardContent(
                         val factor = rankItem.aggregate?.factor ?: return@mapNotNull null
                         val share = rankItem.aggregate?.sharePercentage?.toFloat()?.div(100f) ?: 0f
                         val label = when (factor) {
-                            AggregateByTransactionType.Factor.INCOME -> "Ingresos"
-                            AggregateByTransactionType.Factor.SPENT -> "Gastos"
+                            TransactionType.INCOME -> "Ingresos"
+                            TransactionType.SPENT -> "Gastos"
                         }
-                        val color = if (factor == AggregateByTransactionType.Factor.INCOME) IncomeGreen else ExpenseRed
+                        val color = if (factor == TransactionType.INCOME) IncomeGreen else ExpenseRed
                         DonutSlice(label, share, color)
                     }
                     DonutChartCard(title = "Ingresos vs Gastos", slices = slices)

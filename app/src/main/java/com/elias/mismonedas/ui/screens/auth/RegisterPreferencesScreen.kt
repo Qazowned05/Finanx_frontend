@@ -15,10 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.viewmodel.AuthViewModel
 import com.elias.mismonedas.ui.viewmodel.RegistrationStep
+import org.openapitools.client.models.TimeZone
 import org.openapitools.client.models.UserPreferencesRequest
 
 private data class CurrencyOption(val code: String, val display: String)
-private data class TimeZoneOption(val value: UserPreferencesRequest.TimeZone, val display: String)
+private data class TimeZoneOption(val value: TimeZone, val display: String)
 
 private val currencies = listOf(
     CurrencyOption("PEN", "PEN — Sol peruano"),
@@ -33,28 +34,28 @@ private val currencies = listOf(
 )
 
 private val timeZones = listOf(
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_LIMA, "Lima"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_BOGOTA, "Bogotá"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_QUITO, "Quito"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_CARACAS, "Caracas"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_LA_PAZ, "La Paz"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_ASUNCION, "Asunción"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_MONTEVIDEO, "Montevideo"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_SANTIAGO, "Santiago"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_BUENOS_AIRES, "Buenos Aires"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_GUATEMALA, "Guatemala"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_COSTA_RICA, "Costa Rica"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_TEGUCIGALPA, "Tegucigalpa"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_EL_SALVADOR, "El Salvador"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_MANAGUA, "Managua"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_PANAMA, "Panamá"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_HAVANA, "La Habana"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_SANTO_DOMINGO, "Santo Domingo"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_PUERTO_RICO, "Puerto Rico"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_MEXICO_CITY, "Ciudad de México"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_NEW_YORK, "Nueva York"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.AMERICA_LOS_ANGELES, "Los Ángeles"),
-    TimeZoneOption(UserPreferencesRequest.TimeZone.EUROPE_MADRID, "Madrid"),
+    TimeZoneOption(TimeZone.AMERICA_LIMA, "Lima"),
+    TimeZoneOption(TimeZone.AMERICA_BOGOTA, "Bogotá"),
+    TimeZoneOption(TimeZone.AMERICA_QUITO, "Quito"),
+    TimeZoneOption(TimeZone.AMERICA_CARACAS, "Caracas"),
+    TimeZoneOption(TimeZone.AMERICA_LA_PAZ, "La Paz"),
+    TimeZoneOption(TimeZone.AMERICA_ASUNCION, "Asunción"),
+    TimeZoneOption(TimeZone.AMERICA_MONTEVIDEO, "Montevideo"),
+    TimeZoneOption(TimeZone.AMERICA_SANTIAGO, "Santiago"),
+    TimeZoneOption(TimeZone.AMERICA_BUENOS_AIRES, "Buenos Aires"),
+    TimeZoneOption(TimeZone.AMERICA_GUATEMALA, "Guatemala"),
+    TimeZoneOption(TimeZone.AMERICA_COSTA_RICA, "Costa Rica"),
+    TimeZoneOption(TimeZone.AMERICA_TEGUCIGALPA, "Tegucigalpa"),
+    TimeZoneOption(TimeZone.AMERICA_EL_SALVADOR, "El Salvador"),
+    TimeZoneOption(TimeZone.AMERICA_MANAGUA, "Managua"),
+    TimeZoneOption(TimeZone.AMERICA_PANAMA, "Panamá"),
+    TimeZoneOption(TimeZone.AMERICA_HAVANA, "La Habana"),
+    TimeZoneOption(TimeZone.AMERICA_SANTO_DOMINGO, "Santo Domingo"),
+    TimeZoneOption(TimeZone.AMERICA_PUERTO_RICO, "Puerto Rico"),
+    TimeZoneOption(TimeZone.AMERICA_MEXICO_CITY, "Ciudad de México"),
+    TimeZoneOption(TimeZone.AMERICA_NEW_YORK, "Nueva York"),
+    TimeZoneOption(TimeZone.AMERICA_LOS_ANGELES, "Los Ángeles"),
+    TimeZoneOption(TimeZone.EUROPE_MADRID, "Madrid"),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

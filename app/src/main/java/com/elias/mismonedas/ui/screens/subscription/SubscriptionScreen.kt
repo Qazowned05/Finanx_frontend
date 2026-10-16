@@ -2,7 +2,9 @@ package com.elias.mismonedas.ui.screens.subscription
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,13 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.elias.mismonedas.ui.util.toCurrency
+import com.elias.mismonedas.ui.components.ErrorMessage
+import com.elias.mismonedas.ui.components.LoadMoreEffect
+import com.elias.mismonedas.ui.components.LoadMoreFooter
+import com.elias.mismonedas.ui.components.RefreshableList
 import com.elias.mismonedas.ui.util.toReadableDate
+import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.viewmodel.SubscriptionActionState
-import com.elias.mismonedas.ui.viewmodel.SubscriptionState
+import com.elias.mismonedas.ui.viewmodel.SubscriptionUIState
 import com.elias.mismonedas.ui.viewmodel.SubscriptionViewModel
 import org.openapitools.client.models.PaymentResponse
+import org.openapitools.client.models.PaymentState
 import org.openapitools.client.models.SubscriptionResponse
+import org.openapitools.client.models.SubscriptionState
+import java.time.Instant
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,9 +39,12 @@ fun SubscriptionScreen(
 ) {
     val state = viewModel.state
     val actionState = viewModel.actionState
+    val listState = rememberLazyListState()
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
 
     LaunchedEffect(Unit) {
-        viewModel.load(userId)
+        viewModel.load()
     }
 
     LaunchedEffect(actionState) {
@@ -53,35 +66,189 @@ fun SubscriptionScreen(
         }
     ) { innerPadding ->
         when (state) {
-            is SubscriptionState.Loading -> {
+            is SubscriptionUIState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            is SubscriptionState.Error -> {
+            is SubscriptionUIState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Text((state as SubscriptionState.Error).message, color = MaterialTheme.colorScheme.error)
+                    ErrorMessage(
+                        message = (state as SubscriptionUIState.Error).message,
+                        onRetry = { viewModel.load() }
+                    )
                 }
             }
-            is SubscriptionState.Loaded -> {
-                val data = state as SubscriptionState.Loaded
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    item { PlanCard(plan = data.plan, onCancel = {
-                        data.plan?.id?.let { viewModel.cancelSubscription(it, userId) }
-                    }) }
+            is SubscriptionUIState.Loaded -> {
+                val data = state as SubscriptionUIState.Loaded
+                val hasActiveFilters = data.filterState != null ||
+                        data.filterFrom != null ||
+                        data.filterTo != null
 
-                    if (data.payments.isNotEmpty()) {
+                LoadMoreEffect(
+                    listState = listState,
+                    enabled = data.hasMore && !data.isLoadingPayments && !data.isRefreshing,
+                    itemCount = data.payments.size,
+                    onLoadMore = { viewModel.loadMore() }
+                )
+
+                RefreshableList(
+                    isRefreshing = data.isRefreshing,
+                    onRefresh = { viewModel.refresh() },
+                    modifier = Modifier.fillMaxSize().padding(innerPadding)
+                ) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        item {
+                            PlanCard(plan = data.plan, onCancel = {
+                                data.plan?.id?.let { viewModel.cancelSubscription(it) }
+                            })
+                        }
+
+                        item {
+                            PaymentHistoryFilterBar(
+                                selectedState = data.filterState,
+                                hasDateFilter = data.filterFrom != null || data.filterTo != null,
+                                onStateSelected = { viewModel.setStateFilter(it) },
+                                onDateClick = { showDatePicker = true },
+                                onClear = { viewModel.clearFilters() }
+                            )
+                        }
+
                         item {
                             Text("Historial de pagos", style = MaterialTheme.typography.titleSmall)
                         }
-                        items(data.payments, key = { it.id ?: 0 }) { payment ->
-                            PaymentHistoryItem(payment)
+
+                        when {
+                            data.paymentsError != null -> {
+                                item {
+                                    ErrorMessage(
+                                        message = data.paymentsError,
+                                        onRetry = { viewModel.refresh() }
+                                    )
+                                }
+                            }
+
+                            data.isLoadingPayments -> {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 24.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            }
+
+                            data.payments.isEmpty() -> {
+                                item {
+                                    Text(
+                                        text = if (hasActiveFilters) {
+                                            "No hay pagos con esos filtros"
+                                        } else {
+                                            "Todavía no hay pagos registrados"
+                                        },
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+
+                            else -> {
+                                items(data.payments, key = { it.id ?: 0 }) { payment ->
+                                    PaymentHistoryItem(payment)
+                                }
+                            }
+                        }
+
+                        item {
+                            LoadMoreFooter(isLoadingMore = data.isLoadingMore)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDatePicker = false
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val date = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneOffset.UTC)
+                            .toLocalDate()
+                        viewModel.setDateFilter(date, date)
+                    }
+                }) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
+@Composable
+private fun PaymentHistoryFilterBar(
+    selectedState: PaymentState?,
+    hasDateFilter: Boolean,
+    onStateSelected: (PaymentState?) -> Unit,
+    onDateClick: () -> Unit,
+    onClear: () -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            item {
+                FilterChip(
+                    selected = selectedState == null,
+                    onClick = { onStateSelected(null) },
+                    label = { Text("Todos") }
+                )
+            }
+            items(PaymentState.entries, key = { it.name }) { paymentState ->
+                FilterChip(
+                    selected = selectedState == paymentState,
+                    onClick = { onStateSelected(paymentState) },
+                    label = { Text(paymentState.value) }
+                )
+            }
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilterChip(
+                selected = hasDateFilter,
+                onClick = onDateClick,
+                label = { Text("Fecha") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            )
+
+            if (selectedState != null || hasDateFilter) {
+                TextButton(onClick = onClear) {
+                    Text("Limpiar")
                 }
             }
         }
@@ -120,7 +287,7 @@ private fun PlanCard(
                 plan.currentPeriodEnd?.let {
                     Text("Vence: ${it.toReadableDate()}", color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
-                if (plan.state == SubscriptionResponse.State.ACTIVE || plan.state == SubscriptionResponse.State.PENDING) {
+                if (plan.state == SubscriptionState.ACTIVE || plan.state == SubscriptionState.PENDING) {
                     Spacer(Modifier.height(12.dp))
                     OutlinedButton(onClick = onCancel) {
                         Text("Cancelar suscripción")

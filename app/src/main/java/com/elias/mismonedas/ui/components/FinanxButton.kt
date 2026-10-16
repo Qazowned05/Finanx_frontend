@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+//todo verificar uso
 @Composable
 fun FinanxPrimaryButton(
     text: String,
@@ -31,7 +31,7 @@ fun FinanxPrimaryButton(
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
-
+//todo verificar uso
 @Composable
 fun FinanxSecondaryButton(
     text: String,
@@ -48,7 +48,7 @@ fun FinanxSecondaryButton(
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
     }
 }
-
+//todo verificar uso
 @Composable
 fun FinanxDangerButton(
     text: String,

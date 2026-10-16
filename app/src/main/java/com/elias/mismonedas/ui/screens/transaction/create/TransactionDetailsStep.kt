@@ -39,8 +39,10 @@ import com.elias.mismonedas.ui.theme.IncomeGreen
 import com.elias.mismonedas.ui.theme.TextGray
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftField
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftState
+import org.openapitools.client.models.PaymentMethod
 import org.openapitools.client.models.TransactionRequest
-
+import org.openapitools.client.models.TransactionType
+//todo verificar uso
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TransactionDetailsStep(
@@ -52,7 +54,7 @@ fun TransactionDetailsStep(
     saveError: String?,
     onAmountChange: (String) -> Unit,
     onReasonChange: (Long?, String) -> Unit,
-    onPaymentChange: (TransactionRequest.PaymentMethod) -> Unit,
+    onPaymentChange: (PaymentMethod) -> Unit,
     onSubmit: () -> Unit,
     registry: MutableMap<String, Rect>,
     modifier: Modifier = Modifier
@@ -125,7 +127,7 @@ fun TransactionDetailsStep(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TransactionRequest.PaymentMethod.entries.forEach { method ->
+                PaymentMethod.entries.forEach { method ->
                     FilterChip(
                         selected = draft.paymentMethod == method,
                         onClick = { if (!isSaving) onPaymentChange(method) },
@@ -182,11 +184,11 @@ fun TransactionDetailsStep(
 
 @Composable
 private fun DetailsSummaryCard(
-    type: TransactionRequest.Type?,
+    type: TransactionType?,
     categoryLabel: String?,
     amountText: String
 ) {
-    val isIncome = type == TransactionRequest.Type.INCOME
+    val isIncome = type == TransactionType.INCOME
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -209,14 +211,4 @@ private fun DetailsSummaryCard(
             }
         }
     }
-}
-
-private fun TransactionRequest.PaymentMethod.toSpanishLabel(): String = when (this) {
-    TransactionRequest.PaymentMethod.CASH -> "Efectivo"
-    TransactionRequest.PaymentMethod.CREDIT_CARD -> "Tarjeta crédito"
-    TransactionRequest.PaymentMethod.DEBIT_CARD -> "Tarjeta débito"
-    TransactionRequest.PaymentMethod.BANK_TRANSFER -> "Transferencia"
-    TransactionRequest.PaymentMethod.YAPE -> "Yape"
-    TransactionRequest.PaymentMethod.PLIN -> "Plin"
-    TransactionRequest.PaymentMethod.OTHER -> "Otro"
 }

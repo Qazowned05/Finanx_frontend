@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.openapitools.client.models.Insight
 import com.elias.mismonedas.ui.components.FinanxCard
+import org.openapitools.client.models.InsightSeverity
 import org.openapitools.client.models.InsightSummary
 
 @Composable
@@ -80,9 +81,9 @@ fun InsightSummaryCard(
 @Composable
 private fun InsightRow(insight: Insight) {
     val (dotColor, bgColor) = when (insight.severity) {
-        Insight.Severity.CRITICAL -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
-        Insight.Severity.WARNING  -> Color(0xFFB45309) to Color(0xFFFFFBEB)
-        Insight.Severity.INFO     -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.tertiaryContainer
+        InsightSeverity.CRITICAL -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
+        InsightSeverity.WARNING  -> Color(0xFFB45309) to Color(0xFFFFFBEB)
+        InsightSeverity.INFO     -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.tertiaryContainer
         null                      -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.surfaceVariant
     }
 
