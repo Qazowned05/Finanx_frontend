@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -97,10 +97,10 @@ fun TransactionsFilterBar(
             contentPadding = PaddingValues(horizontal = 2.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(
+            itemsIndexed(
                 items = categoryItems,
-                key = { it.id ?: -1L }
-            ) { category ->
+                key = { index, category -> category.id ?: index.toLong() }
+            ) { _, category ->
                 TransactionCategoryCard(
                     label = category.label,
                     type = category.type,
@@ -153,10 +153,10 @@ fun TransactionsFilterBar(
                         label = { Text("Todas las billeteras") }
                     )
                 }
-                items(
+                itemsIndexed(
                     items = wallets,
-                    key = { it.id ?: -1L }
-                ) { wallet ->
+                    key = { index, wallet -> wallet.id ?: index.toLong() }
+                ) { _, wallet ->
                     FilterChip(
                         selected = selectedWalletId == wallet.id,
                         onClick = { onWalletSelected(wallet.id) },

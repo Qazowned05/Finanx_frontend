@@ -13,6 +13,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,9 +45,13 @@ fun AppScaffold(
     val controller = remember { TopBarController { topBarConfig = it } }
 
     val currentDestination = backStack.lastOrNull()
+    // Al cambiar de destino se limpia la config para no arrastrar el título/acciones
+    // de la pantalla anterior mientras el nuevo entry publica la suya con SetTopBar.
+    LaunchedEffect(currentDestination) { topBarConfig = TopBarConfig() }
+
     val showBottomBar = currentDestination is TopLevelDestination
     val defaultShowBack = backStack.size > 1
-    val defaultOnBack: () -> Unit = { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
+    val defaultOnBack: () -> Unit = { backStack.pop() }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,

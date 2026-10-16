@@ -6,7 +6,6 @@ import androidx.navigation3.runtime.NavKey
 import com.elias.mismonedas.ui.navigation.AppDestinations
 import com.elias.mismonedas.ui.navigation.SetTopBar
 import com.elias.mismonedas.ui.navigation.TopBarConfig
-import com.elias.mismonedas.ui.navigation.pop
 import com.elias.mismonedas.ui.screens.subscription.SubscriptionScreen
 import com.elias.mismonedas.ui.viewmodel.SubscriptionViewModel
 
@@ -20,8 +19,7 @@ fun EntryProviderScope<NavKey>.subscriptionEntries(
 
         SubscriptionScreen(
             userId = userId,
-            viewModel = subscriptionViewModel,
-            onBack = { backStack.pop() }
+            viewModel = subscriptionViewModel
         )
     }
 }

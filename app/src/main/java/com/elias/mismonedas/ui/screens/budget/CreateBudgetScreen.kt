@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.components.CategoryDropdown
+import com.elias.mismonedas.ui.navigation.LocalSnackbarHostState
 import org.openapitools.client.models.TransactionRequest
 import com.elias.mismonedas.ui.components.toCategoryOption
 import com.elias.mismonedas.ui.screens.schedule.ScheduleDateField
@@ -49,7 +50,7 @@ fun CreateBudgetScreen(
     val parsedEnd = endDateText.toLocalDateOrNull()
 
     val actionState = viewModel.actionState
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(actionState) {
         when (actionState) {
@@ -91,7 +92,6 @@ fun CreateBudgetScreen(
     val focusManager = LocalFocusManager.current
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
                 Column(

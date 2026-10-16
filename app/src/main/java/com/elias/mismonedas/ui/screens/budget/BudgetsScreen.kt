@@ -63,7 +63,6 @@ fun BudgetListScreen(
         categoryViewModel.fetchCategories()
     }
 
-    val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val targetBounds = remember { mutableStateMapOf<String, Rect>() }
     var tutorialController by remember { mutableStateOf<TutorialController?>(null) }
@@ -92,7 +91,6 @@ fun BudgetListScreen(
             state.filterTo != null
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCreateBudget,

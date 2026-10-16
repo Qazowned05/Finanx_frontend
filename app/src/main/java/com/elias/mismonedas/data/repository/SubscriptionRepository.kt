@@ -17,14 +17,19 @@ class SubscriptionRepository @Inject constructor(
     private val subscriptionsApi: SubscriptionsApi,
     private val paymentsApi: PaymentsApi
 ) {
-    //todo, deberia crearse un endpoint exclusivo para la suscripcion actual para evitar este hack
+    /**
+     * Devuelve la suscripción actual del usuario usando el endpoint dedicado
+     * `GET api/v1/subscriptions/current`. El backend responde 404 cuando el
+     * usuario no tiene suscripción activa, así que ese caso se mapea a `null`
+     * (no es un error).
+     */
     suspend fun getCurrentSubscription(): SubscriptionResponse? =
         withContext(Dispatchers.IO) {
             val response = subscriptionsApi.getCurrentSubscription()
-            if (response.isSuccessful && response.body() != null) {
-                response.body()
-            } else {
-                throw IOException("Error al obtener plan: ${response.code()}")
+            when {
+                response.isSuccessful -> response.body()
+                response.code() == 404 -> null
+                else -> throw IOException("Error al obtener plan: ${response.code()}")
             }
         }
 

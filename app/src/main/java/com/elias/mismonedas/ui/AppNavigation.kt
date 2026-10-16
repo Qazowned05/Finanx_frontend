@@ -32,7 +32,8 @@ import com.elias.mismonedas.ui.navigation.entries.subscriptionEntries
 import com.elias.mismonedas.ui.navigation.entries.transactionsEntries
 import com.elias.mismonedas.ui.navigation.entries.walletEntries
 import com.elias.mismonedas.ui.navigation.navigateToTab
-import com.elias.mismonedas.ui.navigation.push
+import com.elias.mismonedas.ui.navigation.pop
+import com.elias.mismonedas.ui.navigation.popUpToOrPush
 import com.elias.mismonedas.ui.viewmodel.AnalyticsViewModel
 import com.elias.mismonedas.ui.viewmodel.AuthViewModel
 import com.elias.mismonedas.ui.viewmodel.BudgetViewModel
@@ -111,9 +112,9 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
     AppScaffold(
         backStack = backStack,
         notificationCount = notificationViewModel.badgeCount,
-        onFinn = { backStack.push(AppDestinations.Chat) },
-        onNotifications = { backStack.push(AppDestinations.Notifications) },
-        onProfile = { backStack.push(AppDestinations.Profile) },
+        onFinn = { backStack.popUpToOrPush(AppDestinations.Chat) },
+        onNotifications = { backStack.popUpToOrPush(AppDestinations.Notifications) },
+        onProfile = { backStack.popUpToOrPush(AppDestinations.Profile) },
         onLogout = { authViewModel.logout(activity) },
         onNavigateToTab = { tab -> backStack.navigateToTab(tab) },
         snackbarHostState = snackbarHostState
@@ -121,7 +122,7 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
         Box(modifier = modifier) {
             NavDisplay(
                 backStack = backStack,
-                onBack = { backStack.removeLastOrNull() },
+                onBack = { backStack.pop() },
                 entryProvider = entryProvider {
                     homeEntries(backStack, homeViewModel, userId, userName)
                     transactionsEntries(backStack, transactionViewModel, receiptViewModel, userId)
@@ -139,7 +140,7 @@ fun AppNavigation(user: UserResponse, authViewModel: AuthViewModel) {
                         },
                         markPreserveDraft = { preserveTransactionDraft = true }
                     )
-                    categoryEntries(backStack, categoryViewModel, authViewModel, userId)
+                    categoryEntries(backStack, categoryViewModel, userId)
                     savingGoalEntries(backStack, savingGoalViewModel, userId)
                     moreEntries(backStack)
                     analyticsEntries(backStack, analyticsViewModel, userId)

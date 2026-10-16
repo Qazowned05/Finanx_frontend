@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -138,10 +138,10 @@ fun NotificationsScreen(
                         state = listState,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(
+                        itemsIndexed(
                             items = visibleNotifications,
-                            key = { it.id ?: 0L }
-                        ) { notification ->
+                            key = { index, notification -> notification.id ?: index.toLong() }
+                        ) { _, notification ->
                             NotificationItem(
                                 notification = notification,
                                 onDiscard = {

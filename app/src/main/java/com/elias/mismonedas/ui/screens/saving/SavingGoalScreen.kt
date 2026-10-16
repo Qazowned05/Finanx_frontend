@@ -26,6 +26,7 @@ import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.SpotlightOverlay
 import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
+import com.elias.mismonedas.ui.navigation.LocalSnackbarHostState
 import com.elias.mismonedas.ui.theme.*
 import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.viewmodel.SavingGoalUIState
@@ -97,7 +98,7 @@ fun SavingGoalScreen(
     }
 
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = LocalSnackbarHostState.current
     val actionSuccess = viewModel.actionSuccess
     LaunchedEffect(actionSuccess) {
         if (actionSuccess != null) {
@@ -107,7 +108,6 @@ fun SavingGoalScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCreateGoal,

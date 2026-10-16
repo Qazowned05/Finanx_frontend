@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -194,15 +194,15 @@ private fun HomeContent(
                     )
                 }
 
-                // FIX-005: Cards aleatorias de presupuesto y meta
-                if (state.randomBudget != null) {
+                // Cards destacadas de presupuesto y meta (deterministas)
+                if (state.featuredBudget != null) {
                     item {
-                        RandomBudgetCard(budget = state.randomBudget, currencyCode = state.primaryCurrency)
+                        FeaturedBudgetCard(budget = state.featuredBudget, currencyCode = state.primaryCurrency)
                     }
                 }
-                if (state.randomSavingGoal != null) {
+                if (state.featuredSavingGoal != null) {
                     item {
-                        RandomSavingGoalCard(goal = state.randomSavingGoal, currencyCode = state.primaryCurrency)
+                        FeaturedSavingGoalCard(goal = state.featuredSavingGoal, currencyCode = state.primaryCurrency)
                     }
                 }
 
@@ -236,10 +236,10 @@ private fun HomeContent(
                         )
                     }
                 } else {
-                    items(
+                    itemsIndexed(
                         items = state.recentTransactions,
-                        key = { transaction -> transaction.id ?: 0 }
-                    ) { transaction ->
+                        key = { index, transaction -> transaction.id ?: index.toLong() }
+                    ) { _, transaction ->
                         TransactionRecordItem(transaction = transaction)
                     }
                 }
@@ -354,9 +354,9 @@ private fun DecisionSurface(
     }
 }
 
-// FIX-005: Card de presupuesto aleatorio
+// Card de presupuesto destacado
 @Composable
-private fun RandomBudgetCard(
+private fun FeaturedBudgetCard(
     budget: org.openapitools.client.models.BudgetExecutionResponse,
     currencyCode: String
 ) {
@@ -419,9 +419,9 @@ private fun RandomBudgetCard(
     }
 }
 
-// FIX-005: Card de meta de ahorro aleatoria
+// Card de meta de ahorro destacada
 @Composable
-private fun RandomSavingGoalCard(
+private fun FeaturedSavingGoalCard(
     goal: org.openapitools.client.models.SavingGoalResponse,
     currencyCode: String
 ) {

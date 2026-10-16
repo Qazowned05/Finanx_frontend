@@ -17,12 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EventRepeat
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,10 +42,7 @@ private val functionalities = listOf(
     Functionality("Categorías", Icons.Default.Category, AppDestinations.Categories),
     Functionality("Presupuestos", Icons.Default.AccountBalanceWallet, AppDestinations.Budgets),
     Functionality("Billeteras", Icons.Default.AccountBalanceWallet, AppDestinations.Wallets),
-    Functionality("Programaciones", Icons.Default.EventRepeat, AppDestinations.ScheduledTransactions),
-    Functionality("Chatea con Finn", Icons.Default.AutoAwesome, AppDestinations.Chat),
-    Functionality("Notificaciones", Icons.Default.Notifications, AppDestinations.Notifications),
-    Functionality("Perfil", Icons.Default.Person, AppDestinations.Profile)
+    Functionality("Programaciones", Icons.Default.EventRepeat, AppDestinations.ScheduledTransactions)
 )
 
 @Composable

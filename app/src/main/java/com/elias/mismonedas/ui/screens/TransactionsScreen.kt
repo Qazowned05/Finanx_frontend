@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,8 +28,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -75,7 +73,6 @@ fun TransactionsScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     var transactionToDelete by remember { mutableStateOf<TransactionResponse?>(null) }
     val datePickerState = rememberDatePickerState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val listState = rememberLazyListState()
 
     val hasActiveFilters = state.query.isNotBlank() ||
@@ -86,7 +83,6 @@ fun TransactionsScreen(
             state.filterTo != null
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -194,10 +190,10 @@ fun TransactionsScreen(
                                     )
                                 }
                             } else {
-                                items(
+                                itemsIndexed(
                                     items = state.transactions,
-                                    key = { it.id ?: 0 }
-                                ) { transaction ->
+                                    key = { index, transaction -> transaction.id ?: index.toLong() }
+                                ) { _, transaction ->
                                     TransactionRecordItem(
                                         transaction = transaction,
                                         modifier = Modifier.combinedClickable(

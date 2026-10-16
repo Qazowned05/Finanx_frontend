@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.data.preferences.TransactionQuickPrefs
-import com.elias.mismonedas.ui.theme.TextGray
+import com.elias.mismonedas.ui.theme.StoneGray
 
 private val moneyInputRegex =
     Regex("""^\d{0,9}([.,]\d{0,2})?$""")
@@ -61,7 +61,7 @@ fun TransactionAmountStep(
 
         Text(
             text = "Selecciona el tipo de movimiento e ingresa el monto.",
-            color = TextGray
+            color = StoneGray
         )
 
         TransactionTypeSelector(

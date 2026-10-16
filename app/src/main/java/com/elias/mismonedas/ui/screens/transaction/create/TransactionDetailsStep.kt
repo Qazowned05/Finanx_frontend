@@ -36,7 +36,7 @@ import com.elias.mismonedas.ui.components.ReasonAutocomplete
 import com.elias.mismonedas.ui.components.tutorialTarget
 import com.elias.mismonedas.ui.theme.ExpenseRed
 import com.elias.mismonedas.ui.theme.IncomeGreen
-import com.elias.mismonedas.ui.theme.TextGray
+import com.elias.mismonedas.ui.theme.StoneGray
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftField
 import com.elias.mismonedas.ui.viewmodel.TransactionDraftState
 import org.openapitools.client.models.PaymentMethod
@@ -196,7 +196,7 @@ private fun DetailsSummaryCard(
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 text = if (isIncome) "Ingreso" else "Gasto",
-                color = TextGray
+                color = StoneGray
             )
             Text(
                 text = categoryLabel ?: "Sin categoría",

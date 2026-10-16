@@ -2,6 +2,7 @@ package com.elias.mismonedas.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.staticCompositionLocalOf
 
 /**
@@ -45,5 +46,11 @@ val LocalTopBarController = staticCompositionLocalOf<TopBarController> {
 @Composable
 fun SetTopBar(config: TopBarConfig) {
     val controller = LocalTopBarController.current
-    LaunchedEffect(config) { controller.update(config) }
+    val latestConfig = rememberUpdatedState(config)
+    // La clave usa solo los campos "de valor": [TopBarConfig] contiene lambdas
+    // (onBack/onRefresh) que son instancias nuevas en cada recomposición, y
+    // keyear el efecto por el data class completo lo relanzaba sin necesidad.
+    LaunchedEffect(config.title, config.subtitle, config.showBack) {
+        controller.update(latestConfig.value)
+    }
 }

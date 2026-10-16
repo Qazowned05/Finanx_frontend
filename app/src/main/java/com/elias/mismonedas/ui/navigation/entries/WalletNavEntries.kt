@@ -6,7 +6,6 @@ import androidx.navigation3.runtime.NavKey
 import com.elias.mismonedas.ui.navigation.AppDestinations
 import com.elias.mismonedas.ui.navigation.SetTopBar
 import com.elias.mismonedas.ui.navigation.TopBarConfig
-import com.elias.mismonedas.ui.navigation.pop
 import com.elias.mismonedas.ui.screens.wallet.WalletScreen
 import com.elias.mismonedas.ui.viewmodel.WalletViewModel
 
@@ -20,8 +19,7 @@ fun EntryProviderScope<NavKey>.walletEntries(
 
         WalletScreen(
             userId = userId,
-            viewModel = walletViewModel,
-            onBack = { backStack.pop() }
+            viewModel = walletViewModel
         )
     }
 }

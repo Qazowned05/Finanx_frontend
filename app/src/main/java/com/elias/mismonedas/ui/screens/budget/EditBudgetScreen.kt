@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.elias.mismonedas.ui.screens.schedule.ScheduleDateField
+import com.elias.mismonedas.ui.navigation.LocalSnackbarHostState
 import com.elias.mismonedas.ui.screens.schedule.toLocalDateOrNull
 import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.util.toReadableDate
@@ -45,7 +46,7 @@ fun EditBudgetScreen(
     val budgetStart = budget.start?.toLocalDate()
 
     val actionState = viewModel.actionState
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(actionState) {
         when (actionState) {
@@ -79,7 +80,6 @@ fun EditBudgetScreen(
     val focusManager = LocalFocusManager.current
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
                 Column(

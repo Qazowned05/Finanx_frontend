@@ -44,8 +44,8 @@ data class HomeUiState(
     val dailyIncomeLabels: List<String> = emptyList(),
     val dailyExpensePoints: List<Float> = emptyList(),
     val dailyExpenseLabels: List<String> = emptyList(),
-    val randomBudget: BudgetExecutionResponse? = null,
-    val randomSavingGoal: SavingGoalResponse? = null
+    val featuredBudget: BudgetExecutionResponse? = null,
+    val featuredSavingGoal: SavingGoalResponse? = null
 ) : com.elias.mismonedas.ui.viewmodel.RefreshableUiState
 
 @HiltViewModel
@@ -139,9 +139,9 @@ class HomeViewModel @Inject constructor(
                     else -> null
                 }
 
-                // FIX-005: Cargar presupuestos y metas aleatorios
-                val randomBudget = fetchRandomBudget()
-                val randomSavingGoal = fetchRandomSavingGoal(userId)
+                // Card de presupuesto y meta destacados (deterministas: no aleatorios)
+                val featuredBudget = fetchFeaturedBudget()
+                val featuredSavingGoal = fetchFeaturedSavingGoal(userId)
 
                 state = HomeUiState(
                     isLoading = false,
@@ -158,8 +158,8 @@ class HomeViewModel @Inject constructor(
                     dailyIncomeLabels = incomeSeries.labels,
                     dailyExpensePoints = expenseSeries.points,
                     dailyExpenseLabels = expenseSeries.labels,
-                    randomBudget = randomBudget,
-                    randomSavingGoal = randomSavingGoal
+                    featuredBudget = featuredBudget,
+                    featuredSavingGoal = featuredSavingGoal
                 )
             } catch (exception: Exception) {
                 state = state.copy(
@@ -177,26 +177,35 @@ class HomeViewModel @Inject constructor(
         load(userId, currentUserName)
     }
 
-    private suspend fun fetchRandomBudget(): BudgetExecutionResponse? {
+    /**
+     * Elige un presupuesto activo de forma determinista (el que está más cerca
+     * de excederse). Antes se elegía uno al azar, lo que hacía que la card
+     * cambiara en cada refresco.
+     */
+    private suspend fun fetchFeaturedBudget(): BudgetExecutionResponse? {
         return try {
             val currentMonthPeriod = buildCurrentMonthPeriod()
             val response = budgetRepository.listDetailed(currentMonthPeriod.start, currentMonthPeriod.end)
             val budgets = response.body()?.items?.filter {
                 it.state == BudgetState.ACTIVE
             } ?: emptyList()
-            if (budgets.isNotEmpty()) budgets.random() else null
+            budgets.maxByOrNull { it.executionPercentage ?: BigDecimal.ZERO }
         } catch (_: Exception) {
             null
         }
     }
 
-    private suspend fun fetchRandomSavingGoal(userId: Long): SavingGoalResponse? {
+    /**
+     * Elige una meta de ahorro en curso de forma determinista (la más avanzada).
+     * Antes se elegía una al azar.
+     */
+    private suspend fun fetchFeaturedSavingGoal(userId: Long): SavingGoalResponse? {
         return try {
             val response = savingGoalRepository.list(null)
             val goals = response.body()?.items?.filter {
                 it.state == SavingGoalState.RUNNING
             } ?: emptyList()
-            if (goals.isNotEmpty()) goals.random() else null
+            goals.maxByOrNull { it.accumulated ?: BigDecimal.ZERO }
         } catch (_: Exception) {
             null
         }

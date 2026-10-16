@@ -29,8 +29,8 @@ import com.elias.mismonedas.ui.components.LoadMoreFooter
 import com.elias.mismonedas.ui.components.SpotlightOverlay
 import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
+import com.elias.mismonedas.ui.navigation.LocalSnackbarHostState
 import com.elias.mismonedas.ui.theme.*
-import com.elias.mismonedas.ui.viewmodel.AuthViewModel
 import com.elias.mismonedas.ui.viewmodel.CategoryState
 import com.elias.mismonedas.ui.viewmodel.CategoryViewModel
 import com.elias.mismonedas.ui.components.TutorialController
@@ -53,10 +53,7 @@ val categoryIcons = listOf(
 @Composable
 fun CategoryListScreen(
     userId: Long,
-    viewModel: CategoryViewModel,
-    authViewModel: AuthViewModel,
-    onNavigateToNotifications: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    viewModel: CategoryViewModel
 ) {
     val state = viewModel.categoryState
     val listState = rememberLazyListState()
@@ -85,7 +82,7 @@ fun CategoryListScreen(
         }
     }
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = LocalSnackbarHostState.current
     val actionSuccess = viewModel.actionSuccess
     LaunchedEffect(actionSuccess) {
         if (actionSuccess != null) {
@@ -95,7 +92,6 @@ fun CategoryListScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },

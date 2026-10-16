@@ -61,7 +61,7 @@ import com.elias.mismonedas.ui.components.TutorialPreferences
 import com.elias.mismonedas.ui.components.tutorialTarget
 import com.elias.mismonedas.ui.components.TutorialController
 import com.elias.mismonedas.ui.components.TutorialStep
-import com.elias.mismonedas.ui.theme.TextGray
+import com.elias.mismonedas.ui.theme.StoneGray
 import com.elias.mismonedas.ui.util.toCurrency
 import com.elias.mismonedas.ui.util.toReadableDate
 import com.elias.mismonedas.ui.util.toSearchDate
@@ -212,7 +212,7 @@ fun ScheduledTransactionsScreen(
 
                     if (visibleTransactions.isEmpty() && visibleBudgets.isEmpty()) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No tienes programaciones activas", color = TextGray)
+                            Text("No tienes programaciones activas", color = StoneGray)
                         }
                     } else {
                         LoadMoreEffect(
@@ -237,7 +237,7 @@ fun ScheduledTransactionsScreen(
                                         Text(
                                             "Movimientos programados",
                                             style = MaterialTheme.typography.labelLarge,
-                                            color = TextGray,
+                                            color = StoneGray,
                                             modifier = Modifier.padding(vertical = 4.dp)
                                         )
                                     }
@@ -256,7 +256,7 @@ fun ScheduledTransactionsScreen(
                                         Text(
                                             "Presupuestos programados",
                                             style = MaterialTheme.typography.labelLarge,
-                                            color = TextGray,
+                                            color = StoneGray,
                                             modifier = Modifier.padding(vertical = 4.dp)
                                         )
                                     }
@@ -341,7 +341,7 @@ private fun TransactionScheduleItem(
         Row(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(ts.categoryName ?: "Movimiento programado", fontWeight = FontWeight.SemiBold)
-                Text("Próximo: ${ts.nextRunAt?.toLocalDate().toReadableDate()}", color = TextGray, style = MaterialTheme.typography.labelSmall)
+                Text("Próximo: ${ts.nextRunAt?.toLocalDate().toReadableDate()}", color = StoneGray, style = MaterialTheme.typography.labelSmall)
                 Text(ts.state?.value ?: "", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelMedium)
             }
             Text((ts.amount ?: BigDecimal.ZERO).toCurrency(ts.walletCurrency ?: "PEN"), fontWeight = FontWeight.Bold)
@@ -371,8 +371,8 @@ private fun BudgetScheduleItem(
         Row(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(bs.description ?: bs.categoryName ?: "Presupuesto programado", fontWeight = FontWeight.SemiBold)
-                Text(bs.categoryName ?: "", color = TextGray, style = MaterialTheme.typography.bodySmall)
-                Text("Próximo: ${bs.nextRunAt?.toLocalDate().toReadableDate()}", color = TextGray, style = MaterialTheme.typography.labelSmall)
+                Text(bs.categoryName ?: "", color = StoneGray, style = MaterialTheme.typography.bodySmall)
+                Text("Próximo: ${bs.nextRunAt?.toLocalDate().toReadableDate()}", color = StoneGray, style = MaterialTheme.typography.labelSmall)
                 Text(bs.state?.value ?: "", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelMedium)
             }
             Text((bs.limitAmount ?: BigDecimal.ZERO).toCurrency("PEN"), fontWeight = FontWeight.Bold)

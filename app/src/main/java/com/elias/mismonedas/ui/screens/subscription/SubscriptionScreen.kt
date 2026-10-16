@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,8 +35,7 @@ import java.time.ZoneOffset
 @Composable
 fun SubscriptionScreen(
     userId: Long,
-    viewModel: SubscriptionViewModel,
-    onBack: () -> Unit
+    viewModel: SubscriptionViewModel
 ) {
     val state = viewModel.state
     val actionState = viewModel.actionState
@@ -43,7 +43,7 @@ fun SubscriptionScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(userId) {
         viewModel.load()
     }
 
@@ -53,26 +53,15 @@ fun SubscriptionScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Suscripción") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
         when (state) {
             is SubscriptionUIState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             is SubscriptionUIState.Error -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     ErrorMessage(
                         message = (state as SubscriptionUIState.Error).message,
                         onRetry = { viewModel.load() }
@@ -95,7 +84,7 @@ fun SubscriptionScreen(
                 RefreshableList(
                     isRefreshing = data.isRefreshing,
                     onRefresh = { viewModel.refresh() },
-                    modifier = Modifier.fillMaxSize().padding(innerPadding)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     LazyColumn(
                         state = listState,
@@ -161,7 +150,7 @@ fun SubscriptionScreen(
                             }
 
                             else -> {
-                                items(data.payments, key = { it.id ?: 0 }) { payment ->
+                                itemsIndexed(data.payments, key = { index, payment -> payment.id ?: index.toLong() }) { _, payment ->
                                     PaymentHistoryItem(payment)
                                 }
                             }

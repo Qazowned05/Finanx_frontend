@@ -2,7 +2,7 @@ package com.elias.mismonedas.ui.screens.wallet
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,19 +24,17 @@ import com.elias.mismonedas.ui.viewmodel.WalletViewModel
 import org.openapitools.client.models.WalletResponse
 import java.math.BigDecimal
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletScreen(
     userId: Long,
-    viewModel: WalletViewModel,
-    onBack: () -> Unit
+    viewModel: WalletViewModel
 ) {
     val state = viewModel.walletListState
     val actionState = viewModel.actionState
     var showCreateDialog by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(userId) {
         viewModel.loadWallets(userId)
     }
 
@@ -46,29 +44,10 @@ fun WalletScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Billeteras") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { showCreateDialog = true },
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Crear") }
-            )
-        }
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
             when (state) {
                 is WalletListState.Loading -> {
@@ -113,7 +92,7 @@ fun WalletScreen(
                                 contentPadding = PaddingValues(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                items(state.wallets, key = { it.id ?: 0 }) { wallet ->
+                                itemsIndexed(state.wallets, key = { index, wallet -> wallet.id ?: index.toLong() }) { _, wallet ->
                                     WalletCard(
                                         wallet = wallet,
                                         onSetPrimary = {
@@ -136,6 +115,15 @@ fun WalletScreen(
                 }
             }
         }
+
+        ExtendedFloatingActionButton(
+            onClick = { showCreateDialog = true },
+            icon = { Icon(Icons.Default.Add, contentDescription = null) },
+            text = { Text("Crear") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
     }
 
     if (showCreateDialog) {
